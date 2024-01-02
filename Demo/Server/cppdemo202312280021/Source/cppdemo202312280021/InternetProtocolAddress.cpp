@@ -1,9 +1,9 @@
 #pragma comment(lib, "Ws2_32.lib")
+#include "InternetProtocolAddress.h"
+#include "Templates/UniquePtr.h"
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <type_traits>
-#include "Templates/UniquePtr.h"
-#include "InternetProtocolAddress.h"
 
 [[nodiscard]]
 constexpr size_t
