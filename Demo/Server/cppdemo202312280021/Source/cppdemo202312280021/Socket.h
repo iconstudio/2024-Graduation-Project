@@ -4,7 +4,7 @@
 #include "NativeSocket.h"
 #include "Socket.generated.h"
 
-UCLASS(BlueprintType, Blueprintable, Abstract, meta = (DisplayName = "Unreal Engine Socket Interface Component"), ClassGroup = (Custom))
+UCLASS(BlueprintType, Blueprintable, Abstract, meta = (DisplayName = "Unreal Engine Socket Interface Component"), ClassGroup = (Iconer))
 class CPPDEMO202312280021_API USocket : public UActorComponent
 {
 	GENERATED_BODY()
