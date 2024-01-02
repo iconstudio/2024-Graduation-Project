@@ -6,7 +6,9 @@ noexcept
 	//, IsAddressReusable(this, false, FNativeSocket::InternalSetAddressReusable)
 {}
 
-bool FNativeSocket::IsAvailable() const noexcept
+bool
+FNativeSocket::IsAvailable()
+const noexcept
 {
 	return NULL != GetHandle();
 }
