@@ -62,7 +62,7 @@ public:
 
 protected:
 	static void InternalSetAddressReusable(FNativeSocket& target, bool& flag) noexcept;
-	void SetAddressReusable(FNativeSocket& target, bool& flag) noexcept;
+	void SetAddressReusable(const bool flag) noexcept;
 	bool GetAddressReusable() const noexcept;
 
 public:
