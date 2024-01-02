@@ -80,7 +80,7 @@ public:
 protected:
 };
 
-USTRUCT(Atomic, BlueprintType)
+USTRUCT(Atomic, BlueprintType, Blueprintable, meta = (DisplayName = "Native Socket Wrapper"))
 struct [[nodiscard]] CPPDEMO202312280021_API FAttentSocket
 {
 	GENERATED_BODY()
