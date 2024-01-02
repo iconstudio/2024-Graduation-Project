@@ -4,7 +4,7 @@
 #include "HAL/Runnable.h"
 #include "NetworkManager.generated.h"
 
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(ClassGroup = (Iconer), meta = (BlueprintSpawnableComponent))
 class CPPDEMO202312280021_API UNetworkManager : public UActorComponent
 {
 	GENERATED_BODY()
