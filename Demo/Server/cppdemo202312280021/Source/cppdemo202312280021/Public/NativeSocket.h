@@ -235,6 +235,19 @@ struct std::hash<FNativeSocket>
 	}
 };
 
+UCLASS(ClassGroup = (Iconer))
+class CPPDEMO202312280021_API USocketFactory : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Iconer")
+	static FNativeSocket CreateNativeSocket(EIoSynchronousType type, EInternetProtocol protocol, EIpAddressFamily family) noexcept;
+
+	UFUNCTION(BlueprintCallable, Category = "Iconer")
+	static bool TryCreateNativeSocket(EIoSynchronousType type, EInternetProtocol protocol, EIpAddressFamily family, FNativeSocket& out, int32& error_code) noexcept;
+};
+
 namespace net
 {
 	using NativeSocket = ::FNativeSocket;
