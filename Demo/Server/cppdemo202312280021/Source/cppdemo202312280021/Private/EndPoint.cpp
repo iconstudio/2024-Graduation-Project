@@ -1,12 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
+#pragma comment(lib, "Ws2_32.lib")
 #include "EndPoint.h"
+#include <WinSock2.h>
 
-EndPoint::EndPoint()
-{
-}
+FEndpoint::FEndpoint(const FIpAddress& ip, const uint16& port)
+noexcept
+	: myAddress(ip), myPort(::htons(port))
+{}
 
-EndPoint::~EndPoint()
-{
-}
+FEndpoint::FEndpoint(FIpAddress&& ip, const uint16& port)
+noexcept
+	: myAddress(static_cast<FIpAddress&&>(ip)), myPort(::htons(port))
+{}
