@@ -24,16 +24,16 @@ noexcept
 	}
 }
 
-FIpAddress::FIpAddress(const EIpAddressFamily& family, const FString& address)
+FIpAddress::FIpAddress(const EIpAddressFamily& family, const FStringView& address)
 noexcept
 	: addressFamily(family)
 	, ipAddress(address)
 {}
 
-FIpAddress::FIpAddress(const EIpAddressFamily& family, FString&& address)
+FIpAddress::FIpAddress(const EIpAddressFamily& family, FStringView&& address)
 noexcept
 	: addressFamily(family)
-	, ipAddress(static_cast<FString&&>(address))
+	, ipAddress(static_cast<FStringView&&>(address))
 {}
 
 FSerializedIpAddress

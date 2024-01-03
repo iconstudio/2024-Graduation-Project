@@ -15,8 +15,8 @@ public:
 	FIpAddress() noexcept = default;
 	~FIpAddress() noexcept = default;
 
-	FIpAddress(const EIpAddressFamily& family, const FString& address) noexcept;
-	FIpAddress(const EIpAddressFamily& family, FString&& address) noexcept;
+	FIpAddress(const EIpAddressFamily& family, const FStringView& address) noexcept;
+	FIpAddress(const EIpAddressFamily& family, FStringView&& address) noexcept;
 
 	[[nodiscard]]
 	FSerializedIpAddress Serialize() const;
