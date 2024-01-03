@@ -1,10 +1,13 @@
 #pragma once
 #include "CoreMinimal.h"
-#include <type_traits>
-#include <variant>
+#include "Constraints.h"
+#include <Logging/LogMacros.h>
 #include <concepts>
 #include <expected>
-#include "Constraints.h"
+#include <type_traits>
+#include <variant>
+
+DECLARE_LOG_CATEGORY_EXTERN(InvalidExpectedAccess, Log, All);
 
 template<typename E>
 struct CPPDEMO202312280021_API Unexpected
@@ -212,7 +215,7 @@ public:
 	}
 
 	template<std::invocable<T&> Fn>
-	constexpr auto Translate(Fn&& fn)& noexcept(std::is_nothrow_invocable_v<Fn, T&>)
+	constexpr auto Translate(Fn&& fn) & noexcept(std::is_nothrow_invocable_v<Fn, T&>)
 	{
 		using result_t = std::invoke_result_t<Fn, T&>;
 
@@ -224,7 +227,7 @@ public:
 		}
 		else
 		{
-			return result_t{ Unexpected<result_t::error_t>{ Error() }};
+			return result_t{ Unexpected<result_t::error_t>{ Error() } };
 		}
 	}
 
@@ -282,48 +285,88 @@ public:
 	[[nodiscard]]
 	constexpr T& Value()&
 	{
+		if (not HasValue())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire the value from not assigned 'Expected'"));
+		}
+
 		return std::get<0>(myStorage);
 	}
 
 	[[nodiscard]]
 	constexpr const T& Value() const&
 	{
+		if (not HasValue())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire the value from not assigned 'Expected'"));
+		}
+
 		return std::get<0>(myStorage);
 	}
 
 	[[nodiscard]]
 	constexpr T&& Value()&&
 	{
+		if (not HasValue())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire the value from not assigned 'Expected'"));
+		}
+
 		return std::move(std::get<0>(myStorage));
 	}
 
 	[[nodiscard]]
 	constexpr const T&& Value() const&&
 	{
+		if (not HasValue())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire the value from not assigned 'Expected'"));
+		}
+
 		return std::move(std::get<0>(myStorage));
 	}
 
 	[[nodiscard]]
 	constexpr E& Error()&
 	{
+		if (not HasError())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire an error from the proper 'Expected'"));
+		}
+
 		return std::get<1>(myStorage);
 	}
 
 	[[nodiscard]]
 	constexpr const E& Error() const&
 	{
+		if (not HasError())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire an error from the proper 'Expected'"));
+		}
+
 		return std::get<1>(myStorage);
 	}
 
 	[[nodiscard]]
 	constexpr E&& Error()&&
 	{
+		if (not HasError())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire an error from the proper 'Expected'"));
+		}
+
 		return std::move(std::get<1>(myStorage));
 	}
 
 	[[nodiscard]]
 	constexpr const E&& Error() const&&
 	{
+		if (not HasError())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire an error from the proper 'Expected'"));
+		}
+
 		return std::move(std::get<1>(myStorage));
 	}
 
