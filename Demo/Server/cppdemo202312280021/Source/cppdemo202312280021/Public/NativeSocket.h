@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include <span>
 #include "HandleObject.h"
 #include "IpAddressFamily.h"
 #include "IoSynchronousType.h"
@@ -32,8 +33,6 @@ enum class [[nodiscard]] ESocketOptions
 	SO_UPDATE_ACCEPT_CONTEXT = 0x700B UMETA(DisplayName = "Update"), // MSWSock.h
 };
 
-struct FAttentSocket;
-
 USTRUCT(Atomic, BlueprintType, Blueprintable, meta = (DisplayName = "Native Socket Instance"))
 struct [[nodiscard]] CPPDEMO202312280021_API FNativeSocket : public FHandleObject
 {
@@ -42,7 +41,7 @@ struct [[nodiscard]] CPPDEMO202312280021_API FNativeSocket : public FHandleObjec
 public:
 	// Type members
 
-	using FactoryResult = Expected<Socket, EErrorCode>;
+	using FactoryResult = Expected<FNativeSocket, EErrorCode>;
 	using SocketResult = Expected<uint32, EErrorCode>;
 
 	FNativeSocket() noexcept;
@@ -50,130 +49,130 @@ public:
 
 	// Opt-in Interfaces
 
-	SocketResult Bind(const IpAddress& address, const std::uint16_t& port) const noexcept;
-	SocketResult Bind(IpAddress&& address, const std::uint16_t& port) const noexcept;
-	SocketResult Bind(const EndPoint& endpoint) const noexcept;
-	SocketResult Bind(EndPoint&& endpoint) const noexcept;
-	SocketResult BindHost(const std::uint16_t& port) const noexcept;
+	SocketResult Bind(const FIpAddress& address, const uint16& port) const noexcept;
+	SocketResult Bind(FIpAddress&& address, const uint16& port) const noexcept;
+	SocketResult Bind(const FEndpoint& endpoint) const noexcept;
+	SocketResult Bind(FEndpoint&& endpoint) const noexcept;
+	SocketResult BindHost(const uint16& port) const noexcept;
 
 	bool ReusableAddress() const noexcept;
 	void ReusableAddress(bool flag) noexcept;
 	bool Close() const noexcept;
-	bool Close(SocketClosingErrorCodes& error_code) const noexcept;
-	bool CloseAsync(io::Context& context) const noexcept;
-	bool CloseAsync(io::Context& context, SocketClosingErrorCodes& error_code) const noexcept;
-	bool CloseAsync(io::Context* const context) const noexcept;
-	bool CloseAsync(io::Context* const context, SocketClosingErrorCodes& error_code) const noexcept;
+	bool Close(EErrorCode& error_code) const noexcept;
+	bool CloseAsync(FIoContext& context) const noexcept;
+	bool CloseAsync(FIoContext& context, EErrorCode& error_code) const noexcept;
+	bool CloseAsync(FIoContext* const context) const noexcept;
+	bool CloseAsync(FIoContext* const context, EErrorCode& error_code) const noexcept;
 
 	// Opt-out Methods
 
-	SocketListeningResult Open() const noexcept;
-	SocketResult Connect(const IpAddress& address, const std::uint16_t& port) const noexcept;
-	SocketResult Connect(IpAddress&& address, const std::uint16_t& port) const noexcept;
-	SocketResult Connect(const EndPoint& endpoint) const noexcept;
-	SocketResult Connect(EndPoint&& endpoint) const noexcept;
+	SocketResult Open() const noexcept;
+	SocketResult Connect(const FIpAddress& address, const uint16& port) const noexcept;
+	SocketResult Connect(FIpAddress&& address, const uint16& port) const noexcept;
+	SocketResult Connect(const FEndpoint& endpoint) const noexcept;
+	SocketResult Connect(FEndpoint&& endpoint) const noexcept;
 	[[nodiscard]]
-	Task<SocketResult> ConnectAsync(const EndPoint& endpoint) const noexcept;
+	Task<SocketResult> ConnectAsync(const FEndpoint& endpoint) const noexcept;
 	[[nodiscard]]
-	Task<SocketResult> ConnectAsync(EndPoint&& endpoint) const noexcept;
+	Task<SocketResult> ConnectAsync(FEndpoint&& endpoint) const noexcept;
 	[[nodiscard]]
-	Task<SocketResult> ConnectAsync(const IpAddress& address, const std::uint16_t& port) const noexcept;
+	Task<SocketResult> ConnectAsync(const FIpAddress& address, const uint16& port) const noexcept;
 	[[nodiscard]]
-	Task<SocketResult> ConnectAsync(IpAddress&& address, const std::uint16_t& port) const noexcept;
+	Task<SocketResult> ConnectAsync(FIpAddress&& address, const uint16& port) const noexcept;
 
 	// Synchronous Accept
 
 	[[nodiscard]]
-	AcceptingResult Accept() const noexcept;
+	SocketResult Accept() const noexcept;
 	[[nodiscard]]
-	AcceptingResult Accept(EndPoint& endpoint) const noexcept;
+	SocketResult Accept(FEndpoint& endpoint) const noexcept;
 
 	// Asynchronous Accept
 
-	SocketResult ReserveAccept(io::Context& context, Socket& client) const;
-	SocketResult ReserveAccept(io::Context& context, Socket& client, std::span<std::byte> accept_buffer) const;
-	SocketResult ReserveAccept(io::Context* const context, Socket& client) const;
-	SocketResult ReserveAccept(io::Context* const context, Socket& client, std::span<std::byte> accept_buffer) const;
+	SocketResult ReserveAccept(FIoContext& context, FNativeSocket& client) const;
+	SocketResult ReserveAccept(FIoContext& context, FNativeSocket& client, std::span<uint8> accept_buffer) const;
+	SocketResult ReserveAccept(FIoContext* const context, FNativeSocket& client) const;
+	SocketResult ReserveAccept(FIoContext* const context, FNativeSocket& client, std::span<uint8> accept_buffer) const;
 
 	// Synchronous Send
 
-	SocketSendingResult Send(std::span<const std::byte> memory) const noexcept;
-	SocketSendingResult Send(std::span<const std::byte> memory, size_t size) const noexcept;
-	SocketSendingResult Send(_In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
-	bool Send(std::span<const std::byte> memory, SendingErrorCodes& error_code) const noexcept;
-	bool Send(std::span<const std::byte> memory, size_t size, SendingErrorCodes& error_code) const noexcept;
-	bool Send(_In_reads_bytes_(size)const std::byte* const& memory, size_t size, SendingErrorCodes& error_code) const noexcept;
+	SocketResult Send(std::span<const uint8> memory) const noexcept;
+	SocketResult Send(std::span<const uint8> memory, size_t size) const noexcept;
+	SocketResult Send(_In_reads_bytes_(size)const uint8* const& memory, size_t size) const noexcept;
+	bool Send(std::span<const uint8> memory, EErrorCode& error_code) const noexcept;
+	bool Send(std::span<const uint8> memory, size_t size, EErrorCode& error_code) const noexcept;
+	bool Send(_In_reads_bytes_(size)const uint8* const& memory, size_t size, EErrorCode& error_code) const noexcept;
 
 	// Maybe asynchronous Send
 
-	SocketSendingResult Send(io::Context& context, std::span<const std::byte> memory) const noexcept;
-	SocketSendingResult Send(io::Context& context, std::span<const std::byte> memory, size_t size) const noexcept;
-	SocketSendingResult Send(io::Context& context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
-	bool Send(io::Context& context, std::span<const std::byte> memory, SendingErrorCodes& error_code) const noexcept;
-	bool Send(io::Context& context, std::span<const std::byte> memory, size_t size, SendingErrorCodes& error_code) const noexcept;
-	bool Send(io::Context& context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size, SendingErrorCodes& error_code) const noexcept;
+	SocketResult Send(FIoContext& context, std::span<const uint8> memory) const noexcept;
+	SocketResult Send(FIoContext& context, std::span<const uint8> memory, size_t size) const noexcept;
+	SocketResult Send(FIoContext& context, _In_reads_bytes_(size)const uint8* const& memory, size_t size) const noexcept;
+	bool Send(FIoContext& context, std::span<const uint8> memory, EErrorCode& error_code) const noexcept;
+	bool Send(FIoContext& context, std::span<const uint8> memory, size_t size, EErrorCode& error_code) const noexcept;
+	bool Send(FIoContext& context, _In_reads_bytes_(size)const uint8* const& memory, size_t size, EErrorCode& error_code) const noexcept;
 
 	// Synchronous Receive
 
-	SocketReceivingResult Receive(std::span<std::byte> memory) const noexcept;
-	SocketReceivingResult Receive(std::span<std::byte> memory, size_t size) const noexcept;
-	SocketReceivingResult Receive(_In_reads_bytes_(size)std::byte* const& memory, size_t size) const noexcept;
-	bool Receive(std::span<std::byte> memory, ReceivingErrorCodes& error_code) const noexcept;
-	bool Receive(std::span<std::byte> memory, size_t size, ReceivingErrorCodes& error_code) const noexcept;
-	bool Receive(_In_reads_bytes_(size)std::byte* const& memory, size_t size, ReceivingErrorCodes& error_code) const noexcept;
+	SocketResult Receive(std::span<uint8> memory) const noexcept;
+	SocketResult Receive(std::span<uint8> memory, size_t size) const noexcept;
+	SocketResult Receive(_In_reads_bytes_(size)uint8* const& memory, size_t size) const noexcept;
+	bool Receive(std::span<uint8> memory, EErrorCode& error_code) const noexcept;
+	bool Receive(std::span<uint8> memory, size_t size, EErrorCode& error_code) const noexcept;
+	bool Receive(_In_reads_bytes_(size)uint8* const& memory, size_t size, EErrorCode& error_code) const noexcept;
 
 	// Maybe asynchronous Receive
 
-	SocketReceivingResult Receive(io::Context& context, std::span<std::byte> memory) const noexcept;
-	SocketReceivingResult Receive(io::Context& context, std::span<std::byte> memory, size_t size) const noexcept;
-	SocketReceivingResult Receive(io::Context& context, _In_reads_bytes_(size)std::byte* const& memory, size_t size) const noexcept;
-	bool Receive(io::Context& context, std::span<std::byte> memory, ReceivingErrorCodes& error_code) const noexcept;
-	bool Receive(io::Context& context, std::span<std::byte> memory, size_t size, ReceivingErrorCodes& error_code) const noexcept;
-	bool Receive(io::Context& context, _In_reads_bytes_(size)std::byte* const& memory, size_t size, ReceivingErrorCodes& error_code) const noexcept;
+	SocketResult Receive(FIoContext& context, std::span<uint8> memory) const noexcept;
+	SocketResult Receive(FIoContext& context, std::span<uint8> memory, size_t size) const noexcept;
+	SocketResult Receive(FIoContext& context, _In_reads_bytes_(size)uint8* const& memory, size_t size) const noexcept;
+	bool Receive(FIoContext& context, std::span<uint8> memory, EErrorCode& error_code) const noexcept;
+	bool Receive(FIoContext& context, std::span<uint8> memory, size_t size, EErrorCode& error_code) const noexcept;
+	bool Receive(FIoContext& context, _In_reads_bytes_(size)uint8* const& memory, size_t size, EErrorCode& error_code) const noexcept;
 
 	// Asynchronous Send & Receive
 
 	[[nodiscard]]
-	Task<SocketSendingResult> MakeSendTask(io::Context& context, std::span<const std::byte> memory) const noexcept;
+	Task<SocketResult> MakeSendTask(FIoContext& context, std::span<const uint8> memory) const noexcept;
 	[[nodiscard]]
-	Task<SocketSendingResult> MakeSendTask(io::Context& context, std::span<const std::byte> memory, size_t size) const noexcept;
+	Task<SocketResult> MakeSendTask(FIoContext& context, std::span<const uint8> memory, size_t size) const noexcept;
 	[[nodiscard]]
-	Task<SocketSendingResult> MakeSendTask(io::Context& context, const _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+	Task<SocketResult> MakeSendTask(FIoContext& context, const _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
 	[[nodiscard]]
-	Task<SocketReceivingResult> MakeReceiveTask(io::Context& context, std::span<std::byte> memory) const noexcept;
+	Task<SocketResult> MakeReceiveTask(FIoContext& context, std::span<uint8> memory) const noexcept;
 	[[nodiscard]]
-	Task<SocketReceivingResult> MakeReceiveTask(io::Context& context, std::span<std::byte> memory, size_t size) const noexcept;
+	Task<SocketResult> MakeReceiveTask(FIoContext& context, std::span<uint8> memory, size_t size) const noexcept;
 	[[nodiscard]]
-	Task<SocketReceivingResult> MakeReceiveTask(io::Context& context, _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+	Task<SocketResult> MakeReceiveTask(FIoContext& context, _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
 
 	[[nodiscard]]
-	Task<SocketSendingResult> MakeSendTask(const std::shared_ptr<io::Context>& context, std::span<const std::byte> memory) const noexcept;
+	Task<SocketResult> MakeSendTask(const std::shared_ptr<FIoContext>& context, std::span<const uint8> memory) const noexcept;
 	[[nodiscard]]
-	Task<SocketSendingResult> MakeSendTask(const std::shared_ptr<io::Context>& context, std::span<const std::byte> memory, size_t size) const noexcept;
+	Task<SocketResult> MakeSendTask(const std::shared_ptr<FIoContext>& context, std::span<const uint8> memory, size_t size) const noexcept;
 	[[nodiscard]]
-	Task<SocketSendingResult> MakeSendTask(const std::shared_ptr<io::Context>& context, const _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+	Task<SocketResult> MakeSendTask(const std::shared_ptr<FIoContext>& context, const _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
 	[[nodiscard]]
 
-	Task<SocketReceivingResult> MakeReceiveTask(const std::shared_ptr<io::Context>& context, std::span<std::byte> memory) const noexcept;
+	Task<SocketResult> MakeReceiveTask(const std::shared_ptr<FIoContext>& context, std::span<uint8> memory) const noexcept;
 	[[nodiscard]]
-	Task<SocketReceivingResult> MakeReceiveTask(const std::shared_ptr<io::Context>& context, std::span<std::byte> memory, size_t size) const noexcept;
+	Task<SocketResult> MakeReceiveTask(const std::shared_ptr<FIoContext>& context, std::span<uint8> memory, size_t size) const noexcept;
 	[[nodiscard]]
-	Task<SocketReceivingResult> MakeReceiveTask(const std::shared_ptr<io::Context>& context, _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+	Task<SocketResult> MakeReceiveTask(const std::shared_ptr<FIoContext>& context, _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
 
 	// Asynchronous Send & Receive
 
 	[[nodiscard]]
-	Task<SocketSendingResult> AsyncSend(io::Context& context, std::span<const std::byte> memory) const noexcept;
+	Task<SocketResult> AsyncSend(FIoContext& context, std::span<const uint8> memory) const noexcept;
 	[[nodiscard]]
-	Task<SocketSendingResult> AsyncSend(io::Context& context, std::span<const std::byte> memory, size_t size) const noexcept;
+	Task<SocketResult> AsyncSend(FIoContext& context, std::span<const uint8> memory, size_t size) const noexcept;
 	[[nodiscard]]
-	Task<SocketSendingResult> AsyncSend(io::Context& context, const _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+	Task<SocketResult> AsyncSend(FIoContext& context, const _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
 	[[nodiscard]]
-	Task<SocketReceivingResult> AsyncRecv(io::Context& context, std::span<std::byte> memory) const noexcept;
+	Task<SocketResult> AsyncRecv(FIoContext& context, std::span<uint8> memory) const noexcept;
 	[[nodiscard]]
-	Task<SocketReceivingResult> AsyncRecv(io::Context& context, std::span<std::byte> memory, size_t size) const noexcept;
+	Task<SocketResult> AsyncRecv(FIoContext& context, std::span<uint8> memory, size_t size) const noexcept;
 	[[nodiscard]]
-	Task<SocketReceivingResult> AsyncRecv(io::Context& context, _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+	Task<SocketResult> AsyncRecv(FIoContext& context, _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
 
 	// Observers
 
@@ -187,9 +186,9 @@ public:
 	[[nodiscard]]
 	static FNativeSocket Create(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family, EErrorCode& error_code) noexcept;
 	[[nodiscard]]
-	static bool TryCreate(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family, FAttentSocket& out) noexcept;
+	static bool TryCreate(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family, FNativeSocket& out) noexcept;
 	[[nodiscard]]
-	static bool TryCreate(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family, FAttentSocket& out, EErrorCode& error_code) noexcept;
+	static bool TryCreate(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family, FNativeSocket& out, EErrorCode& error_code) noexcept;
 	[[nodiscard]]
 	static Expected<FNativeSocket, EErrorCode> TryCreate(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family) noexcept;
 
@@ -207,20 +206,6 @@ public:
 	EIpAddressFamily myFamily;
 	//UPROPERTY(NoClear, VisibleAnywhere, BlueprintGetter = GetAddressReusable)
 	//bool IsAddressReusable;
-
-	friend struct AttentSocket;
-
-protected:
-};
-
-USTRUCT(Atomic, BlueprintType, Blueprintable, meta = (DisplayName = "Native Socket Wrapper"))
-struct [[nodiscard]] CPPDEMO202312280021_API FAttentSocket
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(NoClear, EditInstanceOnly, BlueprintReadWrite)
-	FNativeSocket Socket;
 };
 
 template<>
