@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "SagaGameWorld",
+			"Path": "..\\Source\\SagaGameWorld.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "SagaGameWorldEditor",
+			"Path": "..\\Source\\SagaGameWorldEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
