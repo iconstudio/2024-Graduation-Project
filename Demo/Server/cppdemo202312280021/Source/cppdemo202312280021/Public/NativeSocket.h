@@ -9,6 +9,7 @@
 #include "ErrorCode.h"
 #include "IoContext.h"
 #include "Expected.h"
+#include "IconerBlueprinter.h"
 #include "NativeSocket.generated.h"
 
 UENUM(BlueprintType, Blueprintable)
@@ -33,7 +34,16 @@ enum class [[nodiscard]] ESocketOptions
 	SO_UPDATE_ACCEPT_CONTEXT = 0x700B UMETA(DisplayName = "Update"), // MSWSock.h
 };
 
-USTRUCT(Atomic, BlueprintType, Blueprintable, meta = (DisplayName = "Native Socket Instance"))
+USTRUCT(Atomic, BlueprintType, Blueprintable, meta = (DisplayName = "Socket Task Instance"))
+struct [[nodiscard]] CPPDEMO202312280021_API FSocketTask
+{
+	GENERATED_BODY()
+
+public:
+	Expected<uint32, EErrorCode> myValue;
+};
+
+USTRUCT(Atomic, BlueprintType, Blueprintable, meta = (DisplayName = "Socket Instance"))
 struct [[nodiscard]] CPPDEMO202312280021_API FNativeSocket : public FHandleObject
 {
 	GENERATED_BODY()
@@ -45,6 +55,10 @@ public:
 	using SocketResult = Expected<uint32, EErrorCode>;
 
 	FNativeSocket() noexcept;
+	FNativeSocket(const uint64& handle, const EInternetProtocol& protocol, const EIpAddressFamily family) noexcept;
+	FNativeSocket(const int64& handle, const EInternetProtocol& protocol, const EIpAddressFamily family) noexcept;
+	FNativeSocket(uint64&& handle, const EInternetProtocol& protocol, const EIpAddressFamily family) noexcept;
+	FNativeSocket(int64&& handle, const EInternetProtocol& protocol, const EIpAddressFamily family) noexcept;
 	~FNativeSocket() = default;
 
 	// Opt-in Interfaces
@@ -72,7 +86,7 @@ public:
 	SocketResult Connect(const FEndpoint& endpoint) const noexcept;
 	SocketResult Connect(FEndpoint&& endpoint) const noexcept;
 	[[nodiscard]]
-	Task<SocketResult> ConnectAsync(const FEndpoint& endpoint) const noexcept;
+	Task<SocketResult>FSocketTask ConnectAsync(const FEndpoint& endpoint) const noexcept;
 	[[nodiscard]]
 	Task<SocketResult> ConnectAsync(FEndpoint&& endpoint) const noexcept;
 	[[nodiscard]]
@@ -182,19 +196,19 @@ public:
 	// Static methods
 
 	[[nodiscard]]
-	static FNativeSocket Create(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family) noexcept;
+	static FNativeSocket Create(const EIoSynchronousType& type, const EInternetProtocol& protocol, const EIpAddressFamily& family) noexcept;
 	[[nodiscard]]
-	static FNativeSocket Create(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family, EErrorCode& error_code) noexcept;
+	static FNativeSocket Create(const EIoSynchronousType& type, const EInternetProtocol& protocol, const EIpAddressFamily& family, EErrorCode& error_code) noexcept;
 	[[nodiscard]]
-	static bool TryCreate(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family, FNativeSocket& out) noexcept;
+	static bool TryCreate(const EIoSynchronousType& type, const EInternetProtocol& protocol, const EIpAddressFamily& family, FNativeSocket& out) noexcept;
 	[[nodiscard]]
-	static bool TryCreate(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family, FNativeSocket& out, EErrorCode& error_code) noexcept;
+	static bool TryCreate(const EIoSynchronousType& type, const EInternetProtocol& protocol, const EIpAddressFamily& family, FNativeSocket& out, EErrorCode& error_code) noexcept;
 	[[nodiscard]]
-	static Expected<FNativeSocket, EErrorCode> TryCreate(EIoSynchronousType type, const EInternetProtocol& protocol, const EIpAddressFamily& family) noexcept;
+	static Expected<FNativeSocket, EErrorCode> TryCreate(const EIoSynchronousType& type, const EInternetProtocol& protocol, const EIpAddressFamily& family) noexcept;
 
 protected:
 	static void InternalSetAddressReusable(FNativeSocket& target, bool& flag) noexcept;
-	void SetAddressReusable(const bool flag) noexcept;
+	void SetAddressReusable(const bool flag) const noexcept;
 	bool GetAddressReusable() const noexcept;
 
 public:
@@ -227,10 +241,13 @@ class CPPDEMO202312280021_API USocketFactory : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Iconer")
-	static FNativeSocket CreateNativeSocket(EIoSynchronousType type, EInternetProtocol protocol, EIpAddressFamily family) noexcept;
+	static bool InitializeSocketSystem(const FNativeSocket& fsocket) noexcept;
 
 	UFUNCTION(BlueprintCallable, Category = "Iconer")
-	static bool TryCreateNativeSocket(EIoSynchronousType type, EInternetProtocol protocol, EIpAddressFamily family, FNativeSocket& out, int32& error_code) noexcept;
+	static FNativeSocket CreateNativeSocket(int32 io_type, int32 protocol, int32 family) noexcept;
+
+	UFUNCTION(BlueprintCallable, Category = "Iconer")
+	static bool TryCreateNativeSocket(int32 type, int32 protocol, int32 family, FNativeSocket& out, int32& error_code) noexcept;
 };
 
 namespace net
