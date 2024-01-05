@@ -19,8 +19,28 @@ struct CPPDEMO202312280021_API Unexpected
 	static_assert(not std::is_volatile_v<E>, "E must not be volatile. (N4928 [expected.un.general]/2)");
 	static_assert(not net::is_specialization_v<E, Unexpected>, "E must not be a specialization of unexpected. (N4928 [expected.un.general]/2)");
 
+	constexpr Unexpected() noexcept(std::is_nothrow_default_constructible_v<E>) = default;
+	constexpr ~Unexpected() noexcept(std::is_nothrow_destructible_v<E>) = default;
+
+	constexpr Unexpected(const E& value)
+		noexcept(std::is_nothrow_copy_constructible_v<E>)
+		: myError(value)
+	{
+		static_assert(std::copyable<E>);
+	}
+
+	constexpr Unexpected(E&& value)
+		noexcept(std::is_nothrow_move_constructible_v<E>)
+		: myError(std::move(value))
+	{
+		static_assert(std::movable<E>);
+	}
+
 	E myError;
 };
+
+template<typename E>
+Unexpected(E) -> Unexpected<E>;
 
 template<typename T, typename E>
 class CPPDEMO202312280021_API Expected
