@@ -17,7 +17,7 @@ class CPPDEMO202312280021_API UNetworkUtility : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Iconer")
-	static uint32 AcquireNetworkErrorByInteger() noexcept;
+	static int32 AcquireNetworkErrorByInteger() noexcept;
 	UFUNCTION(BlueprintCallable, Category = "Iconer")
 	static EErrorCode AcquireNetworkError() noexcept;
-}
+};

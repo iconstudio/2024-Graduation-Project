@@ -2,11 +2,11 @@
 #include "IconerBlueprinter.h"
 #include <WinSock2.h>
 
-uint32
+int32
 UNetworkUtility::AcquireNetworkErrorByInteger()
 noexcept
 {
-	return ::GetLastError();
+	return static_cast<int32>(::GetLastError());
 }
 
 EErrorCode
