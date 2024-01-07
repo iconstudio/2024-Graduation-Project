@@ -54,28 +54,28 @@ FNativeSocket::Send(std::span<const uint8> memory
 	, EErrorCode& error_code)
 	const noexcept
 {
-	return Send(memory).IfThen(
+	return Send(memory).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
 		error_code = std::move(tr_error_code);
 		return false;
-	}).ValueOr(false);
+	}).Value();
 }
 
 bool
 FNativeSocket::Send(std::span<const uint8> memory, size_t size, EErrorCode& error_code)
 const noexcept
 {
-	return Send(memory, size).IfThen(
+	return Send(memory, size).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
 		error_code = std::move(tr_error_code);
 		return false;
-	}).ValueOr(false);
+	}).Value();
 }
 
 bool
@@ -83,14 +83,14 @@ FNativeSocket::Send(const uint8* const& memory, size_t size
 	, EErrorCode& error_code)
 	const noexcept
 {
-	return Send(memory, size).IfThen(
+	return Send(memory, size).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
 		error_code = std::move(tr_error_code);
 		return false;
-	}).ValueOr(false);
+	}).Value();
 }
 
 FNativeSocket::SocketResult
@@ -137,28 +137,28 @@ FNativeSocket::Send(FIoContext& context, std::span<const uint8> memory
 	, EErrorCode& error_code)
 	const noexcept
 {
-	return Send(context, memory).IfThen(
+	return Send(context, memory).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
 		error_code = std::move(tr_error_code);
 		return false;
-	}).ValueOr(false);
+	}).Value();
 }
 
 bool
 FNativeSocket::Send(FIoContext& context, std::span<const uint8> memory, size_t size, EErrorCode& error_code)
 const noexcept
 {
-	return Send(context, memory, size).IfThen(
+	return Send(context, memory, size).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
 		error_code = std::move(tr_error_code);
 		return false;
-	}).ValueOr(false);
+	}).Value();
 }
 
 bool
@@ -166,14 +166,14 @@ FNativeSocket::Send(FIoContext& context, const uint8* const& memory
 	, size_t size, EErrorCode& error_code)
 	const noexcept
 {
-	return Send(context, memory, size).IfThen(
+	return Send(context, memory, size).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
 		error_code = std::move(tr_error_code);
 		return false;
-	}).ValueOr(false);
+	}).Value();
 }
 
 FSocketTask
