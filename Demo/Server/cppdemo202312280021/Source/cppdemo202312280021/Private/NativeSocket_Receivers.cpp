@@ -61,7 +61,7 @@ FNativeSocket::Receive(std::span<uint8> memory
 	, EErrorCode& error_code)
 	const noexcept
 {
-	return Receive(memory).IfThen(
+	return Receive(memory).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
@@ -75,7 +75,7 @@ bool
 FNativeSocket::Receive(std::span<uint8> memory, size_t size, EErrorCode& error_code)
 const noexcept
 {
-	return Receive(memory, std::move(size)).IfThen(
+	return Receive(memory, std::move(size)).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
@@ -90,7 +90,7 @@ FNativeSocket::Receive(uint8* const& memory, size_t size
 	, EErrorCode& error_code)
 	const noexcept
 {
-	return Receive(memory, std::move(size)).IfThen(
+	return Receive(memory, std::move(size)).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
@@ -206,7 +206,7 @@ FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory
 	, EErrorCode& error_code)
 	const noexcept
 {
-	return Receive(context, memory).IfThen(
+	return Receive(context, memory).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
@@ -220,7 +220,7 @@ bool
 FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory, size_t size, EErrorCode& error_code)
 const noexcept
 {
-	return Receive(context, memory, std::move(size)).IfThen(
+	return Receive(context, memory, std::move(size)).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
@@ -235,7 +235,7 @@ FNativeSocket::Receive(FIoContext& context, uint8* const& memory, size_t size
 	, EErrorCode& error_code)
 	const noexcept
 {
-	return Receive(context, memory, size).IfThen(
+	return Receive(context, memory, size).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
