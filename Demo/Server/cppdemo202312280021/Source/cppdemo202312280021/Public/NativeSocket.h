@@ -81,9 +81,9 @@ public:
 	// Synchronous Accept
 
 	[[nodiscard]]
-	SocketResult Accept() const noexcept;
+	FactoryResult Accept() const noexcept;
 	[[nodiscard]]
-	SocketResult Accept(FEndpoint& endpoint) const noexcept;
+	FactoryResult Accept(FEndpoint& endpoint) const noexcept;
 
 	// Asynchronous Accept
 
