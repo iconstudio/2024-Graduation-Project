@@ -19,7 +19,7 @@ void InitializeSocketSystemImpl(const ::FNativeSocket& fsocket) noexcept;
 
 FNativeSocket::FNativeSocket()
 noexcept
-	: FHandleObject()
+	: FHandleObject(INVALID_SOCKET)
 	, myProtocol(), myFamily()
 	//, IsAddressReusable(this, false, FNativeSocket::InternalSetAddressReusable)
 {}
