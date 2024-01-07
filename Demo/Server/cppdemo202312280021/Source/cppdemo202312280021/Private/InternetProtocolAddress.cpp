@@ -42,10 +42,8 @@ const
 {
 	FSerializedIpAddress result{};
 
-	TUniquePtr<FSerializedIpAddress> address_buffer = MakeUnique<FSerializedIpAddress>();
-
-	auto ptr = reinterpret_cast<char*>(address_buffer.Get());
-	::inet_pton((int)addressFamily, ptr, std::addressof(result));
+	auto addr = reinterpret_cast<char*>(const_cast<TCHAR*>(*ipAddress));
+	::inet_pton((int)addressFamily, addr, std::addressof(result));
 
 	return result;
 }
@@ -56,16 +54,29 @@ const noexcept
 {
 	FSerializedIpAddress result{};
 
-	TUniquePtr<FSerializedIpAddress> address_buffer = MakeUnique<FSerializedIpAddress>();
-
-	auto ptr = reinterpret_cast<char*>(address_buffer.Get());
-	if (1 != ::inet_pton((int)addressFamily, ptr, std::addressof(result)))
+	auto addr = reinterpret_cast<char*>(const_cast<TCHAR*>(*ipAddress));
+	if (1 != ::inet_pton((int)addressFamily, addr, std::addressof(result)))
 	{
 		return false;
 	}
 	else
 	{
 		out = std::move(result);
+		return true;
+	}
+}
+
+bool
+FIpAddress::TrySerialize(void* out)
+const noexcept
+{
+	auto addr = reinterpret_cast<char*>(const_cast<TCHAR*>(*ipAddress));
+	if (1 != ::inet_pton((int)addressFamily, addr, out))
+	{
+		return false;
+	}
+	else
+	{
 		return true;
 	}
 }

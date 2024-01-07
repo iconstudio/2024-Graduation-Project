@@ -21,6 +21,7 @@ public:
 	[[nodiscard]]
 	FSerializedIpAddress Serialize() const;
 	bool TrySerialize(FSerializedIpAddress& out) const noexcept;
+	bool TrySerialize(void* out) const noexcept;
 
 	[[nodiscard]]
 	constexpr FString& GetAddress() & noexcept
