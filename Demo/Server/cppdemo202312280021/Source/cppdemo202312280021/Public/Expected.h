@@ -114,6 +114,15 @@ public:
 	{}
 
 	template<typename U>
+	constexpr Expected(U&& value)
+		noexcept(std::is_nothrow_constructible_v<value_t, U&&>)
+		: myStorage(std::forward<U>(value))
+	{
+		static_assert((std::common_with<T, std::decay_t<U>> and net::arithmetical_with<T, U>)
+			or (not std::common_with<T, std::decay_t<U>> and std::constructible_from<T, U&&>));
+	}
+
+	template<typename U>
 	constexpr Expected(Unexpected<U>& error)
 		noexcept(std::is_nothrow_constructible_v<E, U&>)
 		: myStorage(error.myError)
