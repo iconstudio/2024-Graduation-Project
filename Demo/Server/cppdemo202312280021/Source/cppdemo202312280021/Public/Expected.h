@@ -3,7 +3,6 @@
 #include "Constraints.h"
 #include <Logging/LogMacros.h>
 #include <concepts>
-#include <expected>
 #include <type_traits>
 #include <variant>
 
@@ -13,11 +12,11 @@ template<typename E>
 struct CPPDEMO202312280021_API Unexpected
 {
 	// Copied from std::unexpected
-	static_assert(not std::is_object_v<E>, "E must be an object type. (N4928 [expected.un.general]/2)");
-	static_assert(not std::is_array_v<E>, "E must not be an array type. (N4928 [expected.un.general]/2)");
-	static_assert(not std::is_const_v<E>, "E must not be const. (N4928 [expected.un.general]/2)");
-	static_assert(not std::is_volatile_v<E>, "E must not be volatile. (N4928 [expected.un.general]/2)");
-	static_assert(not net::is_specialization_v<E, Unexpected>, "E must not be a specialization of unexpected. (N4928 [expected.un.general]/2)");
+	static_assert(std::is_object_v<E>, "E must be an object type. (N4928 [Expected.un.general]/2)");
+	static_assert(not std::is_array_v<E>, "E must not be an array type. (N4928 [Expected.un.general]/2)");
+	static_assert(not std::is_const_v<E>, "E must not be const. (N4928 [Expected.un.general]/2)");
+	static_assert(not std::is_volatile_v<E>, "E must not be volatile. (N4928 [Expected.un.general]/2)");
+	static_assert(not net::is_specialization_v<E, Unexpected>, "E must not be a specialization of unexpected. (N4928 [Expected.un.general]/2)");
 
 	constexpr Unexpected() noexcept(std::is_nothrow_default_constructible_v<E>) = default;
 	constexpr ~Unexpected() noexcept(std::is_nothrow_destructible_v<E>) = default;
