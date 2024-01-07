@@ -53,14 +53,15 @@ public:
 	SocketResult Bind(FEndpoint&& endpoint) const noexcept;
 	SocketResult BindHost(const uint16& port) const noexcept;
 
-	bool ReusableAddress() const noexcept;
-	void ReusableAddress(bool flag) noexcept;
 	bool Close() const noexcept;
 	bool Close(EErrorCode& error_code) const noexcept;
 	bool CloseAsync(FIoContext& context) const noexcept;
 	bool CloseAsync(FIoContext& context, EErrorCode& error_code) const noexcept;
 	bool CloseAsync(FIoContext* const context) const noexcept;
 	bool CloseAsync(FIoContext* const context, EErrorCode& error_code) const noexcept;
+
+	bool ReusableAddress() const noexcept;
+	void ReusableAddress(bool flag) noexcept;
 
 	// Opt-out Methods
 
