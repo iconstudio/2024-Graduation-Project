@@ -56,13 +56,6 @@ noexcept
 	InitializeSocketSystemImpl(*this);
 }
 
-bool
-FNativeSocket::IsAvailable()
-const noexcept
-{
-	return NULL != GetHandle();
-}
-
 FNativeSocket
 FNativeSocket::Create(const EIoSynchronousType& type, const EInternetProtocol& protocol, const EIpAddressFamily& family)
 noexcept
