@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreMinimal.h"
-#include <span>
 #include "HandleObject.h"
 #include "IpAddressFamily.h"
 #include "IoSynchronousType.h"
@@ -9,7 +8,8 @@
 #include "ErrorCode.h"
 #include "IoContext.h"
 #include "Expected.h"
-#include "IconerBlueprinter.h"
+#include "SocketOptions.h"
+#include <span>
 #include "NativeSocket.generated.h"
 
 UENUM(BlueprintType, Blueprintable)
