@@ -7,5 +7,5 @@ bool
 FNativeSocket::IsAvailable()
 const noexcept
 {
-	return GetHandke() != INVALID_SOCKET;
+	return GetHandle() != INVALID_SOCKET;
 }
