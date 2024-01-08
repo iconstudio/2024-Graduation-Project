@@ -12,7 +12,7 @@ FNativeSocket::SocketResult
 FNativeSocket::Receive(std::span<uint8> memory)
 const noexcept
 {
-	const int bytes = recv(GetHandle(), reinterpret_cast<char*>(memory.data()), static_cast<int>(memory.size_bytes()), 0);
+	int bytes = recv(GetHandle(), reinterpret_cast<char*>(memory.data()), static_cast<int>(memory.size_bytes()), 0);
 
 	if (SOCKET_ERROR != bytes)
 	{
@@ -28,7 +28,7 @@ FNativeSocket::SocketResult
 FNativeSocket::Receive(std::span<uint8> memory, size_t size)
 const noexcept
 {
-	const int bytes = recv(GetHandle(), reinterpret_cast<char*>(memory.data()), static_cast<int>(std::min(memory.size_bytes(), size)), 0);
+	int bytes = recv(GetHandle(), reinterpret_cast<char*>(memory.data()), static_cast<int>(std::min(memory.size_bytes(), size)), 0);
 
 	if (SOCKET_ERROR != bytes)
 	{
@@ -44,7 +44,7 @@ FNativeSocket::SocketResult
 FNativeSocket::Receive(uint8* const& memory, size_t size)
 const noexcept
 {
-	const int bytes = recv(GetHandle(), reinterpret_cast<char*>(memory), static_cast<int>(size), 0);
+	int bytes = recv(GetHandle(), reinterpret_cast<char*>(memory), static_cast<int>(size), 0);
 
 	if (SOCKET_ERROR != bytes)
 	{
@@ -110,16 +110,17 @@ const noexcept
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory.data())),
 	};
 
-	unsigned long bytes = 0;
 	unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
+
 	if (0 == ::WSARecv(GetHandle()
 		, std::addressof(buffer), 1
-		, std::addressof(bytes)
+		, std::addressof(transferred_bytes)
 		, std::addressof(flags)
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
-		return bytes;
+		return transferred_bytes;
 	}
 	else
 	{
@@ -143,16 +144,17 @@ FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory, size_t size
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory.data())),
 	};
 
-	unsigned long bytes = 0;
 	unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
+
 	if (0 == ::WSARecv(GetHandle()
 		, std::addressof(buffer), 1
-		, std::addressof(bytes)
+		, std::addressof(transferred_bytes)
 		, std::addressof(flags)
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
-		return bytes;
+		return transferred_bytes;
 	}
 	else
 	{
@@ -177,16 +179,17 @@ const noexcept
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory)),
 	};
 
-	unsigned long bytes = 0;
 	unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
+
 	if (0 == ::WSARecv(GetHandle()
 		, std::addressof(buffer), 1
-		, std::addressof(bytes)
+		, std::addressof(transferred_bytes)
 		, std::addressof(flags)
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
-		return bytes;
+		return transferred_bytes;
 	}
 	else
 	{
@@ -202,8 +205,7 @@ const noexcept
 }
 
 bool
-FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory
-	, EErrorCode& error_code)
+FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory, EErrorCode& error_code)
 	const noexcept
 {
 	return Receive(context, memory).Translate(
@@ -231,8 +233,7 @@ const noexcept
 }
 
 bool
-FNativeSocket::Receive(FIoContext& context, uint8* const& memory, size_t size
-	, EErrorCode& error_code)
+FNativeSocket::Receive(FIoContext& context, uint8* const& memory, size_t size, EErrorCode& error_code)
 	const noexcept
 {
 	return Receive(context, memory, size).Translate(
@@ -249,7 +250,8 @@ FSocketTask
 FNativeSocket::MakeReceiveTask(FIoContext& context, std::span<uint8> memory)
 const noexcept
 {
-	if (SocketResult sent = Receive(context, memory); not sent)
+	SocketResult sent = Receive(context, memory);
+	if (not sent)
 	{
 		co_return std::move(sent);
 	}
@@ -277,7 +279,8 @@ FSocketTask
 FNativeSocket::MakeReceiveTask(FIoContext& context, std::span<uint8> memory, size_t size)
 const noexcept
 {
-	if (SocketResult sent = Receive(context, memory, size); not sent)
+	SocketResult sent = Receive(context, memory, size);
+	if (not sent)
 	{
 		co_return std::move(sent);
 	}
@@ -305,7 +308,8 @@ FSocketTask
 FNativeSocket::MakeReceiveTask(FIoContext& context, uint8* const& memory, size_t size)
 const noexcept
 {
-	if (SocketResult sent = Receive(context, memory, size); not sent)
+	SocketResult sent = Receive(context, memory, size);
+	if (not sent)
 	{
 		co_return std::move(sent);
 	}
