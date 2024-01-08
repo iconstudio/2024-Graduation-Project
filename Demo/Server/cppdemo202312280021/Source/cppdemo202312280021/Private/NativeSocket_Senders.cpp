@@ -1,12 +1,12 @@
 #pragma comment(lib, "Ws2_32.lib")
+#include "NativeSocket.h"
+#include "IconerBlueprinter.h"
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <WinSock2.h>
 #include <cstddef>
 #include <utility>
 #include <coroutine>
-#include "IconerBlueprinter.h"
-#include "NativeSocket.h"
 
 FNativeSocket::SocketResult RawSend(const int64& sock, ::WSABUF& buffer) noexcept;
 FNativeSocket::SocketResult RawSendEx(const int64& sock, ::WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;

@@ -1,13 +1,13 @@
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment(lib, "mswsock.lib")
+#include "NativeSocket.h"
+#include "IconerBlueprinter.h"
 #define WIN32_LEAN_AND_MEAN
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <ws2ipdef.h>
 #include <MSWSock.h>
 #include <coroutine>
-#include "IconerBlueprinter.h"
-#include "NativeSocket.h"
 
 [[nodiscard]]
 ::SOCKADDR_STORAGE SerializeEndpoint(const FEndpoint& endpoint) noexcept;

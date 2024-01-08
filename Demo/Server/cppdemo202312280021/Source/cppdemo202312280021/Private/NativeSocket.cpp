@@ -1,10 +1,10 @@
 #pragma comment(lib, "Ws2_32.lib")
+#include "NativeSocket.h"
+#include "IconerBlueprinter.h"
 #include <WinSock2.h>
 #include <MSWSock.h>
 #include <utility>
 #include <mutex>
-#include "IconerBlueprinter.h"
-#include "NativeSocket.h"
 
 constinit static inline std::once_flag internalInitFlag{};
 constinit static inline ::WSAOVERLAPPED rioContext{};
