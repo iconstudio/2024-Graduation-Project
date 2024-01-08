@@ -50,9 +50,8 @@ const noexcept
 }
 
 bool
-FNativeSocket::Send(std::span<const uint8> memory
-	, EErrorCode& error_code)
-	const noexcept
+FNativeSocket::Send(std::span<const uint8> memory, EErrorCode& error_code)
+const noexcept
 {
 	return Send(memory).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
@@ -79,9 +78,8 @@ const noexcept
 }
 
 bool
-FNativeSocket::Send(const uint8* const& memory, size_t size
-	, EErrorCode& error_code)
-	const noexcept
+FNativeSocket::Send(const uint8* const& memory, size_t size, EErrorCode& error_code)
+const noexcept
 {
 	return Send(memory, size).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
@@ -133,9 +131,8 @@ const noexcept
 }
 
 bool
-FNativeSocket::Send(FIoContext& context, std::span<const uint8> memory
-	, EErrorCode& error_code)
-	const noexcept
+FNativeSocket::Send(FIoContext& context, std::span<const uint8> memory, EErrorCode& error_code)
+const noexcept
 {
 	return Send(context, memory).Translate(
 		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
@@ -180,12 +177,13 @@ FSocketTask
 FNativeSocket::MakeSendTask(FIoContext& context, std::span<const uint8> memory)
 const noexcept
 {
-	if (SocketResult sent = Send(context, memory); not sent)
+	SocketResult sent = Send(context, memory);
+	if (not sent)
 	{
 		co_return std::move(sent);
 	}
 
-	 unsigned long flags = 0;
+	unsigned long flags = 0;
 	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
@@ -208,7 +206,8 @@ FSocketTask
 FNativeSocket::MakeSendTask(FIoContext& context, std::span<const uint8> memory, size_t size)
 const noexcept
 {
-	if (SocketResult sent = Send(context, memory, size); not sent)
+	SocketResult sent = Send(context, memory, size);
+	if (not sent)
 	{
 		co_return std::move(sent);
 	}
@@ -236,7 +235,8 @@ FSocketTask
 FNativeSocket::MakeSendTask(FIoContext& context, const uint8* const& memory, size_t size)
 const noexcept
 {
-	if (SocketResult sent = Send(context, memory, size); not sent)
+	SocketResult sent = Send(context, memory, size);
+	if (not sent)
 	{
 		co_return std::move(sent);
 	}
@@ -316,7 +316,9 @@ RawSend(const int64& sock
 	, WSABUF& buffer)
 	noexcept
 {
-	if (unsigned long bytes = 0; 0 == ::WSASend(static_cast<uintptr_t>(sock)
+	unsigned long bytes = 0;
+
+	if (0 == ::WSASend(static_cast<uintptr_t>(sock)
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, 0
@@ -337,7 +339,9 @@ RawSendEx(const int64& sock
 	, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine)
 	noexcept
 {
-	if (unsigned long bytes = 0; 0 == ::WSASend(static_cast<uintptr_t>(sock)
+	unsigned long bytes = 0;
+
+	if (0 == ::WSASend(static_cast<uintptr_t>(sock)
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, 0
@@ -348,7 +352,9 @@ RawSendEx(const int64& sock
 	}
 	else
 	{
-		if (EErrorCode error = UNetworkUtility::AcquireNetworkError(); error != EErrorCode::PendedIoOperation)
+		EErrorCode error = UNetworkUtility::AcquireNetworkError();
+
+		if (error != EErrorCode::PendedIoOperation)
 		{
 			return Unexpected(std::move(error));
 		}
