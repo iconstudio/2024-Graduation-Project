@@ -16,7 +16,7 @@ const noexcept
 		, reinterpret_cast<char*>(memory.data()), static_cast<int>(memory.size_bytes())
 		, 0); SOCKET_ERROR != bytes)
 	{
-		return bytes;
+		return static_cast<uint32>(bytes);
 	}
 	else
 	{
@@ -32,7 +32,7 @@ const noexcept
 		, reinterpret_cast<char*>(memory.data()), static_cast<int>(std::min(memory.size_bytes(), size))
 		, 0); SOCKET_ERROR != bytes)
 	{
-		return bytes;
+		return static_cast<uint32>(bytes);
 	}
 	else
 	{
@@ -48,7 +48,7 @@ const noexcept
 		, reinterpret_cast<char*>(memory), static_cast<int>(size)
 		, 0); SOCKET_ERROR != bytes)
 	{
-		return static_cast<unsigned int>(bytes);
+		return static_cast<uint32>(bytes);
 	}
 	else
 	{
