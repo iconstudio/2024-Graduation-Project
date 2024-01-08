@@ -1,30 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
-#include <HAL/Runnable.h>
 #include "ErrorCode.h"
 #include "Expected.h"
 #include <coroutine>
 #include "SocketTask.generated.h"
-
-USTRUCT(BlueprintType, Blueprintable, meta = (DisplayName = "Socket Job Instance"))
-struct [[nodiscard]] CPPDEMO202312280021_API USocketJob : public FRunnable
-{
-	GENERATED_BODY()
-
-public:
-	USocketJob();
-	~USocketJob();
-
-	virtual bool Init() override
-	{
-		return true;
-	}
-
-	virtual uint32 Run() override
-	{
-		return 0;
-	}
-};
 
 USTRUCT(BlueprintType, Blueprintable, meta = (DisplayName = "Socket Task Instance"))
 struct [[nodiscard]] CPPDEMO202312280021_API FSocketTask
@@ -134,11 +113,9 @@ private:
 	const static inline std::runtime_error reservedError{ "Cannot acquire a value from the null promise" };
 
 	handle_type myHandle;
-	FRunnableThread* myWorker;
 };
 
 namespace net
 {
-	using Job = USocketJob;
 	using Task = FSocketTask;
 }
