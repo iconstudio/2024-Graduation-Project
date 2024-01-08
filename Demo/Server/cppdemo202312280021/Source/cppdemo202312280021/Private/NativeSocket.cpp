@@ -56,6 +56,149 @@ noexcept
 	InitializeSocketSystemImpl(*this);
 }
 
+FNativeSocket::SocketResult
+FNativeSocket::Open()
+const noexcept
+{
+	const int open = ::listen(GetHandle(), SOMAXCONN);
+	if (SOCKET_ERROR == open)
+	{
+		return Unexpected(UNetworkUtility::AcquireNetworkError());
+	}
+
+	return 0;
+}
+
+bool
+FNativeSocket::Close()
+const noexcept
+{
+	if (IsAvailable())
+	{
+		if (ReusableAddress())
+		{
+			return (1 == ::fnTransmitFile(GetHandle(), nullptr, 0, 0, nullptr, nullptr, TF_DISCONNECT | TF_REUSE_SOCKET));
+		}
+		else
+		{
+			return (0 == ::closesocket(GetHandle()));
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool
+FNativeSocket::Close(EErrorCode& error_code)
+const noexcept
+{
+	if (IsAvailable())
+	{
+		if (ReusableAddress())
+		{
+			if (1 == ::fnTransmitFile(GetHandle(), nullptr, 0, 0, nullptr, nullptr, TF_DISCONNECT | TF_REUSE_SOCKET))
+			{
+				return true;
+			}
+			else
+			{
+				error_code = UNetworkUtility::AcquireNetworkError();
+				return false;
+			}
+		}
+		else
+		{
+			if (0 == ::closesocket(myHandle))
+			{
+				return true;
+			}
+			else
+			{
+				error_code = UNetworkUtility::AcquireNetworkError();
+				return false;
+			}
+		}
+	}
+	else
+	{
+		error_code = EErrorCode::NotASocket;
+		return false;
+	}
+}
+
+bool
+FNativeSocket::CloseAsync(FIoContext& context)
+const noexcept
+{
+	return CloseAsync(std::addressof(context));
+}
+
+bool
+FNativeSocket::CloseAsync(FIoContext& context, EErrorCode& error_code)
+const noexcept
+{
+	return CloseAsync(std::addressof(context), error_code);
+}
+
+bool
+FNativeSocket::CloseAsync(FIoContext* const context)
+const noexcept
+{
+	if (IsAvailable())
+	{
+		auto* ctx = reinterpret_cast<::LPWSAOVERLAPPED>(context);
+		if (ReusableAddress())
+		{
+			return (1 == ::fnTransmitFile(myHandle, nullptr, 0, 0, ctx, nullptr, TF_DISCONNECT | TF_REUSE_SOCKET));
+		}
+		else
+		{
+			return (1 == ::fnTransmitFile(myHandle, nullptr, 0, 0, ctx, nullptr, TF_DISCONNECT));
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool
+FNativeSocket::CloseAsync(FIoContext* const context, EErrorCode& error_code)
+const noexcept
+{
+	if (IsAvailable())
+	{
+		if (CloseAsync(context))
+		{
+			return true;
+		}
+		else
+		{
+			error_code = UNetworkUtility::AcquireNetworkError();
+			return false;
+		}
+	}
+	else
+	{
+		error_code = EErrorCode::NotASocket;
+		return false;
+	}
+}
+
+bool
+FNativeSocket::ReusableAddress()
+const noexcept
+{
+	return GetAddressReusable();
+}
+
+void FNativeSocket::ReusableAddress(bool flag) noexcept
+{
+	SetAddressReusable(flag);
+}
+
 FNativeSocket
 FNativeSocket::Create(const EIoSynchronousType& type, const EInternetProtocol& protocol, const EIpAddressFamily& family)
 noexcept
