@@ -16,3 +16,8 @@ enum class [[nodiscard]] ESocketOptions
 	SO_KEEPALIVE = 0x0008 UMETA(DisplayName = "Keep Alive"),
 	SO_UPDATE_ACCEPT_CONTEXT = 0x700B UMETA(DisplayName = "Update"), // MSWSock.h
 };
+
+namespace net
+{
+	using SocketOptions = ::ESocketOptions;
+}

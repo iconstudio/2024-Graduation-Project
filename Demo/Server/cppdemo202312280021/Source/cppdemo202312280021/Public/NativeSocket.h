@@ -40,12 +40,7 @@ public:
 
 	// Opt-in Interfaces
 
-	SocketResult Bind(const FIpAddress& address, const uint16& port) const noexcept;
-	SocketResult Bind(FIpAddress&& address, const uint16& port) const noexcept;
-	SocketResult Bind(const FEndpoint& endpoint) const noexcept;
-	SocketResult Bind(FEndpoint&& endpoint) const noexcept;
-	SocketResult BindHost(const uint16& port) const noexcept;
-
+	SocketResult Open() const noexcept;
 	bool Close() const noexcept;
 	bool Close(EErrorCode& error_code) const noexcept;
 	bool CloseAsync(FIoContext& context) const noexcept;
@@ -53,12 +48,17 @@ public:
 	bool CloseAsync(FIoContext* const context) const noexcept;
 	bool CloseAsync(FIoContext* const context, EErrorCode& error_code) const noexcept;
 
+	SocketResult Bind(const FIpAddress& address, const uint16& port) const noexcept;
+	SocketResult Bind(FIpAddress&& address, const uint16& port) const noexcept;
+	SocketResult Bind(const FEndpoint& endpoint) const noexcept;
+	SocketResult Bind(FEndpoint&& endpoint) const noexcept;
+	SocketResult BindHost(const uint16& port) const noexcept;
+
 	bool ReusableAddress() const noexcept;
 	void ReusableAddress(bool flag) noexcept;
 
 	// Opt-out Methods
 
-	SocketResult Open() const noexcept;
 	SocketResult Connect(const FIpAddress& address, const uint16& port) const noexcept;
 	SocketResult Connect(FIpAddress&& address, const uint16& port) const noexcept;
 	SocketResult Connect(const FEndpoint& endpoint) const noexcept;
@@ -232,5 +232,4 @@ namespace net
 {
 	using NativeSocket = ::FNativeSocket;
 	using InternetProtocol = ::EInternetProtocol;
-	using SocketOptions = ::ESocketOptions;
 }
