@@ -254,7 +254,7 @@ const noexcept
 		co_return std::move(sent);
 	}
 
-	static unsigned long flags = 0;
+	unsigned long flags = 0;
 	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
@@ -282,7 +282,7 @@ const noexcept
 		co_return std::move(sent);
 	}
 
-	static unsigned long flags = 0;
+	unsigned long flags = 0;
 	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
@@ -310,7 +310,7 @@ const noexcept
 		co_return std::move(sent);
 	}
 
-	static unsigned long flags = 0;
+	unsigned long flags = 0;
 	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
