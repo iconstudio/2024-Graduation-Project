@@ -12,9 +12,9 @@ FNativeSocket::SocketResult
 FNativeSocket::Receive(std::span<uint8> memory)
 const noexcept
 {
-	if (int bytes = ::recv(GetHandle()
-		, reinterpret_cast<char*>(memory.data()), static_cast<int>(memory.size_bytes())
-		, 0); SOCKET_ERROR != bytes)
+	const int bytes = recv(GetHandle(), reinterpret_cast<char*>(memory.data()), static_cast<int>(memory.size_bytes()), 0);
+
+	if (SOCKET_ERROR != bytes)
 	{
 		return static_cast<uint32>(bytes);
 	}
@@ -28,9 +28,9 @@ FNativeSocket::SocketResult
 FNativeSocket::Receive(std::span<uint8> memory, size_t size)
 const noexcept
 {
-	if (int bytes = ::recv(GetHandle()
-		, reinterpret_cast<char*>(memory.data()), static_cast<int>(std::min(memory.size_bytes(), size))
-		, 0); SOCKET_ERROR != bytes)
+	const int bytes = recv(GetHandle(), reinterpret_cast<char*>(memory.data()), static_cast<int>(std::min(memory.size_bytes(), size)), 0);
+
+	if (SOCKET_ERROR != bytes)
 	{
 		return static_cast<uint32>(bytes);
 	}
@@ -44,9 +44,9 @@ FNativeSocket::SocketResult
 FNativeSocket::Receive(uint8* const& memory, size_t size)
 const noexcept
 {
-	if (int bytes = ::recv(GetHandle()
-		, reinterpret_cast<char*>(memory), static_cast<int>(size)
-		, 0); SOCKET_ERROR != bytes)
+	const int bytes = recv(GetHandle(), reinterpret_cast<char*>(memory), static_cast<int>(size), 0);
+
+	if (SOCKET_ERROR != bytes)
 	{
 		return static_cast<uint32>(bytes);
 	}
@@ -104,14 +104,14 @@ FNativeSocket::SocketResult
 FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory)
 const noexcept
 {
-	::WSABUF buffer
+	WSABUF buffer
 	{
-		.len = static_cast<::ULONG>(memory.size_bytes()),
+		.len = static_cast<unsigned long>(memory.size_bytes()),
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory.data())),
 	};
 
-	::DWORD bytes = 0;
-	::DWORD flags = 0;
+	unsigned long bytes = 0;
+	unsigned long flags = 0;
 	if (0 == ::WSARecv(GetHandle()
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
@@ -137,14 +137,14 @@ const noexcept
 FNativeSocket::SocketResult
 FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory, size_t size) const noexcept
 {
-	::WSABUF buffer
+	WSABUF buffer
 	{
-		.len = static_cast<::ULONG>(std::min(memory.size_bytes(), size)),
+		.len = static_cast<unsigned long>(std::min(memory.size_bytes(), size)),
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory.data())),
 	};
 
-	::DWORD bytes = 0;
-	::DWORD flags = 0;
+	unsigned long bytes = 0;
+	unsigned long flags = 0;
 	if (0 == ::WSARecv(GetHandle()
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
@@ -171,14 +171,14 @@ FNativeSocket::SocketResult
 FNativeSocket::Receive(FIoContext& context, uint8* const& memory, size_t size)
 const noexcept
 {
-	::WSABUF buffer
+	WSABUF buffer
 	{
-		.len = static_cast<::ULONG>(size),
+		.len = static_cast<unsigned long>(size),
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory)),
 	};
 
-	::DWORD bytes = 0;
-	::DWORD flags = 0;
+	unsigned long bytes = 0;
+	unsigned long flags = 0;
 	if (0 == ::WSARecv(GetHandle()
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
@@ -254,8 +254,8 @@ const noexcept
 		co_return std::move(sent);
 	}
 
-	static ::DWORD flags = 0;
-	::DWORD transferred_bytes = 0;
+	static unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
@@ -282,8 +282,8 @@ const noexcept
 		co_return std::move(sent);
 	}
 
-	static ::DWORD flags = 0;
-	::DWORD transferred_bytes = 0;
+	static unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
@@ -310,8 +310,8 @@ const noexcept
 		co_return std::move(sent);
 	}
 
-	static ::DWORD flags = 0;
-	::DWORD transferred_bytes = 0;
+	static unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))

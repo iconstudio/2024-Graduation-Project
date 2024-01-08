@@ -8,16 +8,16 @@
 #include <utility>
 #include <coroutine>
 
-FNativeSocket::SocketResult RawSend(const int64& sock, ::WSABUF& buffer) noexcept;
-FNativeSocket::SocketResult RawSendEx(const int64& sock, ::WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;
+FNativeSocket::SocketResult RawSend(const int64& sock, WSABUF& buffer) noexcept;
+FNativeSocket::SocketResult RawSendEx(const int64& sock, WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;
 
 FNativeSocket::SocketResult
 FNativeSocket::Send(std::span<const uint8> memory)
 const noexcept
 {
-	::WSABUF buffer
+	WSABUF buffer
 	{
-		.len = static_cast<::ULONG>(memory.size_bytes()),
+		.len = static_cast<unsigned long>(memory.size_bytes()),
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory.data())),
 	};
 
@@ -27,9 +27,9 @@ const noexcept
 FNativeSocket::SocketResult
 FNativeSocket::Send(std::span<const uint8> memory, size_t size) const noexcept
 {
-	::WSABUF buffer
+	WSABUF buffer
 	{
-		.len = static_cast<::ULONG>(std::min(memory.size_bytes(), size)),
+		.len = static_cast<unsigned long>(std::min(memory.size_bytes(), size)),
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory.data())),
 	};
 
@@ -40,9 +40,9 @@ FNativeSocket::SocketResult
 FNativeSocket::Send(const uint8* const& memory, size_t size)
 const noexcept
 {
-	::WSABUF buffer
+	WSABUF buffer
 	{
-		.len = static_cast<::ULONG>(size),
+		.len = static_cast<unsigned long>(size),
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory)),
 	};
 
@@ -97,9 +97,9 @@ FNativeSocket::SocketResult
 FNativeSocket::Send(FIoContext& context, std::span<const uint8> memory)
 const noexcept
 {
-	::WSABUF buffer
+	WSABUF buffer
 	{
-		.len = static_cast<::ULONG>(memory.size_bytes()),
+		.len = static_cast<unsigned long>(memory.size_bytes()),
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory.data())),
 	};
 
@@ -110,9 +110,9 @@ FNativeSocket::SocketResult
 FNativeSocket::Send(FIoContext& context, std::span<const uint8> memory, size_t size)
 const noexcept
 {
-	::WSABUF buffer
+	WSABUF buffer
 	{
-		.len = static_cast<::ULONG>(std::min(memory.size_bytes(), size)),
+		.len = static_cast<unsigned long>(std::min(memory.size_bytes(), size)),
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory.data())),
 	};
 
@@ -123,9 +123,9 @@ FNativeSocket::SocketResult
 FNativeSocket::Send(FIoContext& context, const uint8* const& memory, size_t size)
 const noexcept
 {
-	::WSABUF buffer
+	WSABUF buffer
 	{
-		.len = static_cast<::ULONG>(size),
+		.len = static_cast<unsigned long>(size),
 		.buf = reinterpret_cast<char*>(const_cast<uint8*>(memory)),
 	};
 
@@ -185,8 +185,8 @@ const noexcept
 		co_return std::move(sent);
 	}
 
-	static ::DWORD flags = 0;
-	::DWORD transferred_bytes = 0;
+	 unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
@@ -213,8 +213,8 @@ const noexcept
 		co_return std::move(sent);
 	}
 
-	static ::DWORD flags = 0;
-	::DWORD transferred_bytes = 0;
+	unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
@@ -241,8 +241,8 @@ const noexcept
 		co_return std::move(sent);
 	}
 
-	static ::DWORD flags = 0;
-	::DWORD transferred_bytes = 0;
+	unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
@@ -313,10 +313,10 @@ const noexcept
 
 FNativeSocket::SocketResult
 RawSend(const int64& sock
-	, ::WSABUF& buffer)
+	, WSABUF& buffer)
 	noexcept
 {
-	if (::DWORD bytes = 0; 0 == ::WSASend(static_cast<uintptr_t>(sock)
+	if (unsigned long bytes = 0; 0 == ::WSASend(static_cast<uintptr_t>(sock)
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, 0
@@ -332,12 +332,12 @@ RawSend(const int64& sock
 
 FNativeSocket::SocketResult
 RawSendEx(const int64& sock
-	, ::WSABUF& buffer
+	, WSABUF& buffer
 	, void* context
 	, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine)
 	noexcept
 {
-	if (::DWORD bytes = 0; 0 == ::WSASend(static_cast<uintptr_t>(sock)
+	if (unsigned long bytes = 0; 0 == ::WSASend(static_cast<uintptr_t>(sock)
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, 0
