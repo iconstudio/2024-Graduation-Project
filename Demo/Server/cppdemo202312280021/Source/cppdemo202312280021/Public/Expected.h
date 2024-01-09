@@ -400,7 +400,7 @@ public:
 
 	template<typename U>
 	[[nodiscard]]
-	constexpr const T& ValueOr(U&& alternative_value) const noexcept
+	constexpr T ValueOr(U&& alternative_value) const noexcept
 	{
 		if (std::holds_alternative<T>(myStorage))
 		{
@@ -414,7 +414,7 @@ public:
 
 	template<typename U>
 	[[nodiscard]]
-	constexpr const E& ErrorOr(U&& alternative_value) const noexcept
+	constexpr E ErrorOr(U&& alternative_value) const noexcept
 	{
 		if (std::holds_alternative<E>(myStorage))
 		{
