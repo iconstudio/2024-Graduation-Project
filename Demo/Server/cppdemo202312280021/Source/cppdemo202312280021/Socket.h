@@ -20,7 +20,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditInstanceOnly)
+	UPROPERTY(EditInstanceOnly, meta = (DisplayName = "Socket"))
 	FNativeSocket myHandle;
 };
 

@@ -209,9 +209,9 @@ protected:
 public:
 	// Fields
 
-	UPROPERTY(NoClear, VisibleInstanceOnly, BlueprintReadOnly)
+	UPROPERTY(NoClear, VisibleInstanceOnly, BlueprintReadOnly, meta = (DisplayName = "Internet Protocol"))
 	EInternetProtocol myProtocol;
-	UPROPERTY(NoClear, VisibleInstanceOnly, BlueprintReadOnly)
+	UPROPERTY(NoClear, VisibleInstanceOnly, BlueprintReadOnly, meta = (DisplayName = "Internet Address Family"))
 	EIpAddressFamily myFamily;
 	//UPROPERTY(NoClear, VisibleAnywhere, BlueprintGetter = GetAddressReusable)
 	//bool IsAddressReusable;
