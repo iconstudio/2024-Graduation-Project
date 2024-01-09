@@ -3,23 +3,166 @@
 USocket::USocket()
 	: myHandle()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
+USocket::~USocket()
+noexcept
+{
+	if (myHandle.IsAvailable())
+	{
+		myHandle.Close();
+	}
+}
+
+bool
+USocket::Connect(const FEndpoint& endpoint)
+const noexcept
+{
+	if (myHandle.IsAvailable())
+	{
+		return myHandle.Connect(endpoint);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool
+USocket::ConnectTo(FStringView ip_address, uint16 port)
+const noexcept
+{
+	if (myHandle.IsAvailable())
+	{
+		return myHandle.Connect(FIpAddress{ myHandle.myFamily, ip_address }, port);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool
+USocket::Listen()
+const noexcept
+{
+	if (myHandle.IsAvailable())
+	{
+		return myHandle.Open().HasValue();
+	}
+	else
+	{
+		return false;
+	}
+}
+
+FNativeSocket
+USocket::Accept()
+const noexcept
+{
+	if (myHandle.IsAvailable())
+	{
+		return myHandle.Accept().ValueOr(FNativeSocket{});
+	}
+	else
+	{
+		return {};
+	}
+}
+
+bool
+USocket::ReserveAccept(FIoContext& context, FNativeSocket& native_socket)
+const noexcept
+{
+	if (myHandle.IsAvailable())
+	{
+		return myHandle.ReserveAccept(context, native_socket).HasValue();
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool
+USocket::ReserveAccept(FIoContext& context, USocket* const socket_component)
+const noexcept
+{
+	if (myHandle.IsAvailable())
+	{
+		return myHandle.ReserveAccept(context, socket_component->myHandle).HasValue();
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool
+USocket::Disconnect()
+const noexcept
+{
+	if (myHandle.IsAvailable())
+	{
+		return myHandle.Close();
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool
+USocket::DisconnectAsync(FIoContext& context)
+const noexcept
+{
+	if (myHandle.IsAvailable())
+	{
+		return myHandle.CloseAsync(context);
+	}
+	else
+	{
+		return false;
+	}
+}
+
+FNativeSocket&
+USocket::GetNativeHandle()
+noexcept
+{
+	return myHandle;
+}
+
+const
+FNativeSocket& USocket::GetNativeHandle()
+const noexcept
+{
+	return myHandle;
+}
 
 // Called when the game starts
-void USocket::BeginPlay()
+void
+USocket::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
+void
+USocket::SetReuseAddress(bool flag)
+noexcept
+{
+	myHandle.ReusableAddress(flag);
+
+	DoesReuseAddress = flag;
+}
+
+bool
+USocket::GetReuseAddress()
+const noexcept
+{
+	return myHandle.ReusableAddress();
+}
 
 // Called every frame
 void USocket::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
