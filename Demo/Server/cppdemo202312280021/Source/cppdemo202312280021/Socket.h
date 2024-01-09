@@ -1,16 +1,17 @@
 #pragma once
-#include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "CoreMinimal.h"
 #include "NativeSocket.h"
 #include "Socket.generated.h"
 
-UCLASS(BlueprintType, Blueprintable, Abstract, meta = (DisplayName = "Unreal Engine Socket Interface Component"), ClassGroup = (Iconer))
+UCLASS(BlueprintType, Blueprintable, Abstract, meta = (DisplayName = "Socket Interface Component"), ClassGroup = (Iconer))
 class CPPDEMO202312280021_API USocket : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	USocket();
+	~USocket() noexcept;
 
 	UFUNCTION()
 	bool Connect(const FEndpoint& endpoint) const noexcept;
@@ -21,29 +22,28 @@ public:
 	UFUNCTION()
 	FNativeSocket Accept() const noexcept;
 	UFUNCTION()
-	FNativeSocket ReserveAccept(const FNativeSocket&) const noexcept;
+	bool ReserveAccept(FIoContext& context, FNativeSocket& native_socket) const noexcept;
 	UFUNCTION()
-	FNativeSocket ReserveAccept(USocket& socket_component) const noexcept;
+	bool ReserveAccept(FIoContext& context, USocket* socket_component) const noexcept;
 	UFUNCTION()
-	FNativeSocket ReserveAccept(USocket* const socket_component) const noexcept;
+	bool Disconnect() const noexcept;
 	UFUNCTION()
-	bool Disconnect() const noexcept
+	bool DisconnectAsync(FIoContext& context) const noexcept;
 
 	UFUNCTION()
-	FNativeSocket& GetNativeHandle() noexcept
+	FNativeSocket& GetNativeHandle() noexcept;
 	UFUNCTION()
-	const FNativeSocket& GetNativeHandle() const noexcept
+	const FNativeSocket& GetNativeHandle() const noexcept;
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float dt, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
+	virtual void BeginPlay() override;
+
 	UFUNCTION(BlueprintSetter)
-	void SetReuseAddress(bool) noexcept;
+	void SetReuseAddress(bool flag) noexcept;
 	UFUNCTION(BlueprintGetter)
 	bool GetReuseAddress() const noexcept;
-	UFUNCTION()
-
-	virtual void BeginPlay() override;
 
 	UPROPERTY(EditInstanceOnly, meta = (DisplayName = "Socket"))
 	FNativeSocket myHandle;
