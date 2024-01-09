@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "ErrorCode.h"
 #include "Expected.h"
+#include <concepts>
 #include <coroutine>
 #include "SocketTask.generated.h"
 
@@ -26,8 +27,8 @@ public:
 			return FSocketTask(handle_type::from_promise(*this));
 		}
 
-		template<typename U>
-		void return_value(U&& value)
+		template<assignable_from<result_type> U>
+		void return_value(U&& value) noexcept(std::is_nothrow_assignable<result_type, U>
 		{
 			myValue = std::forward<U>(value);
 		}
