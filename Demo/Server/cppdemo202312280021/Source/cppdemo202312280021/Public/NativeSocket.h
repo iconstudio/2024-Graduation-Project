@@ -85,6 +85,8 @@ public:
 	SocketResult ReserveAccept(FIoContext& context, FNativeSocket& client, std::span<uint8> accept_buffer) const;
 	SocketResult ReserveAccept(FIoContext* const context, FNativeSocket& client) const;
 	SocketResult ReserveAccept(FIoContext* const context, FNativeSocket& client, std::span<uint8> accept_buffer) const;
+	SocketResult ReserveAccept(FIoContext& context, FNativeSocket& client, const TSharedPtr<uint8>& accept_buffer) const;
+	SocketResult ReserveAccept(FIoContext* const context, FNativeSocket& client, const TSharedPtr<uint8>& accept_buffer) const;
 
 	// Synchronous Send
 
@@ -94,6 +96,8 @@ public:
 	bool Send(std::span<const uint8> memory, EErrorCode& error_code) const noexcept;
 	bool Send(std::span<const uint8> memory, size_t size, EErrorCode& error_code) const noexcept;
 	bool Send(_In_reads_bytes_(size)const uint8* const& memory, size_t size, EErrorCode& error_code) const noexcept;
+	SocketResult Send(const TSharedPtr<uint8>& memory, size_t size) const noexcept;
+	bool Send(const TSharedPtr<uint8>& memory, size_t size, EErrorCode& error_code) const noexcept;
 
 	// Maybe asynchronous Send
 
@@ -103,6 +107,8 @@ public:
 	bool Send(FIoContext& context, std::span<const uint8> memory, EErrorCode& error_code) const noexcept;
 	bool Send(FIoContext& context, std::span<const uint8> memory, size_t size, EErrorCode& error_code) const noexcept;
 	bool Send(FIoContext& context, _In_reads_bytes_(size)const uint8* const& memory, size_t size, EErrorCode& error_code) const noexcept;
+	SocketResult Send(FIoContext& context, const TSharedPtr<uint8>& memory, size_t size) const noexcept;
+	bool Send(FIoContext& context, const TSharedPtr<uint8>& memory, size_t size, EErrorCode& error_code) const noexcept;
 
 	// Synchronous Receive
 
@@ -112,6 +118,8 @@ public:
 	bool Receive(std::span<uint8> memory, EErrorCode& error_code) const noexcept;
 	bool Receive(std::span<uint8> memory, size_t size, EErrorCode& error_code) const noexcept;
 	bool Receive(_In_reads_bytes_(size)uint8* const& memory, size_t size, EErrorCode& error_code) const noexcept;
+	SocketResult Receive(const TSharedPtr<uint8>& memory) const noexcept;
+	bool Receive(const TSharedPtr<uint8>& memory, EErrorCode& error_code) const noexcept;
 
 	// Maybe asynchronous Receive
 
@@ -121,6 +129,8 @@ public:
 	bool Receive(FIoContext& context, std::span<uint8> memory, EErrorCode& error_code) const noexcept;
 	bool Receive(FIoContext& context, std::span<uint8> memory, size_t size, EErrorCode& error_code) const noexcept;
 	bool Receive(FIoContext& context, _In_reads_bytes_(size)uint8* const& memory, size_t size, EErrorCode& error_code) const noexcept;
+	SocketResult Receive(FIoContext& context, const TSharedPtr<uint8>& memory) const noexcept;
+	bool Receive(FIoContext& context, const TSharedPtr<uint8>& memory, EErrorCode& error_code) const noexcept;
 
 	// Asynchronous Send & Receive
 
@@ -131,25 +141,28 @@ public:
 	[[nodiscard]]
 	FSocketTask MakeSendTask(FIoContext& context, const _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
 	[[nodiscard]]
+	FSocketTask MakeSendTask(FIoContext& context, const TSharedPtr<uint8>& memory, size_t size) const noexcept;
+	[[nodiscard]]
 	FSocketTask MakeReceiveTask(FIoContext& context, std::span<uint8> memory) const noexcept;
 	[[nodiscard]]
 	FSocketTask MakeReceiveTask(FIoContext& context, std::span<uint8> memory, size_t size) const noexcept;
 	[[nodiscard]]
 	FSocketTask MakeReceiveTask(FIoContext& context, _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
+	[[nodiscard]]
+	FSocketTask MakeReceiveTask(FIoContext& context, const TSharedPtr<uint8>& memory, size_t size) const noexcept;
 
 	[[nodiscard]]
-	FSocketTask MakeSendTask(const std::shared_ptr<FIoContext>& context, std::span<const uint8> memory) const noexcept;
+	FSocketTask MakeSendTask(const TSharedPtr<FIoContext>& context, std::span<const uint8> memory) const noexcept;
 	[[nodiscard]]
-	FSocketTask MakeSendTask(const std::shared_ptr<FIoContext>& context, std::span<const uint8> memory, size_t size) const noexcept;
+	FSocketTask MakeSendTask(const TSharedPtr<FIoContext>& context, std::span<const uint8> memory, size_t size) const noexcept;
 	[[nodiscard]]
-	FSocketTask MakeSendTask(const std::shared_ptr<FIoContext>& context, const _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
+	FSocketTask MakeSendTask(const TSharedPtr<FIoContext>& context, const _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
 	[[nodiscard]]
-
-	FSocketTask MakeReceiveTask(const std::shared_ptr<FIoContext>& context, std::span<uint8> memory) const noexcept;
+	FSocketTask MakeReceiveTask(const TSharedPtr<FIoContext>& context, std::span<uint8> memory) const noexcept;
 	[[nodiscard]]
-	FSocketTask MakeReceiveTask(const std::shared_ptr<FIoContext>& context, std::span<uint8> memory, size_t size) const noexcept;
+	FSocketTask MakeReceiveTask(const TSharedPtr<FIoContext>& context, std::span<uint8> memory, size_t size) const noexcept;
 	[[nodiscard]]
-	FSocketTask MakeReceiveTask(const std::shared_ptr<FIoContext>& context, _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
+	FSocketTask MakeReceiveTask(const TSharedPtr<FIoContext>& context, _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
 
 	// Asynchronous Send & Receive
 
@@ -160,11 +173,15 @@ public:
 	[[nodiscard]]
 	FSocketTask AsyncSend(FIoContext& context, const _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
 	[[nodiscard]]
+	FSocketTask AsyncSend(FIoContext& context, const TSharedPtr<FIoContext>& memory, size_t size) const noexcept;
+	[[nodiscard]]
 	FSocketTask AsyncRecv(FIoContext& context, std::span<uint8> memory) const noexcept;
 	[[nodiscard]]
 	FSocketTask AsyncRecv(FIoContext& context, std::span<uint8> memory, size_t size) const noexcept;
 	[[nodiscard]]
 	FSocketTask AsyncRecv(FIoContext& context, _In_reads_bytes_(size) uint8* const& memory, size_t size) const noexcept;
+	[[nodiscard]]
+	FSocketTask AsyncRecv(FIoContext& context, const TSharedPtr<FIoContext>&, size_t size) const noexcept;
 
 	// Observers
 
