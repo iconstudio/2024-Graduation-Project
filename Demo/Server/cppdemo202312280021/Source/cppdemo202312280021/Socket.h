@@ -15,8 +15,8 @@ public:
 
 	UFUNCTION()
 	bool Connect(const FEndpoint& endpoint) const noexcept;
-	UFUNCTION()
-	bool ConnectTo(FStringView ip_address, uint16 port) const noexcept;
+	//UFUNCTION()
+	//bool ConnectTo(const TCHAR* ip_address, uint16 port) const noexcept;
 	UFUNCTION()
 	bool Listen() const noexcept;
 	UFUNCTION()
