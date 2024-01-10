@@ -101,6 +101,55 @@ const noexcept
 }
 
 FNativeSocket::SocketResult
+FNativeSocket::Receive(const TSharedPtr<uint8>& memory, size_t size)
+const noexcept
+{
+	WSABUF buffer
+	{
+		.len = static_cast<unsigned long>(size),
+		.buf = reinterpret_cast<char*>(memory.Get()),
+	};
+
+	unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
+
+	if (0 == WSARecv(GetHandle()
+		, std::addressof(buffer), 1
+		, std::addressof(transferred_bytes)
+		, std::addressof(flags)
+		, nullptr
+		, nullptr))
+	{
+		return transferred_bytes;
+	}
+	else
+	{
+		if (auto error = UNetworkUtility::AcquireNetworkError(); error != EErrorCode::PendedIoOperation)
+		{
+			return Unexpected(std::move(error));
+		}
+		else
+		{
+			return 0U;
+		}
+	}
+}
+
+bool
+FNativeSocket::Receive(const TSharedPtr<uint8>& memory, size_t size, EErrorCode& error_code)
+const noexcept
+{
+	return Receive(memory, size).Translate(
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
+		return true;
+	}).Else(
+		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
+		error_code = std::move(tr_error_code);
+		return false;
+	}).ValueOr(false);
+}
+
+FNativeSocket::SocketResult
 FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory)
 const noexcept
 {
@@ -235,6 +284,55 @@ const noexcept
 
 bool
 FNativeSocket::Receive(FIoContext& context, uint8* const& memory, size_t size, EErrorCode& error_code)
+const noexcept
+{
+	return Receive(context, memory, size).Translate(
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
+		return true;
+	}).Else(
+		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
+		error_code = std::move(tr_error_code);
+		return false;
+	}).ValueOr(false);
+}
+
+FNativeSocket::SocketResult
+FNativeSocket::Receive(FIoContext& context, const TSharedPtr<uint8>& memory, size_t size)
+const noexcept
+{
+	WSABUF buffer
+	{
+		.len = static_cast<unsigned long>(size),
+		.buf = reinterpret_cast<char*>(memory.Get()),
+	};
+
+	unsigned long flags = 0;
+	unsigned long transferred_bytes = 0;
+
+	if (0 == WSARecv(GetHandle()
+		, std::addressof(buffer), 1
+		, std::addressof(transferred_bytes)
+		, std::addressof(flags)
+		, reinterpret_cast<LPWSAOVERLAPPED>(std::addressof(context))
+		, nullptr))
+	{
+		return transferred_bytes;
+	}
+	else
+	{
+		if (auto error = UNetworkUtility::AcquireNetworkError(); error != EErrorCode::PendedIoOperation)
+		{
+			return Unexpected(std::move(error));
+		}
+		else
+		{
+			return 0U;
+		}
+	}
+}
+
+bool
+FNativeSocket::Receive(FIoContext& context, const TSharedPtr<uint8>& memory, size_t size, EErrorCode& error_code)
 const noexcept
 {
 	return Receive(context, memory, size).Translate(

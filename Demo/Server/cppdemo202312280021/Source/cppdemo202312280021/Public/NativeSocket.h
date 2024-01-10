@@ -119,8 +119,8 @@ public:
 	bool Receive(std::span<uint8> memory, EErrorCode& error_code) const noexcept;
 	bool Receive(std::span<uint8> memory, size_t size, EErrorCode& error_code) const noexcept;
 	bool Receive(_In_reads_bytes_(size)uint8* const& memory, size_t size, EErrorCode& error_code) const noexcept;
-	SocketResult Receive(const TSharedPtr<uint8>& memory) const noexcept;
-	bool Receive(const TSharedPtr<uint8>& memory, EErrorCode& error_code) const noexcept;
+	SocketResult Receive(const TSharedPtr<uint8>& memory, size_t size) const noexcept;
+	bool Receive(const TSharedPtr<uint8>& memory, size_t size, EErrorCode& error_code) const noexcept;
 
 	// Maybe asynchronous Receive
 
@@ -130,8 +130,8 @@ public:
 	bool Receive(FIoContext& context, std::span<uint8> memory, EErrorCode& error_code) const noexcept;
 	bool Receive(FIoContext& context, std::span<uint8> memory, size_t size, EErrorCode& error_code) const noexcept;
 	bool Receive(FIoContext& context, _In_reads_bytes_(size)uint8* const& memory, size_t size, EErrorCode& error_code) const noexcept;
-	SocketResult Receive(FIoContext& context, const TSharedPtr<uint8>& memory) const noexcept;
-	bool Receive(FIoContext& context, const TSharedPtr<uint8>& memory, EErrorCode& error_code) const noexcept;
+	SocketResult Receive(FIoContext& context, const TSharedPtr<uint8>& memory, size_t size) const noexcept;
+	bool Receive(FIoContext& context, const TSharedPtr<uint8>& memory, size_t size, EErrorCode& error_code) const noexcept;
 
 	// Asynchronous Send & Receive
 
