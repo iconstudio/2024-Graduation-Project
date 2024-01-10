@@ -12,7 +12,7 @@ constinit static inline ::RIO_EXTENSION_FUNCTION_TABLE rioFunctions{};
 constinit static inline ::LPFN_ACCEPTEX fnAcceptEx = nullptr;
 constinit static inline ::LPFN_TRANSMITFILE fnTransmitFile = nullptr;
 
-Expected<bool, ::DWORD> RawSetOption(const ::FNativeSocket& sock, int option, const void* buffer, int buff_size) noexcept;
+Expected<bool, int32> RawSetOption(const ::FNativeSocket& sock, int option, const void* buffer, int buff_size) noexcept;
 Expected<int, ::DWORD> RawGetOption(const ::FNativeSocket& sock, int option) noexcept;
 void CALLBACK rioRoutine(const ::DWORD err, const ::DWORD bytes, LPWSAOVERLAPPED ctx, const ::DWORD flags);
 void InitializeSocketSystemImpl(const ::FNativeSocket& fsocket) noexcept;
@@ -66,7 +66,7 @@ const noexcept
 		return Unexpected(UNetworkUtility::AcquireNetworkError());
 	}
 
-	return 0;
+	return 0U;
 }
 
 bool
@@ -389,7 +389,7 @@ noexcept
 	return result;
 }
 
-Expected<bool, ::DWORD>
+Expected<bool, int32>
 RawSetOption(const ::FNativeSocket& sock, int option, const void* buffer, int buff_size)
 noexcept
 {
@@ -419,7 +419,7 @@ noexcept
 		return result;
 	}
 
-	return Unexpected{ UNetworkUtility::AcquireNetworkErrorByInteger() };
+	return Unexpected{ static_cast<::DWORD>(UNetworkUtility::AcquireNetworkErrorByInteger())};
 }
 
 void
