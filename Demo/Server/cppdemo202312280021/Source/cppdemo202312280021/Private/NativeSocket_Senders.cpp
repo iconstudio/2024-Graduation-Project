@@ -92,6 +92,33 @@ const noexcept
 }
 
 FNativeSocket::SocketResult
+FNativeSocket::Send(const TSharedPtr<uint8>& memory, size_t size)
+const noexcept
+{
+	WSABUF buffer
+	{
+		.len = static_cast<unsigned long>(size),
+		.buf = reinterpret_cast<char*>(memory.Get()),
+	};
+
+	return RawSend(GetHandle(), buffer);
+}
+
+bool
+FNativeSocket::Send(const TSharedPtr<uint8>& memory, size_t size, EErrorCode& error_code)
+const noexcept
+{
+	return Send(memory, size).Translate(
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
+		return true;
+	}).Else(
+		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
+		error_code = std::move(tr_error_code);
+		return false;
+	}).Value();
+}
+
+FNativeSocket::SocketResult
 FNativeSocket::Send(FIoContext& context, std::span<const uint8> memory)
 const noexcept
 {
@@ -164,7 +191,34 @@ FNativeSocket::Send(FIoContext& context, const uint8* const& memory
 	const noexcept
 {
 	return Send(context, memory, size).Translate(
-		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
+		return true;
+	}).Else(
+		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
+		error_code = std::move(tr_error_code);
+		return false;
+	}).Value();
+}
+
+FNativeSocket::SocketResult
+FNativeSocket::Send(FIoContext& context, const TSharedPtr<uint8>& memory, size_t size)
+const noexcept
+{
+	WSABUF buffer
+	{
+		.len = static_cast<unsigned long>(size),
+		.buf = reinterpret_cast<char*>(memory.Get()),
+	};
+
+	return RawSendEx(GetHandle(), buffer, std::addressof(context), nullptr);
+}
+
+bool
+FNativeSocket::Send(FIoContext& context, const TSharedPtr<uint8>& memory, size_t size, EErrorCode& error_code)
+const noexcept
+{
+	return Send(context, memory, size).Translate(
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
