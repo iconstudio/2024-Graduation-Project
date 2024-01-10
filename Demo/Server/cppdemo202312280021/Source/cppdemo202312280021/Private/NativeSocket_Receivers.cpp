@@ -64,7 +64,7 @@ FNativeSocket::Receive(std::span<uint8> memory
 	const noexcept
 {
 	return Receive(memory).Translate(
-		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
@@ -78,7 +78,7 @@ FNativeSocket::Receive(std::span<uint8> memory, size_t size, EErrorCode& error_c
 const noexcept
 {
 	return Receive(memory, std::move(size)).Translate(
-		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
@@ -93,7 +93,7 @@ FNativeSocket::Receive(uint8* const& memory, size_t size
 	const noexcept
 {
 	return Receive(memory, std::move(size)).Translate(
-		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
@@ -211,7 +211,7 @@ FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory, EErrorCode&
 	const noexcept
 {
 	return Receive(context, memory).Translate(
-		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
@@ -225,7 +225,7 @@ FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory, size_t size
 const noexcept
 {
 	return Receive(context, memory, std::move(size)).Translate(
-		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
@@ -239,7 +239,7 @@ FNativeSocket::Receive(FIoContext& context, uint8* const& memory, size_t size, E
 	const noexcept
 {
 	return Receive(context, memory, size).Translate(
-		[](unsigned int&&) noexcept -> Expected<bool, EErrorCode> {
+		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
 		return true;
 	}).Else(
 		[&](EErrorCode&& tr_error_code) noexcept -> Expected<bool, EErrorCode> {
