@@ -27,8 +27,8 @@ public:
 			return FSocketTask(handle_type::from_promise(*this));
 		}
 
-		template<assignable_from<result_type> U>
-		void return_value(U&& value) noexcept(std::is_nothrow_assignable<result_type, U>
+		template<typename U>
+		void return_value(U&& value) noexcept(std::is_nothrow_assignable<result_type, U>)
 		{
 			myValue = std::forward<U>(value);
 		}
