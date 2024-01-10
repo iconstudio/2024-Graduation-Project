@@ -74,7 +74,7 @@ const noexcept
 }
 
 bool
-USocket::ReserveAccept(FIoContext& context, FNativeSocket& native_socket)
+USocket::ReserveAcceptByNativeSocket(FIoContext& context, FNativeSocket& native_socket)
 const noexcept
 {
 	if (myHandle.IsAvailable())
@@ -127,13 +127,6 @@ const noexcept
 	{
 		return false;
 	}
-}
-
-FNativeSocket&
-USocket::GetNativeHandle()
-noexcept
-{
-	return myHandle;
 }
 
 const
