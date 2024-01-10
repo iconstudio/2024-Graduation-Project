@@ -22,7 +22,7 @@ public:
 	UFUNCTION()
 	FNativeSocket Accept() const noexcept;
 	UFUNCTION()
-	bool ReserveAccept(FIoContext& context, FNativeSocket& native_socket) const noexcept;
+	bool ReserveAcceptByNativeSocket(FIoContext& context, FNativeSocket& native_socket) const noexcept;
 	UFUNCTION()
 	bool ReserveAccept(FIoContext& context, USocket* socket_component) const noexcept;
 	UFUNCTION()
@@ -30,8 +30,6 @@ public:
 	UFUNCTION()
 	bool DisconnectAsync(FIoContext& context) const noexcept;
 
-	UFUNCTION()
-	FNativeSocket& GetNativeHandle() noexcept;
 	UFUNCTION()
 	const FNativeSocket& GetNativeHandle() const noexcept;
 
