@@ -59,9 +59,8 @@ const noexcept
 }
 
 bool
-FNativeSocket::Receive(std::span<uint8> memory
-	, EErrorCode& error_code)
-	const noexcept
+FNativeSocket::Receive(std::span<uint8> memory, EErrorCode& error_code)
+const noexcept
 {
 	return Receive(memory).Translate(
 		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
@@ -88,9 +87,8 @@ const noexcept
 }
 
 bool
-FNativeSocket::Receive(uint8* const& memory, size_t size
-	, EErrorCode& error_code)
-	const noexcept
+FNativeSocket::Receive(uint8* const& memory, size_t size, EErrorCode& error_code)
+const noexcept
 {
 	return Receive(memory, std::move(size)).Translate(
 		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
@@ -138,7 +136,8 @@ const noexcept
 }
 
 FNativeSocket::SocketResult
-FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory, size_t size) const noexcept
+FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory, size_t size)
+const noexcept
 {
 	WSABUF buffer
 	{
@@ -208,7 +207,7 @@ const noexcept
 
 bool
 FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory, EErrorCode& error_code)
-	const noexcept
+const noexcept
 {
 	return Receive(context, memory).Translate(
 		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
@@ -236,7 +235,7 @@ const noexcept
 
 bool
 FNativeSocket::Receive(FIoContext& context, uint8* const& memory, size_t size, EErrorCode& error_code)
-	const noexcept
+const noexcept
 {
 	return Receive(context, memory, size).Translate(
 		[](uint32&&) noexcept -> Expected<bool, EErrorCode> {
