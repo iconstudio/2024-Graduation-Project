@@ -261,21 +261,21 @@ const noexcept
 }
 
 FSocketTask
-FNativeSocket::MakeSendTask(const std::shared_ptr<FIoContext>& context, std::span<const uint8> memory)
+FNativeSocket::MakeSendTask(const TSharedPtr<FIoContext>& context, std::span<const uint8> memory)
 const noexcept
 {
 	return MakeSendTask(*context, std::move(memory));
 }
 
 FSocketTask
-FNativeSocket::MakeSendTask(const std::shared_ptr<FIoContext>& context, std::span<const uint8> memory, size_t size)
+FNativeSocket::MakeSendTask(const TSharedPtr<FIoContext>& context, std::span<const uint8> memory, size_t size)
 const noexcept
 {
 	return MakeSendTask(*context, std::move(memory), std::move(size));
 }
 
 FSocketTask
-FNativeSocket::MakeSendTask(const std::shared_ptr<FIoContext>& context, const uint8* const& memory, size_t size)
+FNativeSocket::MakeSendTask(const TSharedPtr<FIoContext>& context, const uint8* const& memory, size_t size)
 const noexcept
 {
 	return MakeSendTask(*context, memory, std::move(size));
