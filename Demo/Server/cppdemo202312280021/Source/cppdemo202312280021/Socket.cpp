@@ -1,4 +1,6 @@
 #include "Socket.h"
+#undef min
+#undef max
 
 USocket::USocket()
 	: myHandle()
@@ -28,20 +30,20 @@ const noexcept
 		return false;
 	}
 }
-
-bool
-USocket::ConnectTo(FStringView ip_address, uint16 port)
-const noexcept
-{
-	if (myHandle.IsAvailable())
-	{
-		return myHandle.Connect(FIpAddress{ myHandle.myFamily, ip_address }, port);
-	}
-	else
-	{
-		return false;
-	}
-}
+//
+//bool
+//USocket::ConnectTo(const TCHAR* ip_address, uint16 port)
+//const noexcept
+//{
+//	if (myHandle.IsAvailable())
+//	{
+//		return myHandle.Connect(FIpAddress{ myHandle.myFamily, ip_address }, port);
+//	}
+//	else
+//	{
+//		return false;
+//	}
+//}
 
 bool
 USocket::Listen()
