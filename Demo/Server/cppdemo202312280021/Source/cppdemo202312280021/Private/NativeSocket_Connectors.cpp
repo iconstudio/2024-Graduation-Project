@@ -8,6 +8,8 @@
 #include <ws2ipdef.h>
 #include <MSWSock.h>
 #include <coroutine>
+#undef min
+#undef max
 
 [[nodiscard]]
 ::SOCKADDR_STORAGE SerializeEndpoint(const FEndpoint& endpoint) noexcept;

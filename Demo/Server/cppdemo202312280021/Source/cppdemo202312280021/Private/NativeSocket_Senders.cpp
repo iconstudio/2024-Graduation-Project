@@ -187,7 +187,7 @@ const noexcept
 	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, reinterpret_cast<LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
@@ -216,7 +216,7 @@ const noexcept
 	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, reinterpret_cast<LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
@@ -245,7 +245,7 @@ const noexcept
 	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, reinterpret_cast<LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
@@ -345,7 +345,7 @@ RawSendEx(const int64& sock
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, 0
-		, reinterpret_cast<::LPWSAOVERLAPPED>(context)
+		, reinterpret_cast<LPWSAOVERLAPPED>(context)
 		, routine))
 	{
 		return bytes;

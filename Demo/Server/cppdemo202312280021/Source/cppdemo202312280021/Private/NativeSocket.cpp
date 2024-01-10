@@ -14,7 +14,7 @@ constinit static inline ::LPFN_TRANSMITFILE fnTransmitFile = nullptr;
 
 Expected<bool, ::DWORD> RawSetOption(const ::FNativeSocket& sock, int option, const void* buffer, int buff_size) noexcept;
 Expected<int, ::DWORD> RawGetOption(const ::FNativeSocket& sock, int option) noexcept;
-void CALLBACK rioRoutine(const ::DWORD err, const ::DWORD bytes, ::LPWSAOVERLAPPED ctx, const ::DWORD flags);
+void CALLBACK rioRoutine(const ::DWORD err, const ::DWORD bytes, LPWSAOVERLAPPED ctx, const ::DWORD flags);
 void InitializeSocketSystemImpl(const ::FNativeSocket& fsocket) noexcept;
 
 FNativeSocket::FNativeSocket()
@@ -148,7 +148,7 @@ const noexcept
 {
 	if (IsAvailable())
 	{
-		auto* ctx = reinterpret_cast<::LPWSAOVERLAPPED>(context);
+		auto* ctx = reinterpret_cast<LPWSAOVERLAPPED>(context);
 		if (ReusableAddress())
 		{
 			return (1 == ::fnTransmitFile(myHandle, nullptr, 0, 0, ctx, nullptr, TF_DISCONNECT | TF_REUSE_SOCKET));
@@ -423,7 +423,7 @@ noexcept
 }
 
 void
-CALLBACK rioRoutine(const ::DWORD err, const ::DWORD bytes, ::LPWSAOVERLAPPED ctx, const ::DWORD flags)
+CALLBACK rioRoutine(const ::DWORD err, const ::DWORD bytes, LPWSAOVERLAPPED ctx, const ::DWORD flags)
 {
 	if (0 != err)
 	{
