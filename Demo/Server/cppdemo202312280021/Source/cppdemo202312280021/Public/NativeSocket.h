@@ -1,6 +1,7 @@
 #pragma once
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
 #include "CoreMinimal.h"
-#include <HAL/Runnable.h>
 #include "EndPoint.h"
 #include "ErrorCode.h"
 #include "Expected.h"

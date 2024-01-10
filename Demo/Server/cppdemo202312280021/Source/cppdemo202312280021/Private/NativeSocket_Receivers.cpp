@@ -1,12 +1,14 @@
 #pragma comment(lib, "Ws2_32.lib")
-#include "NativeSocket.h"
-#include "IconerBlueprinter.h"
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
+#include "NativeSocket.h"
+#include "IconerBlueprinter.h"
 #include <WinSock2.h>
 #include <cstddef>
 #include <utility>
 #include <coroutine>
+#undef min
+#undef max
 
 FNativeSocket::SocketResult
 FNativeSocket::Receive(std::span<uint8> memory)
@@ -113,11 +115,11 @@ const noexcept
 	unsigned long flags = 0;
 	unsigned long transferred_bytes = 0;
 
-	if (0 == ::WSARecv(GetHandle()
+	if (0 == WSARecv(GetHandle()
 		, std::addressof(buffer), 1
 		, std::addressof(transferred_bytes)
 		, std::addressof(flags)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, reinterpret_cast<LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
 		return transferred_bytes;
@@ -147,11 +149,11 @@ FNativeSocket::Receive(FIoContext& context, std::span<uint8> memory, size_t size
 	unsigned long flags = 0;
 	unsigned long transferred_bytes = 0;
 
-	if (0 == ::WSARecv(GetHandle()
+	if (0 == WSARecv(GetHandle()
 		, std::addressof(buffer), 1
 		, std::addressof(transferred_bytes)
 		, std::addressof(flags)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, reinterpret_cast<LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
 		return transferred_bytes;
@@ -182,11 +184,11 @@ const noexcept
 	unsigned long flags = 0;
 	unsigned long transferred_bytes = 0;
 
-	if (0 == ::WSARecv(GetHandle()
+	if (0 == WSARecv(GetHandle()
 		, std::addressof(buffer), 1
 		, std::addressof(transferred_bytes)
 		, std::addressof(flags)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, reinterpret_cast<LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
 		return transferred_bytes;
@@ -260,7 +262,7 @@ const noexcept
 	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, reinterpret_cast<LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
@@ -289,7 +291,7 @@ const noexcept
 	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, reinterpret_cast<LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
@@ -318,7 +320,7 @@ const noexcept
 	unsigned long transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(GetHandle()
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, reinterpret_cast<LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
@@ -334,21 +336,21 @@ const noexcept
 }
 
 FSocketTask
-FNativeSocket::MakeReceiveTask(const std::shared_ptr<FIoContext>& context, std::span<uint8> memory)
+FNativeSocket::MakeReceiveTask(const TSharedPtr<FIoContext>& context, std::span<uint8> memory)
 const noexcept
 {
 	return MakeReceiveTask(*context, std::move(memory));
 }
 
 FSocketTask
-FNativeSocket::MakeReceiveTask(const std::shared_ptr<FIoContext>& context, std::span<uint8> memory, size_t size)
+FNativeSocket::MakeReceiveTask(const TSharedPtr<FIoContext>& context, std::span<uint8> memory, size_t size)
 const noexcept
 {
 	return MakeReceiveTask(*context, std::move(memory), std::move(size));
 }
 
 FSocketTask
-FNativeSocket::MakeReceiveTask(const std::shared_ptr<FIoContext>& context, uint8* const& memory, size_t size)
+FNativeSocket::MakeReceiveTask(const TSharedPtr<FIoContext>& context, uint8* const& memory, size_t size)
 const noexcept
 {
 	return MakeReceiveTask(*context, memory, std::move(size));
