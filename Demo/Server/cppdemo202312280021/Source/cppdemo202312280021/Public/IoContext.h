@@ -33,10 +33,6 @@ protected:
 		void* offset = nullptr;
 	};
 	void* eventObject;
-
-private:
-	FIoContext(const FIoContext&) = delete;
-	FIoContext& operator=(const FIoContext&) = delete;
 };
 
 namespace net::io
