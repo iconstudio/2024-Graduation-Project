@@ -12,8 +12,8 @@ constinit static inline ::RIO_EXTENSION_FUNCTION_TABLE rioFunctions{};
 constinit static inline ::LPFN_ACCEPTEX fnAcceptEx = nullptr;
 constinit static inline ::LPFN_TRANSMITFILE fnTransmitFile = nullptr;
 
-Expected<bool, int32> RawSetOption(const ::FNativeSocket& sock, int option, const void* buffer, int buff_size) noexcept;
-Expected<int, ::DWORD> RawGetOption(const ::FNativeSocket& sock, int option) noexcept;
+Expected<std::monostate, EErrorCode> RawSetOption(const ::FNativeSocket& sock, int option, const void* buffer, int buff_size) noexcept;
+Expected<std::monostate, ::DWORD> RawGetOption(const ::FNativeSocket& sock, int option) noexcept;
 void CALLBACK rioRoutine(const ::DWORD err, const ::DWORD bytes, LPWSAOVERLAPPED ctx, const ::DWORD flags);
 void InitializeSocketSystemImpl(const ::FNativeSocket& fsocket) noexcept;
 
@@ -187,16 +187,24 @@ const noexcept
 	}
 }
 
+Expected<std::monostate, EErrorCode>
+FNativeSocket::ReusableAddress(bool flag)
+noexcept
+{
+	::BOOL iflag = static_cast<::BOOL>(flag);
+
+	return RawSetOption(*this, SO_REUSEADDR, std::addressof(iflag), sizeof(iflag));
+}
+
 bool
 FNativeSocket::ReusableAddress()
 const noexcept
 {
-	return GetAddressReusable();
-}
-
-void FNativeSocket::ReusableAddress(bool flag) noexcept
-{
-	SetAddressReusable(flag);
+	return RawGetOption(*this, SO_REUSEADDR).Translate([](std::monostate&&) noexcept -> Expected<bool, ::DWORD> {
+		return true;
+	}).Else([](::DWORD&&) noexcept -> Expected<bool, int> {
+		return false;
+	}).Value();
 }
 
 FNativeSocket
@@ -292,31 +300,11 @@ noexcept
 	}
 }
 
-void
+Expected<std::monostate, EErrorCode>
 FNativeSocket::InternalSetAddressReusable(FNativeSocket& target, bool& flag)
 noexcept
 {
-	target.SetAddressReusable(flag);
-}
-
-void
-FNativeSocket::SetAddressReusable(const bool flag) const
-noexcept
-{
-	::BOOL iflag = static_cast<::BOOL>(flag);
-
-	RawSetOption(*this, SO_REUSEADDR, std::addressof(iflag), sizeof(iflag));
-}
-
-bool
-FNativeSocket::GetAddressReusable()
-const noexcept
-{
-	return RawGetOption(*this, SO_REUSEADDR).Translate([](int&&) noexcept -> Expected<bool, ::DWORD> {
-		return true;
-	}).Else([](::DWORD&&) noexcept -> Expected<bool, int> {
-		return false;
-	}).Value();
+	target.ReusableAddress(flag);
 }
 
 bool
@@ -380,7 +368,7 @@ bool
 USocketFactory::TryCreateNativeSocket(int32 type, int32 protocol, int32 family
 	, FNativeSocket& out
 	, int32& error_code)
-noexcept
+	noexcept
 {
 	EErrorCode err{};
 	const bool result = FNativeSocket::TryCreate(static_cast<EIoSynchronousType>(type), static_cast<EInternetProtocol>(protocol), static_cast<EIpAddressFamily>(family), out, err);
@@ -389,7 +377,7 @@ noexcept
 	return result;
 }
 
-Expected<bool, int32>
+Expected<std::monostate, EErrorCode>
 RawSetOption(const ::FNativeSocket& sock, int option, const void* buffer, int buff_size)
 noexcept
 {
@@ -398,13 +386,13 @@ noexcept
 		, option
 		, reinterpret_cast<const char*>(buffer), buff_size))
 	{
-		return true;
+		return std::monostate{};
 	}
 
-	return Unexpected{ UNetworkUtility::AcquireNetworkErrorByInteger() };
+	return Unexpected{ UNetworkUtility::AcquireNetworkError() };
 }
 
-Expected<int, ::DWORD>
+Expected<std::monostate, ::DWORD>
 RawGetOption(const ::FNativeSocket& sock, int option)
 noexcept
 {
@@ -416,10 +404,10 @@ noexcept
 		, option
 		, reinterpret_cast<char*>(std::addressof(result)), std::addressof(len)))
 	{
-		return result;
+		return std::monostate{};
 	}
 
-	return Unexpected{ static_cast<::DWORD>(UNetworkUtility::AcquireNetworkErrorByInteger())};
+	return Unexpected{ static_cast<::DWORD>(UNetworkUtility::AcquireNetworkErrorByInteger()) };
 }
 
 void

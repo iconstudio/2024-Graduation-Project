@@ -55,8 +55,8 @@ public:
 	SocketResult Bind(FEndpoint&& endpoint) const noexcept;
 	SocketResult BindHost(const uint16& port) const noexcept;
 
+	Expected<std::monostate, EErrorCode> ReusableAddress(bool flag) noexcept;
 	bool ReusableAddress() const noexcept;
-	void ReusableAddress(bool flag) noexcept;
 
 	// Opt-out Methods
 
@@ -203,9 +203,7 @@ public:
 	static Expected<FNativeSocket, EErrorCode> TryCreate(const EIoSynchronousType& type, const EInternetProtocol& protocol, const EIpAddressFamily& family) noexcept;
 
 protected:
-	static void InternalSetAddressReusable(FNativeSocket& target, bool& flag) noexcept;
-	void SetAddressReusable(const bool flag) const noexcept;
-	bool GetAddressReusable() const noexcept;
+	static Expected<std::monostate, EErrorCode> InternalSetAddressReusable(FNativeSocket& target, bool& flag) noexcept;
 
 public:
 	// Fields
