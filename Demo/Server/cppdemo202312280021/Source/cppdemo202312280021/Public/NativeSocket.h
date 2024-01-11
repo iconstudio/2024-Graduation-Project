@@ -86,8 +86,8 @@ public:
 	SocketResult ReserveAccept(FIoContext& context, FNativeSocket& client, std::span<uint8> accept_buffer) const;
 	SocketResult ReserveAccept(FIoContext* const context, FNativeSocket& client) const;
 	SocketResult ReserveAccept(FIoContext* const context, FNativeSocket& client, std::span<uint8> accept_buffer) const;
-	SocketResult ReserveAccept(FIoContext& context, FNativeSocket& client, const TSharedPtr<uint8>& accept_buffer) const;
-	SocketResult ReserveAccept(FIoContext* const context, FNativeSocket& client, const TSharedPtr<uint8>& accept_buffer) const;
+	SocketResult ReserveAccept(FIoContext& context, FNativeSocket& client, const TSharedPtr<uint8>& accept_buffer, size_t size) const;
+	SocketResult ReserveAccept(FIoContext* const context, FNativeSocket& client, const TSharedPtr<uint8>& accept_buffer, size_t size) const;
 
 	// Synchronous Send
 

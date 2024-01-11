@@ -12,6 +12,8 @@ constinit static inline ::RIO_EXTENSION_FUNCTION_TABLE rioFunctions{};
 constinit static inline ::LPFN_ACCEPTEX fnAcceptEx = nullptr;
 constinit static inline ::LPFN_TRANSMITFILE fnTransmitFile = nullptr;
 
+static inline constexpr unsigned long DEFAULT_ACCEPT_SIZE = sizeof(SOCKADDR_IN) + 16UL;
+
 Expected<std::monostate, EErrorCode> RawSetOption(const ::FNativeSocket& sock, int option, const void* buffer, int buff_size) noexcept;
 Expected<std::monostate, ::DWORD> RawGetOption(const ::FNativeSocket& sock, int option) noexcept;
 void CALLBACK rioRoutine(const ::DWORD err, const ::DWORD bytes, LPWSAOVERLAPPED ctx, const ::DWORD flags);
@@ -184,6 +186,157 @@ const noexcept
 	{
 		error_code = EErrorCode::NotASocket;
 		return false;
+	}
+}
+
+FNativeSocket::SocketResult
+FNativeSocket::ReserveAccept(FIoContext& context, FNativeSocket& client)
+const
+{
+	return ReserveAccept(std::addressof(context), client);
+}
+
+FNativeSocket::SocketResult
+FNativeSocket::ReserveAccept(FIoContext& context, FNativeSocket& client, std::span<uint8> accept_buffer)
+const
+{
+	return ReserveAccept(std::addressof(context), client, std::move(accept_buffer));
+}
+
+FNativeSocket::SocketResult
+FNativeSocket::ReserveAccept(FIoContext* const context, FNativeSocket& client)
+const
+{
+	char temp_buffer[::DEFAULT_ACCEPT_SIZE * 2];
+	if (not IsAvailable())
+	{
+		return Unexpected(UNetworkUtility::AcquireNetworkError());
+	}
+
+	::DWORD result_bytes{};
+
+	if (1 == ::fnAcceptEx(myHandle, client.GetHandle()
+		, temp_buffer, 0UL
+		, ::DEFAULT_ACCEPT_SIZE
+		, ::DEFAULT_ACCEPT_SIZE
+		, std::addressof(result_bytes)
+		, reinterpret_cast<::LPWSAOVERLAPPED>(context))
+		)
+	{
+		return result_bytes;
+	}
+	else
+	{
+		if (auto error = UNetworkUtility::AcquireNetworkError(); error != EErrorCode::PendedIoOperation)
+		{
+			return Unexpected(std::move(error));
+		}
+		else
+		{
+			return 0U;
+		}
+	}
+}
+
+FNativeSocket::SocketResult
+FNativeSocket::ReserveAccept(FIoContext* const context, FNativeSocket& client, std::span<uint8> accept_buffer)
+const
+{
+	if (not IsAvailable())
+	{
+		return Unexpected(UNetworkUtility::AcquireNetworkError());
+	}
+
+	::DWORD result_bytes{};
+
+	if (1 == ::fnAcceptEx(myHandle, client.GetHandle()
+		, accept_buffer.data(), static_cast<::DWORD>(accept_buffer.size_bytes())
+		, ::DEFAULT_ACCEPT_SIZE
+		, ::DEFAULT_ACCEPT_SIZE
+		, std::addressof(result_bytes)
+		, reinterpret_cast<::LPWSAOVERLAPPED>(context))
+		)
+	{
+		return static_cast<uint32>(result_bytes);
+	}
+	else
+	{
+		if (auto error = UNetworkUtility::AcquireNetworkError(); error != EErrorCode::PendedIoOperation)
+		{
+			return Unexpected(std::move(error));
+		}
+		else
+		{
+			return 0U;
+		}
+	}
+}
+
+FNativeSocket::SocketResult
+FNativeSocket::ReserveAccept(FIoContext& context, FNativeSocket& client, const TSharedPtr<uint8>& accept_buffer, size_t size)
+const
+{
+	if (not IsAvailable())
+	{
+		return Unexpected(UNetworkUtility::AcquireNetworkError());
+	}
+
+	::DWORD result_bytes{};
+
+	if (1 == ::fnAcceptEx(myHandle, client.GetHandle()
+		, accept_buffer.Get(), static_cast<::DWORD>(size)
+		, ::DEFAULT_ACCEPT_SIZE
+		, ::DEFAULT_ACCEPT_SIZE
+		, std::addressof(result_bytes)
+		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context)))
+		)
+	{
+		return static_cast<uint32>(result_bytes);
+	}
+	else
+	{
+		if (auto error = UNetworkUtility::AcquireNetworkError(); error != EErrorCode::PendedIoOperation)
+		{
+			return Unexpected(std::move(error));
+		}
+		else
+		{
+			return 0U;
+		}
+	}
+}
+
+FNativeSocket::SocketResult
+FNativeSocket::ReserveAccept(FIoContext* const context, FNativeSocket& client, const TSharedPtr<uint8>& accept_buffer, size_t size)
+const
+{
+	if (not IsAvailable())
+	{
+		return Unexpected(UNetworkUtility::AcquireNetworkError());
+	}
+
+	::DWORD result_bytes{};
+
+	if (1 == ::fnAcceptEx(myHandle, client.GetHandle()
+		, accept_buffer.Get(), static_cast<::DWORD>(size)
+		, ::DEFAULT_ACCEPT_SIZE
+		, ::DEFAULT_ACCEPT_SIZE
+		, std::addressof(result_bytes)
+		, reinterpret_cast<::LPWSAOVERLAPPED>(context))
+		)
+	{
+		return static_cast<uint32>(result_bytes);
+	}
+	else
+	{
+		if (auto error = UNetworkUtility::AcquireNetworkError(); error != EErrorCode::PendedIoOperation)
+		{
+			return Unexpected(std::move(error));
+		}
+		else
+		{
+			return 0U;
+		}
 	}
 }
 
