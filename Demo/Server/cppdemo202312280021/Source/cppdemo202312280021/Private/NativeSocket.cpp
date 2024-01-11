@@ -453,7 +453,7 @@ noexcept
 	}
 }
 
-Expected<std::monostate, EErrorCode>
+void
 FNativeSocket::InternalSetAddressReusable(FNativeSocket& target, bool& flag)
 noexcept
 {
