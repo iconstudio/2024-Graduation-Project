@@ -52,6 +52,8 @@ public:
 		result_type myValue;
 	};
 
+	constexpr FSocketTask() noexcept = default;
+
 	constexpr FSocketTask(const handle_type& handle) noexcept
 		: myHandle(handle)
 	{}
