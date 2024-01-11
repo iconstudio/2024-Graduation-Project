@@ -203,7 +203,7 @@ public:
 	static Expected<FNativeSocket, EErrorCode> TryCreate(const EIoSynchronousType& type, const EInternetProtocol& protocol, const EIpAddressFamily& family) noexcept;
 
 protected:
-	static Expected<std::monostate, EErrorCode> InternalSetAddressReusable(FNativeSocket& target, bool& flag) noexcept;
+	static void InternalSetAddressReusable(FNativeSocket& target, bool& flag) noexcept;
 
 public:
 	// Fields
