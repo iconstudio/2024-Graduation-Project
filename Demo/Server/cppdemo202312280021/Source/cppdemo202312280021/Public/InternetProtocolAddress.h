@@ -7,7 +7,7 @@
 struct FSerializedIpAddress;
 
 USTRUCT(BlueprintType, Blueprintable, meta = (DisplayName = "Internal Protocol Address"))
-struct CPPDEMO202312280021_API FIpAddress final
+struct [[nodiscard]] CPPDEMO202312280021_API FIpAddress final
 {
 	GENERATED_BODY()
 
