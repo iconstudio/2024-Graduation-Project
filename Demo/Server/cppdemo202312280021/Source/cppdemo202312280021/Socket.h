@@ -11,8 +11,10 @@ class CPPDEMO202312280021_API USocket : public UActorComponent
 
 public:	
 	USocket();
-	~USocket() noexcept;
+	virtual ~USocket() noexcept override;
 
+	UFUNCTION()
+	void Attach(FNativeSocket& native_socket) noexcept;
 	UFUNCTION()
 	bool Connect(const FEndpoint& endpoint) const noexcept;
 	UFUNCTION()
