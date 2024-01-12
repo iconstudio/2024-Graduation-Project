@@ -84,6 +84,16 @@ public:
 	char data[64];
 };
 
+UCLASS(ClassGroup = (Iconer))
+class CPPDEMO202312280021_API UIpAddressFactory : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Iconer")
+	static FIpAddress CreateIpAddress(FString address, EIpAddressFamily family) noexcept;
+};
+
 namespace net
 {
 	using IpAddress = ::FIpAddress;
