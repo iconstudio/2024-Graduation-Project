@@ -18,8 +18,8 @@ public:
 	UFUNCTION()
 	bool Connect(const FEndpoint& endpoint) const noexcept;
 	UFUNCTION()
-	bool ConnectTo(FString ip_address, uint16 port) const noexcept;
 	UFUNCTION()
+	bool ConnectTo(FString ip_address, int32 port) const noexcept;
 	bool Listen() const noexcept;
 	UFUNCTION()
 	FNativeSocket Accept() const noexcept;

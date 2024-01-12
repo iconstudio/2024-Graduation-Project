@@ -39,12 +39,12 @@ const noexcept
 }
 
 bool
-USocket::ConnectTo(FString ip_address, uint16 port)
+USocket::ConnectTo(FString ip_address, int32 port)
 const noexcept
 {
 	if (myHandle.IsAvailable())
 	{
-		return myHandle.Connect(FIpAddress{myHandle.myFamily, ip_address}, port);
+		return myHandle.Connect(FIpAddress{myHandle.myFamily, ip_address}, static_cast<uint16>(port));
 	}
 	else
 	{
