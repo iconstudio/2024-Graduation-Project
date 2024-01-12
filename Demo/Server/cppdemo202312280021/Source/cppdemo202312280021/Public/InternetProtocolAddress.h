@@ -97,4 +97,5 @@ public:
 namespace net
 {
 	using IpAddress = ::FIpAddress;
+	using SerializedIpAddress = ::FSerializedIpAddress;
 }
