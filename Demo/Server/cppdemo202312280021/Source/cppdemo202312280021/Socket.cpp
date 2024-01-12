@@ -30,20 +30,20 @@ const noexcept
 		return false;
 	}
 }
-//
-//bool
-//USocket::ConnectTo(const TCHAR* ip_address, uint16 port)
-//const noexcept
-//{
-//	if (myHandle.IsAvailable())
-//	{
-//		return myHandle.Connect(FIpAddress{ myHandle.myFamily, ip_address }, port);
-//	}
-//	else
-//	{
-//		return false;
-//	}
-//}
+
+bool
+USocket::ConnectTo(FString ip_address, uint16 port)
+const noexcept
+{
+	if (myHandle.IsAvailable())
+	{
+		return myHandle.Connect(FIpAddress{ myHandle.myFamily, ip_address }, port);
+	}
+	else
+	{
+		return false;
+	}
+}
 
 bool
 USocket::Listen()
