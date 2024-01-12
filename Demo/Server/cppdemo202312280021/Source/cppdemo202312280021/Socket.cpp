@@ -4,6 +4,7 @@
 
 USocket::USocket()
 	: myHandle()
+	  , DoesReuseAddress(false)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
@@ -13,8 +14,14 @@ noexcept
 {
 	if (myHandle.IsAvailable())
 	{
-		myHandle.Close();
+		(void)myHandle.Close();
 	}
+}
+
+void USocket::Attach(FNativeSocket& native_socket) noexcept
+{
+	myHandle = MoveTemp(native_socket);
+	DoesReuseAddress = myHandle.ReusableAddress();
 }
 
 bool
@@ -37,7 +44,7 @@ const noexcept
 {
 	if (myHandle.IsAvailable())
 	{
-		return myHandle.Connect(FIpAddress{ myHandle.myFamily, ip_address }, port);
+		return myHandle.Connect(FIpAddress{myHandle.myFamily, ip_address}, port);
 	}
 	else
 	{
@@ -136,7 +143,6 @@ const noexcept
 	return myHandle;
 }
 
-// Called when the game starts
 void
 USocket::BeginPlay()
 {
@@ -145,7 +151,7 @@ USocket::BeginPlay()
 
 void
 USocket::SetReuseAddress(bool flag)
-noexcept
+	noexcept
 {
 	myHandle.ReusableAddress(flag);
 
@@ -159,11 +165,7 @@ const noexcept
 	return myHandle.ReusableAddress();
 }
 
-// Called every frame
 void USocket::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
-
