@@ -1,35 +1,100 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
+#pragma comment(lib, "Ws2_32.lib")
 #include "NetworkManager.h"
+#include "Engine/GameEngine.h"
+#include "NativeSocket.h"
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <WinSock2.h>
+#include <utility>
 
-// Sets default values for this component's properties
+#define DBG_MSG(fmt, ...) if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, FString::Printf(TEXT(fmt), __VA_ARGS__)); }
+#define DBG_ERRMSG(fmt, ...) if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT(fmt), __VA_ARGS__)); }
+#define DBG_OKMSG(fmt, ...) if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT(fmt), __VA_ARGS__)); }
+
+FNativeSocket internalSocket{};
+EErrorCode internalErrorCode{};
+
 UNetworkManager::UNetworkManager()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
+UNetworkManager::~UNetworkManager() noexcept
+{
+}
 
-// Called when the game starts
+bool UNetworkManager::InitializeNetworkSystem() noexcept
+{
+	::WSADATA data{};
+	if (0 != ::WSAStartup(MAKEWORD(2, 2), std::addressof(data)))
+	{
+		OnNetworkInitializationFailed();
+		return false;
+	}
+	
+	if (FNativeSocket::TryCreate(EIoSynchronousType::Synchronous, EInternetProtocol::TCP, EIpAddressFamily::IPv4,
+	                             internalSocket, internalErrorCode))
+	{
+		OnNetworkInitialized();
+		return true;
+	}
+	else
+	{
+		OnNetworkInitializationFailed();
+		return false;
+	}
+}
+
+bool UNetworkManager::CleanupNetworkSystem()
+{
+	if (0 == ::WSACleanup())
+	{
+		if (internalSocket.Close())
+		{
+			OnNetworkDestructed();
+			return true;
+		}
+		else
+		{
+			OnNetworkDestructionFailed();
+			return false;
+		}
+	}
+	else
+	{
+		OnNetworkDestructionFailed();
+		return false;
+	}
+}
+
 void UNetworkManager::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
-	
 }
 
+void UNetworkManager::OnNetworkInitialized_Implementation() noexcept
+{
+	DBG_OKMSG("Network system is initiated");
+}
 
-// Called every frame
+void UNetworkManager::OnNetworkInitializationFailed_Implementation() noexcept
+{
+	DBG_ERRMSG("Network system has failed on initialization");
+}
+
+void UNetworkManager::OnNetworkDestructed_Implementation() noexcept
+{
+	DBG_OKMSG("Network system has been destructed successfully");
+}
+
+void UNetworkManager::OnNetworkDestructionFailed_Implementation() noexcept
+{
+	DBG_ERRMSG("Network system has been failed on destruction");
+}
+
 void UNetworkManager::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 UNetworkManager::InternalWorker::InternalWorker(int32 target) noexcept

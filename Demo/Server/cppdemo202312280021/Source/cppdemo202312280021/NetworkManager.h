@@ -23,21 +23,52 @@ public:
 		bool isCancelled;
 	};
 
-	static inline InternalWorker* myWorker = nullptr;
-
-public:
-	// Sets default values for this component's properties
+	// Ctor / Dtors
+	
 	UNetworkManager();
+	~UNetworkManager() noexcept override;
 
-	static bool Initialize() noexcept { return true; };
-	static InternalWorker& Start() { return *myWorker; };
-	static void Destroy() noexcept {};
-	static void Cleanup() noexcept {}
-
-	// Called every frame
+	// Unreal Actions
+	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	// Methods
+	
+	// Events
+	
+	UFUNCTION(BlueprintCallable, Category = "Iconer")
+	bool InitializeNetworkSystem() noexcept;
+	UFUNCTION(BlueprintCallable, Category = "Iconer")
+	bool CleanupNetworkSystem();
+	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
+	void OnNetworkInitialized() noexcept;
+	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
+	void OnNetworkInitializationFailed() noexcept;
+	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
+	void OnNetworkDestructed() noexcept;
+	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
+	void OnNetworkDestructionFailed() noexcept;
+
+	// Properties
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsConnected;
+
+	// Static fields
+	
+	static inline InternalWorker* myWorker = nullptr;
+
+	// Fields
+	
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
+	virtual void OnNetworkInitialized_Implementation() noexcept;
+	virtual void OnNetworkInitializationFailed_Implementation() noexcept;
+	virtual void OnNetworkDestructed_Implementation() noexcept;
+	virtual void OnNetworkDestructionFailed_Implementation() noexcept;
 };
+
+namespace net::ue
+{
+	using NetworkManager = ::UNetworkManager;
+}
