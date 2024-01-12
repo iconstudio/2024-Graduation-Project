@@ -74,6 +74,19 @@ private:
 	uint16 myPort;
 };
 
+UCLASS(ClassGroup = (Iconer))
+class CPPDEMO202312280021_API UFEndpointFactory : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Iconer")
+	static FEndpoint CreateEndPoint(FString address, EIpAddressFamily family, int32 port) noexcept;
+
+	UFUNCTION(BlueprintCallable, Category = "Iconer")
+	static FEndpoint CreateEndPointBy(const FIpAddress& ip_address, int32 port) noexcept;
+};
+
 namespace net
 {
 	using EndPoint = ::FEndpoint;
