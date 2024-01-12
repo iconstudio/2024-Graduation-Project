@@ -64,6 +64,11 @@ public:
 		return myAddress.GetAddress();
 	}
 
+	FEndpoint(const FEndpoint&) noexcept = default;
+	FEndpoint& operator=(const FEndpoint&) noexcept = default;
+	FEndpoint(FEndpoint&&) noexcept = default;
+	FEndpoint& operator=(FEndpoint&&) noexcept = default;
+
 private:
 	FIpAddress myAddress;
 	uint16 myPort;
