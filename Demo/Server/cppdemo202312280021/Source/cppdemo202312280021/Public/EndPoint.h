@@ -17,7 +17,7 @@ public:
 	FEndpoint(FIpAddress&& ip, const uint16& port) noexcept;
 
 	[[nodiscard]]
-	constexpr const EIpAddressFamily& GetAddressFamily() const& noexcept
+	constexpr const EIpAddressFamily& GetAddressFamily() const & noexcept
 	{
 		return myAddress.GetFamily();
 	}
@@ -29,7 +29,7 @@ public:
 	}
 
 	[[nodiscard]]
-	constexpr const FIpAddress& GetIpAddress() const& noexcept
+	constexpr const FIpAddress& GetIpAddress() const & noexcept
 	{
 		return myAddress;
 	}
@@ -41,7 +41,7 @@ public:
 	}
 
 	[[nodiscard]]
-	constexpr const uint16& GetPort() const& noexcept
+	constexpr const uint16& GetPort() const & noexcept
 	{
 		return myPort;
 	}
@@ -59,7 +59,7 @@ public:
 	}
 
 	[[nodiscard]]
-	const FString& GetAddressString() const& noexcept
+	const FString& GetAddressString() const & noexcept
 	{
 		return myAddress.GetAddress();
 	}
