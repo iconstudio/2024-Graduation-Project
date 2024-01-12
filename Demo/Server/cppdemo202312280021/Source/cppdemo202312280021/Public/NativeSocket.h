@@ -235,7 +235,7 @@ class CPPDEMO202312280021_API USocketFactory : public UBlueprintFunctionLibrary
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Iconer")
-	static bool InitializeSocketSystem(const FNativeSocket& fsocket) noexcept;
+	static bool InitializeSocketFunctions(const FNativeSocket& fsocket) noexcept;
 
 	UFUNCTION(BlueprintCallable, Category = "Iconer")
 	static FNativeSocket CreateNativeSocket(int32 io_type, int32 protocol, int32 family) noexcept;

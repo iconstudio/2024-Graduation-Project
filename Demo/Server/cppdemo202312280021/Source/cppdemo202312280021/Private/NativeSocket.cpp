@@ -461,7 +461,7 @@ noexcept
 }
 
 bool
-USocketFactory::InitializeSocketSystem(const FNativeSocket& fsocket)
+USocketFactory::InitializeSocketFunctions(const FNativeSocket& fsocket)
 noexcept
 {
 	::GUID fntable_id = WSAID_MULTIPLE_RIO;
@@ -576,5 +576,5 @@ void
 InitializeSocketSystemImpl(const::FNativeSocket& fsocket)
 noexcept
 {
-	std::call_once(internalInitFlag, USocketFactory::InitializeSocketSystem, std::cref(fsocket));
+	std::call_once(internalInitFlag, USocketFactory::InitializeSocketFunctions, std::cref(fsocket));
 }
