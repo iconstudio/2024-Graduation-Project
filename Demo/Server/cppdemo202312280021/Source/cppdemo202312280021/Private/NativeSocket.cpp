@@ -1,6 +1,8 @@
 #pragma comment(lib, "Ws2_32.lib")
 #include "NativeSocket.h"
 #include "IconerBlueprinter.h"
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <WinSock2.h>
 #include <MSWSock.h>
 #include <utility>
