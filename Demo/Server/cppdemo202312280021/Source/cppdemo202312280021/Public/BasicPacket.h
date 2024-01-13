@@ -6,6 +6,9 @@
 USTRUCT(Atomic, BlueprintType, Blueprintable, meta = (DisplayName = "Basic Packet"))
 struct CPPDEMO202312280021_API FBasicPacket
 {
+	GENERATED_BODY()
+
+public:
 	constexpr FBasicPacket() noexcept = default;
 	constexpr ~FBasicPacket() noexcept = default;
 
