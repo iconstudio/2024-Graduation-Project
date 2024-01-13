@@ -7,9 +7,13 @@
 #include <WinSock2.h>
 #include <utility>
 
-#define DBG_MSG(fmt, ...) if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, FString::Printf(TEXT(fmt), __VA_ARGS__)); }
-#define DBG_ERRMSG(fmt, ...) if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT(fmt), __VA_ARGS__)); }
-#define DBG_OKMSG(fmt, ...) if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT(fmt), __VA_ARGS__)); }
+#define DBG_MSG_VA(fmt, ...) if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::White, FString::Printf(TEXT(fmt), __VA_ARGS__)); }
+#define DBG_ERRMSG_VA(fmt, ...) if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT(fmt), __VA_ARGS__)); }
+#define DBG_OKMSG_VA(fmt, ...) if (GEngine) { GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT(fmt), __VA_ARGS__)); }
+
+#define DBG_MSG(str) DBG_MSG_VA("%s", str)
+#define DBG_ERRMSG(str) DBG_ERRMSG_VA("%s", str)
+#define DBG_OKMSG(str) DBG_OKMSG_VA("%s", str)
 
 FNativeSocket internalSocket{};
 EErrorCode internalErrorCode{};
@@ -32,7 +36,7 @@ bool UNetworkManager::InitializeNetworkSystem() noexcept
 		OnNetworkInitializationFailed();
 		return false;
 	}
-	
+
 	if (FNativeSocket::TryCreate(EIoSynchronousType::Synchronous, EInternetProtocol::TCP, EIpAddressFamily::IPv4,
 	                             internalSocket, internalErrorCode))
 	{
