@@ -3,6 +3,16 @@
 
 #include "NetworkManager.h"
 
+USTRUCT(BluprintType)
+struct InitData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite);
+	int32 id;
+	FVector initpos;
+};
+
 // Sets default values
 ANetworkManager::ANetworkManager()
 {
@@ -13,7 +23,8 @@ ANetworkManager::ANetworkManager()
 
 void ANetworkManager::AssignPlayerID(APlayerController* PlayerController)
 {
-
+	InitData S_CData;
+	//수신받은 데이터 적용하는 코드 작성
 }
 
 void ANetworkManager::HandlePlayerDisconnected(int32 PlayerID)
