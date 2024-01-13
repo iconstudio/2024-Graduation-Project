@@ -103,6 +103,7 @@ void UNetworkManager::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 }
 
 UNetworkManager::InternalWorker::InternalWorker(int32 target) noexcept
+	: isCancelled(false)
 {
 }
 
