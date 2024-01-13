@@ -15,6 +15,7 @@ FNativeSocket internalSocket{};
 EErrorCode internalErrorCode{};
 
 UNetworkManager::UNetworkManager()
+	: IsReady(false), IsConnected(false)
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
