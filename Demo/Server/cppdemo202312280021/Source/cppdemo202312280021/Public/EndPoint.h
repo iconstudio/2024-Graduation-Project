@@ -41,15 +41,9 @@ public:
 	}
 
 	[[nodiscard]]
-	constexpr const uint16& GetPort() const & noexcept
+	constexpr uint16 GetPort() const noexcept
 	{
-		return myPort;
-	}
-
-	[[nodiscard]]
-	constexpr uint16&& GetPort() && noexcept
-	{
-		return std::move(myPort);
+		return static_cast<uint16>(myPort);
 	}
 
 	[[nodiscard]]
@@ -69,9 +63,11 @@ public:
 	FEndpoint(FEndpoint&&) noexcept = default;
 	FEndpoint& operator=(FEndpoint&&) noexcept = default;
 
-private:
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "IP Address"))
 	FIpAddress myAddress;
-	uint16 myPort;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "Port"))
+	int32 myPort;
 };
 
 UCLASS(ClassGroup = (Iconer))
