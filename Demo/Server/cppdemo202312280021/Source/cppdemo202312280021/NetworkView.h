@@ -5,7 +5,7 @@
 #include "NetworkView.generated.h"
 
 UCLASS(BlueprintType, Blueprintable, meta = (BlueprintSpawnableComponent), ClassGroup = (Iconer))
-class CPPDEMO202312280021_API UNetworkView : public USocket
+class CPPDEMO202312280021_API UNetworkView : public USocket, public TSharedFromThis<UNetworkView>
 {
 	GENERATED_BODY()
 
