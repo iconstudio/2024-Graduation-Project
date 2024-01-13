@@ -26,7 +26,7 @@ public:
 	// Ctor / Dtors
 	
 	UNetworkManager();
-	~UNetworkManager() noexcept override;
+	virtual ~UNetworkManager() noexcept override;
 
 	// Unreal Actions
 	
