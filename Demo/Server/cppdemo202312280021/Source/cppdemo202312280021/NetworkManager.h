@@ -49,16 +49,16 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
 	void OnNetworkDestructionFailed() noexcept;
 
+	// Static fields
+	
+	static inline InternalWorker* myWorker = nullptr;
+
 	// Properties
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool IsReady;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool IsConnected;
-
-	// Static fields
-	
-	static inline InternalWorker* myWorker = nullptr;
 
 	// Fields
 	
