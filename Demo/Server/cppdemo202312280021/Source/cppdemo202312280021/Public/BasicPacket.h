@@ -31,6 +31,6 @@ public:
 	}
 
 protected:
-	UPROPERTY(NoClear, VisibleAnywhere, BlueprintEditable, meta = (DisplayName = "Internet Protocol"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, NoClear, meta = (DisplayName = "Internet Protocol"))
 	EPacketType myType;
 };
