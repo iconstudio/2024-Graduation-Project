@@ -13,7 +13,7 @@ public:
 	struct InternalWorker : public FRunnable
 	{
 		InternalWorker(int32 target) noexcept;
-		virtual ~InternalWorker() noexcept;
+		virtual ~InternalWorker() noexcept override;
 
 		virtual uint32 Run() override { return 0; };
 		virtual void Stop() override {};
@@ -51,6 +51,8 @@ public:
 
 	// Properties
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsReady;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool IsConnected;
 
