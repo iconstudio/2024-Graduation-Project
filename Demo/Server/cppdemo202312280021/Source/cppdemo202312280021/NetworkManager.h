@@ -1,5 +1,8 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "NativeSocket.h"
+#include "NetworkView.h"
+
 #include "Components/ActorComponent.h"
 #include "HAL/Runnable.h"
 #include "NetworkManager.generated.h"
@@ -61,6 +64,8 @@ public:
 	bool IsConnected;
 
 	// Fields
+
+	TArray<TSharedRef<UNetworkView>> networkViews;
 	
 protected:
 	virtual void BeginPlay() override;
