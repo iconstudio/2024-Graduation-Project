@@ -20,6 +20,12 @@ struct CPPDEMO202312280021_API FInternalNetworkWorker : public FRunnable
 	bool isCancelled;
 };
 
+UCLASS(BlueprintType, Blueprintable, ClassGroup = (Iconer), meta = (BlueprintSpawnableComponent))
+class CPPDEMO202312280021_API UNetworkManager : public UActorComponent
+{
+	GENERATED_BODY()
+
+public:
 	// Ctor / Dtors
 
 	UNetworkManager();

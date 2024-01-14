@@ -24,7 +24,8 @@ UNetworkManager::UNetworkManager()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-UNetworkManager::~UNetworkManager() noexcept
+UNetworkManager::~UNetworkManager()
+noexcept
 {
 }
 
