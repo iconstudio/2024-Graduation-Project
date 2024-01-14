@@ -2,7 +2,7 @@
 #include "CoreMinimal.h"
 #include "Containers/UnrealString.h"
 #include "IpAddressFamily.h"
-#include "InternetProtocolAddress.generated.h"
+#include "IPAddress.generated.h"
 
 struct FSerializedIpAddress;
 
