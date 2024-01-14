@@ -29,7 +29,9 @@ noexcept
 {
 }
 
-bool UNetworkManager::InitializeNetworkSystem() noexcept
+bool
+UNetworkManager::InitializeNetworkSystem()
+noexcept
 {
 	::WSADATA data{};
 	if (0 != ::WSAStartup(MAKEWORD(2, 2), std::addressof(data)))
@@ -51,7 +53,8 @@ bool UNetworkManager::InitializeNetworkSystem() noexcept
 	}
 }
 
-bool UNetworkManager::CleanupNetworkSystem()
+bool
+UNetworkManager::CleanupNetworkSystem()
 {
 	if (0 == ::WSACleanup())
 	{
@@ -73,27 +76,36 @@ bool UNetworkManager::CleanupNetworkSystem()
 	}
 }
 
-void UNetworkManager::BeginPlay()
+void
+UNetworkManager::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void UNetworkManager::OnNetworkInitialized_Implementation() noexcept
+void
+UNetworkManager::OnNetworkInitialized_Implementation()
+noexcept
 {
 	DBG_OKMSG("Network system is initiated");
 }
 
-void UNetworkManager::OnNetworkInitializationFailed_Implementation() noexcept
+void
+UNetworkManager::OnNetworkInitializationFailed_Implementation()
+noexcept
 {
 	DBG_ERRMSG("Network system has failed on initialization");
 }
 
-void UNetworkManager::OnNetworkDestructed_Implementation() noexcept
+void
+UNetworkManager::OnNetworkDestructed_Implementation()
+noexcept
 {
 	DBG_OKMSG("Network system has been destructed successfully");
 }
 
-void UNetworkManager::OnNetworkDestructionFailed_Implementation() noexcept
+void
+UNetworkManager::OnNetworkDestructionFailed_Implementation()
+noexcept
 {
 	DBG_ERRMSG("Network system has been failed on destruction");
 }
