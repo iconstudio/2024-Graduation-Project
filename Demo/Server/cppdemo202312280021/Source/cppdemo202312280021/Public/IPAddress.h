@@ -2,12 +2,12 @@
 #include "CoreMinimal.h"
 #include "Containers/UnrealString.h"
 #include "IpAddressFamily.h"
-#include "InternetProtocolAddress.generated.h"
+#include "IPAddress.generated.h"
 
 struct FSerializedIpAddress;
 
 USTRUCT(BlueprintType, Blueprintable, meta = (DisplayName = "Internal Protocol Address"))
-struct CPPDEMO202312280021_API FIpAddress final
+struct [[nodiscard]] CPPDEMO202312280021_API FIpAddress final
 {
 	GENERATED_BODY()
 
@@ -15,12 +15,13 @@ public:
 	FIpAddress() noexcept = default;
 	~FIpAddress() noexcept = default;
 
-	FIpAddress(const EIpAddressFamily& family, const FString& address) noexcept;
-	FIpAddress(const EIpAddressFamily& family, FString&& address) noexcept;
+	FIpAddress(const EIpAddressFamily& family, const FStringView& address) noexcept;
+	FIpAddress(const EIpAddressFamily& family, FStringView&& address) noexcept;
 
 	[[nodiscard]]
 	FSerializedIpAddress Serialize() const;
 	bool TrySerialize(FSerializedIpAddress& out) const noexcept;
+	bool TrySerialize(void* out) const noexcept;
 
 	[[nodiscard]]
 	constexpr FString& GetAddress() & noexcept
@@ -83,7 +84,18 @@ public:
 	char data[64];
 };
 
+UCLASS(ClassGroup = (Iconer))
+class CPPDEMO202312280021_API UIpAddressFactory : public UBlueprintFunctionLibrary
+{
+	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintCallable, Category = "Iconer")
+	static FIpAddress CreateIpAddress(FString address, EIpAddressFamily family) noexcept;
+};
+
 namespace net
 {
 	using IpAddress = ::FIpAddress;
+	using SerializedIpAddress = ::FSerializedIpAddress;
 }
