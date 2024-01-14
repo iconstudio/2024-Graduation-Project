@@ -1,15 +1,47 @@
 #pragma once
+#define NOMINMAX
+#define WIN32_LEAN_AND_MEAN
 #include "CoreMinimal.h"
+#include "Constraints.h"
+#include <Logging/LogMacros.h>
+#include <concepts>
 #include <type_traits>
 #include <variant>
-#include <concepts>
-#include "Constraints.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(InvalidExpectedAccess, Log, All);
 
 template<typename E>
 struct CPPDEMO202312280021_API Unexpected
 {
+	// Copied from std::unexpected
+	static_assert(std::is_object_v<E>, "E must be an object type. (N4928 [Expected.un.general]/2)");
+	static_assert(not std::is_array_v<E>, "E must not be an array type. (N4928 [Expected.un.general]/2)");
+	static_assert(not std::is_const_v<E>, "E must not be const. (N4928 [Expected.un.general]/2)");
+	static_assert(not std::is_volatile_v<E>, "E must not be volatile. (N4928 [Expected.un.general]/2)");
+	static_assert(not net::is_specialization_v<E, Unexpected>, "E must not be a specialization of unexpected. (N4928 [Expected.un.general]/2)");
+
+	constexpr Unexpected() noexcept(std::is_nothrow_default_constructible_v<E>) = default;
+	constexpr ~Unexpected() noexcept(std::is_nothrow_destructible_v<E>) = default;
+
+	constexpr Unexpected(const E& value)
+		noexcept(std::is_nothrow_copy_constructible_v<E>)
+		: myError(value)
+	{
+		static_assert(std::copyable<E>);
+	}
+
+	constexpr Unexpected(E&& value)
+		noexcept(std::is_nothrow_move_constructible_v<E>)
+		: myError(std::move(value))
+	{
+		static_assert(std::movable<E>);
+	}
+
 	E myError;
 };
+
+template<typename E>
+Unexpected(E) -> Unexpected<E>;
 
 template<typename T, typename E>
 class CPPDEMO202312280021_API Expected
@@ -82,6 +114,15 @@ public:
 		noexcept(std::is_nothrow_constructible_v<storage_t, std::add_const_t<std::add_rvalue_reference_t<Expected<U, E>::storage_t>>>)
 		: myStorage(std::move(another.myStorage))
 	{}
+
+	template<typename U>
+	constexpr Expected(U&& value)
+		noexcept(std::is_nothrow_constructible_v<value_t, U&&>)
+		: myStorage(std::forward<U>(value))
+	{
+		static_assert((std::common_with<T, std::decay_t<U>> and net::arithmetical_with<T, U>)
+			or (not std::common_with<T, std::decay_t<U>> and std::constructible_from<T, U&&>));
+	}
 
 	template<typename U>
 	constexpr Expected(Unexpected<U>& error)
@@ -204,7 +245,7 @@ public:
 	}
 
 	template<std::invocable<T&> Fn>
-	constexpr auto Translate(Fn&& fn)& noexcept(std::is_nothrow_invocable_v<Fn, T&>)
+	constexpr auto Translate(Fn&& fn) & noexcept(std::is_nothrow_invocable_v<Fn, T&>)
 	{
 		using result_t = std::invoke_result_t<Fn, T&>;
 
@@ -216,7 +257,7 @@ public:
 		}
 		else
 		{
-			return result_t{ Unexpected<result_t::error_t>{ Error() }};
+			return result_t{ Unexpected<result_t::error_t>{ Error() } };
 		}
 	}
 
@@ -274,54 +315,94 @@ public:
 	[[nodiscard]]
 	constexpr T& Value()&
 	{
+		if (not HasValue())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire the value from not assigned 'Expected'"));
+		}
+
 		return std::get<0>(myStorage);
 	}
 
 	[[nodiscard]]
 	constexpr const T& Value() const&
 	{
+		if (not HasValue())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire the value from not assigned 'Expected'"));
+		}
+
 		return std::get<0>(myStorage);
 	}
 
 	[[nodiscard]]
 	constexpr T&& Value()&&
 	{
+		if (not HasValue())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire the value from not assigned 'Expected'"));
+		}
+
 		return std::move(std::get<0>(myStorage));
 	}
 
 	[[nodiscard]]
 	constexpr const T&& Value() const&&
 	{
+		if (not HasValue())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire the value from not assigned 'Expected'"));
+		}
+
 		return std::move(std::get<0>(myStorage));
 	}
 
 	[[nodiscard]]
 	constexpr E& Error()&
 	{
+		if (not HasError())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire an error from the proper 'Expected'"));
+		}
+
 		return std::get<1>(myStorage);
 	}
 
 	[[nodiscard]]
 	constexpr const E& Error() const&
 	{
+		if (not HasError())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire an error from the proper 'Expected'"));
+		}
+
 		return std::get<1>(myStorage);
 	}
 
 	[[nodiscard]]
 	constexpr E&& Error()&&
 	{
+		if (not HasError())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire an error from the proper 'Expected'"));
+		}
+
 		return std::move(std::get<1>(myStorage));
 	}
 
 	[[nodiscard]]
 	constexpr const E&& Error() const&&
 	{
+		if (not HasError())
+		{
+			UE_LOG(InvalidExpectedAccess, Fatal, TEXT("Cannot acquire an error from the proper 'Expected'"));
+		}
+
 		return std::move(std::get<1>(myStorage));
 	}
 
 	template<typename U>
 	[[nodiscard]]
-	constexpr const T& ValueOr(U&& alternative_value) const noexcept
+	constexpr T ValueOr(U&& alternative_value) const noexcept
 	{
 		if (std::holds_alternative<T>(myStorage))
 		{
@@ -335,7 +416,7 @@ public:
 
 	template<typename U>
 	[[nodiscard]]
-	constexpr const E& ErrorOr(U&& alternative_value) const noexcept
+	constexpr E ErrorOr(U&& alternative_value) const noexcept
 	{
 		if (std::holds_alternative<E>(myStorage))
 		{

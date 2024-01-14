@@ -112,7 +112,7 @@ public:
 	constexpr FHandleObject& operator=(FHandleObject&&) noexcept = default;
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, meta = (DisplayName = "Native Handle"))
 	int64 myHandle;
 };
 
