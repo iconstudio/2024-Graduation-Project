@@ -82,7 +82,7 @@ const noexcept
 }
 
 FIpAddress
-UIpAddressFactory::CreateIpAddress(FStringView address, EIpAddressFamily family)
+UIpAddressFactory::CreateIpAddress(FString address, EIpAddressFamily family)
 noexcept
 {
 	return FIpAddress{ family, address };
