@@ -7,24 +7,18 @@
 #include "HAL/Runnable.h"
 #include "NetworkManager.generated.h"
 
-UCLASS(ClassGroup = (Iconer), meta = (BlueprintSpawnableComponent))
-class CPPDEMO202312280021_API UNetworkManager : public UActorComponent
+struct CPPDEMO202312280021_API FInternalNetworkWorker : public FRunnable
 {
-	GENERATED_BODY()
+	FInternalNetworkWorker(int32 target) noexcept;
+	virtual ~FInternalNetworkWorker() noexcept override;
 
-public:
-	struct InternalWorker : public FRunnable
-	{
-		InternalWorker(int32 target) noexcept;
-		virtual ~InternalWorker() noexcept override;
+	virtual uint32 Run() override { return 0; };
+	virtual void Stop() override {};
+	virtual void Exit() override {};
 
-		virtual uint32 Run() override { return 0; };
-		virtual void Stop() override {};
-		virtual void Exit() override {};
-
-		FRunnableThread* myThread;
-		bool isCancelled;
-	};
+	FRunnableThread* myThread;
+	bool isCancelled;
+};
 
 	// Ctor / Dtors
 	
@@ -54,7 +48,7 @@ public:
 
 	// Static fields
 	
-	static inline InternalWorker* myWorker = nullptr;
+	static inline FInternalNetworkWorker* myWorker = nullptr;
 
 	// Properties
 	
