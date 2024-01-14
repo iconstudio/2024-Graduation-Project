@@ -80,3 +80,10 @@ const noexcept
 		return true;
 	}
 }
+
+FIpAddress
+UIpAddressFactory::CreateIpAddress(FStringView address, EIpAddressFamily family)
+noexcept
+{
+	return FIpAddress{ family, address };
+}

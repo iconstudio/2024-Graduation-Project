@@ -91,7 +91,7 @@ class CPPDEMO202312280021_API UIpAddressFactory : public UBlueprintFunctionLibra
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Iconer")
-	static FIpAddress CreateIpAddress(FString address, EIpAddressFamily family) noexcept;
+	static FIpAddress CreateIpAddress(FStringView address, EIpAddressFamily family) noexcept;
 };
 
 namespace net
