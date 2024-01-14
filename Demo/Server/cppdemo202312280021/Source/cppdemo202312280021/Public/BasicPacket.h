@@ -13,7 +13,7 @@ public:
 	constexpr ~FBasicPacket() noexcept = default;
 
 	[[nodiscard]]
-	virtual size_t GetByteSize() const noexcept
+	virtual constexpr size_t GetByteSize() const noexcept
 	{
 		return sizeof(myType);
 	}
