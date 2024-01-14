@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include <type_traits>
-#include "InternetProtocolAddress.h"
+#include "IPAddress.h"
 #include "Endpoint.generated.h"
 
 USTRUCT(BlueprintType, Blueprintable, meta = (DisplayName = "Endpoint"))
