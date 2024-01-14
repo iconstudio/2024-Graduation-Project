@@ -21,22 +21,22 @@ struct CPPDEMO202312280021_API FInternalNetworkWorker : public FRunnable
 };
 
 	// Ctor / Dtors
-	
+
 	UNetworkManager();
 	virtual ~UNetworkManager() noexcept override;
 
 	// Unreal Actions
-	
+
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	// Methods
-	
-	// Events
-	
 	UFUNCTION(BlueprintCallable, Category = "Iconer")
 	bool InitializeNetworkSystem() noexcept;
 	UFUNCTION(BlueprintCallable, Category = "Iconer")
 	bool CleanupNetworkSystem();
+
+	// Events
+
 	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
 	void OnNetworkInitialized() noexcept;
 	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
