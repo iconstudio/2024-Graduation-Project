@@ -1,19 +1,17 @@
+#pragma comment(lib, "Ws2_32.lib")
 #include "IconerBlueprinter.h"
+#include <WinSock2.h>
 
-FNativeSocket
-UIconerBlueprinter::CreateNativeSocket(EIoSynchronousType type
-	, const EInternetProtocol& protocol, const EIpAddressFamily& family)
-	noexcept
+int32
+UNetworkUtility::AcquireNetworkErrorByInteger()
+noexcept
 {
-	return FNativeSocket();
+	return static_cast<int32>(::GetLastError());
 }
 
-bool
-UIconerBlueprinter::TryCreateNativeSocket(EIoSynchronousType type
-	, const EInternetProtocol& protocol, const EIpAddressFamily& family
-	, FAttentSocket& out
-	, EErrorCode& error_code)
-	noexcept
+EErrorCode
+UNetworkUtility::AcquireNetworkError()
+noexcept
 {
-	return false;
+	return static_cast<EErrorCode>(::GetLastError());
 }

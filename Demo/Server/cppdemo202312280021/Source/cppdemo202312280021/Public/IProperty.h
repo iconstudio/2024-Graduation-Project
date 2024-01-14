@@ -10,13 +10,12 @@ template<typename R, typename... Ts>
 using prp_functor_t = net::copyable_function<R(Ts...)>;
 template<typename R, typename... Ts>
 using prp_nothrow_functor_t = net::copyable_function<R(Ts...) noexcept>;
+#else // !(1939 <= _MSC_VER)
 
-#else // 1939 <= _MSC_VER
 template<typename R, typename... Ts>
 using prp_functor_t = R(*)(Ts...);
 template<typename R, typename... Ts>
 using prp_nothrow_functor_t = prp_functor_t<R, Ts...>;
-
 #endif // 1939 <= _MSC_VER
 
 template<typename T, typename Context, bool Custom, bool Copyable, bool Readonly, bool Nothrow>
