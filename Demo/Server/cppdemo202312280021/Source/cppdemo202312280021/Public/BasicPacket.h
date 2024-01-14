@@ -34,3 +34,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, NoClear, meta = (DisplayName = "Internet Protocol"))
 	EPacketType myType;
 };
+
+namespace net
+{
+	using BasicPacket = ::FBasicPacket;
+}
