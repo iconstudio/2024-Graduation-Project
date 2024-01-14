@@ -84,28 +84,24 @@ UNetworkManager::BeginPlay()
 
 void
 UNetworkManager::OnNetworkInitialized_Implementation()
-noexcept
 {
 	DBG_OKMSG("Network system is initiated");
 }
 
 void
 UNetworkManager::OnNetworkInitializationFailed_Implementation()
-noexcept
 {
 	DBG_ERRMSG("Network system has failed on initialization");
 }
 
 void
 UNetworkManager::OnNetworkDestructed_Implementation()
-noexcept
 {
 	DBG_OKMSG("Network system has been destructed successfully");
 }
 
 void
 UNetworkManager::OnNetworkDestructionFailed_Implementation()
-noexcept
 {
 	DBG_ERRMSG("Network system has been failed on destruction");
 }

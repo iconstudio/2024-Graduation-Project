@@ -44,13 +44,13 @@ public:
 	// Events
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
-	void OnNetworkInitialized() noexcept;
+	void OnNetworkInitialized();
 	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
-	void OnNetworkInitializationFailed() noexcept;
+	void OnNetworkInitializationFailed();
 	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
-	void OnNetworkDestructed() noexcept;
+	void OnNetworkDestructed();
 	UFUNCTION(BlueprintNativeEvent, Category = "Iconer")
-	void OnNetworkDestructionFailed() noexcept;
+	void OnNetworkDestructionFailed();
 
 	// Static fields
 	
@@ -69,10 +69,10 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-	virtual void OnNetworkInitialized_Implementation() noexcept;
-	virtual void OnNetworkInitializationFailed_Implementation() noexcept;
-	virtual void OnNetworkDestructed_Implementation() noexcept;
-	virtual void OnNetworkDestructionFailed_Implementation() noexcept;
+	virtual void OnNetworkInitialized_Implementation();
+	virtual void OnNetworkInitializationFailed_Implementation();
+	virtual void OnNetworkDestructed_Implementation();
+	virtual void OnNetworkDestructionFailed_Implementation();
 };
 
 namespace net::ue
