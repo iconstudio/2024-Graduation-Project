@@ -36,5 +36,17 @@
     <ClCompile Include="RecursiveTemplateClass.ixx">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Declarations.ixx">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkEntity.ixx">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.ixx">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkEntityManager.ixx">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

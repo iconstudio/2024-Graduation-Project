@@ -1,0 +1,32 @@
+export module Iconer.Network.Entity;
+import Iconer.Declarations;
+import Iconer.Network.View;
+import Net.Handler;
+
+export namespace iconer
+{
+	template<typename IdType>
+	class [[nodiscard]] NetworkEntity : public NetworkView, private net::Handler<IdType>
+	{
+	public:
+		using super = NetworkView;
+		using handler = net::Handler<IdType>;
+		using handle_t = IdType;
+
+		constexpr NetworkEntity() noexcept = default;
+		constexpr ~NetworkEntity() noexcept = default;
+
+		[[nodiscard]]
+		constexpr handle_t GetID() const noexcept
+		{
+			return handler::GetHandle();
+		}
+
+		NetworkEntity(const NetworkEntity&) = delete;
+		constexpr NetworkEntity(NetworkEntity&&) noexcept = default;
+		void operator=(const NetworkEntity&) = delete;
+		constexpr NetworkEntity& operator=(NetworkEntity&&) = default;
+
+		[[nodiscard]] constexpr bool operator==(const NetworkEntity&) const noexcept = default;
+	};
+}
