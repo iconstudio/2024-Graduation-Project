@@ -4,6 +4,7 @@ import Iconer.Network.View;
 import Net.Handler;
 import Net.Property;
 import Net.Io.Entity;
+import Net.Io.Context;
 
 export namespace iconer
 {
@@ -13,8 +14,6 @@ export namespace iconer
 	public:
 		using id_t = IdType;
 		using super = NetworkView;
-
-		constexpr ~NetworkEntity() noexcept = default;
 
 		constexpr NetworkEntity(const id_t id) noexcept
 			: NetworkView(), Entity()

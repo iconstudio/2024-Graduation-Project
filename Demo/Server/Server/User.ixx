@@ -14,7 +14,7 @@ export namespace iconer
 		using super = NetworkEntity<user_id_t>;
 
 		constexpr User() noexcept = default;
-		constexpr ~User() noexcept = default;
+		constexpr ~User() noexcept override = default;
 
 		void OnNetworkIntialized(bool succeed, net::ErrorCodes error_code) noexcept override
 		{
