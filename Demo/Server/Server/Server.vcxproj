@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Declarations.ixx" />
     <ClCompile Include="NetworkEntity.ixx" />
+    <ClCompile Include="NetworkEntityManager.cpp" />
     <ClCompile Include="NetworkEntityManager.ixx" />
     <ClCompile Include="ObjectManager.ixx" />
     <ClCompile Include="RecursiveTemplateClass.ixx" />
