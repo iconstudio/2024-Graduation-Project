@@ -10,7 +10,7 @@ import <algorithm>;
 export namespace iconer
 {
 	template<typename IdType>
-	struct NetworkEntityIDCompararer
+	struct NetworkEntityComparator
 	{
 		using mgr_t = ObjectManager<iconer::NetworkEntity<IdType>>;
 		using const_reference = mgr_t::const_reference;
@@ -23,11 +23,11 @@ export namespace iconer
 	};
 
 	template<typename IdType>
-	class [[nodiscard]] NetworkEntityManager : public ObjectManager<iconer::NetworkEntity<IdType>, NetworkEntityIDCompararer<IdType>>
+	class [[nodiscard]] NetworkEntityManager : public ObjectManager<iconer::NetworkEntity<IdType>, NetworkEntityComparator<IdType>>
 	{
 	public:
 		using id_t = IdType;
-		using super = ObjectManager<iconer::NetworkEntity<IdType>, NetworkEntityIDCompararer<IdType>>;
+		using super = ObjectManager<iconer::NetworkEntity<IdType>, NetworkEntityComparator<IdType>>;
 		using object_t = super::object_t;
 		using value_type = super::value_type;
 		using data_t = super::data_t;
