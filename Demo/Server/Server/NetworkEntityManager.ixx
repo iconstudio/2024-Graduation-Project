@@ -164,32 +164,32 @@ export namespace iconer
 		template<typename M>
 		friend class std::lock_guard;
 
-		__forceinline void lock() noexcept
+		void lock() noexcept
 		{
 			myLock.lock();
 		}
 
-		__forceinline void unlock() noexcept
+		void unlock() noexcept
 		{
 			myLock.unlock();
 		}
 
-		__forceinline void lock_shared() noexcept
+		void lock_shared() noexcept
 		{
 			myLock.lock_shared();
 		}
 
-		__forceinline void unlock_shared() noexcept
+		void unlock_shared() noexcept
 		{
 			myLock.unlock_shared();
 		}
 
-		__forceinline bool try_lock() noexcept
+		bool try_lock() noexcept
 		{
 			return myLock.try_lock();
 		}
 
-		__forceinline void try_lock_shared() noexcept
+		void try_lock_shared() noexcept
 		{
 			return myLock.try_lock_shared();
 		}
