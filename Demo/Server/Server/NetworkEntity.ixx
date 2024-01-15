@@ -3,6 +3,7 @@ import Iconer.Declarations;
 import Iconer.Network.View;
 import Net.Handler;
 import Net.Property;
+export import Net.ErrorCode;
 import Net.Io.Entity;
 import Net.Io.Context;
 
