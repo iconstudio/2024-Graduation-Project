@@ -3,13 +3,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class SagaGameWorldTarget : TargetRules
+public class SagaGameEditorTarget : TargetRules
 {
-	public SagaGameWorldTarget(TargetInfo Target) : base(Target)
+	public SagaGameEditorTarget(TargetInfo Target) : base(Target)
 	{
-		Type = TargetType.Game;
+		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V4;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
-		ExtraModuleNames.Add("SagaGameWorld");
+		ExtraModuleNames.Add("SagaGame");
 	}
 }

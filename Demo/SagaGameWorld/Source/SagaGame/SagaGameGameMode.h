@@ -4,15 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "SagaGameWorldGameMode.generated.h"
+#include "SagaGameGameMode.generated.h"
 
 UCLASS(minimalapi)
-class ASagaGameWorldGameMode : public AGameModeBase
+class ASagaGameGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	ASagaGameWorldGameMode();
+	ASagaGameGameMode();
 };
 
 

@@ -1,10 +1,10 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "SagaGameWorldGameMode.h"
-#include "SagaGameWorldCharacter.h"
+#include "SagaGameGameMode.h"
+#include "SagaGameCharacter.h"
 #include "UObject/ConstructorHelpers.h"
 
-ASagaGameWorldGameMode::ASagaGameWorldGameMode()
+ASagaGameGameMode::ASagaGameGameMode()
 {
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/ThirdPerson/Blueprints/BP_ThirdPersonCharacter"));
