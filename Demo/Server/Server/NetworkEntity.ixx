@@ -15,7 +15,7 @@ export namespace iconer
 		using id_t = IdType;
 		using super = NetworkView;
 
-		constexpr NetworkEntity(const id_t id) noexcept
+		explicit constexpr NetworkEntity(const id_t id) noexcept
 			: NetworkView(), Entity()
 			, ID(id)
 		{}
