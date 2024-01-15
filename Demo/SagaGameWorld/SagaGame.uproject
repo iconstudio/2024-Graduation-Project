@@ -5,12 +5,11 @@
 	"Description": "",
 	"Modules": [
 		{
-			"Name": "SagaGameWorld",
+			"Name": "SagaGame",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"Engine",
-				"CoreUObject"
+				"Engine"
 			]
 		}
 	],
@@ -21,6 +20,10 @@
 			"TargetAllowList": [
 				"Editor"
 			]
+		},
+		{
+			"Name": "ApexDestruction",
+			"Enabled": true
 		}
 	]
 }

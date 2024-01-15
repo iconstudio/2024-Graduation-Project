@@ -1,6 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
-#include "SagaGameWorldCharacter.h"
+#include "SagaGameCharacter.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -14,9 +14,9 @@
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
 //////////////////////////////////////////////////////////////////////////
-// ASagaGameWorldCharacter
+// ASagaGameCharacter
 
-ASagaGameWorldCharacter::ASagaGameWorldCharacter()
+ASagaGameCharacter::ASagaGameCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -54,7 +54,7 @@ ASagaGameWorldCharacter::ASagaGameWorldCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
-void ASagaGameWorldCharacter::BeginPlay()
+void ASagaGameCharacter::BeginPlay()
 {
 	// Call the base class  
 	Super::BeginPlay();
@@ -72,7 +72,7 @@ void ASagaGameWorldCharacter::BeginPlay()
 //////////////////////////////////////////////////////////////////////////
 // Input
 
-void ASagaGameWorldCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ASagaGameCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
@@ -82,10 +82,10 @@ void ASagaGameWorldCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASagaGameWorldCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASagaGameCharacter::Move);
 
 		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASagaGameWorldCharacter::Look);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASagaGameCharacter::Look);
 	}
 	else
 	{
@@ -93,7 +93,7 @@ void ASagaGameWorldCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	}
 }
 
-void ASagaGameWorldCharacter::Move(const FInputActionValue& Value)
+void ASagaGameCharacter::Move(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
@@ -116,7 +116,7 @@ void ASagaGameWorldCharacter::Move(const FInputActionValue& Value)
 	}
 }
 
-void ASagaGameWorldCharacter::Look(const FInputActionValue& Value)
+void ASagaGameCharacter::Look(const FInputActionValue& Value)
 {
 	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
