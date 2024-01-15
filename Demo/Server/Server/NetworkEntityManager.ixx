@@ -1,11 +1,8 @@
-module;
-#include <mutex>
-#include <shared_mutex>
-
 export module Iconer.Network.EntityManager;
 import Iconer.Utility.ObjectManager;
 import Iconer.Network.Entity;
 import <algorithm>;
+import <shared_mutex>;
 
 export namespace iconer
 {
@@ -151,7 +148,7 @@ export namespace iconer
 			return myLock.try_lock();
 		}
 
-		void TryLockReader() noexcept
+		bool TryLockReader() noexcept
 		{
 			return myLock.try_lock_shared();
 		}
@@ -189,7 +186,7 @@ export namespace iconer
 			return myLock.try_lock();
 		}
 
-		void try_lock_shared() noexcept
+		bool try_lock_shared() noexcept
 		{
 			return myLock.try_lock_shared();
 		}
