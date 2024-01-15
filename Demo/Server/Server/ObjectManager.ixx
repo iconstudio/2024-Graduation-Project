@@ -45,9 +45,9 @@ export namespace iconer
 			_SortData();
 		}
 
-		constexpr void Add(value_type&& object)
+		constexpr void Add(value_type&& ptr)
 		{
-			myData.push_back(std::move(object));
+			myData.push_back(std::move(ptr));
 
 			_SortData();
 		}
