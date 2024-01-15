@@ -139,6 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Declarations.ixx" />
+    <ClCompile Include="NetworkEntity.ixx" />
+    <ClCompile Include="NetworkEntityManager.ixx" />
+    <ClCompile Include="ObjectManager.ixx" />
     <ClCompile Include="RecursiveTemplateClass.ixx" />
     <ClCompile Include="BehaviourTree.ixx" />
     <ClCompile Include="Framework.ixx" />

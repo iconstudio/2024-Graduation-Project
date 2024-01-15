@@ -1,4 +1,4 @@
-export module Iconer.Framework;
+export module Demo.Framework;
 import Net.Constraints;
 
 export namespace demo

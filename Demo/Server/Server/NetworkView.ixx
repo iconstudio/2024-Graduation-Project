@@ -1,59 +1,34 @@
-export module Iconer.NetworkView;
+export module Iconer.Network.View;
+import Iconer.Declarations;
+import Iconer.Utility.RecursiveTemplateClass;
 import Net.Constraints;
+export import Net.ErrorCode;
 import <utility>;
 
-export namespace demo
+export namespace iconer
 {
-	template<net::crtp T>
 	class [[nodiscard]] NetworkView
 	{
 	public:
 		constexpr NetworkView() noexcept = default;
 		constexpr ~NetworkView() noexcept = default;
 
-#define REQUIRE_METHOD(name) requires { T::name(); }
-#define NOTHROW_METHOD(name) (REQUIRE_METHOD(name) and noexcept(std::declval<T>().name())) or (not REQUIRE_METHOD(name))
+#define CONSTRUCT_EVENT(name, ...) virtual constexpr void name(##__VA_ARGS__) { }
+		CONSTRUCT_EVENT(OnNetworkIntialized, bool succeed, net::ErrorCodes error_code);
+		CONSTRUCT_EVENT(OnNetworkDestructed);
+		CONSTRUCT_EVENT(OnConnected);
+		CONSTRUCT_EVENT(OnConnectionFailed, net::ErrorCodes error_code);
+		CONSTRUCT_EVENT(OnDisconnected);
+		CONSTRUCT_EVENT(OnRoomCreated, room_id_t room_id);
+		CONSTRUCT_EVENT(OnRoomDestroyed, room_id_t room_id);
+		CONSTRUCT_EVENT(OnRoomJoined, room_id_t room_id, user_id_t user_id);
+		CONSTRUCT_EVENT(OnRoomLeft, user_id_t user_id);
 
-		constexpr void OnNetworkIntialized()
-			noexcept(NOTHROW_METHOD(name))
-		{
-			if constexpr (REQUIRE_METHOD(OnNetworkIntialized))
-			{
-				_Cast().OnNetworkIntialized();
-			}
-		}
+		constexpr NetworkView(const NetworkView&) noexcept = default;
+		constexpr NetworkView(NetworkView&&) noexcept = default;
+		constexpr NetworkView& operator=(const NetworkView&) noexcept = default;
+		constexpr NetworkView& operator=(NetworkView&&) noexcept = default;
 
-
-		constexpr NetworkView(const NetworkView<T>&) noexcept = default;
-		constexpr NetworkView(NetworkView<T>&&) noexcept = default;
-		constexpr NetworkView& operator=(const NetworkView<T>&) noexcept = default;
-		constexpr NetworkView& operator=(NetworkView<T>&&) noexcept = default;
-
-		[[nodiscard]] constexpr bool operator==(const NetworkView<T>&) const noexcept = default;
-
-	protected:
-		[[nodiscard]]
-		T& _Cast() noexcept
-		{
-			return static_cast<T&>(*this);
-		}
-
-		[[nodiscard]]
-		const T& _Cast() const noexcept
-		{
-			return static_cast<const T&>(*this);
-		}
-
-		[[nodiscard]]
-		volatile T& _Cast() volatile noexcept
-		{
-			return static_cast<volatile T&>(*this);
-		}
-
-		[[nodiscard]]
-		const volatile T& _Cast() const volatile noexcept
-		{
-			return static_cast<const volatile T&>(*this);
-		}
+		[[nodiscard]] constexpr bool operator==(const NetworkView&) const noexcept = default;
 	};
 }
