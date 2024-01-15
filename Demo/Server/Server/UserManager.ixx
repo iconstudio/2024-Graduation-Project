@@ -2,6 +2,7 @@ export module Iconer.Network.UserManager;
 import Iconer.Declarations;
 import Iconer.Network.EntityManager;
 export import Iconer.Network.User;
+import <memory>;
 
 export namespace iconer
 {
@@ -36,17 +37,17 @@ export namespace iconer
 
 		constexpr UserManager(size_type clients_count) noexcept : super(clients_count) {}
 
-		constexpr void Add(iconer::User&& object)
+		void Add(iconer::User&& object)
 		{
 			super::Add(std::move(object));
 		}
 
-		constexpr void Add(std::unique_ptr<iconer::User>&& ptr)
+		void Add(std::unique_ptr<iconer::User>&& ptr)
 		{
 			super::Add(std::move(ptr));
 		}
 
-		constexpr void Add(iconer::User* object_ptr)
+		void Add(iconer::User* object_ptr)
 		{
 			super::Add(object_ptr);
 		}
