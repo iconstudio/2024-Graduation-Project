@@ -10,7 +10,7 @@ int main()
 {
 	std::cout << "Hello World!\n";
 
-	iconer::NetworkEntityManager<iconer::user_id_t> entity_manager{ 20ULL };
+	//iconer::NetworkEntityManager<iconer::user_id_t> entity_manager{ 20ULL };
 	iconer::UserManager user_manager{ 20ULL };
 
 	iconer::User u1;
@@ -18,9 +18,9 @@ int main()
 	iconer::User u2;
 	u2.OnNetworkIntialized(false, {});
 
-	entity_manager.Add(std::move(u1));
+	//entity_manager.Add(std::move(u1));
 	user_manager.Add(std::move(u2));
 
-	iconer::NetworkView* v = &u1;
-	v->OnNetworkIntialized(false, {});
+	//iconer::NetworkView* v = &u1;
+	//v->OnNetworkIntialized(false, {});
 }
