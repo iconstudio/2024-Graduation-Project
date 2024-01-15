@@ -38,7 +38,7 @@ export namespace iconer::util
 		template <typename Node>
 		constexpr bool TryTranslate() noexcept(std::is_nothrow_assignable_v<data_t, Node>)
 		{
-			if (std::holds_alternative<Node>(currentState))
+			if (std::holds_alternative<std::decay_t<Node>>(currentState))
 			{
 				return true;
 			}
@@ -47,7 +47,7 @@ export namespace iconer::util
 				data_t state = currentState.load(std::memory_order_acquire);
 				if (state.valueless_by_exception())
 				{
-					state = Node{};
+					state = std::decay_t<Node>{};
 					currentState.store(state, std::memory_order_release);
 					return true;
 				}
