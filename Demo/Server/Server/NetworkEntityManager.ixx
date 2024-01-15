@@ -58,10 +58,10 @@ export namespace iconer
 			super::Add(std::move(object));
 		}
 
-		constexpr void Add(value_type&& object)
+		constexpr void Add(value_type&& ptr)
 		{
 			std::unique_lock lk{ myLock };
-			super::Add(std::move(object));
+			super::Add(std::move(ptr));
 		}
 
 		constexpr void Add(object_t* object_ptr)
