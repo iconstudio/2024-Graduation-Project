@@ -43,7 +43,7 @@ export namespace iconer
 		constexpr NetworkEntityManager() noexcept(net::nothrow_default_constructibles<data_t, lock_t>) = default;
 		constexpr ~NetworkEntityManager() noexcept(net::nothrow_destructibles<data_t, lock_t>) = default;
 
-		void Add(object_t&& object)
+		void Add(object_t&& object) 
 		{
 			std::unique_lock lk{myLock};
 			auto it = std::back_inserter(myData);
@@ -57,7 +57,7 @@ export namespace iconer
 			*it = std::move(ptr);
 		}
 
-		void Add(object_t* object_ptr)
+		void Add(object_t* const object_ptr) noexcept(noexcept(std::declval<lock_t>().lock()) and noexcept(value_type{ object_ptr }))
 		{
 			std::unique_lock lk{myLock};
 			auto it = std::back_inserter(myData);
@@ -81,28 +81,28 @@ export namespace iconer
 		}
 
 		[[nodiscard]]
-		reference At(const size_type pos) noexcept
+		reference At(const size_type pos) noexcept(noexcept(std::declval<data_t>().at(pos)))
 		{
 			std::shared_lock lk{myLock};
 			return myData.at(pos);
 		}
 
 		[[nodiscard]]
-		const_reference At(const size_type pos) const noexcept
+		const_reference At(const size_type pos) const noexcept(noexcept(std::declval<const data_t>().at(pos)))
 		{
 			std::shared_lock lk{myLock};
 			return myData.at(pos);
 		}
 
 		[[nodiscard]]
-		constexpr reference operator[](const size_type pos) noexcept
+		constexpr reference operator[](const size_type pos) noexcept(noexcept(std::declval<data_t>().operator[](pos)))
 		{
 			std::shared_lock lk{myLock};
 			return myData.operator[](pos);
 		}
 
 		[[nodiscard]]
-		constexpr const_reference operator[](const size_type pos) const noexcept
+		constexpr const_reference operator[](const size_type pos) const noexcept(noexcept(std::declval<const data_t>().operator[](pos)))
 		{
 			std::shared_lock lk{myLock};
 			return myData.operator[](pos);
