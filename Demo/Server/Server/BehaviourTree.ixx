@@ -1,7 +1,7 @@
-export module Demo.Container.BehaviourTree;
+export module Iconer.Utility.BehaviourTree;
 import Net.Constraints;
 
-export namespace demo
+export namespace iconer
 {
 	class [[nodiscard]] BehaviourTree final
 	{
