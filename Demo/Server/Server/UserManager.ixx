@@ -26,12 +26,35 @@ export namespace iconer
 		using iterator = super::iterator;
 		using const_iterator = super::const_iterator;
 
-		using super::super;
 		using super::begin;
 		using super::end;
 		using super::cbegin;
 		using super::cend;
 
-		~UserManager() = default;
+		constexpr UserManager() noexcept = default;
+		constexpr ~UserManager() noexcept = default;
+
+		constexpr UserManager(size_type clients_count) noexcept : super(clients_count) {}
+
+		constexpr void Add(iconer::User&& object)
+		{
+			super::Add(std::move(object));
+		}
+
+		constexpr void Add(std::unique_ptr<iconer::User>&& ptr)
+		{
+			super::Add(std::move(ptr));
+		}
+
+		constexpr void Add(iconer::User* object_ptr)
+		{
+			super::Add(object_ptr);
+		}
+
+	private:
+		UserManager(const UserManager&) = delete;
+		UserManager(UserManager&&) = delete;
+		void operator=(const UserManager&) = delete;
+		void operator=(UserManager&&) = delete;
 	};
 }
