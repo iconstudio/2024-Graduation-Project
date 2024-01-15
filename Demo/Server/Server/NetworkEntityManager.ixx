@@ -70,12 +70,12 @@ export namespace iconer
 			super::Add(std::move(object_ptr));
 		}
 
-		using super::Add;
+		using super::Emplace;
 		template<typename U, typename... Args>
-		constexpr void Add(Args&&... args)
+		constexpr void Emplace(Args&&... args)
 		{
 			std::unique_lock lk{ myLock };
-			Add<U>(std::forward<Args>(args)...);
+			Emplace<U>(std::forward<Args>(args)...);
 		}
 
 		constexpr void Remove(iterator it)
@@ -118,11 +118,12 @@ export namespace iconer
 			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->GetID(); });
 		}
 
+		template<typename Pred>
 		[[nodiscard]]
-		constexpr iterator FindEntity(const id_t id) noexcept
+		constexpr void Search(Pred&& fn) noexcept
 		{
 			std::shared_lock lk{ myLock };
-			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->GetID(); });
+
 		}
 
 		void LockWriter() noexcept

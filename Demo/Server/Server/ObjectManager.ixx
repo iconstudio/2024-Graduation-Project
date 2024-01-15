@@ -60,7 +60,7 @@ export namespace iconer
 		}
 
 		template<typename U, typename... Args>
-		constexpr void Add(Args&&... args)
+		constexpr void Emplace(Args&&... args)
 		{
 			myData.emplace_back(std::make_unique<U>(std::forward<Args>(args)...));
 
