@@ -19,14 +19,14 @@ export namespace iconer
 		}
 	};
 
-	template <typename IdType, template<typename... Ts> typename Container = std::vector>
+	template <typename IdType, template<typename... Ts> typename Container = std::vector, typename Locker = std::shared_mutex>
 	class [[nodiscard]] NetworkEntityManager
 	{
 	public:
 		using id_t = IdType;
 		using object_t = NetworkEntity<IdType>;
 		using data_t = Container<std::unique_ptr<object_t>>;
-		using lock_t = std::shared_mutex;
+		using lock_t = Locker;
 		using allocator_type = data_t::allocator_type;
 		using value_type = data_t::value_type;
 		using pointer = data_t::pointer;
@@ -164,50 +164,50 @@ export namespace iconer
 			return myData.cend();
 		}
 
-		void LockWriter() noexcept
+		void LockWriter() noexcept(noexcept(std::declval<lock_t>().lock()))
 		{
 			myLock.lock();
 		}
 
-		void UnlockWriter() noexcept
+		void UnlockWriter() noexcept(noexcept(std::declval<lock_t>().unlock()))
 		{
 			myLock.unlock();
 		}
 
-		void LockReader() noexcept
+		void LockReader() noexcept(noexcept(std::declval<lock_t>().lock_shared()))
 		{
 			myLock.lock_shared();
 		}
 
-		void UnlockReader() noexcept
+		void UnlockReader() noexcept(noexcept(std::declval<lock_t>().unlock_shared()))
 		{
 			myLock.unlock_shared();
 		}
 
-		bool TryLockWriter() noexcept
+		bool TryLockWriter() noexcept(noexcept(std::declval<lock_t>().try_lock()))
 		{
 			return myLock.try_lock();
 		}
 
-		bool TryLockReader() noexcept
+		bool TryLockReader() noexcept(noexcept(std::declval<lock_t>().try_lock_shared()))
 		{
 			return myLock.try_lock_shared();
 		}
 
 		[[nodiscard]]
-		constexpr size_type GetSize() const noexcept
+		constexpr size_type GetSize() const noexcept(noexcept(std::declval<const data_t>().size()))
 		{
 			return myData.size();
 		}
 
 		[[nodiscard]]
-		constexpr size_type GetCapacity() const noexcept
+		constexpr size_type GetCapacity() const noexcept(noexcept(std::declval<const data_t>().capacity()))
 		{
 			return myData.capacity();
 		}
 
 		[[nodiscard]]
-		constexpr bool IsEmpty() const noexcept
+		constexpr bool IsEmpty() const noexcept(noexcept(std::declval<const data_t>().empty()))
 		{
 			return myData.empty();
 		}
