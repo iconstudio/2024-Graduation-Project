@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="RecursiveTemplateClass.ixx" />
     <ClCompile Include="BehaviourTree.ixx" />
     <ClCompile Include="Framework.ixx" />
     <ClCompile Include="NetworkView.ixx" />
