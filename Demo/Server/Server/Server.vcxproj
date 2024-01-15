@@ -139,7 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BehaviourTree.ixx" />
+    <ClCompile Include="Framework.ixx" />
+    <ClCompile Include="NetworkView.ixx" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="User.ixx" />
+    <ClCompile Include="UserManager.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Modern Network\Modern Network\Modern Network.vcxproj">
