@@ -11,7 +11,6 @@ export namespace iconer
 	public:
 		using id_t = user_id_t;
 		using super = NetworkEntityManager<user_id_t>;
-		using super::object_t;
 		using super::value_type;
 		using super::data_t;
 
@@ -36,7 +35,7 @@ export namespace iconer
 		constexpr ~UserManager() noexcept = default;
 
 		constexpr UserManager(size_type clients_count) noexcept
-			: super(clients_count)
+			: UserManager()
 		{}
 
 		void Add(iconer::User&& object)
