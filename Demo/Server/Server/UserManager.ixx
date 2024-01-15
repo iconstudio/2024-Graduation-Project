@@ -11,21 +11,21 @@ export namespace iconer
 	public:
 		using id_t = user_id_t;
 		using super = NetworkEntityManager<user_id_t>;
-		using object_t = super::object_t;
-		using value_type = super::value_type;
-		using data_t = super::data_t;
+		using super::object_t;
+		using super::value_type;
+		using super::data_t;
 
-		using allocator_type = super::allocator_type;
-		using pointer = super::pointer;
-		using const_pointer = super::const_pointer;
-		using reference = super::reference;
-		using const_reference = super::const_reference;
-		using vol_reference = super::vol_reference;
-		using constvol_reference = super::constvol_reference;
-		using size_type = super::size_type;
-		using difference_type = super::difference_type;
-		using iterator = super::iterator;
-		using const_iterator = super::const_iterator;
+		using super::allocator_type;
+		using super::pointer;
+		using super::const_pointer;
+		using super::reference;
+		using super::const_reference;
+		using super::vol_reference;
+		using super::constvol_reference;
+		using super::size_type;
+		using super::difference_type;
+		using super::iterator;
+		using super::const_iterator;
 
 		using super::begin;
 		using super::end;
