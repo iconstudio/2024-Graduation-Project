@@ -52,19 +52,19 @@ export namespace iconer
 
 		~NetworkEntityManager() = default;
 
-		constexpr void Add(object_t&& object)
+		void Add(object_t&& object)
 		{
 			std::unique_lock lk{ myLock };
 			super::Add(std::move(object));
 		}
 
-		constexpr void Add(value_type&& ptr)
+		void Add(value_type&& ptr)
 		{
 			std::unique_lock lk{ myLock };
 			super::Add(std::move(ptr));
 		}
 
-		constexpr void Add(object_t* object_ptr)
+		void Add(object_t* object_ptr)
 		{
 			std::unique_lock lk{ myLock };
 			super::Add(std::move(object_ptr));
@@ -72,47 +72,47 @@ export namespace iconer
 
 		using super::Emplace;
 		template<typename U, typename... Args>
-		constexpr void Emplace(Args&&... args)
+		void Emplace(Args&&... args)
 		{
 			std::unique_lock lk{ myLock };
 			Emplace<U>(std::forward<Args>(args)...);
 		}
 
-		constexpr void Remove(iterator it)
+		void Remove(iterator it)
 		{
 			std::unique_lock lk{ myLock };
 			super::Remove(it);
 		}
 
-		constexpr void Remove(const_iterator it)
+		void Remove(const_iterator it)
 		{
 			std::unique_lock lk{ myLock };
 			super::Remove(it);
 		}
 
 		[[nodiscard]]
-		constexpr reference At(const size_type pos) noexcept
+		reference At(const size_type pos) noexcept
 		{
 			std::shared_lock lk{ myLock };
 			return super::At(pos);
 		}
 
 		[[nodiscard]]
-		constexpr const_reference At(const size_type pos) const noexcept
+		const_reference At(const size_type pos) const noexcept
 		{
 			std::shared_lock lk{ myLock };
 			return super::At(pos);
 		}
 
 		[[nodiscard]]
-		constexpr iterator FindEntity(const id_t id) noexcept
+		iterator FindEntity(const id_t id) noexcept
 		{
 			std::shared_lock lk{ myLock };
 			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->ID; });
 		}
 
 		[[nodiscard]]
-		constexpr const_iterator FindEntity(const id_t id) const noexcept
+		const_iterator FindEntity(const id_t id) const noexcept
 		{
 			std::shared_lock lk{ myLock };
 			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->ID; });
@@ -120,7 +120,7 @@ export namespace iconer
 
 		template<typename Pred>
 		[[nodiscard]]
-		constexpr void Search(Pred&& fn) noexcept
+		void Search(Pred&& fn) noexcept
 		{
 			std::shared_lock lk{ myLock };
 
