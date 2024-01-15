@@ -3,6 +3,7 @@ module;
 
 export module Iconer.Network.User;
 import Iconer.Declarations;
+import Iconer.Utility.BehaviourTree;
 import Iconer.Network.Entity;
 import Net.Handler;
 
@@ -20,5 +21,8 @@ export namespace iconer
 		{
 			std::cout << "Print!\n";
 		}
+
+	protected:
+		BehaviourTree myStatus;
 	};
 }
