@@ -35,7 +35,9 @@ export namespace iconer
 		constexpr UserManager() noexcept = default;
 		constexpr ~UserManager() noexcept = default;
 
-		constexpr UserManager(size_type clients_count) noexcept : super(clients_count) {}
+		constexpr UserManager(size_type clients_count) noexcept
+			: super(clients_count)
+		{}
 
 		void Add(iconer::User&& object)
 		{
