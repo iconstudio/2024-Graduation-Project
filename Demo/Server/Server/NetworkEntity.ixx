@@ -11,14 +11,14 @@ export namespace iconer
 	{
 	public:
 		using super = NetworkView;
+		using id_t = IdType;
 		using handler = net::Handler<IdType>;
-		using handle_t = IdType;
 
 		constexpr NetworkEntity() noexcept = default;
 		constexpr ~NetworkEntity() noexcept = default;
 
 		[[nodiscard]]
-		constexpr handle_t GetID() const noexcept
+		constexpr id_t ID() const noexcept
 		{
 			return handler::GetHandle();
 		}

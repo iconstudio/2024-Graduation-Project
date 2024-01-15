@@ -18,7 +18,7 @@ export namespace iconer
 		[[nodiscard]]
 		constexpr bool operator()(const_reference lhs, const_reference rhs) const noexcept
 		{
-			return lhs->GetID() < rhs->GetID();
+			return lhs->ID() < rhs->ID();
 		}
 	};
 
@@ -108,14 +108,14 @@ export namespace iconer
 		constexpr iterator FindEntity(const id_t id) noexcept
 		{
 			std::shared_lock lk{ myLock };
-			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->GetID(); });
+			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->ID(); });
 		}
 
 		[[nodiscard]]
 		constexpr const_iterator FindEntity(const id_t id) const noexcept
 		{
 			std::shared_lock lk{ myLock };
-			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->GetID(); });
+			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->ID(); });
 		}
 
 		template<typename Pred>
