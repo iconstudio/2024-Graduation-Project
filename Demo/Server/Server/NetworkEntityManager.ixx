@@ -1,5 +1,4 @@
 export module Iconer.Network.EntityManager;
-import Net.Constraints;
 import Iconer.Network.Entity;
 import <vector>;
 import <algorithm>;
@@ -40,92 +39,94 @@ export namespace iconer
 		using iterator = data_t::iterator;
 		using const_iterator = data_t::const_iterator;
 
-		constexpr NetworkEntityManager() noexcept(net::nothrow_default_constructibles<data_t, lock_t>) = default;
-		constexpr ~NetworkEntityManager() noexcept(net::nothrow_destructibles<data_t, lock_t>) = default;
+		constexpr NetworkEntityManager()
+			noexcept(std::is_nothrow_default_constructible_v<data_t> and std::is_nothrow_default_constructible_v<lock_t>) = default;
+		constexpr ~NetworkEntityManager()
+			noexcept(std::is_nothrow_destructible_v<data_t> and std::is_nothrow_destructible_v<lock_t>) = default;
 
-		void Add(object_t&& object) 
+		void Add(object_t&& object)
 		{
-			std::unique_lock lk{myLock};
+			std::unique_lock lk{ myLock };
 			auto it = std::back_inserter(myData);
 			*it = std::make_unique<object_t>(std::move(object));
 		}
 
 		void Add(value_type&& ptr)
 		{
-			std::unique_lock lk{myLock};
+			std::unique_lock lk{ myLock };
 			auto it = std::back_inserter(myData);
 			*it = std::move(ptr);
 		}
 
 		void Add(object_t* const object_ptr) noexcept(noexcept(std::declval<lock_t>().lock()) and noexcept(value_type{ object_ptr }))
 		{
-			std::unique_lock lk{myLock};
+			std::unique_lock lk{ myLock };
 			auto it = std::back_inserter(myData);
-			*it = value_type{object_ptr};
+			*it = value_type{ object_ptr };
 		}
 
 		template <typename U, typename... Args>
 		void Emplace(Args&&... args)
 		{
-			std::unique_lock lk{myLock};
+			std::unique_lock lk{ myLock };
 			auto it = std::back_inserter(myData);
 			*it = std::make_unique<U>(std::forward<Args>(args)...);
 		}
 
 		template <typename It>
-			requires requires(It it){ data_t::erase(it); }
+			requires requires(It it) { data_t::erase(it); }
 		void Remove(It it) noexcept(noexcept(myData.erase(it)) and noexcept(myLock.lock()))
 		{
-			std::unique_lock lk{myLock};
+			std::unique_lock lk{ myLock };
 			myData.erase(it);
 		}
 
 		[[nodiscard]]
 		reference At(const size_type pos) noexcept(noexcept(std::declval<data_t>().at(pos)))
 		{
-			std::shared_lock lk{myLock};
+			std::shared_lock lk{ myLock };
 			return myData.at(pos);
 		}
 
 		[[nodiscard]]
 		const_reference At(const size_type pos) const noexcept(noexcept(std::declval<const data_t>().at(pos)))
 		{
-			std::shared_lock lk{myLock};
+			std::shared_lock lk{ myLock };
 			return myData.at(pos);
 		}
 
 		[[nodiscard]]
 		constexpr reference operator[](const size_type pos) noexcept(noexcept(std::declval<data_t>().operator[](pos)))
 		{
-			std::shared_lock lk{myLock};
+			std::shared_lock lk{ myLock };
 			return myData.operator[](pos);
 		}
 
 		[[nodiscard]]
 		constexpr const_reference operator[](const size_type pos) const noexcept(noexcept(std::declval<const data_t>().operator[](pos)))
 		{
-			std::shared_lock lk{myLock};
+			std::shared_lock lk{ myLock };
 			return myData.operator[](pos);
 		}
 
 		[[nodiscard]]
 		iterator FindEntity(const id_t id) noexcept
 		{
-			std::shared_lock lk{myLock};
+			std::shared_lock lk{ myLock };
 			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->ID; });
 		}
 
 		[[nodiscard]]
 		const_iterator FindEntity(const id_t id) const noexcept
 		{
-			std::shared_lock lk{myLock};
+			std::shared_lock lk{ myLock };
 			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->ID; });
 		}
 
 		template <typename Pred>
 		void Search(Pred&& fn) noexcept
 		{
-			std::shared_lock lk{myLock};
+			std::shared_lock lk{ myLock };
 		}
 
 		[[nodiscard]]
