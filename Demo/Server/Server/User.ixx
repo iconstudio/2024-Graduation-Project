@@ -1,8 +1,10 @@
+module;
+#include <iostream>
+
 export module Iconer.Network.User;
 import Iconer.Declarations;
 import Iconer.Network.Entity;
 import Net.Handler;
-import <iostream>;
 
 export namespace iconer
 {
