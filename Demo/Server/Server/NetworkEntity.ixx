@@ -2,26 +2,24 @@ export module Iconer.Network.Entity;
 import Iconer.Declarations;
 import Iconer.Network.View;
 import Net.Handler;
+import Net.Property;
 import Net.Io.Entity;
 
 export namespace iconer
 {
 	template<typename IdType>
-	class [[nodiscard]] NetworkEntity : public NetworkView, private net::Handler<IdType>, public net::io::Entity
+	class [[nodiscard]] NetworkEntity : public NetworkView, public net::io::Entity
 	{
 	public:
-		using super = NetworkView;
 		using id_t = IdType;
-		using handler = net::Handler<IdType>;
+		using super = NetworkView;
 
-		constexpr NetworkEntity() noexcept = default;
 		constexpr ~NetworkEntity() noexcept = default;
 
-		[[nodiscard]]
-		constexpr id_t ID() const noexcept
-		{
-			return handler::GetHandle();
-		}
+		constexpr NetworkEntity(const id_t id) noexcept
+			: NetworkView(), Entity()
+			, ID(id)
+		{}
 
 		[[nodiscard]]
 		constexpr net::io::Context& Context() & noexcept
@@ -53,5 +51,10 @@ export namespace iconer
 		constexpr NetworkEntity& operator=(NetworkEntity&&) = default;
 
 		[[nodiscard]] constexpr bool operator==(const NetworkEntity&) const noexcept = default;
+
+		net::ReadonlyProperty<IdType> ID;
+
+	protected:
+		constexpr NetworkEntity() noexcept = default;
 	};
 }
