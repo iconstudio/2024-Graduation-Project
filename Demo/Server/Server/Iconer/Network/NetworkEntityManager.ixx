@@ -49,6 +49,7 @@ export namespace iconer
 			std::unique_lock lk{ myLock };
 			auto it = std::back_inserter(myData);
 			*it = std::make_unique<object_t>(std::move(object));
+			Sort();
 		}
 
 		void Add(value_type&& ptr)
@@ -56,6 +57,7 @@ export namespace iconer
 			std::unique_lock lk{ myLock };
 			auto it = std::back_inserter(myData);
 			*it = std::move(ptr);
+			Sort();
 		}
 
 		void Add(object_t* const object_ptr) noexcept(noexcept(std::declval<lock_t>().lock()) and noexcept(value_type{ object_ptr }))
@@ -63,6 +65,7 @@ export namespace iconer
 			std::unique_lock lk{ myLock };
 			auto it = std::back_inserter(myData);
 			*it = value_type{ object_ptr };
+			Sort();
 		}
 
 		template <typename U, typename... Args>
@@ -71,6 +74,7 @@ export namespace iconer
 			std::unique_lock lk{ myLock };
 			auto it = std::back_inserter(myData);
 			*it = std::make_unique<U>(std::forward<Args>(args)...);
+			Sort();
 		}
 
 		template <typename It>
@@ -79,6 +83,7 @@ export namespace iconer
 		{
 			std::unique_lock lk{ myLock };
 			myData.erase(it);
+			Sort();
 		}
 
 		[[nodiscard]]
