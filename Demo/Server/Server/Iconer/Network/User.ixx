@@ -42,7 +42,10 @@ export namespace iconer
 		using state_data_t = util::BehaviourTree<user_status::None, user_status::Idle, user_status::Listening, user_status::Connecting, user_status::Closing>;
 		//using state_t = net::CustomProperty<state_data_t, User, false>;
 
-		constexpr User() noexcept = default;
+		explicit constexpr User(const user_id_t id) noexcept
+			: super(id)
+		{}
+
 		constexpr ~User() noexcept override = default;
 
 		template <typename Status>
