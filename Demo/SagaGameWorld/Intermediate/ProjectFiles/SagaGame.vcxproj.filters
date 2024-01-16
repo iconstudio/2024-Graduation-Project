@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\SagaGame.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\SagaGame.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\SagaGameEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.vsconfig" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\SagaGame">
+      <UniqueIdentifier>{2EEABB16-FE22-372C-B2A5-8477CE2D78FA}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\SagaGame\SagaCharacterBase.cpp">
+      <Filter>Source\SagaGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\SagaCharacterBase.h">
+      <Filter>Source\SagaGame</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\SagaGame\SagaGame.Build.cs">
+      <Filter>Source\SagaGame</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\SagaGame\SagaGame.cpp">
+      <Filter>Source\SagaGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\SagaGame.h">
+      <Filter>Source\SagaGame</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SagaGame\SagaGameCharacter.cpp">
+      <Filter>Source\SagaGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\SagaGameCharacter.h">
+      <Filter>Source\SagaGame</Filter>
+    </ClInclude>
+    <Filter Include="Source\SagaGame\Game">
+      <UniqueIdentifier>{8179AC6B-6D09-3695-B388-A6ECE278D714}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\SagaGame\Game\SagaGameGameMode.cpp">
+      <Filter>Source\SagaGame\Game</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Game\SagaGameGameMode.h">
+      <Filter>Source\SagaGame\Game</Filter>
+    </ClInclude>
+    <Filter Include="Source\SagaGame\Network">
+      <UniqueIdentifier>{21784C7B-8B17-38E5-91A2-DE7E03376DD2}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\SagaGame\Network\NetworkManager.cpp">
+      <Filter>Source\SagaGame\Network</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Network\NetworkManager.h">
+      <Filter>Source\SagaGame\Network</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SagaGame\Network\NetworkStructs.cpp">
+      <Filter>Source\SagaGame\Network</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Network\NetworkStructs.h">
+      <Filter>Source\SagaGame\Network</Filter>
+    </ClInclude>
+    <Filter Include="Source\SagaGame\Player">
+      <UniqueIdentifier>{9C32F3C6-6EFF-3591-B9ED-361812393E0A}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\SagaGame\Player\SagaPlayerController.cpp">
+      <Filter>Source\SagaGame\Player</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Player\SagaPlayerController.h">
+      <Filter>Source\SagaGame\Player</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
