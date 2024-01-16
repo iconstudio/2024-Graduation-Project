@@ -23,14 +23,14 @@ export namespace iconer
 
 		// None -> Listening -> Connecting -> Idle -> ... -> Closing
 		LINK_STATE(None, Listening);
-		
+
 		LINK_STATE(Listening, Connecting);
-		
+
 		LINK_STATE(Connecting, Idle);
 		LINK_STATE(Connecting, Closing);
-		
+
 		LINK_STATE(Idle, Closing);
-		
+
 		LINK_STATE(Closing, None);
 		LINK_STATE(Closing, Listening);
 	}
@@ -48,7 +48,7 @@ export namespace iconer
 
 		constexpr ~User() noexcept override = default;
 
-		template <typename Status>
+		template<typename Status>
 		bool SetState() noexcept
 		{
 			if (myStatus.TryTranslate<Status>())
@@ -62,7 +62,7 @@ export namespace iconer
 			}
 		}
 
-		template <typename Status>
+		template<typename Status>
 		bool SetState(Status&&) noexcept
 		{
 			if (myStatus.TryTranslate<Status>())
