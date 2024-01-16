@@ -3,11 +3,34 @@
 
 #include "Network/NetworkManager.h"
 
+//USTRUCT(BluprintType)
+//struct FInitData
+//{
+//public:
+//	GENERATED_USTRUCT_BODY()
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	int16 id;
+//
+//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+//	FVector initpos;
+//};
+
 // Sets default values
 ANetworkManager::ANetworkManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+}
+
+void ANetworkManager::AssignPlayerID(APlayerController* PlayerController)
+{
+
+}
+
+void ANetworkManager::HandlePlayerDisconnected(int16 PlayerID)
+{
 
 }
 
