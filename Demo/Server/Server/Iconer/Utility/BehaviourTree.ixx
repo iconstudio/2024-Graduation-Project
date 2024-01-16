@@ -12,18 +12,18 @@ export namespace iconer::util
 {
 	struct DefaultBehaviour
 	{
-		template <typename OtherNode>
+		template<typename OtherNode>
 		static inline constexpr bool Transient = false;
 	};
 
-	template <typename Node>
+	template<typename Node>
 	struct BehaviourTraits
 	{
-		template <typename OtherNode>
+		template<typename OtherNode>
 		static inline constexpr bool IsTransient = Node::template Transient<OtherNode>;
 	};
 
-	template <typename... NodeTs>
+	template<typename... NodeTs>
 		requires net::argument_available<NodeTs...>
 	class [[nodiscard]] BehaviourTree final
 	{
@@ -35,53 +35,52 @@ export namespace iconer::util
 
 		constexpr BehaviourTree() noexcept = default;
 		constexpr ~BehaviourTree() noexcept = default;
-		
-		template <typename U>
+
+		template<typename U>
 		constexpr BehaviourTree(U&& node) noexcept(std::is_nothrow_constructible_v<data_t, U&&>)
 			: currentState(std::forward<U>(node))
 		{}
 
-		template <typename Node>
+		template<typename Node>
 		constexpr bool TryTranslate() noexcept(std::is_nothrow_assignable_v<data_t, Node>)
 		{
-			if (std::holds_alternative<Node>(currentState.load(std::memory_order_relaxed)))
+			data_t state = currentState.load(std::memory_order_acquire);
+
+			if (std::holds_alternative<Node>(state))
 			{
+				currentState.store(state, std::memory_order_release);
+				return true;
+			}
+			else if (state.valueless_by_exception())
+			{
+				state = Node{};
+				currentState.store(state, std::memory_order_release);
 				return true;
 			}
 			else
 			{
-				data_t state = currentState.load(std::memory_order_acquire);
-				if (state.valueless_by_exception())
+				static constexpr auto visitor = []<typename V>(V&& arg) noexcept -> bool {
+					if constexpr (BehaviourTraits<std::decay_t<V>>::template IsTransient<Node>)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				};
+
+				const bool result = std::visit(visitor, state);
+				if (result)
 				{
 					state = Node{};
-					currentState.store(state, std::memory_order_release);
-					return true;
 				}
-				else
-				{
-					static constexpr auto visitor = []<typename V>(V&& arg) noexcept -> bool {
-						if constexpr (BehaviourTraits<std::decay_t<V>>::template IsTransient<Node>)
-						{
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-					};
-
-					const bool result = std::visit(visitor, state);
-					if (result)
-					{
-						state = Node{};
-					}
-					currentState.store(state, std::memory_order_release);
-					return result;
-				}
+				currentState.store(state, std::memory_order_release);
+				return result;
 			}
 		}
 
-		template <typename Fn>
+		template<typename Fn>
 		constexpr auto Visit(Fn&& fn) noexcept(noexcept(std::visit(std::forward<Fn>(fn), std::declval<data_t>())))
 		{
 			if constexpr (std::is_same_v<decltype(std::visit(std::forward<Fn>(fn), std::declval<data_t>())), void>)
@@ -101,7 +100,7 @@ export namespace iconer::util
 			}
 		}
 
-		template <typename Fn>
+		template<typename Fn>
 		constexpr auto Visit(Fn&& fn) const noexcept(noexcept(std::visit(std::forward<Fn>(fn), std::declval<data_t>())))
 		{
 			if constexpr (std::is_same_v<decltype(std::visit(std::forward<Fn>(fn), std::declval<data_t>())), void>)
@@ -118,7 +117,7 @@ export namespace iconer::util
 		constexpr BehaviourTree(BehaviourTree&&) noexcept = default;
 		constexpr BehaviourTree& operator=(const BehaviourTree&) noexcept = default;
 		constexpr BehaviourTree& operator=(BehaviourTree&&) noexcept = default;
-		
+
 	private:
 		std::atomic<data_t> currentState;
 	};
