@@ -4,6 +4,7 @@ module;
 export module Iconer.Utility.BehaviourTree;
 import Net.Traits;
 import Net.Constraints;
+import <concepts>;
 import <variant>;
 import <atomic>;
 
@@ -34,11 +35,16 @@ export namespace iconer::util
 
 		constexpr BehaviourTree() noexcept = default;
 		constexpr ~BehaviourTree() noexcept = default;
+		
+		template <typename U>
+		constexpr BehaviourTree(U&& node) noexcept(std::is_nothrow_constructible_v<data_t, U&&>)
+			: currentState(std::forward<U>(node))
+		{}
 
 		template <typename Node>
 		constexpr bool TryTranslate() noexcept(std::is_nothrow_assignable_v<data_t, Node>)
 		{
-			if (std::holds_alternative<std::decay_t<Node>>(currentState))
+			if (std::holds_alternative<Node>(currentState.load(std::memory_order_relaxed)))
 			{
 				return true;
 			}
@@ -47,13 +53,13 @@ export namespace iconer::util
 				data_t state = currentState.load(std::memory_order_acquire);
 				if (state.valueless_by_exception())
 				{
-					state = std::decay_t<Node>{};
+					state = Node{};
 					currentState.store(state, std::memory_order_release);
 					return true;
 				}
 				else
 				{
-					constexpr auto visitor = [&state]<typename V>(V&& arg) noexcept -> bool {
+					static constexpr auto visitor = []<typename V>(V&& arg) noexcept -> bool {
 						if constexpr (BehaviourTraits<std::decay_t<V>>::template IsTransient<Node>)
 						{
 							return true;
@@ -65,6 +71,10 @@ export namespace iconer::util
 					};
 
 					const bool result = std::visit(visitor, state);
+					if (result)
+					{
+						state = Node{};
+					}
 					currentState.store(state, std::memory_order_release);
 					return result;
 				}
@@ -72,9 +82,9 @@ export namespace iconer::util
 		}
 
 		template <typename Fn>
-		constexpr decltype(auto) Visit(Fn&& fn) noexcept(std::visit(std::forward<Fn>(fn), currentState))
+		constexpr auto Visit(Fn&& fn) noexcept(noexcept(std::visit(std::forward<Fn>(fn), std::declval<data_t>())))
 		{
-			if constexpr (net::same_as<decltype(std::visit(std::forward<Fn>(fn), currentState)), void>)
+			if constexpr (std::is_same_v<decltype(std::visit(std::forward<Fn>(fn), std::declval<data_t>())), void>)
 			{
 				data_t state = currentState.load(std::memory_order_acquire);
 				std::visit(std::forward<Fn>(fn), std::move(state));
@@ -83,7 +93,8 @@ export namespace iconer::util
 			else
 			{
 				data_t state = currentState.load(std::memory_order_acquire);
-				auto&& result = std::visit(std::forward<Fn>(fn), std::move(state));
+
+				auto result = std::visit(std::forward<Fn>(fn), std::move(state));
 				currentState.store(state, std::memory_order_release);
 
 				return result;
@@ -91,9 +102,9 @@ export namespace iconer::util
 		}
 
 		template <typename Fn>
-		constexpr decltype(auto) Visit(Fn&& fn) const noexcept(std::visit(std::forward<Fn>(fn), currentState))
+		constexpr auto Visit(Fn&& fn) const noexcept(noexcept(std::visit(std::forward<Fn>(fn), std::declval<data_t>())))
 		{
-			if constexpr (net::same_as<decltype(std::visit(std::forward<Fn>(fn), currentState)), void>)
+			if constexpr (std::is_same_v<decltype(std::visit(std::forward<Fn>(fn), std::declval<data_t>())), void>)
 			{
 				std::visit(std::forward<Fn>(fn), currentState.load(std::memory_order_acq_rel));
 			}
