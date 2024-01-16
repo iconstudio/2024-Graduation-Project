@@ -18,13 +18,15 @@ export namespace iconer
 		}
 	};
 
-	template<typename IdType, template<typename... Ts> typename Container = std::vector, typename Locker = std::shared_mutex, typename... Cts>
+	template<typename E, typename IdType, template<typename... Ts> typename Container = std::vector, typename Locker = std::shared_mutex, typename... Cts>
 	class [[nodiscard]] NetworkEntityManager
 	{
+		static_assert(std::derived_from<E, NetworkEntity<IdType>>);
+
 	public:
 		using id_t = IdType;
-		using object_t = NetworkEntity<IdType>;
-		using data_t = Container<std::unique_ptr<object_t>, Cts...>;
+		using object_t = E;
+		using data_t = Container<std::unique_ptr<E>, Cts...>;
 		using lock_t = Locker;
 		using allocator_type = data_t::allocator_type;
 		using value_type = data_t::value_type;
