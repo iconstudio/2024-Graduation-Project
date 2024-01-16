@@ -4,7 +4,7 @@ import Iconer.Declarations;
 import Iconer.Network.User;
 import Iconer.Network.EntityManager;
 import Iconer.Network.UserManager;
-#include <iostream>
+import <iostream>;
 
 int main()
 {
@@ -16,11 +16,11 @@ int main()
 	iconer::User u1;
 	u1.OnNetworkInitialized(true, {});
 	iconer::User u2;
-	u2.OnNetworkIntialized(false, {});
+	u2.OnNetworkInitialized(false, {});
 
 	//entity_manager.Add(std::move(u1));
 	user_manager.Add(std::move(u2));
 
 	//iconer::NetworkView* v = &u1;
-	//v->OnNetworkIntialized(false, {});
+	//v->OnNetworkInitialized(false, {});
 }
