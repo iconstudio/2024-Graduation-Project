@@ -6,11 +6,11 @@ import <memory>;
 
 export namespace iconer
 {
-	class [[nodiscard]] UserManager final : public NetworkEntityManager<user_id_t>
+	class [[nodiscard]] UserManager final : public NetworkEntityManager<User, user_id_t>
 	{
 	public:
 		using id_t = user_id_t;
-		using super = NetworkEntityManager<user_id_t>;
+		using super = NetworkEntityManager;
 		using super::value_type;
 		using super::data_t;
 
