@@ -595,6 +595,7 @@
           <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
           <LinkCompiled>true</LinkCompiled>
       </ClCompile>
+      <ClCompile Include="Iconer\Network\Private\User.cpp"/>
       <ClCompile Include="Iconer\Network\Private\UserManager.cpp">
           <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
           <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
