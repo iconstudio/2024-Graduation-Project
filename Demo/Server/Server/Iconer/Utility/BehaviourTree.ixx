@@ -103,6 +103,11 @@ export namespace iconer::util
 			}
 		}
 
+		constexpr BehaviourTree(const BehaviourTree&) noexcept = default;
+		constexpr BehaviourTree(BehaviourTree&&) noexcept = default;
+		constexpr BehaviourTree& operator=(const BehaviourTree&) noexcept = default;
+		constexpr BehaviourTree& operator=(BehaviourTree&&) noexcept = default;
+		
 	private:
 		std::atomic<data_t> currentState;
 	};
