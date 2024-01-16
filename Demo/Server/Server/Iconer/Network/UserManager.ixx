@@ -40,11 +40,6 @@ export namespace iconer
 			Reserve(clients_count);
 		}
 
-		void Add(iconer::User&& object)
-		{
-			super::Add(std::move(object));
-		}
-
 		void Add(std::unique_ptr<iconer::User>&& ptr)
 		{
 			super::Add(std::move(ptr));
