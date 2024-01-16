@@ -6,7 +6,6 @@ import Iconer.Declarations;
 import Iconer.Utility.BehaviourTree;
 import Iconer.Network.Entity;
 import Net.Handler;
-import Net.Property;
 
 export namespace iconer
 {
@@ -41,27 +40,44 @@ export namespace iconer
 	public:
 		using super = NetworkEntity;
 		using state_data_t = util::BehaviourTree<user_status::None, user_status::Idle, user_status::Listening, user_status::Connecting, user_status::Closing>;
-		using state_t = net::CustomProperty<state_data_t, User, false>;
+		//using state_t = net::CustomProperty<state_data_t, User, false>;
 
-		User() noexcept;
+		constexpr User() noexcept = default;
 		constexpr ~User() noexcept override = default;
 
 		template <typename Status>
-		constexpr bool SetState() noexcept
+		bool SetState() noexcept
 		{
-			return myStatus->TryTranslate<Status>();
+			if (myStatus.TryTranslate<Status>())
+			{
+				StateDelegate(*this, myStatus);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		template <typename Status>
-		constexpr bool SetState(Status&&) noexcept
+		bool SetState(Status&&) noexcept
 		{
-			return myStatus->TryTranslate<Status>();
+			if (myStatus.TryTranslate<Status>())
+			{
+				StateDelegate(*this, myStatus);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
 		void OnNetworkInitialized(bool succeed, net::ErrorCodes error_code) noexcept override;
 
 	protected:
-		static void _StateDelegate(User& user, state_data_t& state);
-		state_t myStatus;
+		static void StateDelegate(User& user, state_data_t& state);
+		//state_t myStatus;
+		state_data_t myStatus;
 	};
 }
