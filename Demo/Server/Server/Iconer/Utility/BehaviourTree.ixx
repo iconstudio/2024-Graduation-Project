@@ -1,7 +1,3 @@
-module;
-#include <concurrent_queue.h>
-#include "../../Iconer/Utility/BehaviourTreeHelper.hpp"
-
 export module Iconer.Utility.BehaviourTree;
 import Net.Traits;
 import Net.Constraints;
