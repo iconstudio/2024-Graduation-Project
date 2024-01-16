@@ -1,5 +1,6 @@
 module;
 #include <concurrent_queue.h>
+#include "../../Iconer/Network/Private/BehaviourTreeHelper.hpp"
 
 export module Iconer.Utility.BehaviourTree;
 import Net.Traits;

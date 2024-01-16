@@ -1060,6 +1060,9 @@
       <Project>{d672b687-2d7d-4592-8343-07c93596a1ef}</Project>
     </ProjectReference>
   </ItemGroup>
+    <ItemGroup>
+        <ClInclude Include="Iconer\Network\Private\BehaviourTreeHelper.hpp"/>
+    </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
