@@ -1,7 +1,10 @@
 export module Demo.Framework;
-import Net.Constraints;
+import Iconer.Declarations;
 import Iconer.Network.UserManager;
 export import Iconer.Network.User;
+import Net.Constraints;
+import Net.Socket;
+import Net.Io.Context;
 import <cstdint>;
 import <thread>;
 
@@ -10,6 +13,8 @@ export namespace demo
 	class [[nodiscard]] Framework final
 	{
 	public:
+		static inline constexpr iconer::user_id_t startUserID = 1000;
+
 		Framework(size_t clients_count, std::uint16_t port);
 		~Framework() = default;
 
@@ -19,6 +24,8 @@ export namespace demo
 		void Cleanup() noexcept;
 
 	private:
+		net::Socket listenSocket;
+		net::io::Context listenContext;
 		iconer::UserManager everyUsers;
 		std::stop_source cancellationSource;
 	};

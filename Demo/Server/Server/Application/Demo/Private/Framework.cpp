@@ -7,10 +7,11 @@ module Demo.Framework;
 // ReSharper disable CppMemberFunctionMayBeStatic
 
 demo::Framework::Framework(size_t clients_count, std::uint16_t port)
-	: everyUsers(clients_count)
-{
-	
-}
+	: listenSocket()
+	, listenContext()
+	, everyUsers(clients_count)
+	, cancellationSource()
+{}
 
 void
 demo::Framework::Awake()
