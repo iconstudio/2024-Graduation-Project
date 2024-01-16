@@ -226,14 +226,14 @@ export namespace iconer
 		template<typename M>
 		friend class std::lock_guard;
 
-		constexpr void Reserve(size_type count)
-			noexcept(noexcept(std::declval<data_t>().reserve(count)))
-			requires requires(const size_type cnt) { data_t::reserve(cnt); }
+		constexpr void Reserve(size_type count) noexcept(noexcept(std::declval<data_t>().reserve(count)))
+			requires requires(const size_type cnt) { std::declval<data_t>().reserve(cnt); }
 		{
 			myData.reserve(count);
 		}
 
 		constexpr void Sort() noexcept(noexcept(std::ranges::sort_heap(myData, NetworkEntityComparator<IdType>{})))
+			requires std::ranges::random_access_range<data_t>
 		{
 			std::ranges::sort_heap(myData, NetworkEntityComparator<IdType>{});
 		}
