@@ -33,4 +33,9 @@ main()
 
 	//iconer::NetworkView* v = &u1;
 	//v->OnNetworkInitialized(false, {});
+
+	appFramework.Awake();
+	appFramework.Start();
+	appFramework.Update();
+	appFramework.Cleanup();
 }
