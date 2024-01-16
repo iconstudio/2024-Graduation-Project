@@ -13,7 +13,7 @@ public:
 	constexpr ~FBasicPacket() noexcept = default;
 
 	[[nodiscard]]
-	virtual size_t GetByteSize() const noexcept
+	virtual constexpr size_t GetByteSize() const noexcept
 	{
 		return sizeof(myType);
 	}
@@ -34,3 +34,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, NoClear, meta = (DisplayName = "Internet Protocol"))
 	EPacketType myType;
 };
+
+namespace net
+{
+	using BasicPacket = ::FBasicPacket;
+}
