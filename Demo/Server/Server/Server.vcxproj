@@ -215,6 +215,7 @@
           <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
           <LinkCompiled>true</LinkCompiled>
       </ClCompile>
+      <ClCompile Include="Application\Demo\Private\Framework.cpp"/>
       <ClCompile Include="Iconer\Declarations.ixx">
           <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
           <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

@@ -4,6 +4,7 @@ import Iconer.Declarations;
 import Iconer.Network.User;
 import Iconer.Network.EntityManager;
 import Iconer.Network.UserManager;
+import Demo.Framework;
 import <iostream>;
 
 int main()
