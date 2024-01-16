@@ -6,7 +6,8 @@ module;
 module Demo.Framework;
 // ReSharper disable CppMemberFunctionMayBeStatic
 
-demo::Framework::Framework()
+demo::Framework::Framework(size_t clients_count, std::uint16_t port)
+	: everyUsers(clients_count)
 {
 	
 }
