@@ -18,5 +18,52 @@
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Iconer\Utility\BehaviourTree.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Declarations.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Demo\Framework.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\NetworkEntity.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\NetworkEntityManager.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\NetworkView.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Utility\ObjectManager.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Utility\RecursiveTemplateClass.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\User.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\UserManager.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Demo\Private\Framework.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\Private\NetworkEntityManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\Private\User.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\Private\UserManager.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Iconer\Utility\BehaviourTreeHelper.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
