@@ -11,7 +11,7 @@ import <type_traits>;
 
 export namespace iconer
 {
-	template <typename IdType>
+	template<typename IdType>
 	class [[nodiscard]] NetworkEntity : public NetworkView, public net::io::Entity
 	{
 	public:
@@ -19,9 +19,8 @@ export namespace iconer
 		using super = NetworkView;
 
 		explicit constexpr NetworkEntity(const id_t id) noexcept
-			: NetworkView()
-, Entity()
-		  , ID(id)
+			: NetworkView(), Entity()
+			, ID(id)
 		{}
 
 		[[nodiscard]]
