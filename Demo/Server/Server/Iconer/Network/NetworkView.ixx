@@ -14,7 +14,7 @@ export namespace iconer
 		virtual constexpr ~NetworkView() noexcept = default;
 
 #define CONSTRUCT_EVENT(name, ...) virtual constexpr void (name)(##__VA_ARGS__) { }
-		CONSTRUCT_EVENT(OnNetworkIntialized, bool succeed, net::ErrorCodes error_code);
+		CONSTRUCT_EVENT(OnNetworkInitialized, bool succeed, net::ErrorCodes error_code);
 		CONSTRUCT_EVENT(OnNetworkDestructed);
 		CONSTRUCT_EVENT(OnConnected);
 		CONSTRUCT_EVENT(OnConnectionFailed, net::ErrorCodes error_code);
