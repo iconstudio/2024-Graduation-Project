@@ -14,7 +14,7 @@ int main()
 	iconer::UserManager user_manager{ 20ULL };
 
 	iconer::User u1;
-	u1.OnNetworkIntialized(true, {});
+	u1.OnNetworkInitialized(true, {});
 	iconer::User u2;
 	u2.OnNetworkIntialized(false, {});
 

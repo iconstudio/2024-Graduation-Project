@@ -61,6 +61,8 @@ export namespace iconer
 			std::cout << "Print!\n";
 		}
 
+		void OnNetworkInitialized(bool succeed, net::ErrorCodes error_code) noexcept override;
+
 	protected:
 		util::BehaviourTree<user_status::None, user_status::Idle
 		  , user_status::Listening, user_status::Connecting
