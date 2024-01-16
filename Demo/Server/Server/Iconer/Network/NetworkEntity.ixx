@@ -23,6 +23,30 @@ export namespace iconer
 		{}
 
 		[[nodiscard]]
+		constexpr net::Socket& Socket() & noexcept
+		{
+			return myConnectum;
+		}
+
+		[[nodiscard]]
+		constexpr const net::Socket& Socket() const & noexcept
+		{
+			return myConnectum;
+		}
+
+		[[nodiscard]]
+		constexpr net::Socket&& Socket() && noexcept
+		{
+			return std::move(myConnectum);
+		}
+
+		[[nodiscard]]
+		constexpr const net::Socket&& Socket() const && noexcept
+		{
+			return std::move(myConnectum);
+		}
+
+		[[nodiscard]]
 		constexpr net::io::Context& Context() & noexcept
 		{
 			return myContext;
