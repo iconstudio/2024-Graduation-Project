@@ -18,6 +18,12 @@ int main()
 	iconer::User u2;
 	u2.OnNetworkInitialized(false, {});
 
+	auto change_0 = u1.SetState<iconer::user_status::Connecting>();
+	auto change_1 = u1.SetState<iconer::user_status::Idle>();
+	auto change_2 = u1.SetState<iconer::user_status::None>();
+	auto change_3 = u1.SetState<iconer::user_status::Closing>();
+	auto change_4 = u1.SetState<iconer::user_status::Listening>();
+
 	//entity_manager.Add(std::move(u1));
 	user_manager.Add(std::move(u2));
 
