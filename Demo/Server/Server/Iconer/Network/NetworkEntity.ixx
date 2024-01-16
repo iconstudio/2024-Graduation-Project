@@ -9,7 +9,7 @@ import Net.Io.Context;
 
 export namespace iconer
 {
-	template<typename IdType>
+	template <typename IdType>
 	class [[nodiscard]] NetworkEntity : public NetworkView, public net::io::Entity
 	{
 	public:
@@ -17,8 +17,9 @@ export namespace iconer
 		using super = NetworkView;
 
 		explicit constexpr NetworkEntity(const id_t id) noexcept
-			: NetworkView(), Entity()
-			, ID(id)
+			: NetworkView()
+, Entity()
+		  , ID(id)
 		{}
 
 		[[nodiscard]]
@@ -28,7 +29,7 @@ export namespace iconer
 		}
 
 		[[nodiscard]]
-		constexpr const net::io::Context& Context() const& noexcept
+		constexpr const net::io::Context& Context() const & noexcept
 		{
 			return myContext;
 		}
@@ -40,15 +41,13 @@ export namespace iconer
 		}
 
 		[[nodiscard]]
-		constexpr const net::io::Context&& Context() const&& noexcept
+		constexpr const net::io::Context&& Context() const && noexcept
 		{
 			return static_cast<const net::io::Context&&>(myContext);
 		}
 
-		NetworkEntity(const NetworkEntity&) = delete;
 		constexpr NetworkEntity(NetworkEntity&&) noexcept = default;
-		void operator=(const NetworkEntity&) = delete;
-		constexpr NetworkEntity& operator=(NetworkEntity&&) = default;
+		constexpr NetworkEntity& operator=(NetworkEntity&&) noexcept = default;
 
 		[[nodiscard]] constexpr bool operator==(const NetworkEntity&) const noexcept = default;
 
@@ -56,5 +55,9 @@ export namespace iconer
 
 	protected:
 		constexpr NetworkEntity() noexcept = default;
+
+	private:
+		NetworkEntity(const NetworkEntity&) = delete;
+		void operator=(const NetworkEntity&) = delete;
 	};
 }
