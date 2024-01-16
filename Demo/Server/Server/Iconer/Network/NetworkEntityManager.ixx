@@ -115,23 +115,26 @@ export namespace iconer
 		}
 
 		[[nodiscard]]
-		iterator FindEntity(const id_t id) noexcept
+		auto FindEntity(const id_t id) noexcept
 		{
 			std::shared_lock lk{ myLock };
-			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->ID; });
+			return std::ranges::find_if(myData, id, [](const_reference element) noexcept -> id_t { return element->ID; });
 		}
 
 		[[nodiscard]]
-		const_iterator FindEntity(const id_t id) const noexcept
+		auto FindEntity(const id_t id) const noexcept
 		{
 			std::shared_lock lk{ myLock };
-			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->ID; });
+			return std::ranges::find_if(myData, id, [](const_reference element) noexcept -> id_t { return element->ID; });
 		}
 
-		template<typename Pred>
-		void Search(Pred&& fn) noexcept
+		template<typename Predicate>
+			requires std::is_invocable_r_v<bool, reference>
+		[[nodiscard]]
+		auto FindEntity(Predicate&& fn) noexcept(std::is_nothrow_invocable_v<Predicate, reference>)
 		{
 			std::shared_lock lk{ myLock };
+			return std::ranges::find_if(myData, std::forward<Predicate>(fn));
 		}
 
 		[[nodiscard]]
