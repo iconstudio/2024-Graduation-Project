@@ -4,18 +4,17 @@ import <concepts>;
 import <utility>;
 import <vector>;
 import <algorithm>;
+import <iterator>;
 
 export namespace iconer
 {
-	template <typename M, std::movable T, typename Comparer = std::less<T>, typename Container = std::vector<T>, typename Allocator = std::vector<
-		          T>::allocator_type>
-	class ObjectManager : public RecursiveTemplateClass<M>
+	template<typename T, template<typename... Ts> typename Container = std::vector, typename Comparator = std::less<>, typename... Cts>
+	class [[nodiscard]] ObjectManager
 	{
 	public:
-		using super = RecursiveTemplateClass<M>;
-		using value_type = T;
-		using data_t = Container;
-		using allocator_type = std::conditional_t<std::uses_allocator_v<data_t, Allocator>, Allocator, std::allocator<T>>;
+		using data_t = Container<T, Cts...>;
+		using allocator_type = data_t::allocator_type;
+		using value_type = data_t::value_type;
 		using pointer = data_t::pointer;
 		using const_pointer = data_t::const_pointer;
 		using reference = data_t::reference;
@@ -27,43 +26,73 @@ export namespace iconer
 		using iterator = data_t::iterator;
 		using const_iterator = data_t::const_iterator;
 
-#define REQUIRE_METHOD(name, ...) requires { M::name(##__VA_ARGS__); }
-#define NOTHROW_METHOD(name, ...) (not REQUIRE_METHOD(name, ##__VA_ARGS__)) or (REQUIRE_METHOD(name, ##__VA_ARGS__) and noexcept(std::declval<M>().name(##__VA_ARGS__)))
+		constexpr ObjectManager()
+			noexcept(std::is_nothrow_default_constructible_v<data_t>) = default;
+		constexpr ~ObjectManager()
+			noexcept(std::is_nothrow_destructible_v<data_t>) = default;
 
-		constexpr ObjectManager() noexcept = default;
-		constexpr ~ObjectManager() noexcept = default;
-
-		constexpr void Add(value_type&& object) noexcept(NOTHROW_METHOD(Add, std::move(object)))
+		void Add(const value_type& obj)
+			requires std::copyable<value_type>
 		{
-			if constexpr (REQUIRE_METHOD(Add, std::move(object)))
-			{
-				super::_Cast()->Add(std::move(object));
-			}
+			auto it = std::back_inserter(myData);
+			*it = obj;
+			Sort();
 		}
 
-		template <typename U, typename... Args>
-		constexpr void Emplace(Args&&... args) noexcept(NOTHROW_METHOD(Emplace, std::forward<Args>(args)...))
+		void Add(value_type&& obj)
+			requires std::movable<value_type>
 		{
-			if constexpr (REQUIRE_METHOD(Emplace, std::forward<Args>(args)...))
-			{
-				super::_Cast()->template Emplace<U>(std::forward<Args>(args)...);
-			}
+			auto it = std::back_inserter(myData);
+			*it = std::move(obj);
+			Sort();
 		}
 
-		constexpr void Remove(iterator it) noexcept(NOTHROW_METHOD(Remove, it))
+		template<typename U, typename... Args>
+		void Emplace(Args&&... args)
 		{
-			if constexpr (REQUIRE_METHOD(Remove, it))
-			{
-				super::_Cast()->Remove(it);
-			}
+			auto it = std::back_inserter(myData);
+			*it = value_type(std::forward<Args>(args)...);
+			Sort();
 		}
 
-		constexpr void Remove(const_iterator it) noexcept(NOTHROW_METHOD(Remove, it))
+		template<typename It>
+			requires requires(It it) { data_t::erase(it); }
+		void Remove(It it) noexcept(noexcept(myData.erase(it)))
 		{
-			if constexpr (REQUIRE_METHOD(Remove, it))
-			{
-				super::_Cast()->Remove(it);
-			}
+			myData.erase(it);
+			Sort();
+		}
+
+		[[nodiscard]]
+		reference At(const size_type pos) noexcept(noexcept(std::declval<data_t>().at(pos)))
+		{
+			return myData.at(pos);
+		}
+
+		[[nodiscard]]
+		const_reference At(const size_type pos) const noexcept(noexcept(std::declval<const data_t>().at(pos)))
+		{
+			return myData.at(pos);
+		}
+
+		[[nodiscard]]
+		constexpr reference operator[](const size_type pos) noexcept(noexcept(std::declval<data_t>().operator[](pos)))
+		{
+			return myData.operator[](pos);
+		}
+
+		[[nodiscard]]
+		constexpr const_reference operator[](const size_type pos) const noexcept(noexcept(std::declval<const data_t>().operator[](pos)))
+		{
+			return myData.operator[](pos);
+		}
+
+		template<typename Predicate>
+			requires std::is_invocable_r_v<bool, reference>
+		[[nodiscard]]
+		auto FindEntity(Predicate&& fn) noexcept(std::is_nothrow_invocable_v<Predicate, reference>)
+		{
+			return std::ranges::find_if(myData, std::forward<Predicate>(fn));
 		}
 
 		[[nodiscard]]
@@ -103,30 +132,42 @@ export namespace iconer
 		}
 
 		[[nodiscard]]
-		constexpr size_type GetSize() const noexcept
+		constexpr size_type GetSize() const noexcept(noexcept(std::declval<const data_t>().size()))
 		{
 			return myData.size();
 		}
 
 		[[nodiscard]]
-		constexpr size_type GetCapacity() const noexcept
+		constexpr size_type GetCapacity() const noexcept(noexcept(std::declval<const data_t>().capacity()))
 		{
 			return myData.capacity();
 		}
 
 		[[nodiscard]]
-		constexpr bool IsEmpty() const noexcept
+		constexpr bool IsEmpty() const noexcept(noexcept(std::declval<const data_t>().empty()))
 		{
 			return myData.empty();
 		}
 
 	protected:
-		data_t myData;
+		constexpr void Reserve(size_type count) noexcept(noexcept(std::declval<data_t>().reserve(count)))
+			requires requires(const size_type cnt) { std::declval<data_t>().reserve(cnt); }
+		{
+			myData.reserve(count);
+		}
+
+		constexpr void Sort() noexcept(noexcept(std::ranges::sort_heap(myData, std::declval<Comparator>())))
+			requires std::ranges::random_access_range<data_t>
+		{
+			std::ranges::sort_heap(myData, Comparator{});
+		}
 
 	private:
 		ObjectManager(const ObjectManager&) = delete;
 		ObjectManager(ObjectManager&&) = delete;
 		void operator=(const ObjectManager&) = delete;
 		void operator=(ObjectManager&&) = delete;
+
+		data_t myData;
 	};
 }
