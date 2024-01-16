@@ -8,7 +8,7 @@ import <shared_mutex>;
 
 export namespace iconer
 {
-	template <typename IdType>
+	template<typename IdType>
 	struct NetworkEntityComparator
 	{
 		[[nodiscard]]
@@ -18,7 +18,7 @@ export namespace iconer
 		}
 	};
 
-	template <typename IdType, template<typename... Ts> typename Container = std::vector, typename Locker = std::shared_mutex, typename... Cts>
+	template<typename IdType, template<typename... Ts> typename Container = std::vector, typename Locker = std::shared_mutex, typename... Cts>
 	class [[nodiscard]] NetworkEntityManager
 	{
 	public:
@@ -68,7 +68,7 @@ export namespace iconer
 			Sort();
 		}
 
-		template <typename U, typename... Args>
+		template<typename U, typename... Args>
 		void Emplace(Args&&... args)
 		{
 			std::unique_lock lk{ myLock };
@@ -77,7 +77,7 @@ export namespace iconer
 			Sort();
 		}
 
-		template <typename It>
+		template<typename It>
 			requires requires(It it) { data_t::erase(it); }
 		void Remove(It it) noexcept(noexcept(myData.erase(it)) and noexcept(myLock.lock()))
 		{
@@ -128,7 +128,7 @@ export namespace iconer
 			return std::find(begin(), end(), id, [&id](const_reference element) noexcept -> bool { return id == element->ID; });
 		}
 
-		template <typename Pred>
+		template<typename Pred>
 		void Search(Pred&& fn) noexcept
 		{
 			std::shared_lock lk{ myLock };
@@ -219,11 +219,11 @@ export namespace iconer
 		}
 
 	protected:
-		template <typename M>
+		template<typename M>
 		friend class std::unique_lock;
-		template <typename M>
+		template<typename M>
 		friend class std::shared_lock;
-		template <typename M>
+		template<typename M>
 		friend class std::lock_guard;
 
 		constexpr void Reserve(size_type count)
