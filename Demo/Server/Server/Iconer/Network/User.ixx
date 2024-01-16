@@ -1,5 +1,5 @@
 module;
-#include "../../Iconer/Network/Private/BehaviourTreeHelper.hpp"
+#include "../../Iconer/Utility/BehaviourTreeHelper.hpp"
 
 export module Iconer.Network.User;
 import Iconer.Declarations;
