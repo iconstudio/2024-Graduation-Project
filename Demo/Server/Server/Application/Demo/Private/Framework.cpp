@@ -2,7 +2,9 @@ module;
 #pragma comment(lib, "Ws2_32.lib")
 #include <WinSock2.h>
 #include <MSWSock.h>
+
 module Demo.Framework;
+// ReSharper disable CppMemberFunctionMayBeStatic
 
 demo::Framework::Framework()
 {
