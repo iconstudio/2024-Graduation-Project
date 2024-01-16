@@ -23,6 +23,12 @@ export namespace iconer
 		CONSTRUCT_EVENT(OnRoomDestroyed, room_id_t room_id);
 		CONSTRUCT_EVENT(OnRoomJoined, room_id_t room_id, user_id_t user_id);
 		CONSTRUCT_EVENT(OnRoomLeft, user_id_t user_id);
+		CONSTRUCT_EVENT(OnGameReady);
+		CONSTRUCT_EVENT(OnGameLoadingStarted);
+		CONSTRUCT_EVENT(OnGameStarted);
+		CONSTRUCT_EVENT(OnGameStartingFailed, int cause);
+		CONSTRUCT_EVENT(OnGameEnded, int cause);
+		CONSTRUCT_EVENT(OnGameQuit, user_id_t user_id, int cause);
 
 		constexpr NetworkView(const NetworkView&) noexcept = default;
 		constexpr NetworkView(NetworkView&&) noexcept = default;
