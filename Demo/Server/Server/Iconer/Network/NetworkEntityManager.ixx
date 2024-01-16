@@ -8,16 +8,6 @@ import <shared_mutex>;
 
 export namespace iconer
 {
-	template<typename IdType>
-	struct NetworkEntityComparator
-	{
-		[[nodiscard]]
-		constexpr bool operator()(const std::unique_ptr<NetworkEntity<IdType>>& lhs, const std::unique_ptr<NetworkEntity<IdType>>& rhs) const noexcept
-		{
-			return lhs->ID < rhs->ID;
-		}
-	};
-
 	template<typename E, typename IdType, template<typename... Ts> typename Container = std::vector, typename Locker = std::shared_mutex, typename... Cts>
 	class [[nodiscard]] NetworkEntityManager
 	{
@@ -237,10 +227,19 @@ export namespace iconer
 			myData.reserve(count);
 		}
 
-		constexpr void Sort() noexcept(noexcept(std::ranges::sort_heap(myData, NetworkEntityComparator<IdType>{})))
+		struct Comparator
+		{
+			[[nodiscard]]
+			constexpr bool operator()(const value_type& lhs, const value_type& rhs) const noexcept
+			{
+				return lhs->ID < rhs->ID;
+			}
+		};
+
+		constexpr void Sort() noexcept(noexcept(std::ranges::sort_heap(myData, std::declval<Comparator>())))
 			requires std::ranges::random_access_range<data_t>
 		{
-			std::ranges::sort_heap(myData, NetworkEntityComparator<IdType>{});
+			std::ranges::sort_heap(myData, Comparator{});
 		}
 
 		void lock() noexcept
