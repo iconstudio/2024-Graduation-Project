@@ -11,9 +11,8 @@ export namespace iconer
 	public:
 		using id_t = user_id_t;
 		using super = NetworkEntityManager;
-		using super::value_type;
 		using super::data_t;
-
+		using super::value_type;
 		using super::allocator_type;
 		using super::pointer;
 		using super::const_pointer;
