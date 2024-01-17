@@ -6,7 +6,7 @@ import <memory>;
 
 export namespace iconer
 {
-	class [[nodiscard]] UserManager final : public NetworkEntityManager<User, user_id_t>
+	class [[nodiscard]] UserManager final : private NetworkEntityManager<User, user_id_t>
 	{
 	public:
 		using id_t = user_id_t;
@@ -38,6 +38,7 @@ export namespace iconer
 			Reserve(clients_count);
 		}
 
+	private:
 		void Add(std::unique_ptr<iconer::User>&& ptr)
 		{
 			super::Add(std::move(ptr));
@@ -48,7 +49,6 @@ export namespace iconer
 			super::Add(object_ptr);
 		}
 
-	private:
 		UserManager(const UserManager&) = delete;
 		UserManager(UserManager&&) = delete;
 		void operator=(const UserManager&) = delete;
