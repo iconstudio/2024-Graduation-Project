@@ -19,8 +19,6 @@ export namespace iconer
 		using super::const_pointer;
 		using super::reference;
 		using super::const_reference;
-		using super::vol_reference;
-		using super::constvol_reference;
 		using super::size_type;
 		using super::difference_type;
 		using super::iterator;
