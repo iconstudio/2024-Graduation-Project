@@ -24,8 +24,6 @@ export namespace iconer
 		using const_pointer = data_t::const_pointer;
 		using reference = data_t::reference;
 		using const_reference = data_t::const_reference;
-		using vol_reference = volatile reference;
-		using constvol_reference = volatile const_reference;
 		using size_type = data_t::size_type;
 		using difference_type = data_t::difference_type;
 		using iterator = data_t::iterator;
