@@ -29,7 +29,6 @@ export namespace iconer
 		using super::cbegin;
 		using super::cend;
 
-		constexpr UserManager() noexcept = default;
 		constexpr ~UserManager() noexcept = default;
 
 		explicit constexpr UserManager(size_type clients_count) noexcept
