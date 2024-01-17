@@ -24,6 +24,11 @@ export namespace demo
 		void Cleanup() noexcept;
 
 	private:
+		Framework(const Framework&) = delete;
+		Framework(Framework&&) = delete;
+		void operator=(const Framework&) = delete;
+		void operator=(Framework&&) = delete;
+
 		net::Socket listenSocket;
 		net::io::Context listenContext;
 		iconer::UserManager everyUsers;
