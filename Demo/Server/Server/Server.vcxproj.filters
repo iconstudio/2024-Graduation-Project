@@ -60,6 +60,9 @@
     <ClCompile Include="Iconer\Network\Private\UserManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Iconer\Container\FlatMap.ixx">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Iconer\Utility\BehaviourTreeHelper.hpp">
