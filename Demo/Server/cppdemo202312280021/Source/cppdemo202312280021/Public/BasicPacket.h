@@ -17,7 +17,7 @@ public:
 	{
 		return sizeof(myType);
 	}
-	
+
 	[[nodiscard]]
 	virtual TSharedPtr<uint8> Serialize() const
 	{
