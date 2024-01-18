@@ -8,7 +8,7 @@ export namespace iconer::util
 	class AtomicSwitcher final
 	{
 	public:
-		AtomicSwitcher(std::atomic<T>& target, const std::memory_order init_order, const std::memory_order final_order) noexcept
+		AtomicSwitcher(std::atomic<T>& target, const std::memory_order init_order = std::memory_order_acquire, const std::memory_order final_order = std::memory_order_release) noexcept
 			: myTarget(target), myValue(target.load(init_order))
 			, finalOrder(final_order)
 		{}
