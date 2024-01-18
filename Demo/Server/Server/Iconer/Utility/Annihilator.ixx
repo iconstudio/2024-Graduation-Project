@@ -12,6 +12,8 @@ export namespace iconer::util
 		{
 			if (ptrHandle != nullptr)
 			{
+				std::destroy_n(ptrHandle, ptrSize);
+				
 				Deallocator allocator{};
 				allocator.deallocate(ptrHandle, ptrSize);
 			}
@@ -29,12 +31,32 @@ export namespace iconer::util
 		{
 			if (not isSafe and ptrHandle != nullptr)
 			{
+				std::destroy_n(ptrHandle, ptrSize);
+				
 				Deallocator allocator{};
 				allocator.deallocate(ptrHandle, ptrSize);
 			}
 		}
 
 		std::allocator_traits<Deallocator>::pointer ptrHandle;
+		size_t ptrSize;
+		bool isSafe;
+	};
+	
+	template<typename T>
+	struct MemoryWatcher
+	{
+		constexpr ~MemoryWatcher()
+			noexcept(noexcept(std::destroy_n(std::declval<T*>(), size_t{})))
+		{
+			if (not isSafe and ptrHandle != nullptr)
+			{
+				std::destroy_n(ptrHandle, ptrSize);
+				delete ptrHandle;
+			}
+		}
+
+		T* ptrHandle;
 		size_t ptrSize;
 		bool isSafe;
 	};
