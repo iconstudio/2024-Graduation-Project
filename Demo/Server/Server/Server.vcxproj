@@ -244,6 +244,7 @@
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
     <ClCompile Include="Application\Demo\Private\Framework.cpp" />
+    <ClCompile Include="Iconer\Container\ConcurrentList.ixx"/>
     <ClCompile Include="Iconer\Container\FlatMap.ixx"/>
     <ClCompile Include="Iconer\Declarations.ixx">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
