@@ -237,7 +237,7 @@ export namespace iconer
 		constexpr void Sort() noexcept(noexcept(std::ranges::sort_heap(myData, std::declval<Comparator>())))
 			requires std::ranges::random_access_range<data_t>
 		{
-			std::ranges::sort_heap(myData, Comparator{});
+			std::ranges::sort(myData, Comparator{});
 		}
 
 		void lock() noexcept
