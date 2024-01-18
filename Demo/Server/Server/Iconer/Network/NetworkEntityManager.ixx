@@ -18,16 +18,16 @@ export namespace iconer
 		using object_t = E;
 		using data_t = Container<std::unique_ptr<E>, Cts...>;
 		using lock_t = Locker;
-		using allocator_type = data_t::allocator_type;
-		using value_type = data_t::value_type;
-		using pointer = data_t::pointer;
-		using const_pointer = data_t::const_pointer;
-		using reference = data_t::reference;
-		using const_reference = data_t::const_reference;
-		using size_type = data_t::size_type;
-		using difference_type = data_t::difference_type;
-		using iterator = data_t::iterator;
-		using const_iterator = data_t::const_iterator;
+		using allocator_type = typename data_t::allocator_type;
+		using value_type = typename data_t::value_type;
+		using pointer = typename data_t::pointer;
+		using const_pointer = typename data_t::const_pointer;
+		using reference = typename data_t::reference;
+		using const_reference = typename data_t::const_reference;
+		using size_type = typename data_t::size_type;
+		using difference_type = typename data_t::difference_type;
+		using iterator = typename data_t::iterator;
+		using const_iterator = typename data_t::const_iterator;
 
 		constexpr NetworkEntityManager()
 			noexcept(std::is_nothrow_default_constructible_v<data_t> and std::is_nothrow_default_constructible_v<lock_t>) = default;
@@ -219,7 +219,7 @@ export namespace iconer
 		template<typename M>
 		friend class std::lock_guard;
 
-		constexpr void Reserve(size_type count) noexcept(noexcept(std::declval<data_t>().reserve(count)))
+		constexpr void Reserve(size_type count) noexcept(noexcept(std::declval<data_t>().reserve(size_type{})))
 			requires requires(const size_type cnt) { std::declval<data_t>().reserve(cnt); }
 		{
 			myData.reserve(count);
