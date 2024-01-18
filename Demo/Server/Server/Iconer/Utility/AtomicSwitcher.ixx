@@ -40,6 +40,9 @@ export namespace iconer::util
 		T myValue;
 		std::memory_order finalOrder;
 	};
+
+	template<typename T>
+	AtomicSwitcher(std::atomic<T>&, std::memory_order, const std::memory_order) -> AtomicSwitcher<T>;
 }
 
 module : private;
