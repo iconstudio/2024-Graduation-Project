@@ -247,6 +247,7 @@
     <ClCompile Include="Iconer\Container\ConcurrentLinkedList.ixx"/>
     <ClCompile Include="Iconer\Container\ConcurrentList.ixx"/>
     <ClCompile Include="Iconer\Container\FlatMap.ixx"/>
+    <ClCompile Include="Iconer\Container\Private\FlatMap.cpp"/>
     <ClCompile Include="Iconer\Declarations.ixx">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
