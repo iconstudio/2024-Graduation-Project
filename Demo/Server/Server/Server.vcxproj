@@ -858,6 +858,7 @@
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
     <ClCompile Include="Iconer\Utility\Annihilator.ixx"/>
+    <ClCompile Include="Iconer\Utility\AtomicSwitcher.ixx"/>
     <ClCompile Include="Iconer\Utility\BehaviourTree.ixx">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
