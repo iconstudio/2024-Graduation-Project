@@ -32,6 +32,7 @@ demo::Framework::Awake()
 	everyUsers.ConstructPool(startUserID);
 	std::cout << "# Constructing workers pool...\n";
 	serverWorkers.reserve(workersCount);
+
 	for (size_t i = 0; i < workersCount; ++i)
 	{
 		auto worker = new std::jthread{ Worker, std::ref(*this), workerCanceller.get_token() };
@@ -82,7 +83,8 @@ demo::Framework::Update()
 }
 
 void
-demo::Framework::Cleanup() noexcept
+demo::Framework::Cleanup()
+noexcept
 {
 	std::cout << "# (4) Server system is ended\n";
 
