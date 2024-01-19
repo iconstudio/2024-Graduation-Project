@@ -285,25 +285,34 @@ export namespace iconer
 		template<typename M>
 		friend class std::lock_guard;
 
+		struct Comparator
+		{
+			[[nodiscard]]
+			constexpr bool operator()(const object_t& lhs, const object_t& rhs) const noexcept
+			{
+				return lhs.ID < rhs.ID;
+			}
+		};
+
+		struct HandleProjector
+		{
+			[[nodiscard]]
+			constexpr auto&& operator()(const value_type& handle) const noexcept
+			{
+				return *handle;
+			}
+		};
+
 		constexpr void Reserve(size_type count) noexcept(noexcept(std::declval<data_t>().reserve(size_type{})))
 			requires requires(const size_type cnt) { std::declval<data_t>().reserve(cnt); }
 		{
 			objectPool.reserve(count);
 		}
 
-		struct Comparator
-		{
-			[[nodiscard]]
-			constexpr bool operator()(const value_type& lhs, const value_type& rhs) const noexcept
-			{
-				return lhs->ID < rhs->ID;
-			}
-		};
-
-		constexpr void Sort() noexcept(noexcept(std::ranges::sort_heap(myData, std::declval<Comparator>())))
+		constexpr void Sort() noexcept(noexcept(std::ranges::sort(objectPool, std::declval<Comparator>(), std::declval<HandleProjector>())))
 			requires std::ranges::random_access_range<data_t>
 		{
-			std::ranges::sort(myData, Comparator{});
+			std::ranges::sort(objectPool, Comparator{}, HandleProjector{});
 		}
 
 		void lock() noexcept
