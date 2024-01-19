@@ -5,6 +5,9 @@ module;
 
 module Demo.Framework;
 import <memory>;
+import <string>;
+import <string_view>;
+import <format>;
 // ReSharper disable CppMemberFunctionMayBeStatic
 
 demo::Framework::Framework(size_t clients_count, std::uint16_t port)
@@ -17,8 +20,6 @@ demo::Framework::Framework(size_t clients_count, std::uint16_t port)
 void
 demo::Framework::Awake()
 {
-	iconer::user_id_t id = startUserID;
-
 	everyUsers.ConstructPool(startUserID);
 	serverWorkers.reserve(workersCount);
 }
@@ -27,14 +28,21 @@ bool
 demo::Framework::Start() noexcept
 {
 	bool result = true;
-	for (auto& user_ptr : everyUsers)
+	try
 	{
-		const auto user = user_ptr.get();
-
-		if (not user->SetState<iconer::user_status::Listening>())
+		for (auto& user_ptr : everyUsers)
 		{
-			result = false;
+			iconer::User& user = *user_ptr;
+
+			if (not user.SetState<iconer::user_status::Listening>(std::ref(listenSocket)))
+			{
+				result = false;
+			}
 		}
+	}
+	catch (...)
+	{
+		return false;
 	}
 
 	try
