@@ -52,15 +52,7 @@ export namespace iconer
 			: super(pool_size)
 		{}
 
-		void Add(std::unique_ptr<User>&& ptr)
-		{
-			super::Add(std::move(ptr));
-		}
-
-		void Add(User* object_ptr)
-		{
-			super::Add(object_ptr);
-		}
+		void ConstructPool(id_t begin_id);
 
 	private:
 		static inline std::bad_alloc badUserAllocation{};
