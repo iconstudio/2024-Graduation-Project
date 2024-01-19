@@ -76,7 +76,6 @@ void EmptyLinkFunctionForGeneratedCodeSagaPlayerController() {}
 	{
 		return ASagaPlayerController::StaticClass();
 	}
-	ASagaPlayerController::ASagaPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer) {}
 	DEFINE_VTABLE_PTR_HELPER_CTOR(ASagaPlayerController);
 	ASagaPlayerController::~ASagaPlayerController() {}
 	struct Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Player_SagaPlayerController_h_Statics

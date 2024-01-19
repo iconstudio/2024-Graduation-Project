@@ -14,7 +14,18 @@ class SAGAGAME_API ASagaPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+	ASagaPlayerController();
+
 protected:
 	virtual void BeginPlay() override;
+
+protected:
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Catetory = HUD)
+	TSubclassOf<class USAGAHUDWidget> SagaWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Catetory = HUD)
+	TObjectPtr<class USG*/
+
 	
 };
