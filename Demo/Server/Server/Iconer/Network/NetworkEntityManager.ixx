@@ -8,7 +8,7 @@ import <shared_mutex>;
 
 export namespace iconer
 {
-	template<typename E, typename IdType, template<typename... Ts> typename Container = std::vector, typename Locker = std::shared_mutex, typename... Cts>
+	template<typename E, typename IdType, typename SharedLocker = std::shared_mutex>
 	class [[nodiscard]] NetworkEntityManager
 	{
 		static_assert(std::derived_from<E, NetworkEntity<IdType>>);
@@ -16,8 +16,8 @@ export namespace iconer
 	public:
 		using id_t = IdType;
 		using object_t = E;
-		using data_t = Container<std::unique_ptr<E>, Cts...>;
-		using lock_t = Locker;
+		using data_t = std::vector<std::unique_ptr<E>>;
+		using lock_t = SharedLocker;
 		using allocator_type = typename data_t::allocator_type;
 		using value_type = typename data_t::value_type;
 		using pointer = typename data_t::pointer;
