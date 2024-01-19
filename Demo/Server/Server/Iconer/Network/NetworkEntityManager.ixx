@@ -78,6 +78,8 @@ export namespace iconer
 			std::unique_lock lk{ myLock };
 
 		void Add(object_t&& object)
+			noexcept(noexcept(Sort()) and std::declval<data_t>().push_back(std::make_unique<object_t>(std::declval<object_t&&>())) and noexcept(std::declval<lock_t>().lock()))
+			requires std::movable<object_t>
 		{
 			std::unique_lock lk{ myLock };
 			objectPool.push_back(std::make_unique<object_t>(std::move(object)));
@@ -90,8 +92,8 @@ export namespace iconer
 			objectPool.push_back(value_type{ ptr });
 			Sort();
 		}
-
-		void Add(object_t* const object_ptr) noexcept(noexcept(std::declval<lock_t>().lock()) and noexcept(value_type{ object_ptr }))
+		void Add(value_type&& handle)
+			noexcept(noexcept(Sort()) and noexcept(std::declval<data_t>().push_back(std::declval<value_type&&>())) and noexcept(std::declval<lock_t>().lock()))
 		{
 			std::unique_lock lk{ myLock };
 			objectPool.push_back(std::move(handle));
@@ -107,7 +109,7 @@ export namespace iconer
 
 		template<typename It>
 			requires requires(It it) { data_t::erase(it); }
-		void Remove(It it) noexcept(noexcept(myData.erase(it)) and noexcept(myLock.lock()))
+		void Remove(It it) noexcept(noexcept(objectPool.erase(it)) and noexcept(std::declval<lock_t>().lock()))
 		{
 			std::unique_lock lk{ myLock };
 			objectPool.erase(it);
@@ -129,14 +131,14 @@ export namespace iconer
 		}
 
 		[[nodiscard]]
-		constexpr reference operator[](const size_type pos) noexcept(noexcept(std::declval<data_t>().operator[](pos)))
+		reference operator[](const size_type pos) noexcept(noexcept(std::declval<data_t>().operator[](pos)))
 		{
 			std::shared_lock lk{ myLock };
 			return objectPool.operator[](pos);
 		}
 
 		[[nodiscard]]
-		constexpr const_reference operator[](const size_type pos) const noexcept(noexcept(std::declval<const data_t>().operator[](pos)))
+		const_reference operator[](const size_type pos) const noexcept(noexcept(std::declval<const data_t>().operator[](pos)))
 		{
 			std::shared_lock lk{ myLock };
 			return objectPool.operator[](pos);
@@ -153,7 +155,9 @@ export namespace iconer
 		std::ranges::borrowed_iterator_t<const data_t> FindEntity(const id_t id) const noexcept
 		{
 			std::shared_lock lk{ myLock };
-			return std::ranges::lower_bound(myData, id, Comparator{});
+			return std::ranges::lower_bound(objectPool.begin(), objectPool.end()
+				, id
+				, std::less<id_t>{}, [](const_reference handle) { return handle.get()->ID; } );
 		}
 
 		template<typename Predicate>
