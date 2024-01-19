@@ -13,5 +13,8 @@ UCLASS()
 class SAGAGAME_API ASagaPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void BeginPlay() override;
 	
 };
