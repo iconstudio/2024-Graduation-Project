@@ -29,7 +29,8 @@ noexcept
 	Open(std::move(filepath), mode);
 }
 
-iconer::util::File::~File() noexcept
+iconer::util::File::~File()
+noexcept
 {
 	Close();
 }
@@ -39,7 +40,7 @@ iconer::util::File::Open(const FilePath& filename, file::OpenModes mode)
 noexcept
 {
 	::errno_t err = ::_wfopen_s(std::addressof(myHandle), filename.c_str(), ModeStrings[static_cast<std::size_t>(mode)].data());
-	lastError     = err;
+	lastError = err;
 
 	if (0 != err)
 	{
@@ -67,7 +68,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError  = 0;
+		lastError = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return {};
 	}
@@ -81,7 +82,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError  = errno;
+		lastError = errno;
 		lastResult = file::ResultCode::ErrorOnBuffer;
 		return {};
 	}
@@ -92,7 +93,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError  = errno;
+		lastError = errno;
 		lastResult = file::ResultCode::ErrorOnRead;
 		return {};
 	}
@@ -112,7 +113,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError  = errno;
+		lastError = errno;
 		lastResult = file::ResultCode::Error;
 		return {};
 	}
@@ -133,7 +134,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError  = 0;
+		lastError = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return {};
 	}
@@ -145,7 +146,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError  = errno;
+		lastError = errno;
 		lastResult = file::ResultCode::ErrorOnBuffer;
 		return {};
 	}
@@ -169,7 +170,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError  = errno;
+		lastError = errno;
 		lastResult = file::ResultCode::ErrorOnRead;
 		return {};
 	}
@@ -183,7 +184,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError  = 0;
+		lastError = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return 0;
 	}
@@ -194,7 +195,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError  = errno;
+		lastError = errno;
 		lastResult = file::ResultCode::ErrorOnBuffer;
 		return 0;
 	}
@@ -217,7 +218,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError  = 0;
+		lastError = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return 0;
 	}
@@ -229,7 +230,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError  = errno;
+		lastError = errno;
 		lastResult = file::ResultCode::ErrorOnRead;
 		return 0;
 	}
@@ -243,7 +244,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError  = 0;
+		lastError = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return 0;
 	}
@@ -251,7 +252,7 @@ const noexcept
 	const int length = std::fputs(content.data(), myHandle);
 	if (length == file::ResultCode::EndOfFile)
 	{
-		lastError  = errno;
+		lastError = errno;
 		lastResult = file::ResultCode::ErrorOnWrite;
 		return 0;
 	}
@@ -265,7 +266,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError  = 0;
+		lastError = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return 0;
 	}
@@ -273,7 +274,7 @@ const noexcept
 	const int length = std::fputws(content.data(), myHandle);
 	if (length == file::ResultCode::EndOfFile)
 	{
-		lastError  = errno;
+		lastError = errno;
 		lastResult = file::ResultCode::ErrorOnWrite;
 		return 0;
 	}
