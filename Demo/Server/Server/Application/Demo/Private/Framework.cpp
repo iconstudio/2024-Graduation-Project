@@ -59,23 +59,20 @@ demo::Framework::Update()
 	char input_buffer[256]{};
 	while (true)
 	{
-		if (workerCanceller.stop_requested())
-		{
-			return;
-		}
-
 		const int inputs = ::scanf_s("%s", input_buffer, sizeof(input_buffer));
 		if (EOF != inputs and 0 < inputs)
 		{
 			std::string_view input{ input_buffer };
 			if (input == "exit" or input == "quit")
 			{
-				return;
+				break;
 			}
 
 			std::ranges::fill(input_buffer, 0);
 		}
 	}
+
+	workerCanceller.request_stop();
 }
 
 void
