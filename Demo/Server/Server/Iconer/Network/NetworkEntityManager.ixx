@@ -79,6 +79,14 @@ export namespace iconer
 		{
 			std::unique_lock lk{ myLock };
 
+		void Add(const object_t& object)
+			noexcept(noexcept(Sort()) and std::declval<data_t>().push_back(std::make_unique<object_t>(std::declval<const object_t&>())) and noexcept(std::declval<lock_t>().lock()))
+			requires std::copyable<object_t>
+		{
+			std::unique_lock lk{ myLock };
+			objectPool.push_back(std::make_unique<object_t>(object));
+			Sort();
+		}
 		void Add(object_t&& object)
 			noexcept(noexcept(Sort()) and std::declval<data_t>().push_back(std::make_unique<object_t>(std::declval<object_t&&>())) and noexcept(std::declval<lock_t>().lock()))
 			requires std::movable<object_t>
