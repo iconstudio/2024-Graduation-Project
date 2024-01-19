@@ -44,7 +44,7 @@ export namespace iconer
 		template<net::invocable_results<object_t> Predicate>
 			requires std::movable<object_t>
 		void Create(Predicate&& generator)
-			noexcept(noexcept(Sort()) and noexcept(Add(std::declval<Predicate>()())) and noexcept(std::declval<lock_t>().lock()))
+			noexcept(noexcept(Sort()) and noexcept(std::declval<data_t>().push_back(std::make_unique<object_t>(Predicate()))) and noexcept(std::declval<lock_t>().lock()))
 		{
 			std::unique_lock lk{ myLock };
 
@@ -53,13 +53,13 @@ export namespace iconer
 
 			for (size_t i = 0; i < cap; ++i)
 			{
-				Add(gen());
+				objectPool.push_back(std::make_unique<object_t>(gen()));
 			}
 			Sort();
 		}
 		template<net::invocable_results<object_t*> Predicate>
 		void Create(Predicate&& generator)
-			noexcept(noexcept(Sort()) and noexcept(Add(std::declval<Predicate>()())) and noexcept(std::declval<lock_t>().lock()))
+			noexcept(noexcept(Sort()) and noexcept(std::declval<data_t>().push_back(Predicate())) and noexcept(std::declval<lock_t>().lock()))
 		{
 			std::unique_lock lk{ myLock };
 
@@ -68,13 +68,13 @@ export namespace iconer
 
 			for (size_t i = 0; i < cap; ++i)
 			{
-				Add(gen());
+				objectPool.push_back(value_type{ gen() });
 			}
 			Sort();
 		}
 		template<net::invocable_results<value_type> Predicate>
 		void Create(Predicate&& generator)
-			noexcept(noexcept(Sort()) and noexcept(Add(std::declval<Predicate>()())) and noexcept(std::declval<lock_t>().lock()))
+			noexcept(noexcept(Sort()) and noexcept(std::declval<data_t>().push_back(std::declval<Predicate>()())) and noexcept(std::declval<lock_t>().lock()))
 		{
 			std::unique_lock lk{ myLock };
 
@@ -83,12 +83,12 @@ export namespace iconer
 
 			for (size_t i = 0; i < cap; ++i)
 			{
-				Add(gen());
+				objectPool.push_back(gen());
 			}
 			Sort();
 		}
 		void CreateAsDefault()
-			noexcept(noexcept(Sort()) and std::declval<data_t>().push_back(std::make_unique<object_t>()) and noexcept(std::declval<lock_t>().lock()))
+			noexcept(noexcept(Sort()) and noexcept(std::declval<data_t>().push_back(std::make_unique<object_t>())) and noexcept(std::declval<lock_t>().lock()))
 			requires std::default_initializable<value_type>
 		{
 			std::unique_lock lk{ myLock };
@@ -101,7 +101,8 @@ export namespace iconer
 			Sort();
 		}
 		void Add(const object_t& object)
-			noexcept(noexcept(Sort()) and std::declval<data_t>().push_back(std::make_unique<object_t>(std::declval<const object_t&>())) and noexcept(std::declval<lock_t>().lock()))
+			noexcept(noexcept(Sort()) and noexcept(std::declval<data_t>().push_back(std::make_unique<object_t>(std::declval<const object_t&>()))) and noexcept(std::declval<lock_t>().
+				lock()))
 			requires std::copyable<object_t>
 		{
 			std::unique_lock lk{ myLock };
@@ -109,7 +110,7 @@ export namespace iconer
 			Sort();
 		}
 		void Add(object_t&& object)
-			noexcept(noexcept(Sort()) and std::declval<data_t>().push_back(std::make_unique<object_t>(std::declval<object_t&&>())) and noexcept(std::declval<lock_t>().lock()))
+			noexcept(noexcept(Sort()) and noexcept(std::declval<data_t>().push_back(std::make_unique<object_t>(std::declval<object_t&&>()))) and noexcept(std::declval<lock_t>().lock()))
 			requires std::movable<object_t>
 		{
 			std::unique_lock lk{ myLock };
@@ -177,7 +178,7 @@ export namespace iconer
 			std::shared_lock lk{ myLock };
 			return std::ranges::lower_bound(objectPool.begin(), objectPool.end()
 				, id
-				, std::less<id_t>{}, [](const_reference handle) { return handle.get()->ID; } );
+				, std::less<id_t>{}, [](const_reference handle){ return handle.get()->ID; });
 		}
 		[[nodiscard]]
 		auto FindEntity(const id_t id) const noexcept
@@ -185,7 +186,7 @@ export namespace iconer
 			std::shared_lock lk{ myLock };
 			return std::ranges::lower_bound(objectPool.begin(), objectPool.end()
 				, id
-				, std::less<id_t>{}, [](const_reference handle) { return handle.get()->ID; } );
+				, std::less<id_t>{}, [](const_reference handle){ return handle.get()->ID; });
 		}
 
 		template<typename Predicate, typename Projection = std::identity>
@@ -370,27 +371,22 @@ export namespace iconer
 		{
 			myLock.lock();
 		}
-
 		void unlock() noexcept
 		{
 			myLock.unlock();
 		}
-
 		void lock_shared() noexcept
 		{
 			myLock.lock_shared();
 		}
-
 		void unlock_shared() noexcept
 		{
 			myLock.unlock_shared();
 		}
-
 		bool try_lock() noexcept
 		{
 			return myLock.try_lock();
 		}
-
 		bool try_lock_shared() noexcept
 		{
 			return myLock.try_lock_shared();
