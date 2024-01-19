@@ -1,5 +1,5 @@
 export module Iconer.Utility.Logger;
-import ;
+import Iconer.Utility.File;
 import <cstdio>;
 export import <string>;
 export import <string_view>;
@@ -12,13 +12,12 @@ export namespace iconer::util
 	{
 	public:
 		Logger() noexcept = default;
-		~Logger() noexcept;
+		~Logger() noexcept = default;
 
 		void Awake(const std::filesystem::path& log_file);
-		void Start();
 		void Cleanup();
 		
-		void DebugLog();
+		void DebugLog(std::wstring_view msg);
 		void Log(std::wstring_view msg);
 		void DebugLogError(std::wstring_view msg);
 		void LogError(std::wstring_view msg);
@@ -34,7 +33,7 @@ export namespace iconer::util
 		void operator=(const Logger&) = delete;
 		void operator=(Logger&&) = delete;
 
-		std::FILE* myFile;
+		File myFile;
 	};
 }
 
