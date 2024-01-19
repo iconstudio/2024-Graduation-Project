@@ -5,24 +5,24 @@ module Iconer.Utility.File;
 
 namespace open_mode_literals
 {
-	inline constexpr std::string_view Read = "r+";
-	inline constexpr std::string_view Write = "w+";
-	inline constexpr std::string_view Open = "a+";
-	inline constexpr std::string_view BinaryRead = "rb+";
+	inline constexpr std::string_view Read        = "r+";
+	inline constexpr std::string_view Write       = "w+";
+	inline constexpr std::string_view Open        = "a+";
+	inline constexpr std::string_view BinaryRead  = "rb+";
 	inline constexpr std::string_view BinaryWrite = "wb+";
-	inline constexpr std::string_view BinaryOpen = "ab+";
+	inline constexpr std::string_view BinaryOpen  = "ab+";
 }
 
-inline constexpr std::wstring_view ModeStrings[] =
+static inline constexpr std::wstring_view ModeStrings[] =
 {
-	L"r+", // 0
-	L"w+", // 1
-	L"a+", // 2
-	L"a+", // 3
-	L"rb+", // 4
-	L"wb+", // 5
-	L"ab+", // 6
-	L"ab+", // 6
+	L"r+" // 0
+	, L"w+" // 1
+	, L"a+" // 2
+	, L"a+" // 3
+	, L"rb+" // 4
+	, L"wb+" // 5
+	, L"ab+" // 6
+	, L"ab+" // 6
 };
 
 iconer::util::File::File(const FilePath& filepath, file::OpenModes mode)
@@ -37,8 +37,7 @@ noexcept
 	Open(std::move(filepath), mode);
 }
 
-iconer::util::File::~File()
-noexcept
+iconer::util::File::~File() noexcept
 {
 	Close();
 }
@@ -48,7 +47,7 @@ iconer::util::File::Open(const FilePath& filename, file::OpenModes mode)
 noexcept
 {
 	::errno_t err = ::_wfopen_s(std::addressof(myHandle), filename.c_str(), ModeStrings[static_cast<std::size_t>(mode)].data());
-	lastError = err;
+	lastError     = err;
 
 	if (0 != err)
 	{
@@ -76,7 +75,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError = 0;
+		lastError  = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return {};
 	}
@@ -85,12 +84,12 @@ const noexcept
 	std::size_t size;
 	try
 	{
-		size = GetSize();
+		size = AcquireSize();
 		buffer.resize(size);
 	}
 	catch (...)
 	{
-		lastError = errno;
+		lastError  = errno;
 		lastResult = file::ResultCode::ErrorOnBuffer;
 		return {};
 	}
@@ -101,7 +100,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError = errno;
+		lastError  = errno;
 		lastResult = file::ResultCode::ErrorOnRead;
 		return {};
 	}
@@ -121,7 +120,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError = errno;
+		lastError  = errno;
 		lastResult = file::ResultCode::Error;
 		return {};
 	}
@@ -142,7 +141,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError = 0;
+		lastError  = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return {};
 	}
@@ -154,7 +153,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError = errno;
+		lastError  = errno;
 		lastResult = file::ResultCode::ErrorOnBuffer;
 		return {};
 	}
@@ -178,7 +177,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError = errno;
+		lastError  = errno;
 		lastResult = file::ResultCode::ErrorOnRead;
 		return {};
 	}
@@ -192,7 +191,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError = 0;
+		lastError  = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return 0;
 	}
@@ -203,7 +202,7 @@ const noexcept
 	}
 	catch (...)
 	{
-		lastError = errno;
+		lastError  = errno;
 		lastResult = file::ResultCode::ErrorOnBuffer;
 		return 0;
 	}
@@ -226,19 +225,19 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError = 0;
+		lastError  = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return 0;
 	}
 
-	size_t read_bytes = 0;
+	size_t read_bytes;
 	try
 	{
 		read_bytes = std::fread(buffer, 1, size, myHandle);
 	}
 	catch (...)
 	{
-		lastError = errno;
+		lastError  = errno;
 		lastResult = file::ResultCode::ErrorOnRead;
 		return 0;
 	}
@@ -252,7 +251,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError = 0;
+		lastError  = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return 0;
 	}
@@ -260,7 +259,7 @@ const noexcept
 	const int length = std::fputs(content.data(), myHandle);
 	if (length == file::ResultCode::EndOfFile)
 	{
-		lastError = errno;
+		lastError  = errno;
 		lastResult = file::ResultCode::ErrorOnWrite;
 		return 0;
 	}
@@ -274,7 +273,7 @@ const noexcept
 {
 	if (nullptr == myHandle)
 	{
-		lastError = 0;
+		lastError  = 0;
 		lastResult = file::ResultCode::FileNotFound;
 		return 0;
 	}
@@ -282,7 +281,7 @@ const noexcept
 	const int length = std::fputws(content.data(), myHandle);
 	if (length == file::ResultCode::EndOfFile)
 	{
-		lastError = errno;
+		lastError  = errno;
 		lastResult = file::ResultCode::ErrorOnWrite;
 		return 0;
 	}
