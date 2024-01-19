@@ -51,7 +51,7 @@ export namespace iconer
 		constexpr ~User() noexcept override = default;
 
 		template<typename Status, typename... Args>
-		bool SetState(Args&&... args) noexcept
+		bool SetState(Args&&... args)
 		{
 			if (myStatus.TryTranslate<Status>())
 			{
@@ -73,7 +73,7 @@ export namespace iconer
 			}
 		}
 		template<typename Status, typename... Args>
-		bool SetState(Status&&, Args&&... args) noexcept
+		bool SetState(Status&&, Args&&... args)
 		{
 			if (myStatus.TryTranslate<Status>())
 			{
