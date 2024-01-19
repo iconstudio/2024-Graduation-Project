@@ -21,7 +21,7 @@ export namespace demo
 		~Framework() = default;
 
 		void Awake();
-		bool Start() noexcept;
+		void Start();
 		void Update();
 		void Cleanup() noexcept;
 
