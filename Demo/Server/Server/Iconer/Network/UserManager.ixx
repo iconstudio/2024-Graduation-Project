@@ -48,13 +48,9 @@ export namespace iconer
 		using super::GetSize;
 		using super::IsEmpty;
 
-		constexpr ~UserManager() noexcept = default;
-
-		explicit constexpr UserManager(size_type clients_count) noexcept
-			: super()
-		{
-			Reserve(clients_count);
-		}
+		explicit constexpr UserManager(size_type pool_size) noexcept
+			: super(pool_size)
+		{}
 
 		void Add(std::unique_ptr<User>&& ptr)
 		{
