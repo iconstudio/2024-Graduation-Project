@@ -108,5 +108,5 @@ iconer::util::Logger::LogWarning(std::wstring_view msg)
 bool
 iconer::util::Logger::IsAvailable() const noexcept
 {
-	return myFile.IsOpened() and not myFile.IsEndOfFile();
+	return myFile.IsOpened();
 }
