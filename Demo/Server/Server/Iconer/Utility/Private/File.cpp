@@ -3,27 +3,19 @@ module;
 #include <cstdio>
 module Iconer.Utility.File;
 
-namespace open_mode_literals
+namespace
 {
-	inline constexpr std::string_view Read        = "r+";
-	inline constexpr std::string_view Write       = "w+";
-	inline constexpr std::string_view Open        = "a+";
-	inline constexpr std::string_view BinaryRead  = "rb+";
-	inline constexpr std::string_view BinaryWrite = "wb+";
-	inline constexpr std::string_view BinaryOpen  = "ab+";
+	inline constexpr std::wstring_view ModeStrings[] =
+	{
+		L"r+" // 0
+		, L"w+" // 1
+		, L"a+" // 2
+		, L"a+" // 3
+		, L"rb+" // 4
+		, L"wb+" // 5
+		, L"ab+" // 6
+	};
 }
-
-static inline constexpr std::wstring_view ModeStrings[] =
-{
-	L"r+" // 0
-	, L"w+" // 1
-	, L"a+" // 2
-	, L"a+" // 3
-	, L"rb+" // 4
-	, L"wb+" // 5
-	, L"ab+" // 6
-	, L"ab+" // 6
-};
 
 iconer::util::File::File(const FilePath& filepath, file::OpenModes mode)
 noexcept
