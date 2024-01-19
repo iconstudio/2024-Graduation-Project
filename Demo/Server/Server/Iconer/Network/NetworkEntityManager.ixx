@@ -1,3 +1,6 @@
+module;
+#include <shared_mutex>
+
 export module Iconer.Network.EntityManager;
 import Net.BorrowedPointer;
 import Net.Constraints;
@@ -7,7 +10,6 @@ import <memory>;
 import <vector>;
 import <algorithm>;
 import <iterator>;
-import <shared_mutex>;
 
 export namespace iconer
 {
@@ -102,7 +104,7 @@ export namespace iconer
 		}
 		void Add(const object_t& object)
 			noexcept(noexcept(Sort()) and noexcept(std::declval<data_t>().push_back(std::make_unique<object_t>(std::declval<const object_t&>()))) and noexcept(std::declval<lock_t>().
-				lock()))
+			lock()))
 			requires std::copyable<object_t>
 		{
 			std::unique_lock lk{ myLock };
@@ -178,7 +180,7 @@ export namespace iconer
 			std::shared_lock lk{ myLock };
 			return std::ranges::lower_bound(objectPool.begin(), objectPool.end()
 				, id
-				, std::less<id_t>{}, [](const_reference handle){ return handle.get()->ID; });
+				, std::less<id_t>{}, [](const_reference handle) { return handle.get()->ID; });
 		}
 		[[nodiscard]]
 		auto FindEntity(const id_t id) const noexcept
@@ -186,13 +188,13 @@ export namespace iconer
 			std::shared_lock lk{ myLock };
 			return std::ranges::lower_bound(objectPool.begin(), objectPool.end()
 				, id
-				, std::less<id_t>{}, [](const_reference handle){ return handle.get()->ID; });
+				, std::less<id_t>{}, [](const_reference handle) { return handle.get()->ID; });
 		}
 
 		template<typename Predicate, typename Projection = std::identity>
 			requires std::is_invocable_v<const_reference>
 		void ForEach(Predicate&& fn)
-		const noexcept(std::is_nothrow_invocable_v<Predicate, std::invoke_result_t<Projection, const_reference>>)
+			const noexcept(std::is_nothrow_invocable_v<Predicate, std::invoke_result_t<Projection, const_reference>>)
 		{
 			std::shared_lock lk{ myLock };
 
