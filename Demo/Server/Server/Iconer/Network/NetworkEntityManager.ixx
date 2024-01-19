@@ -264,6 +264,11 @@ export namespace iconer
 		}
 
 		[[nodiscard]]
+		constexpr const data_t& GetData() const noexcept
+		{
+			return objectPool;
+		}
+		[[nodiscard]]
 		constexpr size_type GetSize() const noexcept(noexcept(std::declval<const data_t>().size()))
 		{
 			return objectPool.size();
