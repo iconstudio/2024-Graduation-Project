@@ -29,10 +29,15 @@ export namespace iconer
 		using iterator = typename data_t::iterator;
 		using const_iterator = typename data_t::const_iterator;
 
-		constexpr NetworkEntityManager()
-			noexcept(std::is_nothrow_default_constructible_v<data_t> and std::is_nothrow_default_constructible_v<lock_t>) = default;
-		constexpr ~NetworkEntityManager()
-			noexcept(std::is_nothrow_destructible_v<data_t> and std::is_nothrow_destructible_v<lock_t>) = default;
+		constexpr NetworkEntityManager(const size_type capacity)
+			noexcept(std::is_nothrow_constructible_v<data_t, size_type> and std::is_nothrow_default_constructible_v<lock_t>)
+			: objectPool(), myLock()
+		{
+			objectPool.reserve(capacity);
+		}
+
+		constexpr ~NetworkEntityManager() noexcept(std::is_nothrow_destructible_v<data_t> and std::is_nothrow_destructible_v<lock_t>) = default;
+
 
 		void Add(object_t&& object)
 		{
@@ -306,7 +311,7 @@ export namespace iconer
 		void operator=(const NetworkEntityManager&) = delete;
 		void operator=(NetworkEntityManager&&) = delete;
 
-		data_t myData;
+		data_t objectPool;
 		lock_t myLock;
 	};
 }
