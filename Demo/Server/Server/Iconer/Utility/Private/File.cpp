@@ -249,7 +249,7 @@ const noexcept
 		return 0;
 	}
 
-	const int length = std::fputs(content.data(), myHandle);
+	const int length = std::fprintf(myHandle, "%s", content.data());
 	if (length == file::ResultCode::EndOfFile)
 	{
 		lastError = errno;
@@ -271,7 +271,7 @@ const noexcept
 		return 0;
 	}
 
-	const int length = std::fputws(content.data(), myHandle);
+	const int length = std::fwprintf(myHandle, L"%s", content.data());
 	if (length == file::ResultCode::EndOfFile)
 	{
 		lastError = errno;
