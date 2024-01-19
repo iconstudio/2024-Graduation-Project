@@ -936,6 +936,7 @@
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="Iconer\Utility\File.ixx"/>
     <ClCompile Include="Iconer\Utility\Logger.ixx"/>
     <ClCompile Include="Iconer\Utility\ObjectManager.ixx">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
@@ -1013,6 +1014,7 @@
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="Iconer\Utility\Private\File.cpp"/>
     <ClCompile Include="Iconer\Utility\Private\Logger.cpp"/>
     <ClCompile Include="Iconer\Utility\RecursiveTemplateClass.ixx">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
