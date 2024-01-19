@@ -1,4 +1,5 @@
 module Demo.Framework;
+import Net;
 import <cstdio>;
 import <memory>;
 import <string>;
@@ -20,8 +21,10 @@ demo::Framework::Framework(size_t clients_count, std::uint16_t port)
 void
 demo::Framework::Awake()
 {
-	std::cout << "# (1) Server is initiating...\n";
-	
+	std::cout << "# (1) Server system is initiating...\n";
+
+	std::cout << "# Network system is initiating...\n";
+	net::core::Initialize();
 	std::cout << "# Constructing users pool...\n";
 	everyUsers.ConstructPool(startUserID);
 	std::cout << "# Constructing workers pool...\n";
@@ -78,5 +81,8 @@ demo::Framework::Update()
 void
 demo::Framework::Cleanup() noexcept
 {
-	std::cout << "# (4) Server is ended update now\n";
+	std::cout << "# (4) Server system is ended\n";
+
+	std::cout << "# Network system is destructing...\n";
+	net::core::Annihilate();
 }
