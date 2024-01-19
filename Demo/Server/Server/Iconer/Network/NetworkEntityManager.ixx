@@ -105,17 +105,17 @@ export namespace iconer
 		}
 
 		[[nodiscard]]
-		auto FindEntity(const id_t id) noexcept
+		std::ranges::borrowed_iterator_t<data_t> FindEntity(const id_t id) noexcept
 		{
 			std::shared_lock lk{ myLock };
-			return std::ranges::find_if(myData, id, [](const_reference element) noexcept -> id_t { return element->ID; });
+			return std::ranges::lower_bound(myData, id, Comparator{});
 		}
 
 		[[nodiscard]]
-		auto FindEntity(const id_t id) const noexcept
+		std::ranges::borrowed_iterator_t<const data_t> FindEntity(const id_t id) const noexcept
 		{
 			std::shared_lock lk{ myLock };
-			return std::ranges::find_if(myData, id, [](const_reference element) noexcept -> id_t { return element->ID; });
+			return std::ranges::lower_bound(myData, id, Comparator{});
 		}
 
 		template<typename Predicate>
