@@ -148,6 +148,15 @@ export namespace iconer
 			return result;
 		}
 
+		template<typename Predicate, typename Projection = std::identity>
+			requires std::is_invocable_v<const_reference>
+		void ForEach(Predicate&& fn) const noexcept(std::is_nothrow_invocable_v<Predicate, const_reference>)
+		{
+			std::shared_lock lk{ myLock };
+
+			std::ranges::for_each(myData, std::forward<Predicate>(fn), Projection{});
+		}
+
 		[[nodiscard]]
 		constexpr iterator begin() noexcept
 		{
