@@ -1,6 +1,7 @@
 module;
 export module Iconer.Container.FlatMap;
 import Iconer.Utility.Annihilator;
+import Iconer.Utility.AtomicSwitcher;
 import <utility>;
 import <atomic>;
 import <memory>;
@@ -216,56 +217,50 @@ export namespace iconer
 		[[nodiscard]]
 		iterator begin() noexcept
 		{
-			const size_type size = mySize.load(std::memory_order_acquire);
-			auto result = iterator{ myKeys.load() };
-			mySize.store(size, std::memory_order_release);
+			util::AtomicSwitcher size_watcher{ mySize };
+			util::AtomicSwitcher key_watcher{ myKeys };
 
-			return result;
+			return iterator{ key_watcher.GetValue() };
 		}
 		[[nodiscard]]
 		iterator end() noexcept
 		{
-			const size_type size = mySize.load(std::memory_order_acquire);
-			auto result = iterator{ myKeys.load() + size };
-			mySize.store(size, std::memory_order_release);
+			util::AtomicSwitcher size_watcher{ mySize };
+			util::AtomicSwitcher key_watcher{ myKeys };
 
-			return result;
+			return iterator{ key_watcher.GetValue() + size_watcher.GetValue() };
 		}
 		[[nodiscard]]
 		const_iterator begin() const noexcept
 		{
-			const size_type size = mySize.load(std::memory_order_acquire);
-			auto result = iterator{ myKeys.load() };
-			mySize.store(size, std::memory_order_release);
+			util::AtomicSwitcher size_watcher{ mySize };
+			util::AtomicSwitcher key_watcher{ myKeys };
 
-			return result;
+			return const_iterator{ key_watcher.GetValue() };
 		}
 		[[nodiscard]]
 		const_iterator end() const noexcept
 		{
-			const size_type size = mySize.load(std::memory_order_acquire);
-			auto result = iterator{ myKeys.load() + size };
-			mySize.store(size, std::memory_order_release);
+			util::AtomicSwitcher size_watcher{ mySize };
+			util::AtomicSwitcher key_watcher{ myKeys };
 
-			return result;
+			return const_iterator{ key_watcher.GetValue() + size_watcher.GetValue() };
 		}
 		[[nodiscard]]
 		const_iterator cbegin() const noexcept
 		{
-			const size_type size = mySize.load(std::memory_order_acquire);
-			auto result = iterator{ myKeys.load() };
-			mySize.store(size, std::memory_order_release);
+			util::AtomicSwitcher size_watcher{ mySize };
+			util::AtomicSwitcher key_watcher{ myKeys };
 
-			return result;
+			return const_iterator{ key_watcher.GetValue() };
 		}
 		[[nodiscard]]
 		const_iterator cend() const noexcept
 		{
-			const size_type size = mySize.load(std::memory_order_acquire);
-			auto result = iterator{ myKeys.load() + size };
-			mySize.store(size, std::memory_order_release);
+			util::AtomicSwitcher size_watcher{ mySize };
+			util::AtomicSwitcher key_watcher{ myKeys };
 
-			return result;
+			return const_iterator{ key_watcher.GetValue() + size_watcher.GetValue() };
 		}
 
 		template<std::ranges::input_range R>
@@ -285,58 +280,105 @@ export namespace iconer
 			}
 		}
 
-		void Reset() volatile
+		void Clear()
 		{
-			const size_t current_capacity = myCapacity.load(std::memory_order_acquire);
-			const size_type current_size = mySize.load(std::memory_order_acquire);
-			Node* const current_keys = myKeys.load(std::memory_order_acquire);
-			value_type* const current_values = myValues.load(std::memory_order_acquire);
+			util::AtomicSwitcher<size_t, false> capacity_watcher{ myCapacity };
+			util::AtomicSwitcher<size_type, false> size_watcher{ mySize };
+			util::AtomicSwitcher<key_type*, false> key_watcher{ myKeys };
+			util::AtomicSwitcher<value_type*, false> value_watcher{ myValues };
+
+			const size_t old_capacity = capacity_watcher.GetValue();
+			const size_type old_size = size_watcher.GetValue();
+			Node* const old_keys = key_watcher.GetValue();
+			value_type* const old_values = value_watcher.GetValue();
+
+			capacity_watcher.SetValue(0);
+			size_watcher.SetValue(0);
+			key_watcher.SetValue(nullptr);
+			value_watcher.SetValue(nullptr);
 
 			try
 			{
-				std::destroy_n(current_keys, current_capacity);
+				std::destroy_n(old_keys, old_capacity);
 
 				key_allocator_type key_allocator{};
-				key_allocator.deallocate(current_keys, current_capacity);
+				key_allocator.deallocate(old_keys, old_capacity);
 
-				std::destroy_n(current_values, static_cast<size_t>(current_size));
+				std::destroy_n(old_values, static_cast<size_t>(old_size));
 
 				allocator_type allocator{};
-				allocator.deallocate(current_values, static_cast<size_t>(current_size));
+				allocator.deallocate(old_values, static_cast<size_t>(old_size));
 			}
 			catch (...)
 			{
-				myCapacity.store(0, std::memory_order_release);
-				mySize.store(0, std::memory_order_release);
-				myKeys.store(nullptr, std::memory_order_release);
-				myValues.store(nullptr, std::memory_order_release);
-
 				throw;
 			}
-
-			myCapacity.store(0, std::memory_order_release);
-			mySize.store(0, std::memory_order_release);
-			myKeys.store(nullptr, std::memory_order_release);
-			myValues.store(nullptr, std::memory_order_release);
 		}
-		void Reset(const size_t capacity) volatile
+		void Clear() volatile
 		{
-			size_t current_capacity = myCapacity.load(std::memory_order_acquire);
-			size_type current_size = mySize.load(std::memory_order_acquire);
-			Node* current_keys = myKeys.load(std::memory_order_acquire);
-			value_type* current_values = myValues.load(std::memory_order_acquire);
+			util::AtomicSwitcher<size_t, true> capacity_watcher{ myCapacity };
+			util::AtomicSwitcher<size_type, true> size_watcher{ mySize };
+			util::AtomicSwitcher<key_type*, true> key_watcher{ myKeys };
+			util::AtomicSwitcher<value_type*, true> value_watcher{ myValues };
 
-			std::destroy_n(current_keys, current_capacity);
+			const size_t old_capacity = capacity_watcher.GetValue();
+			const size_type old_size = size_watcher.GetValue();
+			Node* const old_keys = key_watcher.GetValue();
+			value_type* const old_values = value_watcher.GetValue();
 
-			if (capacity != current_capacity)
+			capacity_watcher.SetValue(0);
+			size_watcher.SetValue(0);
+			key_watcher.SetValue(nullptr);
+			value_watcher.SetValue(nullptr);
+
+			try
+			{
+				std::destroy_n(old_keys, old_capacity);
+
+				key_allocator_type key_allocator{};
+				key_allocator.deallocate(old_keys, old_capacity);
+
+				std::destroy_n(old_values, static_cast<size_t>(old_size));
+
+				allocator_type allocator{};
+				allocator.deallocate(old_values, static_cast<size_t>(old_size));
+			}
+			catch (...)
+			{
+				throw;
+			}
+		}
+		void Reset(const size_t capacity)
+		{
+			util::AtomicSwitcher<size_t, false> capacity_watcher{ myCapacity };
+			util::AtomicSwitcher<size_type, false> size_watcher{ mySize };
+			util::AtomicSwitcher<key_type*, false> key_watcher{ myKeys };
+			util::AtomicSwitcher<value_type*, false> value_watcher{ myValues };
+
+			const size_t old_capacity = capacity_watcher.GetValue();
+			const size_type old_size = size_watcher.GetValue();
+			Node* const old_keys = key_watcher.GetValue();
+			value_type* const old_values = value_watcher.GetValue();
+
+			std::destroy_n(old_values, static_cast<size_t>(old_size));
+
+			allocator_type allocator{};
+			allocator.deallocate(old_values, static_cast<size_t>(old_size));
+
+			size_watcher.SetValue(0);
+			value_watcher.SetValue(nullptr);
+
+			std::destroy_n(old_keys, old_capacity);
+
+			if (capacity != old_capacity)
 			{
 				key_allocator_type key_allocator{};
-				key_allocator.deallocate(current_keys, current_capacity);
-
-				current_keys = nullptr;
+				key_allocator.deallocate(old_keys, old_capacity);
 			}
+			capacity_watcher.SetValue(0);
+			key_watcher.SetValue(nullptr);
 
-			if (Node* key_buffer = _CreateKeyBuffer(capacity); nullptr != key_buffer)
+			if (Node* key_buffer = new Node[capacity]{}; nullptr != key_buffer)
 			{
 				util::FailsafeAnnihilator<key_allocator_type> failsafe{ key_buffer, capacity, true };
 
@@ -353,73 +395,147 @@ export namespace iconer
 					throw;
 				}
 
-				current_keys = key_buffer;
-				current_capacity = capacity;
+				capacity_watcher.SetValue(capacity);
+				key_watcher.SetValue(key_buffer);
 			}
+		}
+		void Reset(const size_t capacity) volatile
+		{
+			util::AtomicSwitcher<size_t, true> capacity_watcher{ myCapacity };
+			util::AtomicSwitcher<size_type, true> size_watcher{ mySize };
+			util::AtomicSwitcher<key_type*, true> key_watcher{ myKeys };
+			util::AtomicSwitcher<value_type*, true> value_watcher{ myValues };
 
-			std::destroy_n(current_values, static_cast<size_t>(current_size));
+			const size_t old_capacity = capacity_watcher.GetValue();
+			const size_type old_size = size_watcher.GetValue();
+			Node* const old_keys = key_watcher.GetValue();
+			value_type* const old_values = value_watcher.GetValue();
+
+			std::destroy_n(old_values, static_cast<size_t>(old_size));
 
 			allocator_type allocator{};
-			allocator.deallocate(current_values, static_cast<size_t>(current_size));
+			allocator.deallocate(old_values, static_cast<size_t>(old_size));
 
-			// Unlock
-			myCapacity.store(current_capacity, std::memory_order_release);
-			mySize.store(0, std::memory_order_release);
-			myKeys.store(current_keys, std::memory_order_release);
-			myValues.store(nullptr, std::memory_order_release);
-		}
-		void Capacity(const size_t capacity) volatile
-		{
-			size_t current_capacity = myCapacity.load(std::memory_order_acquire);
-			Node* current_memory = myKeys.load(std::memory_order_acquire);
+			size_watcher.SetValue(0);
+			value_watcher.SetValue(nullptr);
 
-			if (current_capacity == capacity)
+			std::destroy_n(old_keys, old_capacity);
+
+			if (capacity != old_capacity)
 			{
-				myKeys.store(current_memory, std::memory_order_release);
-				myCapacity.store(current_capacity, std::memory_order_release);
-
-				return;
+				key_allocator_type key_allocator{};
+				key_allocator.deallocate(old_keys, old_capacity);
 			}
+			capacity_watcher.SetValue(0);
+			key_watcher.SetValue(nullptr);
 
-			util::FailsafeAnnihilator<key_allocator_type> old_key_annihilator{ current_memory, current_capacity, true };
-
-			// Create an alternative buffer
-			Node* key_buffer = _CreateKeyBuffer(capacity);
-			if (nullptr != key_buffer)
+			if (Node* key_buffer = new Node[capacity]{}; nullptr != key_buffer)
 			{
-				util::FailsafeAnnihilator<key_allocator_type> new_key_annihilator{ key_buffer, capacity, true };
+				util::MemoryWatcher<Node> failsafe{ key_buffer, capacity, true };
 
 				try
 				{
-					if (0 < current_capacity) // Recycle the old values
-					{
-						std::uninitialized_move_n(current_memory, current_capacity, key_buffer);
-					}
-					else // Empty values
-					{
-						std::uninitialized_default_construct_n(key_buffer, capacity);
-					}
+					std::uninitialized_default_construct_n(key_buffer, capacity);
 				}
 				catch (...)
 				{
-					// destruct the buffer first
-					new_key_annihilator.isSafe = false;
-
-					myKeys.store(current_memory, std::memory_order_release);
-					myCapacity.store(current_capacity, std::memory_order_release);
+					// destruct the buffer
+					failsafe.isSafe = false;
 
 					// Rethrow std::bad_alloc
 					throw;
 				}
 
-				current_capacity = capacity;
-				current_memory = key_buffer;
-				old_key_annihilator.isSafe = false;
+				capacity_watcher.SetValue(capacity);
+				key_watcher.SetValue(key_buffer);
+			}
+		}
+		void Capacity(const size_t capacity) volatile
+		{
+			util::AtomicSwitcher<size_t, true> capacity_watcher{ myCapacity };
+			util::AtomicSwitcher<size_type, true> size_watcher{ mySize };
+			util::AtomicSwitcher<key_type*, true> key_watcher{ myKeys };
+			util::AtomicSwitcher<value_type*, true> value_watcher{ myValues };
+
+			const size_t old_capacity = capacity_watcher.GetValue();
+			const size_type old_size = size_watcher.GetValue();
+			Node* const old_keys = key_watcher.GetValue();
+			value_type* const old_values = value_watcher.GetValue();
+
+			if (old_capacity == capacity)
+			{
+				return;
 			}
 
-			// Unlock capacity
-			myKeys.store(current_memory, std::memory_order_release);
-			myCapacity.store(current_capacity, std::memory_order_release);
+			util::MemoryWatcher<Node> old_key_annihilator{ old_keys, old_capacity, true };
+			util::FailsafeAnnihilator<allocator_type> old_val_annihilator{ old_values, old_capacity, true };
+
+			// Huge try block
+			try
+			{
+				// (1-1) Allocate the key buffer
+				Node* key_buffer = new Node[capacity]{};
+
+				// (1-2) Construct key nodes
+				if (nullptr != key_buffer)
+				{
+					// new keys are unsafe at first
+					util::MemoryWatcher<Node> new_key_annihilator{ key_buffer, capacity, false };
+
+					if (0 < old_capacity) // Recycle the old values
+					{
+						std::uninitialized_move_n(old_keys, std::min(old_capacity, capacity), key_buffer);
+					}
+					else // Empty values
+					{
+						std::uninitialized_default_construct_n(key_buffer, capacity);
+					}
+
+					// (2-1) Allocate the value buffer
+					value_type* value_buffer = _CreateValueBuffer(capacity);
+
+					// (2-2) Construct value nodes
+					if (nullptr != value_buffer)
+					{
+						// Also new values are unsafe at first
+						util::FailsafeAnnihilator<allocator_type> new_val_annihilator{ value_buffer, capacity, false };
+
+						size_type new_size{};
+						if (0 < old_size) // Recycle the old values
+						{
+							new_size = std::min(old_size, static_cast<size_type>(capacity));
+							std::uninitialized_move_n(old_values, new_size, value_buffer);
+						}
+						else // Empty values
+						{
+							std::uninitialized_default_construct_n(value_buffer, capacity);
+						}
+
+						// (3) Link them
+						for (size_t i = 0; i < capacity; ++i)
+						{
+							key_buffer[i].valueHandle = value_buffer + i;
+						}
+
+						// (4-1) Done
+						new_key_annihilator.isSafe = true;
+						new_val_annihilator.isSafe = true;
+						capacity_watcher.SetValue(capacity);
+						size_watcher.SetValue(new_size);
+						key_watcher.SetValue(key_buffer);
+						value_watcher.SetValue(value_buffer);
+
+						// (4-2) Finally remove old buffers
+						old_key_annihilator.isSafe = false;
+						old_val_annihilator.isSafe = false;
+					}
+				}
+			}
+			catch (...)
+			{
+				// Rethrow std::bad_alloc
+				throw;
+			}
 		}
 		/**
 		 * @brief Conditional hard reset
@@ -441,114 +557,132 @@ export namespace iconer
 				return;
 			}
 
-			const auto old_capacity = myCapacity.load(std::memory_order_acquire);
-			const auto old_memory = myKeys.load(std::memory_order_acquire);
-			const auto old_values = myValues.load(std::memory_order_acquire);
-			const auto old_size = mySize.load(std::memory_order_acquire);
+			util::AtomicSwitcher<size_t, true> capacity_watcher{ myCapacity };
+			util::AtomicSwitcher<size_type, true> size_watcher{ mySize };
+			util::AtomicSwitcher<key_type*, true> key_watcher{ myKeys };
+			util::AtomicSwitcher<value_type*, true> value_watcher{ myValues };
 
-			util::FailsafeAnnihilator<key_allocator_type> old_key_annihilator{ old_memory, old_capacity, true };
-			util::FailsafeAnnihilator<allocator_type> old_value_annihilator{ old_values, old_capacity, true };
+			const size_t old_capacity = capacity_watcher.GetValue();
+			const size_type old_size = size_watcher.GetValue();
+			Node* const old_keys = key_watcher.GetValue();
+			value_type* const old_values = value_watcher.GetValue();
+			const size_t min_capacity = static_cast<size_t>(size);
 
-			Node* key_buffer{ nullptr };
-			const size_t target_capacity = static_cast<size_t>(size);
-
-			if (old_capacity < target_capacity)
+			//CapacityAtLeast(min_capacity);
+			if (old_size == size)
 			{
-				key_buffer = _CreateKeyBuffer(target_capacity);
-				if (nullptr != key_buffer)
-				{
-					//this->_MoveElements(old_memory, old_capacity, key_buffer, target_capacity);
-				}
-				else
-				{
-					myKeys.store(old_memory, std::memory_order_release);
-					myCapacity.store(old_capacity, std::memory_order_release);
-					myValues.store(old_values, std::memory_order_release);
-					mySize.store(old_size, std::memory_order_release);
-					return;
-				}
+				return;
 			}
 
-			// A new buffer with (key_buffer, target_capacity)
-			util::FailsafeAnnihilator<key_allocator_type> new_key_annihilator{ myKeys, myCapacity, true };
-			pointer value_buffer{ nullptr };
+			util::MemoryWatcher<Node> old_key_annihilator{ old_keys, old_capacity, true };
+			util::FailsafeAnnihilator<allocator_type> old_val_annihilator{ old_values, old_capacity, true };
+
+			// Huge try block
 			try
 			{
-				std::uninitialized_value_construct_n(key_buffer, {});
+				// (1-1) Allocate the key buffer
+				Node* key_buffer = new Node[min_capacity]{};
 
-				value_buffer = _CreateValueBuffer(target_capacity);
+				// (1-2) Construct key nodes
+				if (nullptr != key_buffer)
+				{
+					// new keys are unsafe at first
+					util::MemoryWatcher<Node> new_key_annihilator{ key_buffer, min_capacity, false };
+
+					if (0 < old_capacity) // Recycle the old values
+					{
+						std::uninitialized_move_n(old_keys, std::min(old_capacity, min_capacity), key_buffer);
+					}
+					else // Empty values
+					{
+						std::uninitialized_default_construct_n(key_buffer, min_capacity);
+					}
+
+					// (2-1) Allocate the value buffer
+					value_type* value_buffer = _CreateValueBuffer(min_capacity);
+
+					// (2-2) Construct value nodes
+					if (nullptr != value_buffer)
+					{
+						// Also new values are unsafe at first
+						util::FailsafeAnnihilator<allocator_type> new_val_annihilator{ value_buffer, min_capacity, false };
+
+						size_type new_size{};
+						if (0 < old_size) // Recycle the old values
+						{
+							new_size = std::min(old_size, size);
+							std::uninitialized_move_n(old_values, new_size, value_buffer);
+						}
+						else // Empty values
+						{
+							new_size = size;
+							std::uninitialized_default_construct_n(value_buffer, min_capacity);
+						}
+
+						// (3) Link them
+						for (size_t i = 0; i < min_capacity; ++i)
+						{
+							key_buffer[i].valueHandle = value_buffer + i;
+						}
+
+						// (4-1) Done
+						new_key_annihilator.isSafe = true;
+						new_val_annihilator.isSafe = true;
+						capacity_watcher.SetValue(min_capacity);
+						size_watcher.SetValue(new_size);
+						key_watcher.SetValue(key_buffer);
+						value_watcher.SetValue(value_buffer);
+
+						// (4-2) Finally remove old buffers
+						old_key_annihilator.isSafe = false;
+						old_val_annihilator.isSafe = false;
+					}
+				}
 			}
 			catch (...)
 			{
-				// Restore to old buffers
-				myKeys.store(old_memory, std::memory_order_release);
-				myCapacity.store(old_capacity, std::memory_order_release);
-				myValues.store(old_values, std::memory_order_release);
-				mySize.store(old_size, std::memory_order_release);
-
-				new_key_annihilator.isSafe = false;
-				return;
+				// Rethrow std::bad_alloc
+				throw;
 			}
 
-			if (nullptr == value_buffer) // didn't throw but no buffer
-			{
-				// Restore to old buffers, here too
-				myKeys.store(old_memory, std::memory_order_release);
-				myCapacity.store(old_capacity, std::memory_order_release);
-				myValues.store(old_values, std::memory_order_release);
-				mySize.store(old_size, std::memory_order_release);
+			Node* key_buffer = key_watcher.GetValue();
+			value_type* value_buffer = value_watcher.GetValue();
 
-				new_key_annihilator.isSafe = false;
-				return;
-			}
-
-			if (0 < old_size) // Move values and handles
+			// (5) Construct empty node after old nodes
+			if (0 < old_size and old_size < size)
 			{
-				for (size_type i = {}; i < old_size; ++i)
+				// Just don't care about exceptions
+				for (size_type i = {}; i < size - old_size; ++i)
 				{
-					const Node& old_key = *(old_memory + i);
-					const value_type& old_value = *(old_values + i);
-
-					*(key_buffer + i) = std::move(old_key);
-					*(value_buffer + i) = std::move(old_value);
+					std::construct_at(key_buffer + old_size + i);
+					std::construct_at(value_buffer + old_size + i);
 				}
 			}
-
-			// Remove old buffers
-			old_key_annihilator.isSafe = false;
-			old_value_annihilator.isSafe = false;
-
-			// Unlock buffers and capacity
-			myKeys.store(key_buffer, std::memory_order_release);
-			myCapacity.store(target_capacity, std::memory_order_release);
-			myValues.store(value_buffer, std::memory_order_release);
-			mySize.store(size, std::memory_order_release);
 		}
 		/**
 		 * @brief Conditional soft reset
 		 */
 		void ResizeAtLeast(size_type size) volatile
 		{
-			if (0 < size and mySize.load(std::memory_order_relaxed) < size)
+			util::AtomicSwitcher<size_type, true> size_watcher{ mySize };
+
+			if (0 < size and size_watcher.GetValue() < size)
 			{
 				this->Resize(std::move(size));
 			}
 		}
 		void ShrinkToFit() volatile
 		{
-			if (0 < myCapacity and mySize < myCapacity)
+			util::AtomicSwitcher<size_t, true> capacity_watcher{ myCapacity };
+			util::AtomicSwitcher<size_type, true> size_watcher{ mySize };
+
+			if (0 < capacity_watcher.GetValue() and size_watcher.GetValue() < capacity_watcher.GetValue())
 			{
-				this->Capacity(mySize);
+				this->Capacity(static_cast<size_t>(size_watcher.GetValue()));
 			}
 		}
 
 	private:
-		[[nodiscard]]
-		static constexpr key_type* _CreateKeyBuffer(size_t length)
-		{
-			key_allocator_type alloc{};
-			return alloc.allocate(length);
-		}
 		[[nodiscard]]
 		static constexpr value_type* _CreateValueBuffer(size_t length)
 		{
