@@ -1,8 +1,11 @@
 module Demo.Framework;
+import <cstdio>;
 import <memory>;
 import <string>;
 import <string_view>;
 import <format>;
+import <algorithm>;
+import <iostream>;
 // ReSharper disable CppMemberFunctionMayBeStatic
 
 demo::Framework::Framework(size_t clients_count, std::uint16_t port)
@@ -10,61 +13,54 @@ demo::Framework::Framework(size_t clients_count, std::uint16_t port)
 	, listenSocket(), listenContext()
 	, everyUsers(clients_count)
 	, cancellationSource()
-{}
+{
+	std::cout.sync_with_stdio(false);
+}
 
 void
 demo::Framework::Awake()
 {
+	std::cout << "# (1) Server is initiating...\n";
+	
+	std::cout << "# Constructing users pool...\n";
 	everyUsers.ConstructPool(startUserID);
+	std::cout << "# Constructing workers pool...\n";
 	serverWorkers.reserve(workersCount);
+	for (size_t i = 0; i < workersCount; ++i)
+	{
+		auto worker = new std::jthread{ Worker, std::ref(*this), workerCanceller.get_token() };
+
+		serverWorkers.push_back(worker);
+	}
 }
 
-bool
-demo::Framework::Start() noexcept
+void
+demo::Framework::Start()
 {
-	bool result = true;
-	try
-	{
-		for (auto& user_ptr : everyUsers)
-		{
-			iconer::User& user = *user_ptr;
+	std::cout << "# (2) Server is starting...\n";
 
-			if (not user.SetState<iconer::user_status::Listening>(std::ref(listenSocket)))
-			{
-				result = false;
-			}
+	std::cout << "# Constructing user instances...\n";
+	for (auto& user_ptr : everyUsers)
+	{
+		iconer::User& user = *user_ptr;
+
+		if (not user.SetState<iconer::user_status::Listening>(std::ref(listenSocket)))
+		{
+			throw "Cannot initiate the user";
 		}
 	}
-	catch (...)
-	{
-		return false;
-	}
-
-	try
-	{
-		for (size_t i = 0; i < workersCount; ++i)
-		{
-			auto worker = new std::jthread{ Worker, std::ref(*this), workerCanceller.get_token() };
-
-			serverWorkers.push_back(worker);
-		}
-	}
-	catch (...)
-	{
-		return false;
-	}
-
-	return result;
 }
 
 void
 demo::Framework::Update()
 {
+	std::cout << "# (3) Server is started\n";
+
 	while (true)
 	{
 		if (workerCanceller.stop_requested())
 		{
-			break;
+			return;
 		}
 
 		std::this_thread::yield();
@@ -73,4 +69,6 @@ demo::Framework::Update()
 
 void
 demo::Framework::Cleanup() noexcept
-{}
+{
+	std::cout << "# (4) Server is ended update now\n";
+}
