@@ -44,18 +44,21 @@ namespace
 
 void
 iconer::util::Logger::Awake(const std::filesystem::path& log_file)
+noexcept
 {
 	myFile.Open(log_file, util::file::OpenModes::Write);
 }
 
 void
 iconer::util::Logger::Cleanup()
+noexcept
 {
 	myFile.Close();
 }
 
 void
 iconer::util::Logger::DebugLog(std::wstring_view msg)
+noexcept
 {
 	IF_DEBUG
 	{
@@ -65,6 +68,7 @@ iconer::util::Logger::DebugLog(std::wstring_view msg)
 
 void
 iconer::util::Logger::Log(std::wstring_view msg)
+noexcept
 {
 	const auto str = msg.data();
 	std::fwprintf(STDOUT, str);
@@ -73,6 +77,7 @@ iconer::util::Logger::Log(std::wstring_view msg)
 
 void
 iconer::util::Logger::DebugLogError(std::wstring_view msg)
+noexcept
 {
 	IF_DEBUG
 	{
@@ -82,6 +87,7 @@ iconer::util::Logger::DebugLogError(std::wstring_view msg)
 
 void
 iconer::util::Logger::LogError(std::wstring_view msg)
+noexcept
 {
 	const auto str = msg.data();
 	std::fwprintf(STDERR, str);
@@ -90,6 +96,7 @@ iconer::util::Logger::LogError(std::wstring_view msg)
 
 void
 iconer::util::Logger::DebugLogWarning(std::wstring_view msg)
+noexcept
 {
 	IF_DEBUG
 	{
@@ -99,6 +106,7 @@ iconer::util::Logger::DebugLogWarning(std::wstring_view msg)
 
 void
 iconer::util::Logger::LogWarning(std::wstring_view msg)
+noexcept
 {
 	const auto str = msg.data();
 	std::fwprintf(STDERR, str);
