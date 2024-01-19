@@ -13,10 +13,7 @@ demo::Framework appFramework{ 50ULL, 40000U };
 int
 main()
 {
-	std::cout << "Hello World!\n";
-
-	iconer::FlatMap<std::string, int> my_dict{};
-	my_dict.Capacity(40);
+	std::cout << "Server is started!\n";
 
 	appFramework.Awake();
 	appFramework.Start();
