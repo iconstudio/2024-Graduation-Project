@@ -1,4 +1,6 @@
 export module Iconer.Network.EntityManager;
+import Net.BorrowedPointer;
+import Net.Constraints;
 import Iconer.Network.Entity;
 import <concepts>;
 import <memory>;
@@ -141,13 +143,15 @@ export namespace iconer
 		}
 
 		[[nodiscard]]
-		std::ranges::borrowed_iterator_t<data_t> FindEntity(const id_t id) noexcept
+		auto FindEntity(const id_t id) noexcept
 		{
 			std::shared_lock lk{ myLock };
-			return std::ranges::lower_bound(myData, id, Comparator{});
+			return std::ranges::lower_bound(objectPool.begin(), objectPool.end()
+				, id
+				, std::less<id_t>{}, [](const_reference handle) { return handle.get()->ID; } );
 		}
 		[[nodiscard]]
-		std::ranges::borrowed_iterator_t<const data_t> FindEntity(const id_t id) const noexcept
+		auto FindEntity(const id_t id) const noexcept
 		{
 			std::shared_lock lk{ myLock };
 			return std::ranges::lower_bound(objectPool.begin(), objectPool.end()
