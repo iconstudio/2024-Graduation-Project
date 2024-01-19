@@ -13,60 +13,120 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="헤더 파일\Demo">
+      <UniqueIdentifier>{fc667b92-2d19-4dd2-bb78-ff25823263ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Demo">
+      <UniqueIdentifier>{27f39e22-cb8e-43dc-8b54-f9fe52d5b767}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Iconer">
+      <UniqueIdentifier>{f1825704-da46-4ee1-b3cb-2dc66e15c3aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Iconer\Network">
+      <UniqueIdentifier>{f5a25061-64c8-498a-9928-cad7d5ef7447}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Iconer\Utility">
+      <UniqueIdentifier>{f369ca88-47b7-40cb-b5e3-02d2d60a900a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Iconer\Container">
+      <UniqueIdentifier>{6415b67d-64cd-45ac-9e5b-0804f416a82f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Iconer">
+      <UniqueIdentifier>{b51abfd3-1fb1-4319-88d4-86cfe2b1dc68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Iconer\Network">
+      <UniqueIdentifier>{f4653855-f1c2-44d8-93ba-9eb2b73a93c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Iconer\Container">
+      <UniqueIdentifier>{29f8eda0-46ae-4097-aedd-58875d14aa15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Iconer\Utility">
+      <UniqueIdentifier>{b49b4efe-4910-4b4e-bfb5-b17046665bd3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Iconer\Utility\BehaviourTree.ixx">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Iconer\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Iconer\Declarations.ixx">
-      <Filter>헤더 파일</Filter>
+    <ClCompile Include="Iconer\Utility\Annihilator.ixx">
+      <Filter>헤더 파일\Iconer\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Demo\Framework.ixx">
-      <Filter>헤더 파일</Filter>
+    <ClCompile Include="Iconer\Utility\AtomicSwitcher.ixx">
+      <Filter>헤더 파일\Iconer\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Iconer\Network\NetworkEntity.ixx">
-      <Filter>헤더 파일</Filter>
+    <ClCompile Include="Iconer\Utility\File.ixx">
+      <Filter>헤더 파일\Iconer\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Iconer\Network\NetworkEntityManager.ixx">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Iconer\Network\NetworkView.ixx">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Iconer\Utility\ObjectManager.ixx">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Iconer\Utility\RecursiveTemplateClass.ixx">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Iconer\Network\User.ixx">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Iconer\Network\UserManager.ixx">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Application\Demo\Private\Framework.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Iconer\Network\Private\NetworkEntityManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Iconer\Network\Private\User.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Iconer\Network\Private\UserManager.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="Iconer\Utility\Logger.ixx">
+      <Filter>헤더 파일\Iconer\Utility</Filter>
     </ClCompile>
     <ClCompile Include="Iconer\Container\FlatMap.ixx">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Iconer\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Utility\RecursiveTemplateClass.ixx">
+      <Filter>헤더 파일\Iconer\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Utility\ObjectManager.ixx">
+      <Filter>헤더 파일\Iconer\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\NetworkView.ixx">
+      <Filter>헤더 파일\Iconer\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\NetworkEntity.ixx">
+      <Filter>헤더 파일\Iconer\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\NetworkEntityManager.ixx">
+      <Filter>헤더 파일\Iconer\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Demo\Framework.ixx">
+      <Filter>헤더 파일\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Demo\Private\Framework.cpp">
+      <Filter>소스 파일\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\Private\UserManager.cpp">
+      <Filter>소스 파일\Iconer\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\Private\Worker.cpp">
+      <Filter>소스 파일\Demo</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\Private\NetworkEntityManager.cpp">
+      <Filter>소스 파일\Iconer\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Utility\Private\Logger.cpp">
+      <Filter>소스 파일\Iconer\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Utility\Private\File.cpp">
+      <Filter>소스 파일\Iconer\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Container\Private\FlatMap.cpp">
+      <Filter>소스 파일\Iconer</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\Private\User.cpp">
+      <Filter>소스 파일\Iconer\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Container\ConcurrentLinkedList.ixx">
+      <Filter>헤더 파일\Iconer\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Container\ConcurrentList.ixx">
+      <Filter>헤더 파일\Iconer\Container</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Declarations.ixx">
+      <Filter>헤더 파일\Iconer</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\UserManager.ixx">
+      <Filter>헤더 파일\Iconer\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Iconer\Network\User.ixx">
+      <Filter>헤더 파일\Iconer\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Iconer\Utility\BehaviourTreeHelper.hpp">
-      <Filter>헤더 파일</Filter>
+      <Filter>헤더 파일\Iconer\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
