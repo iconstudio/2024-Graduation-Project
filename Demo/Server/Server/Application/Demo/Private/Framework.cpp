@@ -30,7 +30,7 @@ demo::Framework::Start() noexcept
 	{
 		const auto user = user_ptr.get();
 
-		if (not  user->SetState<iconer::user_status::Listening>())
+		if (not user->SetState<iconer::user_status::Listening>())
 		{
 			result = false;
 		}
