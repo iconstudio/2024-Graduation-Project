@@ -6,6 +6,7 @@ import Net.Constraints;
 import Net.Socket;
 import Net.Io.Context;
 import <cstdint>;
+import <vector>;
 import <thread>;
 
 export namespace demo
@@ -29,6 +30,8 @@ export namespace demo
 		void operator=(const Framework&) = delete;
 		void operator=(Framework&&) = delete;
 
+		std::vector<std::jthread*> serverWorkers;
+		std::stop_source workerCanceller;
 		net::Socket listenSocket;
 		net::io::Context listenContext;
 		iconer::UserManager everyUsers;

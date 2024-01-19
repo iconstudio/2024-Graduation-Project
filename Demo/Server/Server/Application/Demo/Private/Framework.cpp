@@ -8,8 +8,8 @@ import <memory>;
 // ReSharper disable CppMemberFunctionMayBeStatic
 
 demo::Framework::Framework(size_t clients_count, std::uint16_t port)
-	: listenSocket()
-	, listenContext()
+	: serverWorkers(), workerCanceller()
+	, listenSocket(), listenContext()
 	, everyUsers(clients_count)
 	, cancellationSource()
 {}
@@ -41,7 +41,17 @@ demo::Framework::Start() noexcept
 
 void
 demo::Framework::Update()
-{}
+{
+	while (true)
+	{
+		if (workerCanceller.stop_requested())
+		{
+			break;
+		}
+
+		std::this_thread::yield();
+	}
+}
 
 void
 demo::Framework::Cleanup() noexcept
