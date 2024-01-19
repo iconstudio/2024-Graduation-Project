@@ -1,7 +1,7 @@
 export module Iconer.Utility.RecursiveTemplateClass;
 import Net.Constraints;
 
-export namespace iconer
+export namespace iconer::util
 {
 	template<net::crtp T>
 	class [[nodiscard]] RecursiveTemplateClass
