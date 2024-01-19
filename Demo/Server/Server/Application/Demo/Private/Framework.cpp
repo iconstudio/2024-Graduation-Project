@@ -20,7 +20,7 @@ demo::Framework::Framework(size_t clients_count, std::uint16_t port)
 void
 demo::Framework::Awake()
 {
-	myLogger.Awake({L"Log.txt"});
+	myLogger.Awake({ L"Log.txt" });
 
 	myLogger.Log(L"# (1) Server system is initiating...\n");
 
