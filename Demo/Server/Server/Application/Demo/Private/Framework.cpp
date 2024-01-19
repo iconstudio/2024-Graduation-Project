@@ -20,6 +20,7 @@ demo::Framework::Awake()
 	iconer::user_id_t id = startUserID;
 
 	everyUsers.ConstructPool(startUserID);
+	serverWorkers.reserve(workersCount);
 }
 
 bool
@@ -34,6 +35,20 @@ demo::Framework::Start() noexcept
 		{
 			result = false;
 		}
+	}
+
+	try
+	{
+		for (size_t i = 0; i < workersCount; ++i)
+		{
+			auto worker = new std::jthread{ Worker, workerCanceller.get_token() };
+			
+			serverWorkers.push_back(worker);
+		}
+	}
+	catch (...)
+	{
+		return false;
 	}
 
 	return result;
@@ -56,3 +71,17 @@ demo::Framework::Update()
 void
 demo::Framework::Cleanup() noexcept
 {}
+
+void demo::Worker(Framework& framework, std::stop_token&& token)
+{
+	while (true)
+	{
+		if (token.stop_requested())
+		{
+			break;
+		}
+
+		std::this_thread::yield();
+	}
+}
+

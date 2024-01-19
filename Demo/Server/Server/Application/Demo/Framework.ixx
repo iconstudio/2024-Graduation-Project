@@ -15,6 +15,7 @@ export namespace demo
 	{
 	public:
 		static inline constexpr iconer::user_id_t startUserID = 1000;
+		static inline size_t workersCount = std::thread::hardware_concurrency();
 
 		Framework(size_t clients_count, std::uint16_t port);
 		~Framework() = default;
@@ -23,6 +24,8 @@ export namespace demo
 		bool Start() noexcept;
 		void Update();
 		void Cleanup() noexcept;
+
+		friend void Worker(Framework& framework, std::stop_token&& token);
 
 	private:
 		Framework(const Framework&) = delete;
@@ -37,4 +40,6 @@ export namespace demo
 		iconer::UserManager everyUsers;
 		std::stop_source cancellationSource;
 	};
+
+	void Worker(Framework& framework, std::stop_token&& token);
 }
