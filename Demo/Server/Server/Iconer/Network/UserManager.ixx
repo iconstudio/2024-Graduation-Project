@@ -2,6 +2,7 @@ export module Iconer.Network.UserManager;
 import Iconer.Declarations;
 import Iconer.Network.EntityManager;
 export import Iconer.Network.User;
+import <stdexcept>;
 import <memory>;
 
 export namespace iconer
@@ -66,6 +67,8 @@ export namespace iconer
 		}
 
 	private:
+		static inline std::bad_alloc badUserAllocation{};
+
 		UserManager(const UserManager&) = delete;
 		UserManager(UserManager&&) = delete;
 		void operator=(const UserManager&) = delete;
