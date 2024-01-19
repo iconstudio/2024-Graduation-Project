@@ -12,10 +12,10 @@ iconer::User::OnNetworkInitialized(bool succeed, net::ErrorCodes error_code) noe
 }
 
 void
-iconer::User::StateDelegate(User& user, state_data_t& state)
+iconer::User::StateDelegate(User* user, state_data_t& state, void* arguments)
 {
 	state.Visit(
-		[&]<typename T>(T&& value) noexcept {
+		[&]<typename T>(T&& value) noexcept{
 			using U = std::decay_t<T>;
 			if constexpr (std::same_as<U, user_status::None>)
 			{

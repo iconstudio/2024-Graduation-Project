@@ -6,6 +6,8 @@ import Iconer.Declarations;
 import Iconer.Utility.BehaviourTree;
 import Iconer.Network.Entity;
 import Net.Handler;
+import <type_traits>;
+import <tuple>;
 
 export namespace iconer
 {
@@ -48,27 +50,44 @@ export namespace iconer
 
 		constexpr ~User() noexcept override = default;
 
-		template<typename Status>
-		bool SetState() noexcept
+		template<typename Status, typename... Args>
+		bool SetState(Args&&... args) noexcept
 		{
 			if (myStatus.TryTranslate<Status>())
 			{
-				StateDelegate(*this, myStatus);
-				return true;
+				if constexpr (0 < sizeof...(Args))
+				{
+					auto package = std::forward_as_tuple(std::forward<Args>(args)...);
+					StateDelegate(this, myStatus, std::addressof(package));
+					return true;
+				}
+				else
+				{
+					StateDelegate(this, myStatus, nullptr);
+					return true;
+				}
 			}
 			else
 			{
 				return false;
 			}
 		}
-
-		template<typename Status>
-		bool SetState(Status&&) noexcept
+		template<typename Status, typename... Args>
+		bool SetState(Status&&, Args&&... args) noexcept
 		{
 			if (myStatus.TryTranslate<Status>())
 			{
-				StateDelegate(*this, myStatus);
-				return true;
+				if constexpr (0 < sizeof...(Args))
+				{
+					auto package = std::forward_as_tuple(std::forward<Args>(args)...);
+					StateDelegate(this, myStatus, std::addressof(package));
+					return true;
+				}
+				else
+				{
+					StateDelegate(this, myStatus, nullptr);
+					return true;
+				}
 			}
 			else
 			{
@@ -79,7 +98,7 @@ export namespace iconer
 		void OnNetworkInitialized(bool succeed, net::ErrorCodes error_code) noexcept override;
 
 	protected:
-		static void StateDelegate(User& user, state_data_t& state);
+		static void StateDelegate(User* user, state_data_t& state, [[maybe_unused]] void* arguments);
 
 		state_data_t myStatus;
 
