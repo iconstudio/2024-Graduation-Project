@@ -1,5 +1,6 @@
 export module Demo.Framework;
 import Iconer.Declarations;
+import Iconer.Utility.Logger;
 import Iconer.Network.UserManager;
 export import Iconer.Network.User;
 import Net.Constraints;
@@ -39,6 +40,7 @@ export namespace demo
 		net::io::Context listenContext;
 		iconer::UserManager everyUsers;
 		std::stop_source cancellationSource;
+		iconer::util::Logger myLogger;
 	};
 
 	void Worker(Framework& framework, std::stop_token&& token);

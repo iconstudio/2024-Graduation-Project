@@ -1,6 +1,5 @@
 module Demo.Framework;
 import Net;
-import Iconer.Utility.Logger;
 import <cstdio>;
 import <memory>;
 import <string>;
@@ -10,27 +9,26 @@ import <algorithm>;
 import <iostream>;
 // ReSharper disable CppMemberFunctionMayBeStatic
 
-iconer::util::Logger logger{};
-
 demo::Framework::Framework(size_t clients_count, std::uint16_t port)
 	: serverWorkers(), workerCanceller()
 	, listenSocket(), listenContext()
 	, everyUsers(clients_count)
 	, cancellationSource()
+	, myLogger()
 {}
 
 void
 demo::Framework::Awake()
 {
-	logger.Awake({L"Log.txt"});
+	myLogger.Awake({L"Log.txt"});
 
-	logger.Log(L"# (1) Server system is initiating...\n");
+	myLogger.Log(L"# (1) Server system is initiating...\n");
 
-	std::cout << "# Network system is initiating...\n";
+	myLogger.Log(L"# Network system is initiating...\n");
 	net::core::Initialize();
-	std::cout << "# Constructing users pool...\n";
+	myLogger.Log(L"# Constructing users pool...\n");
 	everyUsers.ConstructPool(startUserID);
-	std::cout << "# Constructing workers pool...\n";
+	myLogger.Log(L"# Constructing workers pool...\n");
 	serverWorkers.reserve(workersCount);
 
 	for (size_t i = 0; i < workersCount; ++i)
@@ -44,16 +42,17 @@ demo::Framework::Awake()
 void
 demo::Framework::Start()
 {
-	std::cout << "# (2) Server is starting...\n";
+	myLogger.Log(L"# (2) Server is starting...\n");
 
-	std::cout << "# Constructing user instances...\n";
+	myLogger.Log(L"# Constructing user instances...\n");
 	for (auto& user_ptr : everyUsers)
 	{
 		iconer::User& user = *user_ptr;
 
 		if (not user.SetState<iconer::user_status::Listening>(std::ref(listenSocket)))
 		{
-			throw "Cannot initiate the user";
+			myLogger.LogError(L"Cannot initiate the user");
+			//throw "Cannot initiate the user";
 		}
 	}
 }
@@ -61,7 +60,7 @@ demo::Framework::Start()
 void
 demo::Framework::Update()
 {
-	std::cout << "# (3) Server is started\n";
+	myLogger.Log(L"# (3) Server is started\n");
 
 	char input_buffer[256]{};
 	while (true)
@@ -86,9 +85,9 @@ void
 demo::Framework::Cleanup()
 noexcept
 {
-	std::cout << "# (4) Server system is ended\n";
+	myLogger.Log(L"# (4) Server system is ended\n");
 
-	std::cout << "# Network system is destructing...\n";
+	myLogger.Log(L"# Network system is destructing...\n");
 	net::core::Annihilate();
-	logger.Cleanup();
+	myLogger.Cleanup();
 }
