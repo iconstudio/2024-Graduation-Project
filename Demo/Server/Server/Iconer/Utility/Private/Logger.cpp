@@ -66,7 +66,9 @@ iconer::util::Logger::DebugLog(std::wstring_view msg)
 void
 iconer::util::Logger::Log(std::wstring_view msg)
 {
-	std::fwprintf(STDOUT, msg.data());
+	const auto str = msg.data();
+	std::fwprintf(STDOUT, str);
+	myFile.Write(str);
 }
 
 void
@@ -81,7 +83,9 @@ iconer::util::Logger::DebugLogError(std::wstring_view msg)
 void
 iconer::util::Logger::LogError(std::wstring_view msg)
 {
-	std::fwprintf(STDERR, msg.data());
+	const auto str = msg.data();
+	std::fwprintf(STDERR, str);
+	myFile.Write(str);
 }
 
 void
@@ -96,7 +100,9 @@ iconer::util::Logger::DebugLogWarning(std::wstring_view msg)
 void
 iconer::util::Logger::LogWarning(std::wstring_view msg)
 {
-	std::fwprintf(STDERR, msg.data());
+	const auto str = msg.data();
+	std::fwprintf(STDERR, str);
+	myFile.Write(str);
 }
 
 bool
