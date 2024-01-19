@@ -82,5 +82,11 @@ export namespace iconer
 		static void StateDelegate(User& user, state_data_t& state);
 		//state_t myStatus;
 		state_data_t myStatus;
+
+	private:
+		User(const User&) = delete;
+		void operator=(const User&) = delete;
+		User(User&&) = delete;
+		void operator=(User&&) = delete;
 	};
 }
