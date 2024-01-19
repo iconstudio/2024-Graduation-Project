@@ -39,7 +39,8 @@ iconer::User::StateDelegate(User* user, state_data_t& state, void* arguments)
 	});
 }
 
-void iconer::User::StateDelegate(const User* user, const state_data_t& state, void* arguments)
+void
+iconer::User::StateDelegate(const User* user, const state_data_t& state, void* arguments)
 {
 	state.Visit([&]<typename T>(T&& value) noexcept{
 		using U = std::decay_t<T>;
