@@ -14,15 +14,15 @@ export namespace iconer::util
 		Logger() noexcept = default;
 		~Logger() noexcept = default;
 
-		void Awake(const std::filesystem::path& log_file);
-		void Cleanup();
+		void Awake(const std::filesystem::path& log_file) noexcept;
+		void Cleanup() noexcept;
 		
-		void DebugLog(std::wstring_view msg);
-		void Log(std::wstring_view msg);
-		void DebugLogError(std::wstring_view msg);
-		void LogError(std::wstring_view msg);
-		void DebugLogWarning(std::wstring_view msg);
-		void LogWarning(std::wstring_view msg);
+		void DebugLog(std::wstring_view msg) noexcept;
+		void Log(std::wstring_view msg) noexcept;
+		void DebugLogError(std::wstring_view msg) noexcept;
+		void LogError(std::wstring_view msg) noexcept;
+		void DebugLogWarning(std::wstring_view msg) noexcept;
+		void LogWarning(std::wstring_view msg) noexcept;
 
 		[[nodiscard]]
 		bool IsAvailable() const noexcept;
