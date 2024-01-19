@@ -705,6 +705,7 @@
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <LinkCompiled>true</LinkCompiled>
     </ClCompile>
+    <ClCompile Include="Iconer\Network\Private\Worker.cpp"/>
     <ClCompile Include="Iconer\Network\User.ixx">
       <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

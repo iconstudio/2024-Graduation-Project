@@ -1,8 +1,3 @@
-module;
-#pragma comment(lib, "Ws2_32.lib")
-#include <WinSock2.h>
-#include <MSWSock.h>
-
 module Demo.Framework;
 import <memory>;
 import <string>;
@@ -49,8 +44,8 @@ demo::Framework::Start() noexcept
 	{
 		for (size_t i = 0; i < workersCount; ++i)
 		{
-			auto worker = new std::jthread{ Worker, workerCanceller.get_token() };
-			
+			auto worker = new std::jthread{ Worker, std::ref(*this), workerCanceller.get_token() };
+
 			serverWorkers.push_back(worker);
 		}
 	}
@@ -79,17 +74,3 @@ demo::Framework::Update()
 void
 demo::Framework::Cleanup() noexcept
 {}
-
-void demo::Worker(Framework& framework, std::stop_token&& token)
-{
-	while (true)
-	{
-		if (token.stop_requested())
-		{
-			break;
-		}
-
-		std::this_thread::yield();
-	}
-}
-
