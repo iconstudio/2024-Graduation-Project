@@ -79,6 +79,43 @@ export namespace iconer
 		{
 			std::unique_lock lk{ myLock };
 
+			const size_t cap = objectPool.capacity();
+			auto&& gen = std::forward<Predicate>(generator);
+
+			for (size_t i = 0; i < cap; ++i)
+			{
+				Add(gen());
+			}
+			Sort();
+		}
+		template<net::invocable_results<value_type> Predicate>
+		void Create(Predicate&& generator)
+			noexcept(noexcept(Sort()) and noexcept(Add(std::declval<Predicate>()())) and noexcept(std::declval<lock_t>().lock()))
+		{
+			std::unique_lock lk{ myLock };
+
+			const size_t cap = objectPool.capacity();
+			auto&& gen = std::forward<Predicate>(generator);
+
+			for (size_t i = 0; i < cap; ++i)
+			{
+				Add(gen());
+			}
+			Sort();
+		}
+		void CreateAsDefault()
+			noexcept(noexcept(Sort()) and std::declval<data_t>().push_back(std::make_unique<object_t>()) and noexcept(std::declval<lock_t>().lock()))
+			requires std::default_initializable<value_type>
+		{
+			std::unique_lock lk{ myLock };
+
+			const size_t cap = objectPool.capacity();
+			for (size_t i = 0; i < cap; ++i)
+			{
+				objectPool.push_back(object_t{});
+			}
+			Sort();
+		}
 		void Add(const object_t& object)
 			noexcept(noexcept(Sort()) and std::declval<data_t>().push_back(std::make_unique<object_t>(std::declval<const object_t&>())) and noexcept(std::declval<lock_t>().lock()))
 			requires std::copyable<object_t>
