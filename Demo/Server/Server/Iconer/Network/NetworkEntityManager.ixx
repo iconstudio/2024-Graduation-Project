@@ -106,7 +106,6 @@ export namespace iconer
 			objectPool.emplace_back(std::forward<Args>(args)...);
 			Sort();
 		}
-
 		template<typename It>
 			requires requires(It it) { data_t::erase(it); }
 		void Remove(It it) noexcept(noexcept(objectPool.erase(it)) and noexcept(std::declval<lock_t>().lock()))
@@ -122,21 +121,18 @@ export namespace iconer
 			std::shared_lock lk{ myLock };
 			return objectPool.at(pos);
 		}
-
 		[[nodiscard]]
 		const_reference At(const size_type pos) const noexcept(noexcept(std::declval<const data_t>().at(pos)))
 		{
 			std::shared_lock lk{ myLock };
 			return objectPool.at(pos);
 		}
-
 		[[nodiscard]]
 		reference operator[](const size_type pos) noexcept(noexcept(std::declval<data_t>().operator[](pos)))
 		{
 			std::shared_lock lk{ myLock };
 			return objectPool.operator[](pos);
 		}
-
 		[[nodiscard]]
 		const_reference operator[](const size_type pos) const noexcept(noexcept(std::declval<const data_t>().operator[](pos)))
 		{
@@ -150,7 +146,6 @@ export namespace iconer
 			std::shared_lock lk{ myLock };
 			return std::ranges::lower_bound(myData, id, Comparator{});
 		}
-
 		[[nodiscard]]
 		std::ranges::borrowed_iterator_t<const data_t> FindEntity(const id_t id) const noexcept
 		{
@@ -160,6 +155,15 @@ export namespace iconer
 				, std::less<id_t>{}, [](const_reference handle) { return handle.get()->ID; } );
 		}
 
+		template<typename Predicate, typename Projection = std::identity>
+			requires std::is_invocable_v<const_reference>
+		void ForEach(Predicate&& fn)
+		const noexcept(std::is_nothrow_invocable_v<Predicate, std::invoke_result_t<Projection, const_reference>>)
+		{
+			std::shared_lock lk{ myLock };
+
+			std::ranges::for_each(objectPool, std::forward<Predicate>(fn), Projection{});
+		}
 		template<typename Predicate>
 			requires std::is_invocable_r_v<bool, reference> and std::copyable<value_type>
 		[[nodiscard]]
@@ -174,7 +178,6 @@ export namespace iconer
 			//return std::ranges::find_if(objectPool, std::forward<Predicate>(fn));
 			return result;
 		}
-
 		template<typename Predicate>
 			requires std::is_invocable_r_v<bool, const_reference> and std::copyable<const value_type>
 		[[nodiscard]]
@@ -186,15 +189,6 @@ export namespace iconer
 			result.reserve(2 * GetSize() / 3);
 			std::ranges::copy_if(objectPool, std::back_inserter(result), std::forward<Predicate>(fn));
 			return result;
-		}
-
-		template<typename Predicate, typename Projection = std::identity>
-			requires std::is_invocable_v<const_reference>
-		void ForEach(Predicate&& fn) const noexcept(std::is_nothrow_invocable_v<Predicate, const_reference>)
-		{
-			std::shared_lock lk{ myLock };
-
-			std::ranges::for_each(myData, std::forward<Predicate>(fn), Projection{});
 		}
 
 		[[nodiscard]]
@@ -273,7 +267,6 @@ export namespace iconer
 		{
 			return objectPool.size();
 		}
-
 		[[nodiscard]]
 		constexpr size_type GetCapacity() const noexcept(noexcept(std::declval<const data_t>().capacity()))
 		{
