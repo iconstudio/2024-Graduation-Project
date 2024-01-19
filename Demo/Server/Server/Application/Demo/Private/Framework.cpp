@@ -19,18 +19,7 @@ demo::Framework::Awake()
 {
 	iconer::user_id_t id = startUserID;
 
-	for (size_t i = 0; i < everyUsers.GetCapacity(); ++i)
-	{
-		auto ptr = std::make_unique<iconer::User>(id++);
-		if (not ptr)
-		{
-			throw "Cannot allocate an user entity";
-		}
-
-		ptr->SetState<iconer::user_status::None>();
-
-		everyUsers.Add(std::move(ptr));
-	}
+	everyUsers.ConstructPool(startUserID);
 }
 
 bool
