@@ -1,5 +1,6 @@
 module Demo.Framework;
 import Net;
+import <cstdlib>;
 import <cstdio>;
 import <memory>;
 import <string>;
@@ -9,26 +10,32 @@ import <algorithm>;
 import <iostream>;
 // ReSharper disable CppMemberFunctionMayBeStatic
 
+iconer::util::Logger demo::Framework::serverLogger{};
+
 demo::Framework::Framework(size_t clients_count, std::uint16_t port)
 	: serverWorkers(), workerCanceller()
 	, listenSocket(), listenContext()
 	, everyUsers(clients_count)
 	, cancellationSource()
-	, myLogger()
 {}
 
 void
 demo::Framework::Awake()
 {
-	myLogger.Awake({ L"Log.txt" });
+	serverLogger.Awake({ L"Log.txt" });
+	std::set_terminate([]()
+	{
+		demo::Framework::serverLogger.Cleanup();
+		std::abort();
+	});
 
-	myLogger.Log(L"# (1) Server system is initiating...\n");
+	serverLogger.Log(L"# (1) Server system is initiating...\n");
 
-	myLogger.Log(L"# Network system is initiating...\n");
+	serverLogger.Log(L"# Network system is initiating...\n");
 	net::core::Initialize();
-	myLogger.Log(L"# Constructing users pool...\n");
+	serverLogger.Log(L"# Constructing users pool...\n");
 	everyUsers.ConstructPool(startUserID);
-	myLogger.Log(L"# Constructing workers pool...\n");
+	serverLogger.Log(L"# Constructing workers pool...\n");
 	serverWorkers.reserve(workersCount);
 
 	for (size_t i = 0; i < workersCount; ++i)
@@ -42,16 +49,16 @@ demo::Framework::Awake()
 void
 demo::Framework::Start()
 {
-	myLogger.Log(L"# (2) Server is starting...\n");
+	serverLogger.Log(L"# (2) Server is starting...\n");
 
-	myLogger.Log(L"# Constructing user instances...\n");
+	serverLogger.Log(L"# Starting open user instances...\n");
 	for (auto& user_ptr : everyUsers)
 	{
 		iconer::User& user = *user_ptr;
 
 		if (not user.SetState<iconer::user_status::Listening>(std::ref(listenSocket)))
 		{
-			myLogger.LogError(L"Cannot initiate the user");
+			serverLogger.LogError(L"Cannot initiate the user");
 			//throw "Cannot initiate the user";
 		}
 	}
@@ -60,7 +67,7 @@ demo::Framework::Start()
 void
 demo::Framework::Update()
 {
-	myLogger.Log(L"# (3) Server is started\n");
+	serverLogger.Log(L"# (3) Server is started\n");
 
 	char input_buffer[256]{};
 	while (true)
@@ -85,9 +92,10 @@ void
 demo::Framework::Cleanup()
 noexcept
 {
-	myLogger.Log(L"# (4) Server system is ended\n");
+	serverLogger.Log(L"# (4) Server system is ended\n");
 
-	myLogger.Log(L"# Network system is destructing...\n");
+	serverLogger.Log(L"# Network system is destructing...\n");
 	net::core::Annihilate();
-	myLogger.Cleanup();
+
+	serverLogger.Cleanup();
 }
