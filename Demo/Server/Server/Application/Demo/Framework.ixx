@@ -29,6 +29,8 @@ export namespace demo
 		friend void Worker(Framework& framework, std::stop_token&& token);
 
 	private:
+		static iconer::util::Logger serverLogger;
+
 		Framework(const Framework&) = delete;
 		Framework(Framework&&) = delete;
 		void operator=(const Framework&) = delete;
@@ -40,7 +42,6 @@ export namespace demo
 		net::io::Context listenContext;
 		iconer::UserManager everyUsers;
 		std::stop_source cancellationSource;
-		iconer::util::Logger myLogger;
 	};
 
 	void Worker(Framework& framework, std::stop_token&& token);
