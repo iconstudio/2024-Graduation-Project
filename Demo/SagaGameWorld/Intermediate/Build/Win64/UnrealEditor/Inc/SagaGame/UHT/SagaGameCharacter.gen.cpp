@@ -76,14 +76,8 @@ void EmptyLinkFunctionForGeneratedCodeSagaGameCharacter() {}
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_CameraBoom_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
 		{ "Category", "Camera" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Camera boom positioning the camera behind the character */" },
-#endif
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "SagaGameCharacter.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Camera boom positioning the camera behind the character" },
-#endif
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_CameraBoom = { "CameraBoom", nullptr, (EPropertyFlags)0x00400000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaGameCharacter, CameraBoom), Z_Construct_UClass_USpringArmComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_CameraBoom_MetaData), Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_CameraBoom_MetaData) };
@@ -91,14 +85,8 @@ void EmptyLinkFunctionForGeneratedCodeSagaGameCharacter() {}
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_FollowCamera_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
 		{ "Category", "Camera" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Follow camera */" },
-#endif
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "SagaGameCharacter.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Follow camera" },
-#endif
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_FollowCamera = { "FollowCamera", nullptr, (EPropertyFlags)0x00400000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaGameCharacter, FollowCamera), Z_Construct_UClass_UCameraComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_FollowCamera_MetaData), Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_FollowCamera_MetaData) };
@@ -106,13 +94,7 @@ void EmptyLinkFunctionForGeneratedCodeSagaGameCharacter() {}
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_DefaultMappingContext_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
 		{ "Category", "Input" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** MappingContext */" },
-#endif
 		{ "ModuleRelativePath", "SagaGameCharacter.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "MappingContext" },
-#endif
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_DefaultMappingContext = { "DefaultMappingContext", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaGameCharacter, DefaultMappingContext), Z_Construct_UClass_UInputMappingContext_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_DefaultMappingContext_MetaData), Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_DefaultMappingContext_MetaData) };
@@ -120,13 +102,7 @@ void EmptyLinkFunctionForGeneratedCodeSagaGameCharacter() {}
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_JumpAction_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
 		{ "Category", "Input" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Jump Input Action */" },
-#endif
 		{ "ModuleRelativePath", "SagaGameCharacter.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Jump Input Action" },
-#endif
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_JumpAction = { "JumpAction", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaGameCharacter, JumpAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_JumpAction_MetaData), Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_JumpAction_MetaData) };
@@ -134,13 +110,7 @@ void EmptyLinkFunctionForGeneratedCodeSagaGameCharacter() {}
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_MoveAction_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
 		{ "Category", "Input" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Move Input Action */" },
-#endif
 		{ "ModuleRelativePath", "SagaGameCharacter.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Move Input Action" },
-#endif
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_MoveAction = { "MoveAction", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaGameCharacter, MoveAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_MoveAction_MetaData), Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_MoveAction_MetaData) };
@@ -148,13 +118,7 @@ void EmptyLinkFunctionForGeneratedCodeSagaGameCharacter() {}
 	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_LookAction_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
 		{ "Category", "Input" },
-#if !UE_BUILD_SHIPPING
-		{ "Comment", "/** Look Input Action */" },
-#endif
 		{ "ModuleRelativePath", "SagaGameCharacter.h" },
-#if !UE_BUILD_SHIPPING
-		{ "ToolTip", "Look Input Action" },
-#endif
 	};
 #endif
 	const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_LookAction = { "LookAction", nullptr, (EPropertyFlags)0x0040000000000015, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaGameCharacter, LookAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_LookAction_MetaData), Z_Construct_UClass_ASagaGameCharacter_Statics::NewProp_LookAction_MetaData) };
@@ -204,9 +168,9 @@ void EmptyLinkFunctionForGeneratedCodeSagaGameCharacter() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_SagaGameCharacter_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_ASagaGameCharacter, ASagaGameCharacter::StaticClass, TEXT("ASagaGameCharacter"), &Z_Registration_Info_UClass_ASagaGameCharacter, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ASagaGameCharacter), 3540158774U) },
+		{ Z_Construct_UClass_ASagaGameCharacter, ASagaGameCharacter::StaticClass, TEXT("ASagaGameCharacter"), &Z_Registration_Info_UClass_ASagaGameCharacter, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ASagaGameCharacter), 735581727U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_SagaGameCharacter_h_3520035757(TEXT("/Script/SagaGame"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_SagaGameCharacter_h_162166070(TEXT("/Script/SagaGame"),
 		Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_SagaGameCharacter_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_SagaGameCharacter_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

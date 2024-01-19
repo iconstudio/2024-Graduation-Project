@@ -3,3 +3,10 @@
 
 #include "Player/SagaPlayerController.h"
 
+void ASagaPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FInputModeGameOnly GameOnlyInputMode;
+	SetInputMode(GameOnlyInputMode);
+}
