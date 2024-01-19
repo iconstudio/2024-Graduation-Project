@@ -73,7 +73,7 @@ export namespace iconer
 			}
 		}
 		template<typename Status, typename... Args>
-		bool SetState(Status&&, Args&&... args)
+		bool SetState(Args&&... args) const
 		{
 			if (myStatus.TryTranslate<Status>())
 			{
@@ -99,6 +99,7 @@ export namespace iconer
 
 	protected:
 		static void StateDelegate(User* user, state_data_t& state, [[maybe_unused]] void* arguments);
+		static void StateDelegate(const User* user, const state_data_t& state, [[maybe_unused]] void* arguments);
 
 		state_data_t myStatus;
 
