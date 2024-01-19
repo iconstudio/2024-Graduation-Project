@@ -56,6 +56,7 @@ demo::Framework::Update()
 {
 	std::cout << "# (3) Server is started\n";
 
+	char input_buffer[256]{};
 	while (true)
 	{
 		if (workerCanceller.stop_requested())
@@ -63,7 +64,17 @@ demo::Framework::Update()
 			return;
 		}
 
-		std::this_thread::yield();
+		const int inputs = ::scanf_s("%s", input_buffer, sizeof(input_buffer));
+		if (EOF != inputs and 0 < inputs)
+		{
+			std::string_view input{ input_buffer };
+			if (input == "exit" or input == "quit")
+			{
+				return;
+			}
+
+			std::ranges::fill(input_buffer, 0);
+		}
 	}
 }
 
