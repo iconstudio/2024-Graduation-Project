@@ -80,7 +80,7 @@ export namespace iconer
 
 	protected:
 		static void StateDelegate(User& user, state_data_t& state);
-		//state_t myStatus;
+
 		state_data_t myStatus;
 
 	private:
