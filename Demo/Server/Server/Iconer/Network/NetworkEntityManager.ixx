@@ -57,22 +57,6 @@ export namespace iconer
 			}
 			Sort();
 		}
-		template<net::invocable_results<object_t&&> Predicate>
-			requires std::movable<object_t>
-		void Create(Predicate&& generator)
-			noexcept(noexcept(Sort()) and noexcept(Add(std::declval<Predicate>()())) and noexcept(std::declval<lock_t>().lock()))
-		{
-			std::unique_lock lk{ myLock };
-
-			const size_t cap = objectPool.capacity();
-			auto&& gen = std::forward<Predicate>(generator);
-
-			for (size_t i = 0; i < cap; ++i)
-			{
-				Add(gen());
-			}
-			Sort();
-		}
 		template<net::invocable_results<object_t*> Predicate>
 		void Create(Predicate&& generator)
 			noexcept(noexcept(Sort()) and noexcept(Add(std::declval<Predicate>()())) and noexcept(std::declval<lock_t>().lock()))
