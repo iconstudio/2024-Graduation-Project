@@ -6,6 +6,21 @@ import <memory>;
 
 export namespace iconer
 {
+	struct [[nodiscard]] UserID final
+	{
+		constexpr UserID() noexcept = default;
+		constexpr ~UserID() noexcept = default;
+
+		explicit constexpr UserID(const user_id_t& id) noexcept
+			: myId(id)
+		{}
+		explicit constexpr UserID(user_id_t&& id) noexcept
+			: myId(std::move(id))
+		{}
+
+		user_id_t myId;
+	};
+
 	class [[nodiscard]] UserManager final : private NetworkEntityManager<User, user_id_t>
 	{
 	public:
