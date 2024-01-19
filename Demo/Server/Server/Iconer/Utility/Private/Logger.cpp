@@ -45,7 +45,7 @@ namespace
 void
 iconer::util::Logger::Awake(const std::filesystem::path& log_file)
 {
-	myFile.Open(log_file);
+	myFile.Open(log_file, util::file::OpenModes::Write);
 }
 
 void
