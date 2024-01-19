@@ -1,9 +1,10 @@
 export module Iconer.Network.EntityManager;
 import Iconer.Network.Entity;
+import <concepts>;
+import <memory>;
 import <vector>;
 import <algorithm>;
 import <iterator>;
-import <memory>;
 import <shared_mutex>;
 
 export namespace iconer
@@ -38,37 +39,69 @@ export namespace iconer
 
 		constexpr ~NetworkEntityManager() noexcept(std::is_nothrow_destructible_v<data_t> and std::is_nothrow_destructible_v<lock_t>) = default;
 
+		template<net::invocable_results<object_t> Predicate>
+			requires std::movable<object_t>
+		void Create(Predicate&& generator)
+			noexcept(noexcept(Sort()) and noexcept(Add(std::declval<Predicate>()())) and noexcept(std::declval<lock_t>().lock()))
+		{
+			std::unique_lock lk{ myLock };
+
+			const size_t cap = objectPool.capacity();
+			auto&& gen = std::forward<Predicate>(generator);
+
+			for (size_t i = 0; i < cap; ++i)
+			{
+				Add(gen());
+			}
+			Sort();
+		}
+		template<net::invocable_results<object_t&&> Predicate>
+			requires std::movable<object_t>
+		void Create(Predicate&& generator)
+			noexcept(noexcept(Sort()) and noexcept(Add(std::declval<Predicate>()())) and noexcept(std::declval<lock_t>().lock()))
+		{
+			std::unique_lock lk{ myLock };
+
+			const size_t cap = objectPool.capacity();
+			auto&& gen = std::forward<Predicate>(generator);
+
+			for (size_t i = 0; i < cap; ++i)
+			{
+				Add(gen());
+			}
+			Sort();
+		}
+		template<net::invocable_results<object_t*> Predicate>
+		void Create(Predicate&& generator)
+			noexcept(noexcept(Sort()) and noexcept(Add(std::declval<Predicate>()())) and noexcept(std::declval<lock_t>().lock()))
+		{
+			std::unique_lock lk{ myLock };
 
 		void Add(object_t&& object)
 		{
 			std::unique_lock lk{ myLock };
-			auto it = std::back_inserter(myData);
-			*it = std::make_unique<object_t>(std::move(object));
+			objectPool.push_back(std::make_unique<object_t>(std::move(object)));
 			Sort();
 		}
-
-		void Add(value_type&& ptr)
+		void Add(object_t* ptr)
+			noexcept(noexcept(Sort()) and noexcept(std::declval<data_t>().push_back(value_type{ std::declval<object_t*>() })) and noexcept(std::declval<lock_t>().lock()))
 		{
 			std::unique_lock lk{ myLock };
-			auto it = std::back_inserter(myData);
-			*it = std::move(ptr);
+			objectPool.push_back(value_type{ ptr });
 			Sort();
 		}
 
 		void Add(object_t* const object_ptr) noexcept(noexcept(std::declval<lock_t>().lock()) and noexcept(value_type{ object_ptr }))
 		{
 			std::unique_lock lk{ myLock };
-			auto it = std::back_inserter(myData);
-			*it = value_type{ object_ptr };
+			objectPool.push_back(std::move(handle));
 			Sort();
 		}
-
-		template<typename U, typename... Args>
+		template<typename... Args>
 		void Emplace(Args&&... args)
 		{
 			std::unique_lock lk{ myLock };
-			auto it = std::back_inserter(myData);
-			*it = std::make_unique<U>(std::forward<Args>(args)...);
+			objectPool.emplace_back(std::forward<Args>(args)...);
 			Sort();
 		}
 
@@ -77,7 +110,7 @@ export namespace iconer
 		void Remove(It it) noexcept(noexcept(myData.erase(it)) and noexcept(myLock.lock()))
 		{
 			std::unique_lock lk{ myLock };
-			myData.erase(it);
+			objectPool.erase(it);
 			Sort();
 		}
 
@@ -85,28 +118,28 @@ export namespace iconer
 		reference At(const size_type pos) noexcept(noexcept(std::declval<data_t>().at(pos)))
 		{
 			std::shared_lock lk{ myLock };
-			return myData.at(pos);
+			return objectPool.at(pos);
 		}
 
 		[[nodiscard]]
 		const_reference At(const size_type pos) const noexcept(noexcept(std::declval<const data_t>().at(pos)))
 		{
 			std::shared_lock lk{ myLock };
-			return myData.at(pos);
+			return objectPool.at(pos);
 		}
 
 		[[nodiscard]]
 		constexpr reference operator[](const size_type pos) noexcept(noexcept(std::declval<data_t>().operator[](pos)))
 		{
 			std::shared_lock lk{ myLock };
-			return myData.operator[](pos);
+			return objectPool.operator[](pos);
 		}
 
 		[[nodiscard]]
 		constexpr const_reference operator[](const size_type pos) const noexcept(noexcept(std::declval<const data_t>().operator[](pos)))
 		{
 			std::shared_lock lk{ myLock };
-			return myData.operator[](pos);
+			return objectPool.operator[](pos);
 		}
 
 		[[nodiscard]]
@@ -131,10 +164,10 @@ export namespace iconer
 			std::shared_lock lk{ myLock };
 
 			std::vector<value_type> result{};
-			result.reserve(1 + GetSize() / 2);
-			std::ranges::copy_if(myData, std::back_inserter(result), std::forward<Predicate>(fn));
+			result.reserve(2 * GetSize() / 3);
+			std::ranges::copy_if(objectPool, std::back_inserter(result), std::forward<Predicate>(fn));
 
-			//return std::ranges::find_if(myData, std::forward<Predicate>(fn));
+			//return std::ranges::find_if(objectPool, std::forward<Predicate>(fn));
 			return result;
 		}
 
@@ -146,10 +179,8 @@ export namespace iconer
 			std::shared_lock lk{ myLock };
 
 			std::vector<value_type> result{};
-			result.reserve(1 + GetSize() / 2);
-			std::ranges::copy_if(myData, std::back_inserter(result), std::forward<Predicate>(fn));
-
-			//return std::ranges::find_if(myData, std::forward<Predicate>(fn));
+			result.reserve(2 * GetSize() / 3);
+			std::ranges::copy_if(objectPool, std::back_inserter(result), std::forward<Predicate>(fn));
 			return result;
 		}
 
@@ -165,37 +196,37 @@ export namespace iconer
 		[[nodiscard]]
 		constexpr iterator begin() noexcept
 		{
-			return myData.begin();
+			return objectPool.begin();
 		}
 
 		[[nodiscard]]
 		constexpr iterator end() noexcept
 		{
-			return myData.end();
+			return objectPool.end();
 		}
 
 		[[nodiscard]]
 		constexpr const_iterator begin() const noexcept
 		{
-			return myData.begin();
+			return objectPool.begin();
 		}
 
 		[[nodiscard]]
 		constexpr const_iterator end() const noexcept
 		{
-			return myData.end();
+			return objectPool.end();
 		}
 
 		[[nodiscard]]
 		constexpr const_iterator cbegin() const noexcept
 		{
-			return myData.cbegin();
+			return objectPool.cbegin();
 		}
 
 		[[nodiscard]]
 		constexpr const_iterator cend() const noexcept
 		{
-			return myData.cend();
+			return objectPool.cend();
 		}
 
 		void LockWriter() noexcept(noexcept(std::declval<lock_t>().lock()))
@@ -231,19 +262,19 @@ export namespace iconer
 		[[nodiscard]]
 		constexpr size_type GetSize() const noexcept(noexcept(std::declval<const data_t>().size()))
 		{
-			return myData.size();
+			return objectPool.size();
 		}
 
 		[[nodiscard]]
 		constexpr size_type GetCapacity() const noexcept(noexcept(std::declval<const data_t>().capacity()))
 		{
-			return myData.capacity();
+			return objectPool.capacity();
 		}
 
 		[[nodiscard]]
 		constexpr bool IsEmpty() const noexcept(noexcept(std::declval<const data_t>().empty()))
 		{
-			return myData.empty();
+			return objectPool.empty();
 		}
 
 	protected:
@@ -257,7 +288,7 @@ export namespace iconer
 		constexpr void Reserve(size_type count) noexcept(noexcept(std::declval<data_t>().reserve(size_type{})))
 			requires requires(const size_type cnt) { std::declval<data_t>().reserve(cnt); }
 		{
-			myData.reserve(count);
+			objectPool.reserve(count);
 		}
 
 		struct Comparator
