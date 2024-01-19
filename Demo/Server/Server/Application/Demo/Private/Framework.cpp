@@ -10,19 +10,21 @@ import <algorithm>;
 import <iostream>;
 // ReSharper disable CppMemberFunctionMayBeStatic
 
+iconer::util::Logger logger{};
+
 demo::Framework::Framework(size_t clients_count, std::uint16_t port)
 	: serverWorkers(), workerCanceller()
 	, listenSocket(), listenContext()
 	, everyUsers(clients_count)
 	, cancellationSource()
-{
-	std::cout.sync_with_stdio(false);
-}
+{}
 
 void
 demo::Framework::Awake()
 {
-	std::cout << "# (1) Server system is initiating...\n";
+	logger.Awake({L"Log.txt"});
+
+	logger.Log(L"# (1) Server system is initiating...\n");
 
 	std::cout << "# Network system is initiating...\n";
 	net::core::Initialize();
@@ -86,4 +88,5 @@ demo::Framework::Cleanup() noexcept
 
 	std::cout << "# Network system is destructing...\n";
 	net::core::Annihilate();
+	logger.Cleanup();
 }
