@@ -119,12 +119,33 @@ export namespace iconer
 		}
 
 		template<typename Predicate>
-			requires std::is_invocable_r_v<bool, reference>
+			requires std::is_invocable_r_v<bool, reference> and std::copyable<value_type>
 		[[nodiscard]]
-		auto FindEntity(Predicate&& fn) noexcept(std::is_nothrow_invocable_v<Predicate, reference>)
+		std::vector<value_type> Search(Predicate&& fn) noexcept(std::is_nothrow_invocable_v<Predicate, reference>)
 		{
 			std::shared_lock lk{ myLock };
-			return std::ranges::find_if(myData, std::forward<Predicate>(fn));
+
+			std::vector<value_type> result{};
+			result.reserve(1 + GetSize() / 2);
+			std::ranges::copy_if(myData, std::back_inserter(result), std::forward<Predicate>(fn));
+
+			//return std::ranges::find_if(myData, std::forward<Predicate>(fn));
+			return result;
+		}
+
+		template<typename Predicate>
+			requires std::is_invocable_r_v<bool, const_reference> and std::copyable<const value_type>
+		[[nodiscard]]
+		std::vector<value_type> Search(Predicate&& fn) const noexcept(std::is_nothrow_invocable_v<Predicate, const_reference>)
+		{
+			std::shared_lock lk{ myLock };
+
+			std::vector<value_type> result{};
+			result.reserve(1 + GetSize() / 2);
+			std::ranges::copy_if(myData, std::back_inserter(result), std::forward<Predicate>(fn));
+
+			//return std::ranges::find_if(myData, std::forward<Predicate>(fn));
+			return result;
 		}
 
 		[[nodiscard]]
