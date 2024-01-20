@@ -32,6 +32,7 @@ protected:
 public:
 	void SendKeyToServer(FKey Key);
 	void SetupInputComponent();
+	void GoFront();
 	void Jump();
 
 private:
