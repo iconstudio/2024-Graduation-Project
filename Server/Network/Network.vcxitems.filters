@@ -9,49 +9,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Awaitable.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\BasicCoroutine.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\BasicPromise.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\BorrowedPointer.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ConcurrentAwaiter.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ConcurrentStack.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Constraints.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Coroutine.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\EndPoint.ixx">
       <Filter>Public</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\ErrorCode.ixx">
       <Filter>Public</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\FixedString.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Handler.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IAwaitable.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\InternetProtocols.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IObject.ixx">
       <Filter>Public</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoContext.ixx">
@@ -61,9 +25,6 @@
       <Filter>Public</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoEvent.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoSchedule.ixx">
       <Filter>Public</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoService.ixx">
@@ -78,25 +39,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IpAddressFamily.ixx">
       <Filter>Public</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IPromise.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IProperty.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IPv4Address.ixx">
       <Filter>Public</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IPv6Address.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IResourcePool.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Meta.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\NativeHandle.ixx">
       <Filter>Public</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\Net.ixx">
@@ -105,22 +51,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\NetworkInitializationError.ixx">
       <Filter>Public</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Promissory.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Property.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Schedule.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Scheduler.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\ServerSetupError.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SkipList.ixx">
       <Filter>Public</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\Socket.ixx">
@@ -156,30 +87,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketType.ixx">
       <Filter>Public</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Suspender.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Task.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\TimedAwaiter.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Traits.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\TypeList.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ValuePromise.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\ConcurrentAwaiter.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\Coroutine.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\EndPoint.cpp">
       <Filter>Private</Filter>
     </ClCompile>
@@ -193,9 +100,6 @@
       <Filter>Private</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\IpAddressFamily.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\NativeHandle.cpp">
       <Filter>Private</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Net.cpp">
@@ -220,12 +124,6 @@
       <Filter>Private</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)src\SocketPool.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\Task.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\TimedAwaiter.cpp">
       <Filter>Private</Filter>
     </ClCompile>
   </ItemGroup>

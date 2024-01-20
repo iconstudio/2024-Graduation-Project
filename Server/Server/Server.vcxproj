@@ -156,38 +156,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="inc\Annihilator.ixx" />
-    <ClCompile Include="inc\AtomicSwitcher.ixx" />
-    <ClCompile Include="inc\BehaviourTree.ixx" />
-    <ClCompile Include="inc\ConcurrentLinkedList.ixx" />
-    <ClCompile Include="inc\ConcurrentList.ixx" />
-    <ClCompile Include="inc\Declarations.ixx" />
-    <ClCompile Include="inc\File.ixx" />
-    <ClCompile Include="inc\FlatMap.ixx" />
-    <ClCompile Include="inc\Logger.ixx" />
-    <ClCompile Include="inc\NetworkEntity.ixx" />
-    <ClCompile Include="inc\NetworkEntityManager.ixx" />
-    <ClCompile Include="inc\NetworkView.ixx" />
-    <ClCompile Include="inc\ObjectManager.ixx" />
-    <ClCompile Include="inc\RecursiveTemplateClass.ixx" />
-    <ClCompile Include="inc\User.ixx" />
-    <ClCompile Include="inc\UserManager.ixx" />
     <ClCompile Include="Server.cpp" />
-    <ClCompile Include="src\File.cpp" />
-    <ClCompile Include="src\FlatMap.cpp" />
-    <ClCompile Include="src\Logger.cpp" />
-    <ClCompile Include="src\NetworkEntityManager.cpp" />
-    <ClCompile Include="src\User.cpp" />
-    <ClCompile Include="src\UserManager.cpp" />
-    <ClCompile Include="src\Worker.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colourful-Console\ColourfulConsole\ColourfulConsole.vcxproj">
       <Project>{d123b380-57e9-4327-9b21-2df0902cb5b5}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="inc\BehaviourTreeHelper.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

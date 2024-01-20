@@ -13,90 +13,10 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Public">
-      <UniqueIdentifier>{19579ff3-53d6-43e9-bd40-0bf2e514f5e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Private">
-      <UniqueIdentifier>{01c4baa5-fc08-469b-b6d7-413ae3bbb994}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="inc\Annihilator.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\AtomicSwitcher.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\BehaviourTree.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\ConcurrentLinkedList.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\ConcurrentList.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\Declarations.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\File.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\FlatMap.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\Logger.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\NetworkEntity.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\NetworkEntityManager.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\NetworkView.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\ObjectManager.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\RecursiveTemplateClass.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\User.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="inc\UserManager.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
-    <ClCompile Include="src\File.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FlatMap.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Logger.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="src\NetworkEntityManager.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="src\User.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="src\UserManager.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Worker.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="inc\BehaviourTreeHelper.hpp">
-      <Filter>Public</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,44 +14,21 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Awaitable.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\BasicCoroutine.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\BasicPromise.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\BorrowedPointer.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ConcurrentAwaiter.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ConcurrentStack.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Constraints.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Coroutine.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\EndPoint.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\ErrorCode.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\FixedString.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Handler.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IAwaitable.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\InternetProtocols.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IObject.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoContext.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoEntity.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoEvent.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoSchedule.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoService.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoStation.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IpAddress.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IpAddressFamily.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IPromise.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IProperty.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IPv4Address.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\IPv6Address.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IResourcePool.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Meta.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\NativeHandle.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\Net.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\NetworkInitializationError.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Promissory.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Property.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Schedule.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Scheduler.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\ServerSetupError.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SkipList.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\Socket.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketClosingErrorCodes.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketGeneralErrorCodes.ixx" />
@@ -63,20 +40,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketResult.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketSendingErrorCodes.ixx" />
     <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketType.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Suspender.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Task.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\TimedAwaiter.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Traits.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\TypeList.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ValuePromise.ixx" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\ConcurrentAwaiter.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\Coroutine.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\EndPoint.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\IoSchedule.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\IoStation.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\IpAddress.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\IpAddressFamily.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\NativeHandle.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Net.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Socket.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\SocketErrorCode.cpp" />
@@ -85,7 +53,5 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Socket_observers.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Socket_receivers.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)src\Socket_senders.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\Task.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)src\TimedAwaiter.cpp" />
   </ItemGroup>
 </Project>
