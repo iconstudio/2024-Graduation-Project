@@ -1,3 +1,6 @@
+module;
+#pragma comment(lib, "ColourfulConsole.lib")
+
 module Demo.Framework;
 import Net;
 import <cstdlib>;

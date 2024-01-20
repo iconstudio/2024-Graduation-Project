@@ -43,6 +43,9 @@
     <Filter Include="헤더 파일\Iconer\Utility">
       <UniqueIdentifier>{b49b4efe-4910-4b4e-bfb5-b17046665bd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\ColourfulConsole">
+      <UniqueIdentifier>{6acf2185-82bd-4884-bd13-1f62c39244bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -122,6 +125,21 @@
     </ClCompile>
     <ClCompile Include="Iconer\Network\User.ixx">
       <Filter>헤더 파일\Iconer\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ColourfulConsole\Colour.ixx">
+      <Filter>헤더 파일\ColourfulConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ColourfulConsole\ColourCodes.ixx">
+      <Filter>헤더 파일\ColourfulConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ColourfulConsole\ColourfulConsole.ixx">
+      <Filter>헤더 파일\ColourfulConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ColourfulConsole\Dye.ixx">
+      <Filter>헤더 파일\ColourfulConsole</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ColourfulConsole\Palette.ixx">
+      <Filter>헤더 파일\ColourfulConsole</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
