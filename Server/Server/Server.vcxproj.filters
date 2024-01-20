@@ -48,9 +48,6 @@
     <ClCompile Include="inc\FlatMap.ixx">
       <Filter>Public</Filter>
     </ClCompile>
-    <ClCompile Include="inc\Framework.ixx">
-      <Filter>Public</Filter>
-    </ClCompile>
     <ClCompile Include="inc\Logger.ixx">
       <Filter>Public</Filter>
     </ClCompile>
@@ -79,9 +76,6 @@
       <Filter>Private</Filter>
     </ClCompile>
     <ClCompile Include="src\FlatMap.cpp">
-      <Filter>Private</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Framework.cpp">
       <Filter>Private</Filter>
     </ClCompile>
     <ClCompile Include="src\Logger.cpp">
