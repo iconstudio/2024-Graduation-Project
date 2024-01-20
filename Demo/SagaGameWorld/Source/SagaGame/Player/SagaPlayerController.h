@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-//#include "Sockets.h"
-//#include "SocketSubsystem.h"
+#include "Sockets.h"
+#include "SocketSubsystem.h"
 #include "SagaPlayerController.generated.h"
 
 /**
@@ -32,10 +32,15 @@ protected:
 public:
 	void SendKeyToServer(FKey Key);
 	void SetupInputComponent();
-	void GoFront();
+	/*void GoFront();*/
 	void Jump();
 
 private:
-	FSocket* Socket;
-	
+	FSocket* SagaClientSocket;
+    FSocket* CreateSocket();
 };
+
+//FSocket* CreateSocket()
+//{
+//    
+//}
