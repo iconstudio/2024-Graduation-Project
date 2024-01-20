@@ -28,7 +28,6 @@ void ASagaPlayerController::BeginPlay()
 FSocket* CreateSocket()
 {
     FSocket* Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("default"), false);
-    // 소켓 옵션 설정, 예: Socket->SetNonBlocking(true);
 
     FIPv4Address ServerAddress;
     FIPv4Address::Parse(TEXT("127.0.0.1"), ServerAddress); // 서버 주소
@@ -52,7 +51,6 @@ FSocket* CreateSocket()
 
 void ASagaPlayerController::SendKeyToServer(FKey Key)
 {
-	// 키 정보를 문자열 또는 바이트 배열로 변환
 	FString KeyString = Key.ToString();
 	TCHAR* SerializedChar = KeyString.GetCharArray().GetData();
 	int32 Size = FCString::Strlen(SerializedChar) + 1;
@@ -68,6 +66,13 @@ void ASagaPlayerController::SetupInputComponent()
 
 	// Jump 액션에 대한 입력 바인딩
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ASagaPlayerController::Jump);
+
+    InputComponent->BindAction("W", IE_Pressed, this, &ASagaPlayerController::GoFront);
+}
+
+void ASagaPlayerController::GoFront()
+{
+
 }
 
 void ASagaPlayerController::Jump()
