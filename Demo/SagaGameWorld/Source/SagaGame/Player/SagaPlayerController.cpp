@@ -3,6 +3,10 @@
 
 #include "Player/SagaPlayerController.h"
 #include "SagaGame.h"
+#include "Interfaces/IPv4/IPv4Address.h"
+#include "Sockets.h"
+#include "SocketSubsystem.h"
+
 
 ASagaPlayerController::ASagaPlayerController()
 {
@@ -19,4 +23,55 @@ void ASagaPlayerController::BeginPlay()
 
 	FInputModeGameOnly GameOnlyInputMode;
 	SetInputMode(GameOnlyInputMode);
+}
+
+FSocket* CreateSocket()
+{
+    FSocket* Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("default"), false);
+    // 소켓 옵션 설정, 예: Socket->SetNonBlocking(true);
+
+    FIPv4Address ServerAddress;
+    FIPv4Address::Parse(TEXT("127.0.0.1"), ServerAddress); // 서버 주소
+    int32 Port = 9000; // 포트 번호
+    TSharedRef<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+    Addr->SetIp(ServerAddress.Value);
+    Addr->SetPort(Port);
+
+    bool Connected = Socket->Connect(*Addr);
+    if (Connected)
+    {
+        // 연결 성공
+    }
+    else
+    {
+        // 연결 실패 처리
+    }
+
+    return Socket;
+}
+
+void ASagaPlayerController::SendKeyToServer(FKey Key)
+{
+	// 키 정보를 문자열 또는 바이트 배열로 변환
+	FString KeyString = Key.ToString();
+	TCHAR* SerializedChar = KeyString.GetCharArray().GetData();
+	int32 Size = FCString::Strlen(SerializedChar) + 1;
+	int32 Sent = 0;
+
+	// 데이터 전송
+	bool Successful = Socket->Send((uint8*)TCHAR_TO_UTF8(SerializedChar), Size, Sent);
+}
+
+void ASagaPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	// Jump 액션에 대한 입력 바인딩
+	InputComponent->BindAction("Jump", IE_Pressed, this, &ASagaPlayerController::Jump);
+}
+
+void ASagaPlayerController::Jump()
+{
+	// 서버로 키 입력 전송
+	SendKeyToServer(EKeys::SpaceBar);
 }

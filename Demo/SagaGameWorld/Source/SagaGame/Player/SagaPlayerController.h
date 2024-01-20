@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+//#include "Sockets.h"
+//#include "SocketSubsystem.h"
 #include "SagaPlayerController.generated.h"
 
 /**
@@ -27,5 +29,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Catetory = HUD)
 	TObjectPtr<class USG*/
 
+public:
+	void SendKeyToServer(FKey Key);
+	void SetupInputComponent();
+	void Jump();
+
+private:
+	FSocket* Socket;
 	
 };
