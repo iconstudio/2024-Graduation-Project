@@ -22,7 +22,7 @@ ASagaGameGameMode::ASagaGameGameMode()
 
 void ASagaGameGameMode::PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage)
 {
-	SAGA_Log(LogSagaNetwork, Log, TEXT("%s"), TEXT("Begin"));
+	SAGA_Log(LogSagaNetwork, Log, TEXT("%s"), TEXT("========================================="));
 	Super::PreLogin(Options, Address, UniqueId, ErrorMessage);
 	SAGA_Log(LogSagaNetwork, Log, TEXT("%s"), TEXT("End"));
 }

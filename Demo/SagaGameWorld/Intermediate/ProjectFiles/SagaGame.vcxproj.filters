@@ -11,6 +11,8 @@
     <None Include="..\..\Source\SagaGameEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.gitignore" />
     <None Include="..\..\.vsconfig" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
@@ -61,6 +63,12 @@
       <Filter>Source\SagaGame\Game</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\SagaGame\Game\SagaGameGameMode.h">
+      <Filter>Source\SagaGame\Game</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SagaGame\Game\SagaGameState.cpp">
+      <Filter>Source\SagaGame\Game</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Game\SagaGameState.h">
       <Filter>Source\SagaGame\Game</Filter>
     </ClInclude>
     <Filter Include="Source\SagaGame\Network">
