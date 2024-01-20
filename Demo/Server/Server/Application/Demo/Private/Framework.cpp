@@ -72,7 +72,7 @@ demo::Framework::Update()
 	char input_buffer[256]{};
 	while (true)
 	{
-		const int inputs = ::scanf_s("%s", input_buffer, sizeof(input_buffer));
+		const int inputs = ::scanf_s("%s", input_buffer, 256U);
 		if (EOF != inputs and 0 < inputs)
 		{
 			std::string_view input{ input_buffer };
