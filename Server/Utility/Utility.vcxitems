@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
     <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
@@ -12,5 +12,56 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Annihilator.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\AtomicSwitcher.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Awaitable.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\BasicCoroutine.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\BasicPromise.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\BehaviourTree.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\BorrowedPointer.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ConcurrentAwaiter.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ConcurrentLinkedList.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ConcurrentList.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ConcurrentStack.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Constraints.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Coroutine.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\File.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\FixedString.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\FlatMap.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Handler.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IAwaitable.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IObject.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoSchedule.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IPromise.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IProperty.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IResourcePool.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Logger.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Meta.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\NativeHandle.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Promissory.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Property.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\RecursiveTemplateClass.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Schedule.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Scheduler.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SkipList.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Suspender.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Task.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\TimedAwaiter.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Traits.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\TypeList.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ValuePromise.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\ConcurrentAwaiter.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Coroutine.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\File.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\FlatMap.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Logger.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\NativeHandle.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Task.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\TimedAwaiter.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)inc\BehaviourTreeHelper.hpp" />
   </ItemGroup>
 </Project>
