@@ -4,8 +4,7 @@
 #include "Player/SagaPlayerController.h"
 #include "SagaGame.h"
 #include "Interfaces/IPv4/IPv4Address.h"
-#include "Sockets.h"
-#include "SocketSubsystem.h"
+
 
 
 ASagaPlayerController::ASagaPlayerController()
@@ -19,13 +18,48 @@ void ASagaPlayerController::BeginPlay()
 
 	Super::BeginPlay();
 
+    CreateSocket();
+
 	SAGA_Log(LogSagaNetwork, Log, TEXT("%s"), TEXT("End"));
 
 	FInputModeGameOnly GameOnlyInputMode;
 	SetInputMode(GameOnlyInputMode);
 }
 
-FSocket* CreateSocket()
+
+void ASagaPlayerController::SendKeyToServer(FKey Key)
+{
+	FString KeyString = Key.ToString();
+	TCHAR* SerializedChar = KeyString.GetCharArray().GetData();
+	int32 Size = FCString::Strlen(SerializedChar) + 1;
+	int32 Sent = 0;
+
+	// 데이터 전송
+	bool Successful = SagaClientSocket->Send((uint8*)TCHAR_TO_UTF8(SerializedChar), Size, Sent);
+}
+
+void ASagaPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	// Jump 액션에 대한 입력 바인딩
+	InputComponent->BindAction("Jump", IE_Pressed, this, &ASagaPlayerController::Jump);
+
+    //InputComponent->BindAction("W", IE_Pressed, this, &ASagaPlayerController::GoFront);
+}
+
+//void ASagaPlayerController::GoFront()
+//{
+//    SendKeyToServer(EKeys::W);
+//}
+
+void ASagaPlayerController::Jump()
+{
+	// 서버로 키 입력 전송
+	SendKeyToServer(EKeys::SpaceBar);
+}
+
+FSocket* ASagaPlayerController::CreateSocket()
 {
     FSocket* Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("default"), false);
 
@@ -47,36 +81,4 @@ FSocket* CreateSocket()
     }
 
     return Socket;
-}
-
-void ASagaPlayerController::SendKeyToServer(FKey Key)
-{
-	FString KeyString = Key.ToString();
-	TCHAR* SerializedChar = KeyString.GetCharArray().GetData();
-	int32 Size = FCString::Strlen(SerializedChar) + 1;
-	int32 Sent = 0;
-
-	// 데이터 전송
-	bool Successful = Socket->Send((uint8*)TCHAR_TO_UTF8(SerializedChar), Size, Sent);
-}
-
-void ASagaPlayerController::SetupInputComponent()
-{
-	Super::SetupInputComponent();
-
-	// Jump 액션에 대한 입력 바인딩
-	InputComponent->BindAction("Jump", IE_Pressed, this, &ASagaPlayerController::Jump);
-
-    InputComponent->BindAction("W", IE_Pressed, this, &ASagaPlayerController::GoFront);
-}
-
-void ASagaPlayerController::GoFront()
-{
-
-}
-
-void ASagaPlayerController::Jump()
-{
-	// 서버로 키 입력 전송
-	SendKeyToServer(EKeys::SpaceBar);
 }
