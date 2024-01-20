@@ -164,7 +164,6 @@
     <ClCompile Include="inc\Declarations.ixx" />
     <ClCompile Include="inc\File.ixx" />
     <ClCompile Include="inc\FlatMap.ixx" />
-    <ClCompile Include="inc\Framework.ixx" />
     <ClCompile Include="inc\Logger.ixx" />
     <ClCompile Include="inc\NetworkEntity.ixx" />
     <ClCompile Include="inc\NetworkEntityManager.ixx" />
@@ -176,7 +175,6 @@
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="src\File.cpp" />
     <ClCompile Include="src\FlatMap.cpp" />
-    <ClCompile Include="src\Framework.cpp" />
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\NetworkEntityManager.cpp" />
     <ClCompile Include="src\User.cpp" />

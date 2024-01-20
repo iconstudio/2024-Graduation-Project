@@ -9,6 +9,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Network", "Network\Network.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ColourfulConsole", "Colourful-Console\ColourfulConsole\ColourfulConsole.vcxproj", "{D123B380-57E9-4327-9B21-2DF0902CB5B5}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utility", "Utility\Utility.vcxitems", "{EA4CA710-BE09-4225-AAB8-D06808C53018}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo", "Demo\Demo.vcxitems", "{838E8AF0-D7C5-44D8-B579-08C950C417C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -43,5 +47,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Network\Network.vcxitems*{28b7453d-3bd1-4d68-8d07-e5aebbf7b242}*SharedItemsImports = 9
 		Network\Network.vcxitems*{67b4b3a5-d558-49df-b3e3-70e73d422bff}*SharedItemsImports = 4
+		Demo\Demo.vcxitems*{838e8af0-d7c5-44d8-b579-08c950c417c9}*SharedItemsImports = 9
+		Utility\Utility.vcxitems*{ea4ca710-be09-4225-aab8-d06808c53018}*SharedItemsImports = 9
 	EndGlobalSection
 EndGlobal
