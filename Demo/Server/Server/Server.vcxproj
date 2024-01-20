@@ -80,11 +80,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)ColourfulConsole;$(ProjectDir)Iconer\Network\Private;$(ProjectDir)Iconer\Network;$(ProjectDir)Iconer\Utility;$(ProjectDir)Iconer;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)ColourfulConsole\$(Configuration);$(SolutionDir)Modern Network\Modern Network\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)ColourfulConsole\$(Configuration);$(SolutionDir)Build\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)ColourfulConsole;$(ProjectDir)Iconer\Network\Private;$(ProjectDir)Iconer\Network;$(ProjectDir)Iconer\Utility;$(ProjectDir)Iconer;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)ColourfulConsole\$(Configuration);$(SolutionDir)Modern Network\Modern Network\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)ColourfulConsole\$(Configuration);$(SolutionDir)Build\$(Platform)\$(Configuration);$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
