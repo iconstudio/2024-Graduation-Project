@@ -156,5 +156,11 @@
     <ClCompile Include="Private\Logger.cpp">
       <Filter>Utility\Visual</Filter>
     </ClCompile>
+    <ClCompile Include="Coroutine\Coroutine.ixx">
+      <Filter>Coroutine</Filter>
+    </ClCompile>
+    <ClCompile Include="Coroutine\Coroutine.cpp">
+      <Filter>Coroutine</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
