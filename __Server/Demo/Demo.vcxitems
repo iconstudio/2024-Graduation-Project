@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{838e8af0-d7c5-44d8-b579-08c950c417c9}</ItemsProjectGuid>
+    <ItemsRootNamespace>iconer::demo</ItemsRootNamespace>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Server\inc\Framework.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Server\src\Framework.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Declarations.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Framework.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\NetworkEntity.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\NetworkEntityManager.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\NetworkView.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ObjectManager.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\User.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\UserManager.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Framework.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\NetworkEntityManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\User.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\UserManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Worker.cpp" />
+  </ItemGroup>
+</Project>

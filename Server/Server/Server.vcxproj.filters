@@ -13,10 +13,148 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{9f36aae8-afa1-443f-bb39-ac7a93982c70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{f84000ab-ee4f-48e9-b675-d14d90205dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collection">
+      <UniqueIdentifier>{d2405407-61f0-4035-a09d-76846287d184}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collection\Concurrent">
+      <UniqueIdentifier>{bd62fa75-ab73-4e6e-95d1-eaeaeb0e0323}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\Socket">
+      <UniqueIdentifier>{a3423f8a-46d1-4fe3-92f8-40cadc998e2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Coroutine">
+      <UniqueIdentifier>{5a553029-1427-47bf-ba1e-e45ca5d024fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\Atomic">
+      <UniqueIdentifier>{2aebeec6-086a-4bf6-837f-bb3bf39ced1a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\Dynamic Memory">
+      <UniqueIdentifier>{83d4ef3e-949b-4aaf-96d9-ca0a9c487a03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\Visual">
+      <UniqueIdentifier>{0de243b5-23d6-4a4c-a302-acbc1102f96f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Collection\Dynamic">
+      <UniqueIdentifier>{961038ad-ba82-448f-8abb-1f68dc2f94a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\IO">
+      <UniqueIdentifier>{d4e28b72-c943-4d40-bb63-b10405673fca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility\Concurrency">
+      <UniqueIdentifier>{7dabd331-f7de-406b-a3af-41cb10819e85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\IpAddress.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\EndPoint.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\Socket.ixx">
+      <Filter>Network\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\IoContext.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\IoCompletionPort.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\ErrorCode.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\IoCategory.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Network.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\IoEvent.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Collection\Concurrent\ConcurrentList.ixx">
+      <Filter>Collection\Concurrent</Filter>
+    </ClCompile>
+    <ClCompile Include="Collection\Concurrent\ConcurrentQueue.ixx">
+      <Filter>Collection\Concurrent</Filter>
+    </ClCompile>
+    <ClCompile Include="Collection\Concurrent\ConcurrentStack.ixx">
+      <Filter>Collection\Concurrent</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Memory\Annihilator.ixx">
+      <Filter>Utility\Dynamic Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Memory\BorrowedPointer.ixx">
+      <Filter>Utility\Dynamic Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Visual\Logger.ixx">
+      <Filter>Utility\Visual</Filter>
+    </ClCompile>
+    <ClCompile Include="Collection\Array.ixx">
+      <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="Collection\FixedString.ixx">
+      <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="Collection\Dynamic\FlatMap.ixx">
+      <Filter>Collection\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="Collection\Dynamic\SkipList.ixx">
+      <Filter>Collection\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\IO\File.ixx">
+      <Filter>Utility\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Atomic\AtomicSwitcher.ixx">
+      <Filter>Utility\Atomic</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Atomic\Atomic.ixx">
+      <Filter>Utility\Atomic</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Handler.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\TypeTraits.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Constraints.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\IProperty.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Property.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\TypeList.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Monad.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\LooseMonad.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Singleton.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Concurrency\SpinLock.ixx">
+      <Filter>Utility\Concurrency</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\File.cpp">
+      <Filter>Utility\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\Logger.cpp">
+      <Filter>Utility\Visual</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

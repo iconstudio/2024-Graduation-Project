@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <ItemsProjectGuid>{28b7453d-3bd1-4d68-8d07-e5aebbf7b242}</ItemsProjectGuid>
+    <ItemsRootNamespace>iconer::net</ItemsRootNamespace>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectCapability Include="SourceItemsFromImports" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\EndPoint.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ErrorCode.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\InternetProtocols.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoContext.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoEntity.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoEvent.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoService.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IoStation.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IpAddress.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\AddressFamily.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IPv4Address.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\IPv6Address.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Net.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\NetworkInitializationError.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ServerSetupError.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Socket.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketClosingErrorCodes.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketGeneralErrorCodes.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketOpenErrorCodes.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketOptionErrorCodes.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketOptions.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketPool.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketReceivingErrorCodes.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketResult.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketSendingErrorCodes.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\SocketType.ixx" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\EndPoint.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\IoSchedule.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\IoStation.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\IpAddress.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\AddressFamily.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Net.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Socket.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\SocketErrorCode.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\SocketPool.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Socket_connectors.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Socket_observers.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Socket_receivers.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Socket_senders.cpp" />
+  </ItemGroup>
+</Project>
