@@ -1,54 +1,85 @@
 export module Iconer.Net.IpAddress;
+export import Iconer.Net.IpAddressFamily;
 import <string>;
+import <string_view>;
 import <format>;
 
 export namespace iconer::net
 {
-	class IpAddress
+	struct [[nodiscard]] IpAddress
 	{
-	public:
 		explicit constexpr IpAddress() noexcept = default;
 		constexpr ~IpAddress() noexcept = default;
 
-		[[nodiscard]] constexpr bool operator==(const IpAddress&) const noexcept = default;
+		[[nodiscard]]
+		constexpr const IpAddressFamily& GetFamily() const& noexcept
+		{
+			return addressFamily;
+		}
 
-	private:
+		[[nodiscard]]
+		constexpr IpAddressFamily&& GetFamily() && noexcept
+		{
+			return std::move(addressFamily);
+		}
+
+		[[nodiscard]]
+		constexpr const std::string& GetAddressString() const& noexcept
+		{
+			return addressString;
+		}
+
+		[[nodiscard]]
+		constexpr std::string&& GetAddressString() && noexcept
+		{
+			return std::move(addressString);
+		}
+
+		[[nodiscard]]
+		constexpr const std::string&& GetAddressString() const&& noexcept
+		{
+			return std::move(addressString);
+		}
+
+		[[nodiscard]]
+		constexpr bool operator==(const IpAddress&) const noexcept = default;
+
+		IpAddressFamily addressFamily;
+		std::string addressString;
 	};
 }
 
 export namespace std
 {
-	[[nodiscard]] string to_string(const iconer::net::IpAddress& ip_address);
+	[[nodiscard]]
+	string to_string(const iconer::net::IpAddress& ip_address)
+	{
+		return ip_address.GetAddressString();
+	}
+
+	[[nodiscard]]
+	string to_string(iconer::net::IpAddress&& ip_address)
+	{
+		return std::move(ip_address).GetAddressString();
+	}
 }
 
 export template<>
-struct std::formatter<iconer::net::IpAddress, char>
+struct std::formatter<iconer::net::IpAddress, char> : public std::formatter<std::string, char>
 {
-	static format_parse_context::iterator
-		parse(format_parse_context& context)
-		noexcept;
+	using formatter<std::string, char>::format;
 
-	static format_context::iterator
+	format_context::iterator
 		format(const iconer::net::IpAddress& ip_address, format_context& context)
-		noexcept;
+		const
+	{
+		return format(ip_address.GetAddressString(), context);
+	}
 
-	static format_context::iterator
+	format_context::iterator
 		format(iconer::net::IpAddress&& ip_address, format_context& context)
-		noexcept;
-};
-
-export template<>
-struct std::formatter<iconer::net::IpAddress, wchar_t>
-{
-	static wformat_parse_context::iterator
-		parse(wformat_parse_context& context)
-		noexcept;
-
-	static wformat_context::iterator
-		format(const iconer::net::IpAddress& ip_address, wformat_context& context)
-		noexcept;
-
-	static wformat_context::iterator
-		format(iconer::net::IpAddress&& ip_address, wformat_context& context)
-		noexcept;
+		const
+	{
+		return format(std::move(ip_address).GetAddressString(), context);
+	}
 };

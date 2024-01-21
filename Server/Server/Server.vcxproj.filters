@@ -165,5 +165,14 @@
     <ClCompile Include="Coroutine\Task.ixx">
       <Filter>Coroutine</Filter>
     </ClCompile>
+    <ClCompile Include="Network\AddressFamily.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\AddressFamily.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketOption.ixx">
+      <Filter>Network\Socket</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@ import <stdexcept>;
 import <utility>;
 import <coroutine>;
 
-namespace net
+namespace iconer::coroutine
 {
 	void __ExecuteCoroutine(std::coroutine_handle<void> handle);
 	void __ExecuteCoroutineAsync(std::coroutine_handle<void> handle);
@@ -78,17 +78,17 @@ export namespace iconer::coroutine
 
 		void Start() const
 		{
-			net::__ExecuteCoroutine(myHandle);
+			__ExecuteCoroutine(myHandle);
 		}
 
 		void StartAsync() const
 		{
-			net::__ExecuteCoroutineAsync(myHandle);
+			__ExecuteCoroutineAsync(myHandle);
 		}
 
 		T operator()()
 		{
-			net::__ExecuteCoroutine(myHandle);
+			__ExecuteCoroutine(myHandle);
 
 			return std::move(myHandle.promise().myValue);
 		}

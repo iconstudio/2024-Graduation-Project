@@ -85,7 +85,7 @@ struct std::formatter<std::atomic<T>, char>
 
 		writeOrder = ParseOrderSpec(*(it++));
 
-		if (it == end or *it != '}')
+		if (it != end and *it != '}')
 		{
 			throw std::format_error{ "Missing '}' in format string." };
 		}
