@@ -162,5 +162,8 @@
     <ClCompile Include="Coroutine\Coroutine.cpp">
       <Filter>Coroutine</Filter>
     </ClCompile>
+    <ClCompile Include="Coroutine\Task.ixx">
+      <Filter>Coroutine</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
