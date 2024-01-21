@@ -100,7 +100,7 @@ struct std::formatter<iconer::util::IProperty<T, Context, Custom, Copyable, Read
 		}
 
 		++it;
-		if (it == end or *it != '}')
+		if (it != end and *it != '}')
 		{
 			throw std::format_error{ "Missing '}' in format string." };
 		}

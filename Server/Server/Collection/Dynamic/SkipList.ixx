@@ -1,46 +1,29 @@
 export module Iconer.Collection.SkipList;
-import <string>;
-import <format>;
+import Iconer.Utility.Constraints;
 
 export namespace iconer::collection
 {
 	class SkipList
 	{
+	private:
+		struct Node
+		{
+			int myValue;
+			size_t myHeight;
+			Node* nextNode;
+		};
+
 	public:
+		static inline constexpr size_t maxHeight = 5;
+
 		explicit constexpr SkipList() noexcept = default;
 		~SkipList();
 
 		[[nodiscard]] constexpr bool operator==(const SkipList&) const noexcept = default;
 
+		Node* myHead;
+		size_t myLength;
+
 	private:
 	};
 }
-
-export namespace std
-{
-	[[nodiscard]] string to_string(const iconer::collection::SkipList& list);
-}
-
-export template<>
-struct std::formatter<iconer::collection::SkipList, char>
-{
-	static format_parse_context::iterator
-		parse(format_parse_context& context)
-		noexcept;
-
-	static format_context::iterator
-		format(const iconer::collection::SkipList& list, format_context& context)
-		noexcept;
-};
-
-export template<>
-struct std::formatter<iconer::collection::SkipList, wchar_t>
-{
-	static wformat_parse_context::iterator
-		parse(wformat_parse_context& context)
-		noexcept;
-
-	static wformat_context::iterator
-		format(const iconer::collection::SkipList& list, wformat_context& context)
-		noexcept;
-};

@@ -190,6 +190,8 @@
     <ClCompile Include="Coroutine\Coroutine.cpp" />
     <ClCompile Include="Coroutine\Coroutine.ixx" />
     <ClCompile Include="Coroutine\Task.ixx" />
+    <ClCompile Include="Network\AddressFamily.cpp" />
+    <ClCompile Include="Network\AddressFamily.ixx" />
     <ClCompile Include="Network\EndPoint.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
@@ -226,6 +228,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="Network\Socket\SocketOption.ixx" />
     <ClCompile Include="Private\File.cpp" />
     <ClCompile Include="Private\Logger.cpp" />
     <ClCompile Include="Server.cpp" />

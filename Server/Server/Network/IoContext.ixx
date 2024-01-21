@@ -1,40 +1,43 @@
 export module Iconer.Net.IoContext;
-import <format>;
+import <cstdint>;
+import <type_traits>;
+import <variant>;
 
 export namespace iconer::net
 {
-	class IoContext
+	class alignas(std::hardware_constructive_interference_size) [[nodiscard]] IoContext
 	{
 	public:
-		explicit constexpr IoContext() noexcept = default;
+		constexpr IoContext() noexcept = default;
 		constexpr ~IoContext() noexcept = default;
 
-		[[nodiscard]] constexpr bool operator==(const IoContext&) const noexcept = default;
+		constexpr void Clear() noexcept
+		{
+			ioLower = 0;
+			ioUpper = 0;
+			myOffset = {};
+			eventObject = nullptr;
+		}
+
+		[[nodiscard]]
+		constexpr bool operator==(const IoContext& other) const noexcept
+		{
+			return std::addressof(other) == this;
+		}
+
+		constexpr IoContext(IoContext&&) noexcept = default;
+		constexpr IoContext& operator=(IoContext&&) = default;
+
+	protected:
+		struct NearFarOffsets { std::uint32_t offsetLower; std::uint32_t offsetUpper; };
+
+		std::uint64_t ioLower;
+		std::uint64_t ioUpper;
+		std::variant<NearFarOffsets, void*> myOffset;
+		void* eventObject;
 
 	private:
+		IoContext(const IoContext&) = delete;
+		IoContext& operator=(const IoContext&) = delete;
 	};
 }
-
-export template<>
-struct std::formatter<iconer::net::IoContext, char>
-{
-	static format_parse_context::iterator
-		parse(format_parse_context& context)
-		noexcept;
-
-	static format_context::iterator
-		format(const iconer::net::IoContext& ctx, format_context& context)
-		noexcept;
-};
-
-export template<>
-struct std::formatter<iconer::net::IoContext, wchar_t>
-{
-	static wformat_parse_context::iterator
-		parse(wformat_parse_context& context)
-		noexcept;
-
-	static wformat_context::iterator
-		format(const iconer::net::IoContext& ctx, wformat_context& context)
-		noexcept;
-};

@@ -219,7 +219,7 @@ struct std::formatter<iconer::collection::basic_fixed_string<Char, Length>, char
 		}
 
 		++it;
-		if (it == end or *it != '}')
+		if (it != end and *it != '}')
 		{
 			throw std::format_error{ "Missing '}' in format string." };
 		}

@@ -168,7 +168,7 @@ struct std::formatter<iconer::util::Handler<H>, char>
 		}
 
 		++it;
-		if (it == end or *it != '}')
+		if (it != end and *it != '}')
 		{
 			throw std::format_error{ "Missing '}' in format string." };
 		}
