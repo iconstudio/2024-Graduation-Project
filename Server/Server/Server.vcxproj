@@ -189,6 +189,7 @@
     </ClCompile>
     <ClCompile Include="Coroutine\Coroutine.cpp" />
     <ClCompile Include="Coroutine\Coroutine.ixx" />
+    <ClCompile Include="Coroutine\Task.ixx" />
     <ClCompile Include="Network\EndPoint.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>

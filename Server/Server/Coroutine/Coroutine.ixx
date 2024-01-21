@@ -18,7 +18,34 @@ export namespace iconer::coroutine
 
 		struct promise_type
 		{
+			promise_type() noexcept = default;
+			~promise_type() noexcept = default;
 
+			[[nodiscard]]
+			Coroutine get_return_object() noexcept
+			{
+				return Coroutine(handle_type::from_promise(*this));
+			}
+
+			static constexpr void return_void() noexcept
+			{
+			}
+
+			static constexpr std::suspend_always initial_suspend() noexcept
+			{
+				return {};
+			}
+
+			static constexpr std::suspend_always final_suspend() noexcept
+			{
+				return {};
+			}
+
+			[[noreturn]]
+			void unhandled_exception()
+			{
+				throw;
+			}
 		};
 
 		explicit constexpr Coroutine(const handle_type& handle) noexcept
