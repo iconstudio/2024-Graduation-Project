@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Server\inc\Framework.ixx">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)..\Server\src\Framework.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Declarations.ixx">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\Framework.ixx">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\NetworkEntity.ixx">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\NetworkEntityManager.ixx">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\NetworkView.ixx">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\ObjectManager.ixx">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\User.ixx">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)inc\UserManager.ixx">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Framework.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\NetworkEntityManager.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\User.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\UserManager.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)src\Worker.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Public">
+      <UniqueIdentifier>{8949393e-082d-4dbc-8f47-ca6ddec7bb4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private">
+      <UniqueIdentifier>{d74fe920-0017-440d-9c2c-988722575c26}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
