@@ -75,10 +75,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
     <IncludePath>$(ProjectDir)Network\Socket;$(ProjectDir)Network;$(ProjectDir)Application;$(ProjectDir)Utility;$(ProjectDir)Collection;$(IncludePath)</IncludePath>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
     <IncludePath>$(ProjectDir)Network\Socket;$(ProjectDir)Network;$(ProjectDir)Application;$(ProjectDir)Utility;$(ProjectDir)Collection;$(IncludePath)</IncludePath>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -187,25 +191,53 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Coroutine\Coroutine.cpp" />
-    <ClCompile Include="Coroutine\Coroutine.ixx" />
-    <ClCompile Include="Coroutine\Task.cpp" />
-    <ClCompile Include="Coroutine\Task.ixx" />
-    <ClCompile Include="Network\AddressFamily.cpp" />
-    <ClCompile Include="Network\AddressFamily.ixx" />
+    <ClCompile Include="Coroutine\Coroutine.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Coroutine\Coroutine.ixx">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Coroutine\Task.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Coroutine\Task.ixx">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Network\AddressFamily.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Network\AddressFamily.ixx">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </ClCompile>
     <ClCompile Include="Network\EndPoint.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\ErrorCode.cpp" />
+    <ClCompile Include="Network\ErrorCode.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
     <ClCompile Include="Network\ErrorCode.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\InternetProtocol.ixx" />
+    <ClCompile Include="Network\InternetProtocol.ixx">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </ClCompile>
     <ClCompile Include="Network\IoCategory.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Network\IoCompletionPort.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </ClCompile>
     <ClCompile Include="Network\IoCompletionPort.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
@@ -223,25 +255,58 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\Network.cpp" />
+    <ClCompile Include="Network\Network.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
     <ClCompile Include="Network\Network.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\Socket.cpp" />
+    <ClCompile Include="Network\Socket.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
     <ClCompile Include="Network\Socket\Socket.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\Socket\SocketConnector.cpp" />
-    <ClCompile Include="Network\Socket\SocketObserver.cpp" />
-    <ClCompile Include="Network\Socket\SocketOptin.cpp" />
-    <ClCompile Include="Network\Socket\SocketOption.ixx" />
-    <ClCompile Include="Network\Socket\SocketOptout.cpp" />
-    <ClCompile Include="Network\Socket\SocketReceiver.cpp" />
-    <ClCompile Include="Network\Socket\SocketSender.cpp" />
-    <ClCompile Include="Private\File.cpp" />
-    <ClCompile Include="Private\Logger.cpp" />
+    <ClCompile Include="Network\Socket\SocketConnector.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketObserver.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketOptin.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketOption.ixx">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketOptout.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketReceiver.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketSender.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\File.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\Logger.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="Utility\Atomic\Atomic.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
@@ -251,7 +316,10 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Utility\Concurrency\SpinLock.ixx" />
+    <ClCompile Include="Utility\Concurrency\SpinLock.ixx">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </ClCompile>
     <ClCompile Include="Utility\Constraints.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
