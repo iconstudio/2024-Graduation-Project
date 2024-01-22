@@ -1,3 +1,0 @@
-Testing normal log
-Testing warning log
-Testing error log
