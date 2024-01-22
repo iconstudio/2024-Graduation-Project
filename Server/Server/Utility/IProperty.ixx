@@ -470,11 +470,11 @@ export namespace iconer::util
 			return lhs.myValue <=> rhs.myValue;
 		}
 
-		constexpr IProperty(IProperty&&) noexcept = default;
+		constexpr IProperty(IProperty&& other) noexcept = default;
 		constexpr IProperty& operator=(IProperty&&) = default;
 
 	protected:
-		Context* const myContext;
+		Context* myContext;
 		T myValue;
 		functor_t mySetter;
 	};

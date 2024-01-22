@@ -34,11 +34,11 @@ export namespace iconer::net
 
 		// Opt-in Interfaces
 
-		SocketResult Bind(const IpAddress& address, const std::uint16_t& port) const noexcept;
-		SocketResult Bind(IpAddress&& address, const std::uint16_t& port) const noexcept;
+		SocketResult Bind(const IpAddress& address, std::uint16_t port) const noexcept;
+		SocketResult Bind(IpAddress&& address, std::uint16_t port) const noexcept;
 		SocketResult Bind(const EndPoint& endpoint) const noexcept;
 		SocketResult Bind(EndPoint&& endpoint) const noexcept;
-		SocketResult BindHost(const std::uint16_t& port) const noexcept;
+		SocketResult BindHost(std::uint16_t port) const noexcept;
 
 		bool ReusableAddress() const noexcept;
 		void ReusableAddress(bool flag) noexcept;
@@ -52,8 +52,8 @@ export namespace iconer::net
 		// Opt-out Methods
 
 		SocketResult Open() const noexcept;
-		SocketResult Connect(const IpAddress& address, const std::uint16_t& port) const noexcept;
-		SocketResult Connect(IpAddress&& address, const std::uint16_t& port) const noexcept;
+		SocketResult Connect(const IpAddress& address, std::uint16_t port) const noexcept;
+		SocketResult Connect(IpAddress&& address, std::uint16_t port) const noexcept;
 		SocketResult Connect(const EndPoint& endpoint) const noexcept;
 		SocketResult Connect(EndPoint&& endpoint) const noexcept;
 		[[nodiscard]]
@@ -61,16 +61,16 @@ export namespace iconer::net
 		[[nodiscard]]
 		SocketTask ConnectAsync(EndPoint&& endpoint) const noexcept;
 		[[nodiscard]]
-		SocketTask ConnectAsync(const IpAddress& address, const std::uint16_t& port) const noexcept;
+		SocketTask ConnectAsync(const IpAddress& address, std::uint16_t port) const noexcept;
 		[[nodiscard]]
-		SocketTask ConnectAsync(IpAddress&& address, const std::uint16_t& port) const noexcept;
+		SocketTask ConnectAsync(IpAddress&& address, std::uint16_t port) const noexcept;
 
 		// Synchronous Accept
 
 		[[nodiscard]]
-		SocketResult Accept() const noexcept;
+		net::Socket Accept() const noexcept;
 		[[nodiscard]]
-		SocketResult Accept(EndPoint& endpoint) const noexcept;
+		net::Socket Accept(EndPoint& endpoint) const noexcept;
 
 		// Asynchronous Accept
 
@@ -189,8 +189,6 @@ export namespace iconer::net
 		InternetProtocol myProtocol;
 		IpAddressFamily myFamily;
 		iconer::util::CustomProperty<bool, Socket> IsAddressReusable;
-
-		friend struct AttentSocket;
 
 	private:
 		Socket(HandleType sock, InternetProtocol protocol, IpAddressFamily family) noexcept;

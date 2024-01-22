@@ -3,6 +3,7 @@ export import Iconer.Net.IpAddressFamily;
 import <string>;
 import <string_view>;
 import <format>;
+import <utility>;
 
 export namespace iconer::net
 {
@@ -10,6 +11,11 @@ export namespace iconer::net
 	{
 		explicit constexpr IpAddress() noexcept = default;
 		constexpr ~IpAddress() noexcept = default;
+
+		explicit constexpr IpAddress(IpAddressFamily family, std::string_view address) noexcept
+			: addressFamily(), addressString(address)
+		{
+		}
 
 		[[nodiscard]]
 		constexpr const IpAddressFamily& GetFamily() const& noexcept

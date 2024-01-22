@@ -189,6 +189,7 @@
     </ClCompile>
     <ClCompile Include="Coroutine\Coroutine.cpp" />
     <ClCompile Include="Coroutine\Coroutine.ixx" />
+    <ClCompile Include="Coroutine\Task.cpp" />
     <ClCompile Include="Coroutine\Task.ixx" />
     <ClCompile Include="Network\AddressFamily.cpp" />
     <ClCompile Include="Network\AddressFamily.ixx" />
@@ -232,7 +233,13 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="Network\Socket\SocketConnector.cpp" />
+    <ClCompile Include="Network\Socket\SocketObserver.cpp" />
+    <ClCompile Include="Network\Socket\SocketOptin.cpp" />
     <ClCompile Include="Network\Socket\SocketOption.ixx" />
+    <ClCompile Include="Network\Socket\SocketOptout.cpp" />
+    <ClCompile Include="Network\Socket\SocketReceiver.cpp" />
+    <ClCompile Include="Network\Socket\SocketSender.cpp" />
     <ClCompile Include="Private\File.cpp" />
     <ClCompile Include="Private\Logger.cpp" />
     <ClCompile Include="Server.cpp" />

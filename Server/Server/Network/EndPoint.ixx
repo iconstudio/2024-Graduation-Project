@@ -10,9 +10,6 @@ export namespace iconer::net
 {
 	struct [[nodiscard]] EndPoint
 	{
-		explicit constexpr EndPoint() noexcept = default;
-		constexpr ~EndPoint() noexcept = default;
-
 		[[nodiscard]]
 		constexpr const IpAddressFamily& AddressFamily() const& noexcept
 		{
