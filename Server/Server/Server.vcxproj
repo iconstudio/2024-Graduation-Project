@@ -313,6 +313,7 @@
     </ClCompile>
     <ClCompile Include="Property.ixx" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="Session.ixx" />
     <ClCompile Include="Singleton.ixx" />
     <ClCompile Include="SkipList.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
