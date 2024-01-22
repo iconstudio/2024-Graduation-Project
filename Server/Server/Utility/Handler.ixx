@@ -11,6 +11,8 @@ export namespace iconer::util
 	class [[nodiscard]] Handler
 	{
 	public:
+		using HandleType = H;
+
 		constexpr Handler()
 			noexcept(nothrow_default_constructibles<H>) requires default_initializables<H> = default;
 		constexpr ~Handler()

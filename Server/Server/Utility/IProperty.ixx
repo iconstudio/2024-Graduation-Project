@@ -318,7 +318,7 @@ export namespace iconer::util
 		using const_pointer = conditional_t<std::is_pointer_v<T>, add_pointer_t<const remove_pointer_t<T>>, const T*>;
 		using pointer = conditional_t<Readonly, const_pointer, conditional_t<std::is_pointer_v<T>, T, T*>>;
 
-		using functor_t = std::conditional_t<Nothrow, ::prp_nothrow_functor_t<void, Context&, T&>, ::prp_functor_t<void, Context&, T&>>;
+		using functor_t = std::conditional_t<Nothrow, ::prp_nothrow_functor_t<void, Context&, T>, ::prp_functor_t<void, Context&, T>>;
 
 		constexpr IProperty()
 			noexcept(nothrow_default_constructibles<T, functor_t>)
@@ -326,7 +326,7 @@ export namespace iconer::util
 		constexpr ~IProperty()
 			noexcept(nothrow_destructibles<T>) = default;
 
-		template<typename V, invocables<Context&, T&> Fn>
+		template<typename V, invocables<Context&, T> Fn>
 		constexpr IProperty(Context* const& context, V&& trans_value, Fn&& setter)
 			noexcept(nothrow_constructible<T, V&&> and nothrow_constructible<functor_t, Fn&&>)
 			: myContext(context)
