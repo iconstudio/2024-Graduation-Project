@@ -195,5 +195,26 @@
     <ClCompile Include="Network\Socket.cpp">
       <Filter>Network\Implementation</Filter>
     </ClCompile>
+    <ClCompile Include="Network\Socket\SocketOptin.cpp">
+      <Filter>Network\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketOptout.cpp">
+      <Filter>Network\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketSender.cpp">
+      <Filter>Network\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketReceiver.cpp">
+      <Filter>Network\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketConnector.cpp">
+      <Filter>Network\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Socket\SocketObserver.cpp">
+      <Filter>Network\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Coroutine\Task.cpp">
+      <Filter>Coroutine\Implementation</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
