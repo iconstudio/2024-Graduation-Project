@@ -73,16 +73,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(ProjectDir)Network\Socket;$(ProjectDir)Network;$(ProjectDir)Application;$(ProjectDir)Utility;$(ProjectDir)Collection;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Network\Socket;$(ProjectDir)Network;$(ProjectDir)Application;$(ProjectDir)Utility\Atomic;$(ProjectDir)Utility\IO;$(ProjectDir)Utility\Concurrency;$(ProjectDir)Utility\Memory;$(ProjectDir)Utility\Visual;$(ProjectDir)Utility;$(ProjectDir)Collection;$(ProjectDir)Collection\Dynamic;$(ProjectDir)Collection\Concurrent;$(ProjectDir)Coroutine;$(IncludePath)</IncludePath>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>$(ProjectDir)Network\Socket;$(ProjectDir)Network;$(ProjectDir)Application;$(ProjectDir)Utility\Atomic;$(ProjectDir)Utility\IO;$(ProjectDir)Utility\Concurrency;$(ProjectDir)Utility\Memory;$(ProjectDir)Utility\Visual;$(ProjectDir)Utility;$(ProjectDir)Collection;$(ProjectDir)Collection\Dynamic;$(ProjectDir)Collection\Concurrent;$(ProjectDir)Coroutine;$(PublicModuleDirectories)</PublicModuleDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(ProjectDir)Network\Socket;$(ProjectDir)Network;$(ProjectDir)Application;$(ProjectDir)Utility;$(ProjectDir)Collection;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Network\Socket;$(ProjectDir)Network;$(ProjectDir)Application;$(ProjectDir)Utility\Atomic;$(ProjectDir)Utility\IO;$(ProjectDir)Utility\Concurrency;$(ProjectDir)Utility\Memory;$(ProjectDir)Utility\Visual;$(ProjectDir)Utility;$(ProjectDir)Collection;$(ProjectDir)Collection\Dynamic;$(ProjectDir)Collection\Concurrent;$(ProjectDir)Coroutine;$(IncludePath)</IncludePath>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>$(ProjectDir)Network\Socket;$(ProjectDir)Network;$(ProjectDir)Application;$(ProjectDir)Utility\Atomic;$(ProjectDir)Utility\IO;$(ProjectDir)Utility\Concurrency;$(ProjectDir)Utility\Memory;$(ProjectDir)Utility\Visual;$(ProjectDir)Utility;$(ProjectDir)Collection;$(ProjectDir)Collection\Dynamic;$(ProjectDir)Collection\Concurrent;$(ProjectDir)Coroutine;$(PublicModuleDirectories)</PublicModuleDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
