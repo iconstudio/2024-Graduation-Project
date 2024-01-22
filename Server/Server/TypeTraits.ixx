@@ -1,6 +1,7 @@
 export module Iconer.Utility.TypeTraits;
 export import <type_traits>;
 export import <concepts>;
+export import <utility>;
 
 export namespace iconer
 {
