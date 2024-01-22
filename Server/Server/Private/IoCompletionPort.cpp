@@ -44,10 +44,10 @@ noexcept
 	auto& handle = GetHandle();
 	auto port = ::CreateIoCompletionPort(target, const_cast<void*>(handle), id, 0);
 #else
-	auto port = ::CreateIoCompletionPort(reinterpret_cast<::HANDLE>(socket.GetHandle()), const_cast<void*>(GetHandle().GetPointer()), id, 0);
+	auto port = ::CreateIoCompletionPort(reinterpret_cast<::HANDLE>(socket.GetHandle()), GetHandle(), id, 0);
 #endif
 
-	if (nullptr == handle)
+	if (nullptr == port)
 	{
 		return AcquireNetworkError();
 	}
