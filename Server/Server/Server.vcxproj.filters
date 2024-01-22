@@ -216,5 +216,8 @@
     <ClCompile Include="Coroutine\Task.cpp">
       <Filter>Coroutine\Implementation</Filter>
     </ClCompile>
+    <ClCompile Include="Network\IoCompletionPort.cpp">
+      <Filter>Network\Implementation</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
