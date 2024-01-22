@@ -69,9 +69,9 @@ export namespace iconer::net
 		// Synchronous Accept
 
 		[[nodiscard]]
-		net::Socket Accept() const noexcept;
+		FactoryResult Accept() const noexcept;
 		[[nodiscard]]
-		net::Socket Accept(EndPoint& endpoint) const noexcept;
+		FactoryResult Accept(EndPoint& endpoint) const noexcept;
 
 		// Asynchronous Accept
 
