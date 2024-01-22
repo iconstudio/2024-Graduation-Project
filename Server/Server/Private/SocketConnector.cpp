@@ -51,7 +51,7 @@ const noexcept
 	co_return this->Connect(EndPoint{ std::move(address), port });
 }
 
-net::Socket
+net::Socket::FactoryResult
 net::Socket::Accept()
 const noexcept
 {
@@ -63,7 +63,7 @@ const noexcept
 	HandleType client = ::accept(myHandle, rawaddr, std::addressof(address_blen));
 	if (INVALID_SOCKET == client)
 	{
-		return Socket{};
+		return std::unexpected{ AcquireNetworkError() };
 	}
 
 	IpAddressFamily family;
@@ -85,10 +85,11 @@ const noexcept
 		}
 		break;
 	}
+
 	return Socket{ client, myProtocol, family };
 }
 
-net::Socket
+net::Socket::FactoryResult
 net::Socket::Accept(EndPoint& endpoint)
 const noexcept
 {
@@ -100,7 +101,7 @@ const noexcept
 	HandleType client = ::WSAAccept(myHandle, rawaddr, std::addressof(address_blen), nullptr, 0);
 	if (INVALID_SOCKET == client)
 	{
-		return Socket{};
+		return std::unexpected{ AcquireNetworkError() };
 	}
 
 	IpAddress ip{ IpAddressFamily::Unknown, "" };
@@ -125,7 +126,7 @@ const noexcept
 			}
 			catch (...)
 			{
-				return Socket{};
+				return std::unexpected{ AcquireNetworkError() };
 			}
 		}
 		break;
@@ -142,7 +143,7 @@ const noexcept
 
 			if (SOCKET_ERROR == WSAAddressToString(rawaddr, sizeof(address), nullptr, ip_wbuffer, std::addressof(wblen)))
 			{
-				return Socket{};
+				return std::unexpected{ AcquireNetworkError() };
 			}
 
 			try
@@ -155,7 +156,7 @@ const noexcept
 			}
 			catch (...)
 			{
-				return Socket{};
+				return std::unexpected{ AcquireNetworkError() };
 			}
 		}
 		break;
