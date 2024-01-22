@@ -4,6 +4,7 @@ module;
 #include <ws2ipdef.h>
 
 module Iconer.Net.Socket;
+import Iconer.Net.EndPoint;
 import <coroutine>;
 
 using namespace iconer;
@@ -19,7 +20,7 @@ net::Socket::SocketResult
 net::Socket::Connect(net::IpAddress&& address, std::uint16_t port)
 const noexcept
 {
-	return this->Connect(EndPoint(std::move(address), port));
+	return this->Connect(EndPoint{ std::move(address), port });
 }
 
 net::Socket::SocketTask
@@ -40,14 +41,14 @@ net::Socket::SocketTask
 net::Socket::ConnectAsync(const net::IpAddress& address, std::uint16_t port)
 const noexcept
 {
-	co_return this->Connect(EndPoint(address, port));
+	co_return this->Connect(EndPoint{ address, port });
 }
 
 net::Socket::SocketTask
 net::Socket::ConnectAsync(net::IpAddress&& address, std::uint16_t port)
 const noexcept
 {
-	co_return this->Connect(EndPoint(std::move(address), port));
+	co_return this->Connect(EndPoint{ std::move(address), port });
 }
 
 net::Socket

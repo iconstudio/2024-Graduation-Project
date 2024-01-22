@@ -9,13 +9,12 @@ export namespace iconer::net
 {
 	struct [[nodiscard]] IpAddress
 	{
-		explicit constexpr IpAddress() noexcept = default;
-		constexpr ~IpAddress() noexcept = default;
+		explicit constexpr IpAddress() = default;
+		~IpAddress() = default;
 
-		explicit constexpr IpAddress(IpAddressFamily family, std::string_view address) noexcept
+		explicit constexpr IpAddress(IpAddressFamily family, std::string_view address)
 			: addressFamily(), addressString(address)
-		{
-		}
+		{}
 
 		[[nodiscard]]
 		constexpr const IpAddressFamily& GetFamily() const& noexcept
@@ -73,19 +72,21 @@ export namespace std
 export template<>
 struct std::formatter<iconer::net::IpAddress, char> : public std::formatter<std::string, char>
 {
-	using formatter<std::string, char>::format;
+	using super = formatter<std::string, char>;
+
+	using super::parse;
 
 	format_context::iterator
 		format(const iconer::net::IpAddress& ip_address, format_context& context)
 		const
 	{
-		return format(ip_address.GetAddressString(), context);
+		return super::format(ip_address.GetAddressString(), context);
 	}
 
 	format_context::iterator
 		format(iconer::net::IpAddress&& ip_address, format_context& context)
 		const
 	{
-		return format(std::move(ip_address).GetAddressString(), context);
+		return super::format(std::move(ip_address).GetAddressString(), context);
 	}
 };

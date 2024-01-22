@@ -4,8 +4,7 @@ import Iconer.Utility.Handler;
 import Iconer.Utility.Property;
 export import Iconer.Net.ErrorCode;
 export import Iconer.Net.InternetProtocol;
-export import Iconer.Net.IpAddress;
-export import Iconer.Net.EndPoint;
+export import Iconer.Net.IpAddressFamily;
 export import Iconer.Net.IoCategory;
 export import Iconer.Net.IoContext;
 import Iconer.Coroutine.Task;
@@ -16,6 +15,9 @@ import <span>;
 
 export namespace iconer::net
 {
+	struct IpAddress;
+	struct EndPoint;
+
 	class [[nodiscard]] Socket final : public iconer::util::Handler<std::uintptr_t>
 	{
 	public:

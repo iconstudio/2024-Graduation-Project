@@ -1,11 +1,16 @@
 module;
+#pragma warning(push)
+#pragma warning(disable : 4006)
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "mswsock.lib")
 #include <WinSock2.h>
+#pragma warning(pop)
 
 module Iconer.Net;
 import Iconer.Net.ErrorCode;
 import <utility>;
 
-bool
+std::optional<iconer::net::ErrorCode>
 iconer::net::Startup()
 noexcept
 {
@@ -14,28 +19,28 @@ noexcept
 	const int startup = ::WSAStartup(MAKEWORD(2, 2), std::addressof(version_data));
 	if (0 != startup)
 	{
-		//return AcquireNetworkError();
-		return false;
+		return AcquireNetworkError();
+		//return false;
 	}
 	else
 	{
-		//return std::nullopt;
-		return true;
+		return std::nullopt;
+		//return true;
 	}
 }
 
-bool
+std::optional<iconer::net::ErrorCode>
 iconer::net::Cleanup()
 noexcept
 {
 	if (0 != ::WSACleanup())
 	{
-		//return AcquireNetworkError();
-		return false;
+		return AcquireNetworkError();
+		//return false;
 	}
 	else
 	{
-		//return std::nullopt;
-		return true;
+		return std::nullopt;
+		//return true;
 	}
 }
