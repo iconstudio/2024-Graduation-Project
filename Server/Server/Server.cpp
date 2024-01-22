@@ -3,52 +3,28 @@ import Iconer.Net.ErrorCode;
 import Iconer.Coroutine;
 import Iconer.Coroutine.Task;
 import Iconer.Net.Socket;
+import Iconer.Net.IoCompletionPort;
 import <iostream>;
 //import <format>;
 
-import <cstdio>;
-//import <print>;
-import <iostream>;
-
-import Test.Framework;
-
-test::Framework serverFramework{};
+using namespace iconer;
 
 int main()
 {
-	std::cout << ("=========$ Server $=========\n");
-	test::ServerPreset my_setup
-	{
-		.serverID = 0,
-		.serverAddress = iconer::net::EndPoint{ iconer::net::IpAddress{ iconer::net::IpAddressFamily::IPv4, "127.0.0.1" }, 40000 }
-	};
+	std::cout << "Hello World!\n";
 
-	std::cout << ("=========== Init ===========\n");
-	serverFramework.Awake(std::move(my_setup));
+	auto start_err = net::Startup();
 
-	std::cout << ("=========== Start ===========\n");
-	serverFramework.Start(6);
+	net::IoCompletionPort port;
 
-	std::cout << ("=========== Update ===========\n");
+	net::Socket socket;
+	socket = net::Socket::Create(net::IoCategory::Synchronous, net::InternetProtocol::TCP, net::IpAddressFamily::IPv4);
 
-	char command[256]{};
-	constexpr unsigned cmd_size = sizeof(command);
+	//std::cout << std::format("{}\n", socket.IsAddressReusable);
+	auto bind = socket.BindHost(40000);
 
-	while (true)
-	{
-		auto input = ::scanf_s("%s", command, cmd_size);
-		if (EOF != input)
-		{
-			if (command[0] == 'q')
-			{
-				break;
-			}
-		}
-	}
+	net::IoContext context{};
+	port.Schedule(context, 9, 0);
 
-	std::cout << ("========== Destroy ===========\n");
-	serverFramework.Destroy();
-
-	std::cout << ("========== Clean up ==========\n");
-	serverFramework.Cleanup();
+	auto end_err = net::Cleanup();
 }

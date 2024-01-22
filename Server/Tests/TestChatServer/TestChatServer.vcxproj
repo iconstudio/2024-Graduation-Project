@@ -74,13 +74,15 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <UseStructuredOutput>true</UseStructuredOutput>
-    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
+    <IncludePath>$(SolutionDir)\Server\Network\Socket;$(SolutionDir)\Server\Network;$(SolutionDir)\Server\Application;$(SolutionDir)\Server\Utility\Atomic;$(SolutionDir)\Server\Utility\IO;$(SolutionDir)\Server\Utility\Concurrency;$(SolutionDir)\Server\Utility\Memory;$(SolutionDir)\Server\Utility\Visual;$(SolutionDir)\Server\Utility;$(SolutionDir)\Server\Collection;$(SolutionDir)\Server\Collection\Dynamic;$(SolutionDir)\Server\Collection\Concurrent;$(SolutionDir)\Server\Coroutine;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <UseStructuredOutput>true</UseStructuredOutput>
-    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
-    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
+    <PublicModuleDirectories>
+    </PublicModuleDirectories>
+    <IncludePath>$(SolutionDir)\Server\Network\Socket;$(SolutionDir)\Server\Network;$(SolutionDir)\Server\Application;$(SolutionDir)\Server\Utility\Atomic;$(SolutionDir)\Server\Utility\IO;$(SolutionDir)\Server\Utility\Concurrency;$(SolutionDir)\Server\Utility\Memory;$(SolutionDir)\Server\Utility\Visual;$(SolutionDir)\Server\Utility;$(SolutionDir)\Server\Collection;$(SolutionDir)\Server\Collection\Dynamic;$(SolutionDir)\Server\Collection\Concurrent;$(SolutionDir)\Server\Coroutine;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

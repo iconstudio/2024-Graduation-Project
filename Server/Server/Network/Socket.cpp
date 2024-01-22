@@ -4,8 +4,6 @@ module;
 #include <WS2tcpip.h>
 module Iconer.Net.Socket;
 
-using namespace iconer;
-
 ::RIO_BUF buf;
 static inline constexpr ::SOCKET InvalidSocket = INVALID_SOCKET;
 constinit static inline ::SOCKET internalSocket = InvalidSocket;
@@ -24,12 +22,12 @@ static void CALLBACK rioRoutine(const ::DWORD err, const ::DWORD bytes, ::LPWSAO
 		//std::println("Socket error: {}", err);
 	}
 }
-void SocketFunctionInitializer(const net::Socket::HandleType& sock);
+void SocketFunctionInitializer(const iconer::net::Socket::HandleType& sock);
 
-::SOCKADDR_STORAGE SerializeEndpoint(const net::EndPoint& endpoint) noexcept;
-::SOCKADDR_STORAGE SerializeEndpoint(net::EndPoint&& endpoint) noexcept;
-net::Socket::SocketResult RawSetOption(const net::Socket::HandleType& sock, int option, const void* buffer, int buff_size) noexcept;
-net::Socket::SocketResult RawGetOption(const net::Socket::HandleType& sock, int option) noexcept;
+::SOCKADDR_STORAGE SerializeEndpoint(const iconer::net::EndPoint& endpoint) noexcept;
+::SOCKADDR_STORAGE SerializeEndpoint(iconer::net::EndPoint&& endpoint) noexcept;
+iconer::net::Socket::SocketResult RawSetOption(const iconer::net::Socket::HandleType& sock, int option, const void* buffer, int buff_size) noexcept;
+iconer::net::Socket::SocketResult RawGetOption(const iconer::net::Socket::HandleType& sock, int option) noexcept;
 
 struct [[nodiscard]] SerializedIpAddress
 {
@@ -37,7 +35,7 @@ struct [[nodiscard]] SerializedIpAddress
 };
 
 SerializedIpAddress
-SerializeIpAddress(const net::IpAddress& ip_address)
+SerializeIpAddress(const iconer::net::IpAddress& ip_address)
 noexcept
 {
 	SerializedIpAddress result{};
@@ -50,7 +48,7 @@ noexcept
 }
 
 bool
-TrySerializeIpAddress(const net::IpAddress& ip_address, SerializedIpAddress& out)
+TrySerializeIpAddress(const iconer::net::IpAddress& ip_address, SerializedIpAddress& out)
 noexcept
 {
 	SerializedIpAddress result{};
@@ -69,7 +67,7 @@ noexcept
 }
 
 bool
-TrySerializeIpAddress(const net::IpAddress& ip_address, void* const& out)
+TrySerializeIpAddress(const iconer::net::IpAddress& ip_address, void* const& out)
 noexcept
 {
 	if (1 != ::inet_pton((int)ip_address.addressFamily
@@ -86,7 +84,7 @@ noexcept
 
 [[nodiscard]]
 constexpr size_t
-GetSizeOfFamilyBuffer(const net::IpAddressFamily& family)
+GetSizeOfFamilyBuffer(const iconer::net::IpAddressFamily& family)
 noexcept
 {
 	if (iconer::net::IpAddressFamily::IPv4 == family)
@@ -105,13 +103,13 @@ noexcept
 
 static inline constexpr unsigned long DEFAULT_ACCEPT_SIZE = sizeof(SOCKADDR_IN) + 16UL;
 
-net::Socket::Socket()
+iconer::net::Socket::Socket()
 noexcept
 	: Socket(INVALID_SOCKET, InternetProtocol::Unknown, IpAddressFamily::Unknown)
 {
 }
 
-net::Socket::Socket(net::Socket::HandleType sock, net::InternetProtocol protocol, net::IpAddressFamily family) noexcept
+iconer::net::Socket::Socket(iconer::net::Socket::HandleType sock, iconer::net::InternetProtocol protocol, iconer::net::IpAddressFamily family) noexcept
 	: Handler(sock)
 	, myProtocol(protocol), myFamily(family)
 	, IsAddressReusable(this, false, SetAddressReusable)
@@ -119,8 +117,8 @@ net::Socket::Socket(net::Socket::HandleType sock, net::InternetProtocol protocol
 	std::call_once(internalInitFlag, ::SocketFunctionInitializer, sock);
 }
 
-net::Socket::SocketResult
-net::Socket::Bind(const net::EndPoint& endpoint)
+iconer::net::Socket::SocketResult
+iconer::net::Socket::Bind(const iconer::net::EndPoint& endpoint)
 const noexcept
 {
 	SOCKADDR_STORAGE sockaddr = SerializeEndpoint(endpoint);
@@ -134,8 +132,8 @@ const noexcept
 	return std::nullopt;
 }
 
-net::Socket::SocketResult
-net::Socket::Bind(net::EndPoint&& endpoint)
+iconer::net::Socket::SocketResult
+iconer::net::Socket::Bind(iconer::net::EndPoint&& endpoint)
 const noexcept
 {
 	SOCKADDR_STORAGE sockaddr = SerializeEndpoint(std::move(endpoint));
@@ -149,8 +147,8 @@ const noexcept
 	return std::nullopt;
 }
 
-net::Socket::SocketResult
-net::Socket::Open()
+iconer::net::Socket::SocketResult
+iconer::net::Socket::Open()
 const noexcept
 {
 	const int open = ::listen(Super::GetHandle(), SOMAXCONN);
@@ -162,8 +160,8 @@ const noexcept
 	return std::nullopt;
 }
 
-net::Socket::SocketResult
-net::Socket::Connect(const net::EndPoint& endpoint)
+iconer::net::Socket::SocketResult
+iconer::net::Socket::Connect(const iconer::net::EndPoint& endpoint)
 const noexcept
 {
 	SOCKADDR_STORAGE sockaddr = SerializeEndpoint(endpoint);
@@ -188,8 +186,8 @@ const noexcept
 	return std::nullopt;
 }
 
-net::Socket::SocketResult
-net::Socket::Connect(net::EndPoint&& endpoint)
+iconer::net::Socket::SocketResult
+iconer::net::Socket::Connect(iconer::net::EndPoint&& endpoint)
 const noexcept
 {
 	SOCKADDR_STORAGE sockaddr = SerializeEndpoint(std::move(endpoint));
@@ -215,7 +213,7 @@ const noexcept
 }
 
 bool
-net::Socket::Close()
+iconer::net::Socket::Close()
 const noexcept
 {
 	if (IsAvailable())
@@ -236,7 +234,7 @@ const noexcept
 }
 
 bool
-net::Socket::Close(net::ErrorCode& error_code)
+iconer::net::Socket::Close(iconer::net::ErrorCode& error_code)
 const noexcept
 {
 	if (IsAvailable())
@@ -274,21 +272,21 @@ const noexcept
 }
 
 bool
-net::Socket::CloseAsync(net::IoContext& context)
+iconer::net::Socket::CloseAsync(iconer::net::IoContext& context)
 const noexcept
 {
 	return CloseAsync(std::addressof(context));
 }
 
 bool
-net::Socket::CloseAsync(net::IoContext& context, net::ErrorCode& error_code)
+iconer::net::Socket::CloseAsync(iconer::net::IoContext& context, iconer::net::ErrorCode& error_code)
 const noexcept
 {
 	return CloseAsync(std::addressof(context), error_code);
 }
 
 bool
-net::Socket::CloseAsync(net::IoContext* const context)
+iconer::net::Socket::CloseAsync(iconer::net::IoContext* const context)
 const noexcept
 {
 	if (IsAvailable())
@@ -310,7 +308,7 @@ const noexcept
 }
 
 bool
-net::Socket::CloseAsync(net::IoContext* const context, net::ErrorCode& error_code)
+iconer::net::Socket::CloseAsync(iconer::net::IoContext* const context, iconer::net::ErrorCode& error_code)
 const noexcept
 {
 	if (IsAvailable())
@@ -332,22 +330,22 @@ const noexcept
 	}
 }
 
-net::Socket::SocketResult
-net::Socket::ReserveAccept(net::IoContext& context, net::Socket& client)
+iconer::net::Socket::SocketResult
+iconer::net::Socket::ReserveAccept(iconer::net::IoContext& context, iconer::net::Socket& client)
 const
 {
 	return ReserveAccept(std::addressof(context), client);
 }
 
-net::Socket::SocketResult
-net::Socket::ReserveAccept(net::IoContext& context, Socket& client, std::span<std::byte> accept_buffer)
+iconer::net::Socket::SocketResult
+iconer::net::Socket::ReserveAccept(iconer::net::IoContext& context, Socket& client, std::span<std::byte> accept_buffer)
 const
 {
 	return ReserveAccept(std::addressof(context), client, std::move(accept_buffer));
 }
 
-net::Socket::SocketResult
-net::Socket::ReserveAccept(net::IoContext* const context, net::Socket& client)
+iconer::net::Socket::SocketResult
+iconer::net::Socket::ReserveAccept(iconer::net::IoContext* const context, iconer::net::Socket& client)
 const
 {
 	char temp_buffer[::DEFAULT_ACCEPT_SIZE * 2];
@@ -381,8 +379,8 @@ const
 	}
 }
 
-net::Socket::SocketResult
-net::Socket::ReserveAccept(net::IoContext* const context, net::Socket& client, std::span<std::byte> accept_buffer)
+iconer::net::Socket::SocketResult
+iconer::net::Socket::ReserveAccept(iconer::net::IoContext* const context, iconer::net::Socket& client, std::span<std::byte> accept_buffer)
 const
 {
 	if (not IsAvailable())
@@ -415,8 +413,8 @@ const
 	}
 }
 
-net::Socket
-net::Socket::Create(IoCategory type
+iconer::net::Socket
+iconer::net::Socket::Create(IoCategory type
 	, const InternetProtocol& protocol
 	, const IpAddressFamily& family)
 	noexcept
@@ -447,11 +445,11 @@ net::Socket::Create(IoCategory type
 	return Socket(result, protocol, family);
 }
 
-net::Socket
-net::Socket::Create(net::IoCategory type
-	, const net::InternetProtocol& protocol
-	, const net::IpAddressFamily& family
-	, net::ErrorCode& error_code)
+iconer::net::Socket
+iconer::net::Socket::Create(iconer::net::IoCategory type
+	, const iconer::net::InternetProtocol& protocol
+	, const iconer::net::IpAddressFamily& family
+	, iconer::net::ErrorCode& error_code)
 	noexcept
 {
 	if (Socket result = Create(type, protocol, family); result.IsAvailable())
@@ -466,10 +464,10 @@ net::Socket::Create(net::IoCategory type
 }
 
 bool
-net::Socket::TryCreate(net::IoCategory type
-	, const net::InternetProtocol& protocol
-	, const net::IpAddressFamily& family
-	, net::Socket& out)
+iconer::net::Socket::TryCreate(iconer::net::IoCategory type
+	, const iconer::net::InternetProtocol& protocol
+	, const iconer::net::IpAddressFamily& family
+	, iconer::net::Socket& out)
 	noexcept
 {
 	if (Socket result = Create(type, protocol, family); result.IsAvailable())
@@ -485,11 +483,11 @@ net::Socket::TryCreate(net::IoCategory type
 }
 
 bool
-net::Socket::TryCreate(net::IoCategory type
-	, const net::InternetProtocol& protocol
-	, const net::IpAddressFamily& family
-	, net::Socket& out
-	, net::ErrorCode& error_code)
+iconer::net::Socket::TryCreate(iconer::net::IoCategory type
+	, const iconer::net::InternetProtocol& protocol
+	, const iconer::net::IpAddressFamily& family
+	, iconer::net::Socket& out
+	, iconer::net::ErrorCode& error_code)
 	noexcept
 {
 	if (Socket result = Create(type, protocol, family); result.IsAvailable())
@@ -505,10 +503,10 @@ net::Socket::TryCreate(net::IoCategory type
 	}
 }
 
-net::Socket::FactoryResult
-net::Socket::TryCreate(net::IoCategory type
-	, const net::InternetProtocol& protocol
-	, const net::IpAddressFamily& family)
+iconer::net::Socket::FactoryResult
+iconer::net::Socket::TryCreate(iconer::net::IoCategory type
+	, const iconer::net::InternetProtocol& protocol
+	, const iconer::net::IpAddressFamily& family)
 	noexcept
 {
 	if (Socket result = Create(type, protocol, family); result.IsAvailable())
@@ -522,7 +520,7 @@ net::Socket::TryCreate(net::IoCategory type
 }
 
 void
-net::Socket::SetAddressReusable(net::Socket& target, bool flag)
+iconer::net::Socket::SetAddressReusable(iconer::net::Socket& target, bool flag)
 noexcept
 {
 	::BOOL iflag = static_cast<::BOOL>(flag);
@@ -531,7 +529,7 @@ noexcept
 }
 
 void
-SocketFunctionInitializer(const net::Socket::HandleType& sock)
+SocketFunctionInitializer(const iconer::net::Socket::HandleType& sock)
 {
 	::GUID fntable_id = WSAID_MULTIPLE_RIO;
 	::DWORD temp_bytes = 0;
@@ -571,7 +569,7 @@ SocketFunctionInitializer(const net::Socket::HandleType& sock)
 
 [[nodiscard]]
 ::SOCKADDR_STORAGE
-SerializeEndpoint(const net::EndPoint& endpoint)
+SerializeEndpoint(const iconer::net::EndPoint& endpoint)
 noexcept
 {
 	const auto& ip = endpoint.IpAddress();
@@ -582,7 +580,7 @@ noexcept
 
 	switch (endpoint.AddressFamily())
 	{
-		case net::IpAddressFamily::IPv4:
+		case iconer::net::IpAddressFamily::IPv4:
 		{
 			::IN_ADDR sk_addr{};
 			if (not TrySerializeIpAddress(ip, std::addressof(sk_addr.s_addr)))
@@ -592,7 +590,7 @@ noexcept
 
 			::SOCKADDR_IN ipv4_addr
 			{
-				.sin_family = (std::uint16_t)net::IpAddressFamily::IPv4,
+				.sin_family = (std::uint16_t)iconer::net::IpAddressFamily::IPv4,
 				.sin_port = port,
 				.sin_addr = std::move(sk_addr),
 			};
@@ -601,7 +599,7 @@ noexcept
 		}
 		break;
 
-		case net::IpAddressFamily::IPv6:
+		case iconer::net::IpAddressFamily::IPv6:
 		{
 			::IN6_ADDR sk_addr{};
 			if (not TrySerializeIpAddress(ip, std::addressof(sk_addr.s6_addr)))
@@ -611,7 +609,7 @@ noexcept
 
 			::SOCKADDR_IN6 ipv6_addr
 			{
-				.sin6_family = (std::uint16_t)net::IpAddressFamily::IPv6,
+				.sin6_family = (std::uint16_t)iconer::net::IpAddressFamily::IPv6,
 				.sin6_port = port,
 				.sin6_flowinfo = 0,
 				.sin6_addr = std::move(sk_addr),
@@ -622,7 +620,7 @@ noexcept
 		}
 		break;
 
-		case net::IpAddressFamily::Unknown:
+		case iconer::net::IpAddressFamily::Unknown:
 		{}
 		break;
 	}
@@ -632,7 +630,7 @@ noexcept
 
 [[nodiscard]]
 ::SOCKADDR_STORAGE
-SerializeEndpoint(net::EndPoint&& endpoint)
+SerializeEndpoint(iconer::net::EndPoint&& endpoint)
 noexcept
 {
 	::SOCKADDR_STORAGE result{};
@@ -640,7 +638,7 @@ noexcept
 
 	switch (std::move(endpoint).AddressFamily())
 	{
-		case net::IpAddressFamily::IPv4:
+		case iconer::net::IpAddressFamily::IPv4:
 		{
 			::IN_ADDR sk_addr{};
 			if (not TrySerializeIpAddress(std::move(endpoint).IpAddress(), std::addressof(sk_addr.s_addr)))
@@ -650,7 +648,7 @@ noexcept
 
 			::SOCKADDR_IN ipv4_addr
 			{
-				.sin_family = (std::uint16_t)net::IpAddressFamily::IPv4,
+				.sin_family = (std::uint16_t)iconer::net::IpAddressFamily::IPv4,
 				.sin_port = std::move(endpoint).Port(),
 				.sin_addr = std::move(sk_addr),
 			};
@@ -659,7 +657,7 @@ noexcept
 		}
 		break;
 
-		case net::IpAddressFamily::IPv6:
+		case iconer::net::IpAddressFamily::IPv6:
 		{
 			IN6_ADDR sk_addr{};
 			if (not TrySerializeIpAddress(std::move(endpoint).IpAddress(), std::addressof(sk_addr.s6_addr)))
@@ -669,7 +667,7 @@ noexcept
 
 			SOCKADDR_IN6 ipv6_addr
 			{
-				.sin6_family = (std::uint16_t)net::IpAddressFamily::IPv6,
+				.sin6_family = (std::uint16_t)iconer::net::IpAddressFamily::IPv6,
 				.sin6_port = std::move(endpoint).Port(),
 				.sin6_flowinfo = 0,
 				.sin6_addr = std::move(sk_addr),
@@ -680,7 +678,7 @@ noexcept
 		}
 		break;
 
-		case net::IpAddressFamily::Unknown:
+		case iconer::net::IpAddressFamily::Unknown:
 		{}
 		break;
 	}
@@ -688,8 +686,8 @@ noexcept
 	return result;
 }
 
-net::Socket::SocketResult
-RawSetOption(const net::Socket::HandleType& sock, int option, const void* buffer, int buff_size)
+iconer::net::Socket::SocketResult
+RawSetOption(const iconer::net::Socket::HandleType& sock, int option, const void* buffer, int buff_size)
 noexcept
 {
 	if (0 == ::setsockopt(sock
@@ -700,11 +698,11 @@ noexcept
 		return std::nullopt;
 	}
 
-	return net::AcquireNetworkError();
+	return iconer::net::AcquireNetworkError();
 }
 
-net::Socket::SocketResult
-RawGetOption(const net::Socket::HandleType& sock, int option)
+iconer::net::Socket::SocketResult
+RawGetOption(const iconer::net::Socket::HandleType& sock, int option)
 noexcept
 {
 	int result = 0;
@@ -718,5 +716,5 @@ noexcept
 		return std::nullopt;
 	}
 
-	return net::AcquireNetworkError();
+	return iconer::net::AcquireNetworkError();
 }
