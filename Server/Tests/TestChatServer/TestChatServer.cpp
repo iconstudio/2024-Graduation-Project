@@ -231,7 +231,7 @@ int main()
 void
 test::Worker(Framework& framework, size_t nth)
 {
-	std::cout << std::format("Worker {} is started", nth);
+	std::cout << std::format("Worker {} is started.\n", nth);
 
 	while (true)
 	{
@@ -258,19 +258,19 @@ test::Worker(Framework& framework, size_t nth)
 				{
 					if (not io_event.isSucceed)
 					{
-						std::cout << std::format("Worker has been failed as acceptance on {}", id);
+						std::cout << std::format("Worker has been failed as acceptance on {}\n", id);
 						break; // switch (op)
 					}
 
-					std::cout << std::format("Client connected - {}", id);
+					std::cout << std::format("Client connected - {}\n", id);
 					auto rr = framework.OnAccept(id);
 					if (rr)
 					{
-						std::cout << std::format("Client {}'s receive are not able to be reserved ({})", id, rr.value());
+						std::cout << std::format("Client {}'s receive are not able to be reserved ({})\n", id, rr.value());
 					}
 					else
 					{
-						std::cout << std::format("Client {}'s receive are reserved", id);
+						std::cout << std::format("Client {}'s receive are reserved\n", id);
 					}
 				}
 				break;
@@ -279,7 +279,7 @@ test::Worker(Framework& framework, size_t nth)
 				{
 					if (not io_event.isSucceed)
 					{
-						std::cout << std::format("Worker has been failed as receiving on client {}", id);
+						std::cout << std::format("Worker has been failed as receiving on client {}\n", id);
 
 						framework.CloseClient(id);
 						break; // switch (op)
@@ -288,7 +288,7 @@ test::Worker(Framework& framework, size_t nth)
 					auto& bytes = io_event.ioBytes;
 					if (0 == bytes)
 					{
-						std::cout << std::format("Closing client {} as receiving has been failed", id);
+						std::cout << std::format("Closing client {} as receiving has been failed\n", id);
 
 						framework.CloseClient(id);
 						break; // switch (op)
@@ -298,14 +298,14 @@ test::Worker(Framework& framework, size_t nth)
 					auto rr = framework.OnReceive(id, bytes);
 					if (rr)
 					{
-						std::cout << std::format("Client {}'s receive are not able to be reserved ({})", id, rr.value());
+						std::cout << std::format("Client {}'s receive are not able to be reserved ({})\n", id, rr.value());
 
 						framework.CloseClient(id);
 						break; // switch (op)
 					}
 					else
 					{
-						std::cout << std::format("Client {}'s receive are reserved", id);
+						std::cout << std::format("Client {}'s receive are reserved\n", id);
 					}
 				}
 				break;
@@ -316,7 +316,7 @@ test::Worker(Framework& framework, size_t nth)
 
 					if (not io_event.isSucceed)
 					{
-						std::cout << std::format("Worker has been failed as sending on the client {}", id);
+						std::cout << std::format("Worker has been failed as sending on the client {}\n", id);
 
 						if (ex_context != nullptr)
 						{
@@ -325,7 +325,7 @@ test::Worker(Framework& framework, size_t nth)
 
 						if (0 == bytes)
 						{
-							std::cout << std::format("Closing client {} as sending has been failed", id);
+							std::cout << std::format("Closing client {} as sending has been failed\n", id);
 
 							framework.CloseClient(id);
 						}
@@ -337,7 +337,7 @@ test::Worker(Framework& framework, size_t nth)
 					auto msg_ctx = static_cast<ChatMsgContext*>(ex_context);
 					if (nullptr != msg_ctx)
 					{
-						std::cout << std::format("Message sent from the client {}", id);
+						std::cout << std::format("Message sent from the client {}\n", id);
 
 						// Preserve the message buffer until they got sent
 						if (msg_ctx->refCount.fetch_sub(1) <= 1)
@@ -358,7 +358,7 @@ test::Worker(Framework& framework, size_t nth)
 					auto msg_ctx = static_cast<ChatMsgContext*>(ex_context);
 					if (nullptr == msg_ctx)
 					{
-						std::cout << std::format("An msg error occured on the client {}", id);
+						std::cout << std::format("An msg error occured on the client {}\n", id);
 						std::abort();
 						break;
 					}
@@ -366,7 +366,7 @@ test::Worker(Framework& framework, size_t nth)
 					auto br = framework.OnChat(msg_ctx);
 					if (br == 0)
 					{
-						std::cout << std::format("Client {} has been failed on sending message(s)", id);
+						std::cout << std::format("Client {} has been failed on sending message(s)\n", id);
 						//auto& err = br.error();
 
 						//std::cout << std::format("Client {} cannot send message to {}, due to {}", id, std::get<1>(err), std::get<0>(err));
@@ -376,13 +376,13 @@ test::Worker(Framework& framework, size_t nth)
 
 				case test::IoOperation::Close:
 				{
-					std::cout << std::format("Client {} is closed", id);
+					std::cout << std::format("Client {} is closed\n", id);
 
 					// start acceptance again
 					auto acceptance = framework.OnClose(id);
 					if (acceptance)
 					{
-						std::cout << std::format("Client {} cannot be accepted due to {}", id, acceptance.value());
+						std::cout << std::format("Client {} cannot be accepted due to {}\n", id, acceptance.value());
 
 						std::abort();
 						break; // switch (op)
@@ -392,7 +392,7 @@ test::Worker(Framework& framework, size_t nth)
 
 				default:
 				{
-					std::cout << std::format("Unknown task on {}", id);
+					std::cout << std::format("Unknown task on {}\n", id);
 				}
 			}
 		}
@@ -402,15 +402,15 @@ test::Worker(Framework& framework, size_t nth)
 test::Framework::Framework()
 noexcept
 	: myListener(), myStation()
-	, everyClients(), everySockets(maxClientsNumber)
+	, everyClients(), everySockets()
 	, clientsRecvBuffer(), clientsNumber()
 {
+	everySockets.reserve(maxClientsNumber);
 }
 
 test::Framework::~Framework()
 noexcept
-{
-}
+{}
 
 void
 test::Framework::Awake(test::ServerPreset&& setup)
@@ -423,7 +423,7 @@ test::Framework::Awake(test::ServerPreset&& setup)
 	myListener.IsAddressReusable = true;
 
 	AddSocket(&myListener, std::move(setup.serverID));
-	std::cout << std::format("The listener is ready.");
+	std::cout << "The listener is ready.\n";
 
 	size_t client_index = 0;
 	for (auto*& client : everyClients)
@@ -441,7 +441,7 @@ test::Framework::Awake(test::ServerPreset&& setup)
 
 		++client_index;
 	}
-	std::cout << std::format("Client prefabs are ready.");
+	std::cout << "Client prefabs are ready.\n";
 }
 
 void
@@ -449,7 +449,7 @@ test::Framework::Start(size_t concurrent_hint)
 {
 	if (myListener.Open().has_value())
 	{
-		std::cout << std::format("The listener is opened.");
+		std::cout << "The listener is opened.\n";
 	}
 
 	myWorkers.reserve(concurrent_hint);
@@ -471,7 +471,7 @@ test::Framework::Start(size_t concurrent_hint)
 			break;
 		}
 	}
-	std::cout << std::format("Clients are reverved to accept.");
+	std::cout << "Clients are reverved to accept.\n";
 }
 
 void
@@ -630,7 +630,7 @@ test::Framework::OnReceive(const std::uintptr_t& id, const size_t& bytes)
 	}
 	else
 	{
-		std::cout << std::format("Worker cannot schedule a broadcasting on the client {}", id);
+		std::cout << std::format("Worker cannot schedule a broadcasting on the client {}\n", id);
 	}
 
 	context.ResetOperation(test::IoOperation::Recv);
@@ -662,7 +662,7 @@ test::Framework::OnChat(test::ChatMsgContext* sender)
 		constexpr auto range = std::array{ test::IoOperation::None, test::IoOperation::Accept };
 		if (std::ranges::any_of(range, [&](const test::IoOperation& ops) noexcept {
 			return target_ctx.myOperation == ops;
-		}))
+			}))
 		{
 			continue;
 		}

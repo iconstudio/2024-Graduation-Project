@@ -1,8 +1,10 @@
 module;
 #include <WinSock2.h>
-#include <WS2tcpip.h>
+#include <ws2ipdef.h>
 
 module Iconer.Net.Socket;
+import Iconer.Net.IpAddress;
+import Iconer.Net.EndPoint;
 import <type_traits>;
 import <mutex>;
 
@@ -56,7 +58,7 @@ const noexcept
 			};
 			sockaddr.sin6_addr = ::in6addr_any;
 
-			if (0 == ::bind(myHandle, reinterpret_cast<const SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)))
+			if (0 == ::bind(myHandle, reinterpret_cast<const ::SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)))
 			{
 				return std::nullopt;
 			}

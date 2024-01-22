@@ -2,7 +2,9 @@ module;
 #include <WinSock2.h>
 #include <MSWSock.h>
 #include <WS2tcpip.h>
+
 module Iconer.Net.Socket;
+import Iconer.Net.EndPoint;
 
 ::RIO_BUF buf;
 static inline constexpr ::SOCKET InvalidSocket = INVALID_SOCKET;
@@ -14,6 +16,7 @@ constinit static inline ::RIO_EXTENSION_FUNCTION_TABLE rioFunctions{};
 
 constinit static inline ::LPFN_ACCEPTEX fnAcceptEx = nullptr;
 constinit static inline ::LPFN_TRANSMITFILE fnTransmitFile = nullptr;
+static inline constexpr unsigned long DEFAULT_ACCEPT_SIZE = sizeof(SOCKADDR_IN) + 16UL;
 
 static void CALLBACK rioRoutine(const ::DWORD err, const ::DWORD bytes, ::LPWSAOVERLAPPED ctx, const ::DWORD flags)
 {
@@ -82,34 +85,15 @@ noexcept
 	}
 }
 
-[[nodiscard]]
-constexpr size_t
-GetSizeOfFamilyBuffer(const iconer::net::IpAddressFamily& family)
-noexcept
-{
-	if (iconer::net::IpAddressFamily::IPv4 == family)
-	{
-		return 16;
-	}
-	else if (iconer::net::IpAddressFamily::IPv6 == family)
-	{
-		return 48;
-	}
-	else
-	{
-		return 0;
-	}
-}
-
-static inline constexpr unsigned long DEFAULT_ACCEPT_SIZE = sizeof(SOCKADDR_IN) + 16UL;
-
 iconer::net::Socket::Socket()
 noexcept
-	: Socket(INVALID_SOCKET, InternetProtocol::Unknown, IpAddressFamily::Unknown)
-{
-}
+	: Handler(INVALID_SOCKET)
+	, myProtocol(InternetProtocol::Unknown), myFamily(IpAddressFamily::Unknown)
+	, IsAddressReusable(this, false, SetAddressReusable)
+{}
 
-iconer::net::Socket::Socket(iconer::net::Socket::HandleType sock, iconer::net::InternetProtocol protocol, iconer::net::IpAddressFamily family) noexcept
+iconer::net::Socket::Socket(iconer::net::Socket::HandleType sock, iconer::net::InternetProtocol protocol, iconer::net::IpAddressFamily family)
+noexcept
 	: Handler(sock)
 	, myProtocol(protocol), myFamily(family)
 	, IsAddressReusable(this, false, SetAddressReusable)

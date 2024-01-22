@@ -371,8 +371,8 @@ export template<>
 struct std::formatter<iconer::net::ErrorCode, wchar_t>
 {
 	static constexpr
-		format_parse_context::iterator
-		parse(format_parse_context& context)
+		wformat_parse_context::iterator
+		parse(wformat_parse_context& context)
 	{
 		auto it = context.begin();
 		const auto end = context.end();
