@@ -15,7 +15,14 @@ export namespace iconer::net
 		{
 			ioLower = 0;
 			ioUpper = 0;
-			myOffset = {};
+			if (std::holds_alternative<void*>(myOffset))
+			{
+				myOffset = nullptr;
+			}
+			else
+			{
+				myOffset = NearFarOffsets{};
+			}
 			eventObject = nullptr;
 		}
 

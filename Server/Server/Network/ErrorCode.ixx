@@ -108,6 +108,9 @@ export namespace iconer::net
 		WSA_SECURE_HOST_NOT_FOUND = 11032,
 		WSA_IPSEC_NAME_POLICY_ERROR = 11033,
 	};
+
+	[[nodiscard]] ErrorCode AcquireNetworkError() noexcept;
+	[[nodiscard]] std::int32_t AcquireNetworkErrorByInteger() noexcept;
 }
 
 export namespace std
@@ -359,7 +362,6 @@ struct std::formatter<iconer::net::ErrorCode, char>
 
 	static format_context::iterator
 		format(iconer::net::ErrorCode code, format_context& context)
-		noexcept
 	{
 		return std::format_to(context.out(), "{}", to_string(code));
 	}
@@ -390,7 +392,6 @@ struct std::formatter<iconer::net::ErrorCode, wchar_t>
 
 	static wformat_context::iterator
 		format(iconer::net::ErrorCode code, wformat_context& context)
-		noexcept
 	{
 		return std::format_to(context.out(), L"{}", to_wstring(code));
 	}

@@ -49,6 +49,15 @@
     <Filter Include="Utility\Concurrency">
       <UniqueIdentifier>{7dabd331-f7de-406b-a3af-41cb10819e85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Collection\Implementation">
+      <UniqueIdentifier>{860f84bd-3ccd-4b15-8285-db31d8bc111e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Coroutine\Implementation">
+      <UniqueIdentifier>{b1e454c0-0829-4a7f-9769-0d93bfa6288b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\Implementation">
+      <UniqueIdentifier>{9ac781f5-eaab-401e-8059-599725bc97d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -159,20 +168,32 @@
     <ClCompile Include="Coroutine\Coroutine.ixx">
       <Filter>Coroutine</Filter>
     </ClCompile>
-    <ClCompile Include="Coroutine\Coroutine.cpp">
-      <Filter>Coroutine</Filter>
-    </ClCompile>
     <ClCompile Include="Coroutine\Task.ixx">
       <Filter>Coroutine</Filter>
     </ClCompile>
     <ClCompile Include="Network\AddressFamily.ixx">
       <Filter>Network</Filter>
     </ClCompile>
-    <ClCompile Include="Network\AddressFamily.cpp">
-      <Filter>Network</Filter>
-    </ClCompile>
     <ClCompile Include="Network\Socket\SocketOption.ixx">
       <Filter>Network\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\InternetProtocol.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Coroutine\Coroutine.cpp">
+      <Filter>Coroutine\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\AddressFamily.cpp">
+      <Filter>Network\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\ErrorCode.cpp">
+      <Filter>Network\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Network.cpp">
+      <Filter>Network\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="Network\Socket.cpp">
+      <Filter>Network\Implementation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

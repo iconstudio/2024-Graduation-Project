@@ -48,7 +48,7 @@ export namespace std
 		}
 		else
 		{
-			return std::to_string(static_cast<const T&>(property));
+			return std::to_string(static_cast<T&&>(property));
 		}
 	}
 
@@ -63,7 +63,7 @@ export namespace std
 		}
 		else
 		{
-			return std::to_wstring(static_cast<const T&>(property));
+			return std::to_wstring(property);
 		}
 	}
 
@@ -78,150 +78,59 @@ export namespace std
 		}
 		else
 		{
-			return std::to_wstring(static_cast<const T&>(property));
+			return std::to_wstring(static_cast<T&&>(property));
 		}
 	}
 }
 
 export template<typename T, typename Context, bool Custom, bool Copyable, bool Readonly, bool Nothrow>
-struct std::formatter<iconer::util::IProperty<T, Context, Custom, Copyable, Readonly, Nothrow>, char>
+struct std::formatter<iconer::util::IProperty<T, Context, Custom, Copyable, Readonly, Nothrow>>
+	: protected std::formatter<T>
 {
 	using property_t = iconer::util::IProperty<T, Context, Custom, Copyable, Readonly, Nothrow>;
 
-	static constexpr format_parse_context::iterator
-		parse(format_parse_context& context)
-		noexcept
-	{
-		auto it = context.begin();
-		const auto end = context.end();
-		if (it == end or *it != '{')
-		{
-			throw std::format_error{ "Invalid format string." };
-		}
+	using std::formatter<T, char>::parse;
 
-		++it;
-		if (it != end and *it != '}')
-		{
-			throw std::format_error{ "Missing '}' in format string." };
-		}
-
-		return it;
-	}
-
-	static format_context::iterator
-		format(const property_t& property, format_context& context)
-		noexcept
+	format_context::iterator
+		format(const property_t& property, format_context& context) const
 	{
 		static auto&& meta = typeid(T);
 
 		if constexpr (Readonly)
 		{
-			return format_to(context.out(), "ReadonlyProperty<{}>({})", meta.name(), to_string(property));
+			return format_to(context.out(), "ReadonlyProperty<{}>({})", meta.name(), static_cast<const T&>(property));
 		}
 		else
 		{
 			if constexpr (Custom)
 			{
-				return format_to(context.out(), "CustomProperty<{}>({})", meta.name(), to_string(property));
+				return format_to(context.out(), "CustomProperty<{}>({})", meta.name(), static_cast<const T&>(property));
 			}
 			else
 			{
-				return format_to(context.out(), "Property<{}>({})", meta.name(), to_string(property));
+				return format_to(context.out(), "Property<{}>({})", meta.name(), static_cast<const T&>(property));
 			}
 		}
 	}
 
-	static format_context::iterator
-		format(property_t&& property, format_context& context)
-		noexcept
+	format_context::iterator
+		format(property_t&& property, format_context& context) const
 	{
 		static auto&& meta = typeid(T);
 
 		if constexpr (Readonly)
 		{
-			return format_to(context.out(), "ReadonlyProperty<{}>({})", meta.name(), to_string(std::move(property)));
+			return format_to(context.out(), "ReadonlyProperty<{}>({})", meta.name(), static_cast<T&&>(std::move(property)));
 		}
 		else
 		{
 			if constexpr (Custom)
 			{
-				return format_to(context.out(), "CustomProperty<{}>({})", meta.name(), to_string(std::move(property)));
+				return format_to(context.out(), "CustomProperty<{}>({})", meta.name(), static_cast<T&&>(std::move(property)));
 			}
 			else
 			{
-				return format_to(context.out(), "Property<{}>({})", meta.name(), to_string(std::move(property)));
-			}
-		}
-	}
-};
-
-export template<typename T, typename Context, bool Custom, bool Copyable, bool Readonly, bool Nothrow>
-struct std::formatter<iconer::util::IProperty<T, Context, Custom, Copyable, Readonly, Nothrow>, wchar_t>
-{
-	using property_t = iconer::util::IProperty<T, Context, Custom, Copyable, Readonly, Nothrow>;
-
-	static constexpr wformat_parse_context::iterator
-		parse(wformat_parse_context& context)
-		noexcept
-	{
-		auto it = context.begin();
-		const auto end = context.end();
-		if (it == end or *it != L'{')
-		{
-			throw std::format_error{ "Invalid format string." };
-		}
-
-		++it;
-		if (it == end or *it != L'}')
-		{
-			throw std::format_error{ "Missing '}' in format string." };
-		}
-
-		return it;
-	}
-
-	static wformat_context::iterator
-		format(const property_t& property, wformat_context& context)
-		noexcept
-	{
-		static auto&& meta = typeid(T);
-
-		if constexpr (Readonly)
-		{
-			return format_to(context.out(), L"ReadonlyProperty<{}>({})", meta.name(), to_wstring(property));
-		}
-		else
-		{
-			if constexpr (Custom)
-			{
-				return format_to(context.out(), L"CustomProperty<{}>({})", meta.name(), to_wstring(property));
-			}
-			else
-			{
-				return format_to(context.out(), L"Property<{}>({})", meta.name(), to_wstring(property));
-			}
-		}
-	}
-
-	static wformat_context::iterator
-		format(property_t&& property, wformat_context& context)
-		noexcept
-	{
-		static auto&& meta = typeid(T);
-
-		if constexpr (Readonly)
-		{
-			return format_to(context.out(), L"ReadonlyProperty<{}>({})", meta.name(), to_string(std::move(property)));
-		}
-		else
-		{
-			if constexpr (Custom)
-			{
-				return format_to(context.out(), L"CustomProperty<{}>({})", meta.name(), to_string(std::move(property)));
-			}
-			else
-			{
-				return format_to(context.out(), L"Property<{}>({})", meta.name(), to_string(std::move(property)));
+				return format_to(context.out(), "Property<{}>({})", meta.name(), static_cast<T&&>(std::move(property)));
 			}
 		}
 	}
