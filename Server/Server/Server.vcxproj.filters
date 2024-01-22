@@ -198,5 +198,8 @@
     <ClCompile Include="IProperty.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Session.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
