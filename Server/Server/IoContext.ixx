@@ -1,4 +1,5 @@
 export module Iconer.Net.IoContext;
+import <new>;
 import <cstdint>;
 import <type_traits>;
 import <variant>;
