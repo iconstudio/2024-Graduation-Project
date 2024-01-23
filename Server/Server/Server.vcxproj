@@ -189,6 +189,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="AtomicSwitcher.ixx" />
+    <ClCompile Include="BehaviourTree.ixx" />
     <ClCompile Include="BorrowedPointer.ixx" />
     <ClCompile Include="ConcurrentList.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
@@ -250,6 +251,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="IProperty.ixx" />
+    <ClCompile Include="ISessionManager.ixx" />
     <ClCompile Include="Logger.ixx" />
     <ClCompile Include="LooseMonad.ixx" />
     <ClCompile Include="Monad.ixx" />
@@ -257,6 +259,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="PoolService.ixx" />
     <ClCompile Include="Private\AddressFamily.cpp">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
@@ -312,8 +315,9 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </ClCompile>
     <ClCompile Include="Property.ixx" />
+    <ClCompile Include="Room.ixx" />
     <ClCompile Include="Server.cpp" />
-    <ClCompile Include="Session.ixx" />
+    <ClCompile Include="ISession.ixx" />
     <ClCompile Include="Singleton.ixx" />
     <ClCompile Include="SkipList.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
@@ -334,6 +338,7 @@
     </ClCompile>
     <ClCompile Include="TypeList.ixx" />
     <ClCompile Include="TypeTraits.ixx" />
+    <ClCompile Include="User.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colourful-Console\ColourfulConsole\ColourfulConsole.vcxproj">
