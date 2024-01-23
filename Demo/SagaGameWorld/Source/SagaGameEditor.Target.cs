@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class SagaGameEditorTarget : TargetRules
 {
-	public SagaGameEditorTarget(TargetInfo Target) : base(Target)
+	public SagaGameEditorTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V4;

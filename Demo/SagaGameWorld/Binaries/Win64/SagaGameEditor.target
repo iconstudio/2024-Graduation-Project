@@ -3050,18 +3050,6 @@
 			"Type": "RequiredResource"
 		},
 		{
-			"Path": "$(EngineDir)/Plugins/Runtime/ApexDestruction/Binaries/Win64/UnrealEditor-ApexDestruction.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Runtime/ApexDestruction/Binaries/Win64/UnrealEditor-ApexDestructionEditor.dll",
-			"Type": "DynamicLibrary"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Runtime/ApexDestruction/Binaries/Win64/UnrealEditor.modules",
-			"Type": "RequiredResource"
-		},
-		{
 			"Path": "$(EngineDir)/Plugins/Runtime/AppleImageUtils/Binaries/Win64/UnrealEditor-AppleImageUtils.dll",
 			"Type": "DynamicLibrary"
 		},
@@ -24625,10 +24613,6 @@
 		},
 		{
 			"Path": "$(EngineDir)/Plugins/Runtime/AndroidPermission/AndroidPermission.uplugin",
-			"Type": "UFS"
-		},
-		{
-			"Path": "$(EngineDir)/Plugins/Runtime/ApexDestruction/ApexDestruction.uplugin",
 			"Type": "UFS"
 		},
 		{

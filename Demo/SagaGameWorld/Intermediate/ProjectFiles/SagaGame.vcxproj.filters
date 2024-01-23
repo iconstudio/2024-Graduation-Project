@@ -11,16 +11,11 @@
     <None Include="..\..\Source\SagaGameEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
-    <None Include="..\..\.gitattributes" />
-    <None Include="..\..\.gitignore" />
     <None Include="..\..\.vsconfig" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
-      <Filter>Config</Filter>
-    </None>
-    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
       <Filter>Config</Filter>
     </None>
     <None Include="..\..\Config\DefaultEngine.ini">
@@ -35,12 +30,6 @@
     <Filter Include="Source\SagaGame">
       <UniqueIdentifier>{2EEABB16-FE22-372C-B2A5-8477CE2D78FA}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\SagaGame\SagaCharacterBase.cpp">
-      <Filter>Source\SagaGame</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\SagaGame\SagaCharacterBase.h">
-      <Filter>Source\SagaGame</Filter>
-    </ClInclude>
     <None Include="..\..\Source\SagaGame\SagaGame.Build.cs">
       <Filter>Source\SagaGame</Filter>
     </None>
@@ -50,25 +39,34 @@
     <ClInclude Include="..\..\Source\SagaGame\SagaGame.h">
       <Filter>Source\SagaGame</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\Source\SagaGame\SagaGameCharacter.cpp">
-      <Filter>Source\SagaGame</Filter>
+    <Filter Include="Source\SagaGame\Character">
+      <UniqueIdentifier>{24A311FB-D719-3F8B-B7E0-4EE4F7CFB9D8}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\SagaGame\Character\SagaCharacterBase.cpp">
+      <Filter>Source\SagaGame\Character</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\Source\SagaGame\SagaGameCharacter.h">
-      <Filter>Source\SagaGame</Filter>
+    <ClInclude Include="..\..\Source\SagaGame\Character\SagaCharacterBase.h">
+      <Filter>Source\SagaGame\Character</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SagaGame\Character\SagaCharacterControlData.cpp">
+      <Filter>Source\SagaGame\Character</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Character\SagaCharacterControlData.h">
+      <Filter>Source\SagaGame\Character</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SagaGame\Character\SagaCharacterPlayer.cpp">
+      <Filter>Source\SagaGame\Character</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Character\SagaCharacterPlayer.h">
+      <Filter>Source\SagaGame\Character</Filter>
     </ClInclude>
     <Filter Include="Source\SagaGame\Game">
       <UniqueIdentifier>{8179AC6B-6D09-3695-B388-A6ECE278D714}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\SagaGame\Game\SagaGameGameMode.cpp">
+    <ClCompile Include="..\..\Source\SagaGame\Game\SagaGameModeBase.cpp">
       <Filter>Source\SagaGame\Game</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\Source\SagaGame\Game\SagaGameGameMode.h">
-      <Filter>Source\SagaGame\Game</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\SagaGame\Game\SagaGameState.cpp">
-      <Filter>Source\SagaGame\Game</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\SagaGame\Game\SagaGameState.h">
+    <ClInclude Include="..\..\Source\SagaGame\Game\SagaGameModeBase.h">
       <Filter>Source\SagaGame\Game</Filter>
     </ClInclude>
     <Filter Include="Source\SagaGame\Network">

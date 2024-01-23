@@ -3,19 +3,6 @@
 
 #include "Network/NetworkManager.h"
 
-//USTRUCT(BluprintType)
-//struct FInitData
-//{
-//public:
-//	GENERATED_USTRUCT_BODY()
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-//	int16 id;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-//	FVector initpos;
-//};
-
 // Sets default values
 ANetworkManager::ANetworkManager()
 {

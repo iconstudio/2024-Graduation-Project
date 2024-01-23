@@ -14,7 +14,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define SAGAGAME_NetworkStructs_generated_h
 
-#define FID_SagaGame_Source_SagaGame_Network_NetworkStructs_h_21_GENERATED_BODY \
+#define FID_SagaGame_Source_SagaGame_Network_NetworkStructs_h_20_GENERATED_BODY \
 	friend struct Z_Construct_UScriptStruct_FClientNetworkStruct_Statics; \
 	SAGAGAME_API static class UScriptStruct* StaticStruct();
 
