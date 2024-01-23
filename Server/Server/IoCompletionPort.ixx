@@ -35,8 +35,8 @@ export namespace iconer::net
 		[[nodiscard]] static FactoryResult Create() noexcept;
 		[[nodiscard]] static FactoryResult Create(std::uint32_t concurrency_hint) noexcept;
 
-		constexpr IoCompletionPort(IoCompletionPort&&) noexcept = default;
-		constexpr IoCompletionPort& operator=(IoCompletionPort&&) noexcept = default;
+		IoCompletionPort(IoCompletionPort&&) = default;
+		IoCompletionPort& operator=(IoCompletionPort&&) = default;
 
 	private:
 		IoCompletionPort(void* handle) noexcept;

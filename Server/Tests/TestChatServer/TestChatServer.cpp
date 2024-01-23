@@ -422,6 +422,8 @@ test::Framework::Awake(test::ServerPreset&& setup)
 	myListener.Bind(std::move(setup.serverAddress));
 	myListener.IsAddressReusable = true;
 
+	myStation = iconer::net::IoCompletionPort::Create(6).value();
+
 	AddSocket(&myListener, std::move(setup.serverID));
 	std::cout << "The listener is ready.\n";
 
@@ -532,7 +534,7 @@ test::Framework::AllocateSocket(const std::uint64_t id, iconer::net::IoCategory 
 	auto sk_result = iconer::net::Socket::Create(type, protocol, family);
 	if (sk_result.IsAvailable())
 	{
-		auto sk = new iconer::net::Socket{ std::exchange(sk_result, iconer::net::Socket{}) };
+		auto sk = new iconer::net::Socket{ std::move(sk_result) };
 
 		if (myStation.Register(*sk, id))
 		{

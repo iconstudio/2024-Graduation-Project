@@ -198,8 +198,23 @@
     <ClCompile Include="IProperty.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Session.ixx">
+    <ClCompile Include="ISession.ixx">
       <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="User.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="PoolService.ixx">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="ISessionManager.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviourTree.ixx">
+      <Filter>Utility</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
