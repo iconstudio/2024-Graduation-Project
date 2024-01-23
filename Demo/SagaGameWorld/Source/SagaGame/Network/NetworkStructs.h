@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "NetworkStructs.generated.h"
-
 /**
  * 
  */

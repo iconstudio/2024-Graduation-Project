@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Network/NetworkStructs.h"
 #include "NetworkManager.generated.h"
 
 UCLASS()
@@ -29,9 +28,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-
-	UPROPERTY(EditAnywhere)
-	FClientNetworkStruct cs;
 
 };
