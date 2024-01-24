@@ -112,10 +112,7 @@ int main()
 
 	for (auto& [id, user] : ::userManager)
 	{
-		auto& ctx = user.myContext;
-		//ctx.ResetOperation(test::IoOperation::Accept);
-
-		auto acceptance = serverListener.ReserveAccept(ctx, user.mySocket);
+		auto acceptance = user.ReserveAccept(serverListener);
 		if (acceptance)
 		{
 			throw std::exception{ "Error when reserving acceptance of a socket." };
