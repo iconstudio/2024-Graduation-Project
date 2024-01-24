@@ -1,10 +1,10 @@
 module;
 #include <cstdio>
 #include <cstdlib>
-
 module Demo.Framework;
 
-void Worker(Framework& framework, size_t nth)
+void
+Worker(Framework& framework, size_t nth)
 {
 	auto& logger = framework.myLogger;
 
@@ -52,28 +52,4 @@ void Framework::Start()
 			throw std::exception{ "Error when reserving acceptance of a socket." };
 		}
 	}
-}
-
-void Framework::Update()
-{
-	char command[256]{};
-	constexpr unsigned cmd_size = sizeof(command);
-
-	while (true)
-	{
-		auto input = ::scanf_s("%s", command, cmd_size);
-		if (EOF != input)
-		{
-			if (command[0] == 'q')
-			{
-				CancelWorkers();
-
-				break;
-			}
-		}
-	}
-}
-
-void Framework::Destroy()
-{
 }

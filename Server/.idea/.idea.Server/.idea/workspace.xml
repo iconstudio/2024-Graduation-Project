@@ -10,15 +10,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="137edaab-b0ff-4f06-82c7-6c6e1815692b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Demo/Demo.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Demo.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Demo/Demo.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Demo.vcxproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Demo/Demo.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Demo.vcxproj.filters" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Demo/Framework.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Framework.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/Framework.hpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server.natvis" beforeDir="false" afterPath="$PROJECT_DIR$/Server.natvis" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/ISessionManager.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ISessionManager.ixx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/IoCompletionPort.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/IoCompletionPort.ixx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/IoEvent.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/IoEvent.ixx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Demo/Framework.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Framework.ixx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Demo/Worker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Worker.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server.vcxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Server.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server.vcxproj.filters" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,7 +213,7 @@
       <option name="presentableId" value="Default" />
       <updated>1705921481290</updated>
       <workItem from="1705921484383" duration="781000" />
-      <workItem from="1706094163758" duration="2103000" />
+      <workItem from="1706094163758" duration="4644000" />
     </task>
     <servers />
   </component>

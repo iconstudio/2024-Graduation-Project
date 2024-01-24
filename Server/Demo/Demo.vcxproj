@@ -150,6 +150,7 @@
     <ClCompile Include="Demo.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="Framework.ixx" />
+    <ClCompile Include="PacketProcessor.cpp" />
     <ClCompile Include="Worker.cpp" />
   </ItemGroup>
   <ItemGroup>
