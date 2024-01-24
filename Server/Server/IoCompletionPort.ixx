@@ -1,21 +1,14 @@
 export module Iconer.Net.IoCompletionPort;
 import Iconer.Utility.Handler;
 import Iconer.Net.ErrorCode;
-export import Iconer.Net.IoContext;
+export import Iconer.Net.IoContext; 
+export import Iconer.Net.IoEvent;
 export import Iconer.Net.Socket;
 import <cstdint>;
 import <expected>;
 
 export namespace iconer::net
 {
-	struct IoEvent
-	{
-		bool isSucceed;
-		std::uint64_t eventId;
-		unsigned long ioBytes;
-		IoContext* ioContext;
-	};
-
 	class IoCompletionPort final : public iconer::util::Handler<void*>
 	{
 	public:

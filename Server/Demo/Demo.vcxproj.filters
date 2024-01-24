@@ -21,10 +21,11 @@
     <ClCompile Include="Framework.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Framework.hpp">
+    <ClCompile Include="Framework.ixx">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="Worker.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
