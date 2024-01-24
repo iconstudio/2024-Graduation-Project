@@ -1,15 +1,15 @@
 module;
-#include <shared_mutex>
+#include <exception>
+#include <atomic>
+#include <utility>
+#include <vector>
 #include <algorithm>
 #include <ranges>
+#include <shared_mutex>
 
 export module Iconer.Application.ISessionManager;
 import Iconer.Utility.Constraints;
 import Iconer.Application.ISession;
-import <exception>;
-import <atomic>;
-import <utility>;
-import <vector>;
 
 export namespace iconer::app
 {
@@ -39,6 +39,16 @@ export namespace iconer::app
 			constexpr bool operator()(const value_type& lhs, const value_type& rhs) const noexcept
 			{
 				return std::get<0>(lhs) < std::get<0>(rhs);
+			}
+			[[nodiscard]]
+			constexpr bool operator()(const key_type& id, const value_type& rhs) const noexcept
+			{
+				return id < std::get<0>(rhs);
+			}
+			[[nodiscard]]
+			constexpr bool operator()(const value_type& lhs, const key_type& id) const noexcept
+			{
+				return std::get<0>(lhs) < id;
 			}
 		};
 		struct KeyExtractor
@@ -133,8 +143,11 @@ export namespace iconer::app
 				throw SessionLimitExceedError{};
 			}
 
-			myData.push_back(std::make_pair(object.GetHandle(), object));
-			MakeHoldUniques();
+			if (not UncheckedContains(object.GetHandle()))
+			{
+				myData.push_back(std::make_pair(object.GetHandle(), object));
+				MakeHoldUniques();
+			}
 		}
 
 		constexpr void Add(mapped_type&& object) requires movable<data_t>
@@ -145,13 +158,15 @@ export namespace iconer::app
 				throw SessionLimitExceedError{};
 			}
 
-			myData.push_back(std::make_pair(std::move(object).GetHandle(), std::move(object)));
-			MakeHoldUniques();
+			if (not UncheckedContains(object.GetHandle()))
+			{
+				myData.push_back(std::make_pair(std::move(object).GetHandle(), std::move(object)));
+				MakeHoldUniques();
+			}
 		}
 
 		template<typename... Args>
-		constexpr mapped_type& Emplace(Args&&... args)
-			noexcept(noexcept(std::declval<data_t>().emplace(std::forward<Args>(args)...)))
+		constexpr iterator Emplace(const key_type& id, Args&&... args)
 		{
 			std::unique_lock lock{ myLock };
 			if (isLimited and sessionLimit <= myData.size())
@@ -159,10 +174,14 @@ export namespace iconer::app
 				throw SessionLimitExceedError{};
 			}
 
-			auto& result = myData.emplace(std::forward<Args>(args)...);
+			static SessionFactory<mapped_type> factory{};
+
+			iterator bound = std::lower_bound(myData.begin(), myData.end(), id, KeyComparator{});
+			auto result = myData.insert(bound, factory.Create(std::forward<Args>(args)...));
 			MakeHoldUniques();
 
 			return result;
+
 		}
 
 		template<invocable_results<bool, const mapped_type&> Fn>
@@ -345,20 +364,7 @@ export namespace iconer::app
 
 	protected:
 		constexpr void MakeHoldUniques()
-			noexcept
-			(
-			nothrow_move_constructibles<value_type> and
-			noexcept(std::sort(std::declval<iterator>(), std::declval<iterator>(), KeyComparator{})) and
-			noexcept(std::declval<data_t>().erase(std::declval<iterator>(), std::declval<iterator>()))
-			)
 		{
-			auto it = std::unique(myData.begin(), myData.end()
-				, [](const value_type& lhs, const value_type& rhs) noexcept {
-				return std::get<0>(lhs) == std::get<0>(rhs);
-			});
-
-			myData.erase(it, myData.end());
-
 			std::sort(myData.begin(), myData.end(), KeyComparator{});
 		}
 
@@ -398,7 +404,7 @@ export namespace iconer::app
 		[[nodiscard]]
 		constexpr bool UncheckedContains(Uid&& id) const noexcept
 		{
-			return std::ranges::binary_search(myData.cbegin(), myData.cend(), std::forward<Uid>(id), KeyExtractor{});
+			return std::binary_search(myData.cbegin(), myData.cend(), std::forward<Uid>(id), KeyComparator{});
 		}
 
 		data_t myData;

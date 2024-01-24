@@ -207,9 +207,6 @@
     <ClCompile Include="Room.ixx">
       <Filter>Application</Filter>
     </ClCompile>
-    <ClCompile Include="PoolService.ixx">
-      <Filter>Network</Filter>
-    </ClCompile>
     <ClCompile Include="ISessionManager.ixx">
       <Filter>Application</Filter>
     </ClCompile>
@@ -217,6 +214,9 @@
       <Filter>Utility</Filter>
     </ClCompile>
     <ClCompile Include="UserManager.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="IContext.ixx">
       <Filter>Application</Filter>
     </ClCompile>
   </ItemGroup>
