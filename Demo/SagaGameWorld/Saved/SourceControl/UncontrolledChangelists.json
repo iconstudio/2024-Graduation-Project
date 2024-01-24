@@ -7,16 +7,22 @@
 			"files": [
 				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Blueprints/BP_ThirdPersonCharacter.uasset",
 				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/Map/SagaMap.umap",
-				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/Actions/IA_Move.uasset",
 				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/CharacterControl/SagaControl_Shoulder.uasset",
 				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/CharacterControl/SagaControl_Quater.uasset",
 				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/Actions/IA_ChangeControl.uasset",
-				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/IMC_Default.uasset",
 				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/Actions/IA_Shoulder_Move.uasset",
 				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/Actions/IA_Soulder_Look.uasset",
-				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/Actions/IA_Look.uasset",
 				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/IMC_Shoulder.uasset",
-				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/IMC_Quater.uasset"
+				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/IMC_Quater.uasset",
+				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/Animation/Saga_BPCharacter.uasset",
+				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/Animation/BS-IdleWalk_Run.uasset",
+				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/Animation/ABP_ABCharacter.uasset",
+				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/Animation/SAGABP_Character.uasset",
+				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/Animation/BS_IdleWalkRun.uasset",
+				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/BP/BP_SagaCharacterPlayer.uasset",
+				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/Actions/IA_Move.uasset",
+				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/IMC_Default.uasset",
+				"C:/Users/tyler/Desktop/SagaReal/SagaGame/Content/ThirdPerson/Input/Actions/IA_Look.uasset"
 			]
 		}
 	]

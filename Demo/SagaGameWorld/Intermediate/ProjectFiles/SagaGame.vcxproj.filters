@@ -11,6 +11,8 @@
     <None Include="..\..\Source\SagaGameEditor.Target.cs">
       <Filter>Source</Filter>
     </None>
+    <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.gitignore" />
     <None Include="..\..\.vsconfig" />
     <Filter Include="Config">
       <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
@@ -38,6 +40,15 @@
     </ClCompile>
     <ClInclude Include="..\..\Source\SagaGame\SagaGame.h">
       <Filter>Source\SagaGame</Filter>
+    </ClInclude>
+    <Filter Include="Source\SagaGame\Animation">
+      <UniqueIdentifier>{7B6AD00F-574C-3FCC-B88C-DFF66AF334EF}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\SagaGame\Animation\SagaAnimInstance.cpp">
+      <Filter>Source\SagaGame\Animation</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Animation\SagaAnimInstance.h">
+      <Filter>Source\SagaGame\Animation</Filter>
     </ClInclude>
     <Filter Include="Source\SagaGame\Character">
       <UniqueIdentifier>{24A311FB-D719-3F8B-B7E0-4EE4F7CFB9D8}</UniqueIdentifier>
