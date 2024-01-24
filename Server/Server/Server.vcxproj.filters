@@ -219,6 +219,15 @@
     <ClCompile Include="IContext.ixx">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="Packet.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="BasicPacket.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">

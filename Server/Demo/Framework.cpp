@@ -6,14 +6,12 @@ module;
 module Demo.Framework;
 import Iconer.Net;
 import Iconer.Net.ErrorCode;
+import Iconer.Application.User;
 
 using namespace iconer;
 
 constexpr std::uint16_t serverPort{ 40000 };
 constexpr app::User::HandleType serverID = 0;
-constexpr size_t workersCount = 6;
-constexpr size_t userNumber = 3000;
-constexpr app::User::HandleType beginUserID = 1;
 
 void Framework::Awake()
 {
@@ -41,7 +39,7 @@ void Framework::Awake()
 		throw msg;
 	});
 
-	auto result = net::IoCompletionPort::Create(uint32_t(::workersCount)).and_then(
+	auto result = net::IoCompletionPort::Create(uint32_t(workersCount)).and_then(
 		[&](net::IoCompletionPort&& port) noexcept -> std::expected<bool, net::ErrorCode> {
 		ioCompletionPort = std::move(port);
 		return true;
@@ -62,15 +60,15 @@ void Framework::Awake()
 
 	myLogger.Log(L"\tallocating memory of buffers...\n");
 
-	userManager.Reserve(::userNumber);
-	serverWorkers.reserve(::workersCount);
+	userManager.Reserve(userNumber);
+	serverWorkers.reserve(workersCount);
 
 	auto user_factory = app::SessionFactory<app::User>{};
 
-	myLogger.Log(L"\tcreating {} users...\n", ::userNumber);
+	myLogger.Log(L"\tcreating {} users...\n", userNumber);
 
-	app::User::HandleType id = ::beginUserID;
-	for (size_t i = 0; i < ::userNumber; ++i)
+	app::User::HandleType id = beginUserID;
+	for (size_t i = 0; i < userNumber; ++i)
 	{
 		net::Socket socket;
 		if (not net::Socket::TryCreate(net::IoCategory::Asynchronous, net::InternetProtocol::TCP, net::IpAddressFamily::IPv4, socket))
@@ -90,9 +88,9 @@ void Framework::Awake()
 		}
 	}
 
-	myLogger.Log(L"\tgenerating {} workers...\n", ::workersCount);
+	myLogger.Log(L"\tgenerating {} workers...\n", workersCount);
 
-	for (size_t i = 0; i < ::workersCount; ++i)
+	for (size_t i = 0; i < workersCount; ++i)
 	{
 		serverWorkers.emplace_back(::Worker, std::ref(*this), i);
 	}
@@ -108,6 +106,30 @@ void Framework::Awake()
 	}
 
 	::Sleep(10);
+}
+
+void Framework::Update()
+{
+	char command[256]{};
+	constexpr unsigned cmd_size = sizeof(command);
+
+	while (true)
+	{
+		auto input = ::scanf_s("%s", command, cmd_size);
+		if (EOF != input)
+		{
+			if (command[0] == 'q')
+			{
+				CancelWorkers();
+
+				break;
+			}
+		}
+	}
+}
+
+void Framework::Destroy()
+{
 }
 
 void Framework::Cleanup()

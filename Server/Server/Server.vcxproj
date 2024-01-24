@@ -187,6 +187,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="AtomicSwitcher.ixx" />
+    <ClCompile Include="BasicPacket.ixx" />
     <ClCompile Include="BehaviourTree.ixx" />
     <ClCompile Include="BorrowedPointer.ixx" />
     <ClCompile Include="ConcurrentList.ixx">
@@ -258,6 +259,8 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="Packet.ixx" />
+    <ClCompile Include="Protocol.ixx" />
     <ClCompile Include="Private\AddressFamily.cpp">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
