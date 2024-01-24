@@ -1,9 +1,11 @@
+module;
+#include <string>
+#include <string_view>
+#include <format>
+#include <filesystem>
+
 export module Iconer.Utility.Logger;
 import Iconer.Utility.File;
-import <string>;
-import <string_view>;
-import <format>;
-import <filesystem>;
 
 export namespace iconer::util
 {

@@ -429,21 +429,4 @@ export namespace std
 	{
 		return mgr.IsEmpty();
 	}
-
-	namespace ranges
-	{
-		template<typename S>
-		[[nodiscard]]
-		auto size(const iconer::app::ISessionManager<S>& mgr) noexcept
-		{
-			return mgr.GetSize();
-		}
-
-		template<typename S>
-		[[nodiscard]]
-		bool empty(const iconer::app::ISessionManager<S>& mgr) noexcept
-		{
-			return mgr.IsEmpty();
-		}
-	}
 }

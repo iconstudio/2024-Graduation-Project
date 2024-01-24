@@ -91,6 +91,15 @@
 		</Expand>
 	</Type>
 
+	<Type Name="iconer::net::IoCompletionPort">
+		<DisplayString Condition="myHandle == nullptr">빈 IO 완료 포트</DisplayString>
+		<DisplayString Condition="myHandle != nullptr">IO 완료 포트 ({myHandle})</DisplayString>
+		
+		<Expand HideRawView="true">
+			<Item Name="[핸들]">myHandle</Item>
+		</Expand>
+	</Type>
+
 	<Type Name="iconer::util::Singleton&lt;*&gt;">
 		<DisplayString>{&quot;$T1&quot;} 싱글톤 객체</DisplayString>
 	</Type>
