@@ -126,6 +126,8 @@ export namespace iconer::app
 		template<typename... Args>
 		static constexpr S* ConstructAt(S* handle, Args&&... args)
 		{
+			static_assert(constructible_from<S, Args&&...>);
+
 			return std::construct_at(handle, std::forward<Args>(args)...);
 		}
 

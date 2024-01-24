@@ -225,4 +225,7 @@
       <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\Server.natvis" />
+  </ItemGroup>
 </Project>
