@@ -16,13 +16,13 @@ void ASagaPlayerController::BeginPlay()
 
 void ASagaPlayerController::SendKeyToServer(FKey Key)
 {
-    FString KeyString = Key.ToString();
-    TCHAR* SerializedChar = KeyString.GetCharArray().GetData();
-    int32 Size = FCString::Strlen(SerializedChar) + 1;
-    int32 Sent = 0;
+    //FString KeyString = Key.ToString();
+    //TCHAR* SerializedChar = KeyString.GetCharArray().GetData();
+    //int32 Size = FCString::Strlen(SerializedChar) + 1;
+    //int32 Sent = 0;
 
-    // 데이터 전송
-    bool Successful = SagaClientSocket->Send((uint8*)TCHAR_TO_UTF8(SerializedChar), Size, Sent);
+    //// 데이터 전송
+    //bool Successful = SagaClientSocket->Send((uint8*)TCHAR_TO_UTF8(SerializedChar), Size, Sent);
 }
 
 void ASagaPlayerController::SetupInputComponent()
@@ -30,13 +30,13 @@ void ASagaPlayerController::SetupInputComponent()
     Super::SetupInputComponent();
 
     // Jump 액션에 대한 입력 바인딩
-    InputComponent->BindAction("Jump", IE_Pressed, this, &ASagaPlayerController::Jump);
+    //InputComponent->BindAction("Jump", IE_Pressed, this, &ASagaPlayerController::Jump);
 }
 
 void ASagaPlayerController::Jump()
 {
     // 서버로 키 입력 전송
-    SendKeyToServer(EKeys::SpaceBar);
+    //SendKeyToServer(EKeys::SpaceBar);
 }
 
 FSocket* ASagaPlayerController::CreateSocket()
