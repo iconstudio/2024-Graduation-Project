@@ -13,7 +13,7 @@ export namespace iconer::net
 		~IpAddress() = default;
 
 		explicit constexpr IpAddress(IpAddressFamily family, std::string_view address)
-			: addressFamily(), addressString(address)
+			: addressFamily(family), addressString(address)
 		{}
 
 		[[nodiscard]]

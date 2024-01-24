@@ -1,16 +1,27 @@
 module;
 #include <shared_mutex>
+#include <algorithm>
+#include <ranges>
 
 export module Iconer.Application.ISessionManager;
 import Iconer.Utility.Constraints;
 import Iconer.Application.ISession;
+import <exception>;
+import <atomic>;
 import <utility>;
 import <vector>;
-import <algorithm>;
-import <ranges>;
 
 export namespace iconer::app
 {
+	class SessionLimitExceedError : public std::exception
+	{
+	public:
+		explicit SessionLimitExceedError() noexcept
+			: exception("Number of session is on limited.")
+		{
+		}
+	};
+
 	template<typename T>
 	class ISessionManager
 	{
@@ -22,14 +33,16 @@ export namespace iconer::app
 		using value_type = typename data_t::value_type;
 
 	private:
-		struct KeyExtractor
+		struct KeyComparator
 		{
 			[[nodiscard]]
-			constexpr key_type& operator()(value_type& pair) const noexcept
+			constexpr bool operator()(const value_type& lhs, const value_type& rhs) const noexcept
 			{
-				return std::get<0>(pair);
+				return std::get<0>(lhs) < std::get<0>(rhs);
 			}
-
+		};
+		struct KeyExtractor
+		{
 			[[nodiscard]]
 			constexpr const key_type& operator()(const value_type& pair) const noexcept
 			{
@@ -37,7 +50,7 @@ export namespace iconer::app
 			}
 
 			[[nodiscard]]
-			constexpr key_type&& operator()(value_type&& pair) const noexcept
+			constexpr const key_type&& operator()(value_type&& pair) const noexcept
 			{
 				return std::get<0>(pair);
 			}
@@ -84,6 +97,7 @@ export namespace iconer::app
 		constexpr ISessionManager(size_type size)
 			noexcept(NothrowInitializable and NothrowLockInitializable and noexcept(Reserve(size_type{})))
 			: myData(), myLock()
+			, sessionLimit(size), isLimited(false)
 		{
 			Reserve(size);
 		}
@@ -95,16 +109,44 @@ export namespace iconer::app
 			myData.reserve(size);
 		}
 
+		constexpr void SetLimit(bool flag) noexcept
+		{
+			isLimited = flag;
+		}
+
+		void SetLimitation(size_type size, bool flag) noexcept
+		{
+			sessionLimit = size;
+			isLimited = flag;
+		}
+
+		void SetLimitation(size_type size) noexcept
+		{
+			sessionLimit = size;
+		}
+
 		constexpr void Add(const mapped_type& object) requires copyable<data_t>
 		{
 			std::unique_lock lock{ myLock };
+			if (isLimited and sessionLimit <= myData.size())
+			{
+				throw SessionLimitExceedError{};
+			}
+
 			myData.push_back(std::make_pair(object.GetHandle(), object));
+			MakeHoldUniques();
 		}
 
 		constexpr void Add(mapped_type&& object) requires movable<data_t>
 		{
 			std::unique_lock lock{ myLock };
+			if (isLimited and sessionLimit <= myData.size())
+			{
+				throw SessionLimitExceedError{};
+			}
+
 			myData.push_back(std::make_pair(std::move(object).GetHandle(), std::move(object)));
+			MakeHoldUniques();
 		}
 
 		template<typename... Args>
@@ -112,7 +154,13 @@ export namespace iconer::app
 			noexcept(noexcept(std::declval<data_t>().emplace(std::forward<Args>(args)...)))
 		{
 			std::unique_lock lock{ myLock };
+			if (isLimited and sessionLimit <= myData.size())
+			{
+				throw SessionLimitExceedError{};
+			}
+
 			auto& result = myData.emplace(std::forward<Args>(args)...);
+			MakeHoldUniques();
 
 			return result;
 		}
@@ -177,11 +225,148 @@ export namespace iconer::app
 			return UncheckedFind(std::forward<Uid>(id));
 		}
 
+		[[nodiscard]]
+		iterator begin() noexcept
+		{
+			std::shared_lock lock{ myLock };
+			return myData.begin();
+		}
+
+		[[nodiscard]]
+		iterator end() noexcept
+		{
+			std::shared_lock lock{ myLock };
+			return myData.end();
+		}
+
+		[[nodiscard]]
+		const_iterator begin() const noexcept
+		{
+			std::shared_lock lock{ myLock };
+			return myData.begin();
+		}
+
+		[[nodiscard]]
+		const_iterator end() const noexcept
+		{
+			std::shared_lock lock{ myLock };
+			return myData.end();
+		}
+
+		[[nodiscard]]
+		const_iterator cbegin() const noexcept
+		{
+			std::shared_lock lock{ myLock };
+			return myData.begin();
+		}
+
+		[[nodiscard]]
+		const_iterator cend() const noexcept
+		{
+			std::shared_lock lock{ myLock };
+			return myData.end();
+		}
+
+		[[nodiscard]]
+		mapped_type* operator[](const key_type& id) noexcept
+		{
+			std::shared_lock lock{ myLock };
+			if (iterator it = Find(id); it != myData.end())
+			{
+				return std::addressof(it->second);
+			}
+			else
+			{
+				return nullptr;
+			}
+		}
+
+		[[nodiscard]]
+		const mapped_type* operator[](const key_type& id) const noexcept
+		{
+			std::shared_lock lock{ myLock };
+			if (const_iterator it = Find(id); it != myData.end())
+			{
+				return std::addressof(it->second);
+			}
+			else
+			{
+				return nullptr;
+			}
+		}
+
+		[[nodiscard]]
+		size_type GetSize() const noexcept
+		{
+			std::shared_lock lock{ myLock, std::try_to_lock_t{} };
+			return myData.size();
+		}
+
+		[[nodiscard]]
+		size_t GetCapacity() const noexcept
+		{
+			std::shared_lock lock{ myLock, std::try_to_lock_t{} };
+			return myData.capacity();
+		}
+
+		[[nodiscard]]
+		size_type GetLimit() const noexcept
+		{
+			return sessionLimit.load(std::memory_order_relaxed);
+		}
+
+		template<typename Uid>
+		[[nodiscard]]
+		bool Contains(Uid id) const noexcept
+		{
+			std::unique_lock lock{ myLock };
+			return UncheckedContains(std::forward<Uid>(id));
+		}
+
+		[[nodiscard]]
+		bool ReachedLimit() const noexcept
+		{
+			std::unique_lock lock{ myLock, std::try_to_lock_t{} };
+			return isLimited and sessionLimit == myData.size();
+		}
+
+		[[nodiscard]]
+		bool IsEmpty() const noexcept
+		{
+			std::shared_lock lock{ myLock };
+			return myData.empty();
+		}
+
+		[[nodiscard]]
+		constexpr bool IsLimited() const noexcept
+		{
+			return isLimited;
+		}
+
+	protected:
+		constexpr void MakeHoldUniques()
+			noexcept
+			(
+			nothrow_move_constructibles<value_type> and
+			noexcept(std::sort(std::declval<iterator>(), std::declval<iterator>(), KeyComparator{})) and
+			noexcept(std::declval<data_t>().erase(std::declval<iterator>(), std::declval<iterator>()))
+			)
+		{
+			auto it = std::unique(myData.begin(), myData.end()
+				, [](const value_type& lhs, const value_type& rhs) noexcept {
+				return std::get<0>(lhs) == std::get<0>(rhs);
+			});
+
+			myData.erase(it, myData.end());
+
+			std::sort(myData.begin(), myData.end(), KeyComparator{});
+		}
+
 		template<typename Fn>
 		[[nodiscard]]
 		constexpr iterator UncheckedSearch(Fn&& fn) noexcept
 		{
-			static_assert(invocable_results<Fn, const mapped_type&, bool>);
+			static_assert(invocable_results<Fn, bool, const mapped_type&>);
 
 			return std::ranges::find_if(myData.begin(), myData.end(), std::forward<Fn>(fn), ValueExtractor{});
 		}
@@ -190,7 +375,7 @@ export namespace iconer::app
 		[[nodiscard]]
 		constexpr const_iterator UncheckedSearch(Fn&& fn) const noexcept
 		{
-			static_assert(invocable_results<Fn, const mapped_type&, bool>);
+			static_assert(invocable_results<Fn, bool, const mapped_type&>);
 
 			return std::ranges::find_if(myData.cbegin(), myData.cend(), std::forward<Fn>(fn), ValueExtractor{});
 		}
@@ -209,73 +394,17 @@ export namespace iconer::app
 			return std::ranges::find(myData.cbegin(), myData.cend(), std::forward<Uid>(id), KeyExtractor{});
 		}
 
+		template<typename Uid>
 		[[nodiscard]]
-		iterator begin() noexcept
+		constexpr bool UncheckedContains(Uid&& id) const noexcept
 		{
-			return myData.begin();
+			return std::ranges::binary_search(myData.cbegin(), myData.cend(), std::forward<Uid>(id), KeyExtractor{});
 		}
 
-		[[nodiscard]]
-		iterator end() noexcept
-		{
-			return myData.end();
-		}
-
-		[[nodiscard]]
-		const_iterator begin() const noexcept
-		{
-			return myData.begin();
-		}
-
-		[[nodiscard]]
-		const_iterator end() const noexcept
-		{
-			return myData.end();
-		}
-
-		[[nodiscard]]
-		const_iterator cbegin() const noexcept
-		{
-			return myData.begin();
-		}
-
-		[[nodiscard]]
-		const_iterator cend() const noexcept
-		{
-			return myData.end();
-		}
-
-		[[nodiscard]]
-		mapped_type* operator[](const size_t index) noexcept
-		{
-			std::shared_lock lock{ myLock, std::try_to_lock_t{} };
-			
-		}
-
-		[[nodiscard]]
-		size_type GetSize() const noexcept
-		{
-			std::shared_lock lock{ myLock, std::try_to_lock_t{} };
-			return myData.size();
-		}
-
-		[[nodiscard]]
-		size_t GetCapacity() const noexcept
-		{
-			std::shared_lock lock{ myLock, std::try_to_lock_t{} };
-			return myData.capacity();
-		}
-
-		[[nodiscard]]
-		bool IsEmpty() const noexcept
-		{
-			std::shared_lock lock{ myLock };
-			return myData.empty();
-		}
-
-	protected:
 		data_t myData;
-		lock_t myLock;
+		mutable lock_t myLock;
+		std::atomic<size_type> sessionLimit;
+		bool isLimited;
 	};
 }
 

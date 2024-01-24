@@ -22,7 +22,7 @@ export namespace iconer::app
 
 		User(iconer::net::Socket&& socket, HandleType id) noexcept
 			: Super(id)
-			, mySocket(std::move(socket)), myContext()
+			, mySocket(std::exchange(socket, iconer::net::Socket{})), myContext()
 		{
 		}
 
@@ -70,6 +70,6 @@ export namespace iconer::app
 		}
 
 		UserContext myContext;
-		iconer::net::Socket&& mySocket;
+		iconer::net::Socket mySocket;
 	};
 }
