@@ -17,6 +17,7 @@ import Iconer.Net.IpAddress;
 import Iconer.Net.EndPoint;
 import Iconer.Net.Socket;
 import Iconer.Net.IoCompletionPort;
+import Iconer.Application.User;
 import Test.IoOperation;
 import Test.Context;
 import Test.ChatMsgContext;
@@ -536,7 +537,7 @@ test::Framework::AllocateSocket(const std::uint64_t id, iconer::net::IoCategory 
 	{
 		auto sk = new iconer::net::Socket{ std::move(sk_result) };
 
-		if (myStation.Register(*sk, id))
+		if (not myStation.Register(*sk, id))
 		{
 			auto& ck = everySockets.emplace_back();
 			ck.sk = sk;

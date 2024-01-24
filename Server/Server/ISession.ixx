@@ -68,7 +68,7 @@ export namespace iconer::app
 		constexpr ISession(ISession&&) noexcept = default;
 		constexpr ISession& operator=(ISession&&) noexcept = default;
 
-		template<sessions S>
+		template<typename S>
 		friend class SessionFactory;
 
 		std::string Name;
@@ -77,12 +77,14 @@ export namespace iconer::app
 		explicit constexpr ISession(const HandleType& handle)
 			noexcept(nothrow_constructible<Super, const HandleType&>)
 			: Super(handle)
+			, Name("Session")
 		{
 		}
 
 		explicit constexpr ISession(HandleType&& handle)
 			noexcept(nothrow_constructible<Super, HandleType&&>)
 			: Super(std::move(handle))
+			, Name("Session")
 		{
 		}
 
@@ -93,7 +95,7 @@ export namespace iconer::app
 		void operator=(const ISession&) = delete;
 	};
 
-	template<sessions S>
+	template<typename S>
 	class SessionFactory
 	{
 	public:

@@ -216,5 +216,13 @@
     <ClCompile Include="BehaviourTree.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="UserManager.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BehaviourTreeHelper.hpp">
+      <Filter>Utility</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

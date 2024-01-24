@@ -126,7 +126,6 @@
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
-      <BuildStlModules>true</BuildStlModules>
       <UseFullPaths>false</UseFullPaths>
       <StringPooling>true</StringPooling>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
@@ -158,7 +157,6 @@
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
-      <BuildStlModules>true</BuildStlModules>
       <UseFullPaths>false</UseFullPaths>
       <StringPooling>true</StringPooling>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
@@ -339,11 +337,15 @@
     <ClCompile Include="TypeList.ixx" />
     <ClCompile Include="TypeTraits.ixx" />
     <ClCompile Include="User.ixx" />
+    <ClCompile Include="UserManager.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colourful-Console\ColourfulConsole\ColourfulConsole.vcxproj">
       <Project>{d123b380-57e9-4327-9b21-2df0902cb5b5}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BehaviourTreeHelper.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
