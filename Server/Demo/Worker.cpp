@@ -21,7 +21,11 @@ Worker(Framework& framework, size_t nth)
 			break;
 		}
 
-		//if (not io_event.isSucceed)
+		if (0 == io_id) // by server framework
+		{
+
+		}
+		else // by sessions
 		{
 
 		}

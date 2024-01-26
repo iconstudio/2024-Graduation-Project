@@ -5,6 +5,7 @@ module;
 
 export module Demo.Framework;
 import Iconer.Utility.Logger;
+import Iconer.Utility.ColourfulConsole;
 import Iconer.Net.IoContext;
 import Iconer.Net.Socket;
 import Iconer.Net.IoCompletionPort;
@@ -13,15 +14,27 @@ import Iconer.Net.Socket;
 import <memory>;
 import <span>;
 
+export class DemoInitializerError : public std::exception
+{
+public:
+	using exception::exception;
+};
+
 export class Framework
 {
 public:
 	using IdType = iconer::app::UserManager::key_type;
 
+	static inline constexpr std::string_view serverAddress{ "127.0.0.1" };
+	static inline constexpr std::uint16_t serverPort{ 40000 };
+	static inline constexpr size_t usersNumber = 100;
+	static inline constexpr size_t roomsNumber = 500;
+	static inline constexpr IdType serverID = 0;
+	static inline constexpr IdType beginUserID = 1;
+	static inline constexpr IdType beginRoomID = beginUserID + static_cast<IdType>(usersNumber);
 	static inline constexpr size_t userRecvSize = 512;
 	static inline constexpr size_t workersCount = 6;
-	static inline constexpr size_t userNumber = 3000;
-	static inline constexpr IdType beginUserID = 1;
+	static inline constexpr iconer::util::cfc::Colour sessionIdColor = iconer::util::cfc::colors::LightGreen;
 
 	Framework() = default;
 	~Framework() = default;
@@ -90,11 +103,11 @@ private:
 	iconer::net::Socket serverListener;
 	iconer::net::IoCompletionPort ioCompletionPort;
 
-	iconer::app::UserManager userManager;
+	alignas(std::hardware_constructive_interference_size) iconer::app::UserManager userManager;
+	alignas(std::hardware_constructive_interference_size) std::unique_ptr<std::byte[]> recvBuffer;
+
 	std::vector<std::jthread> serverWorkers;
 	std::stop_source workerCanceller;
-
-	std::unique_ptr<std::byte[]> recvBuffer;
 
 	iconer::util::Logger myLogger;
 };

@@ -18,12 +18,13 @@ export namespace iconer::app
 		typename T::HandleType;
 	}&& std::derived_from<T, ISession<typename T::HandleType>>;
 
-	template<typename IdType>
-	class [[nodiscard]] ISession : public iconer::util::Handler<IdType>
+	template<typename UidType>
+	class [[nodiscard]] ISession : protected iconer::util::Handler<UidType>
 	{
 	public:
-		using Super = iconer::util::Handler<IdType>;
-		using HandleType = Super::HandleType; // IdType;
+		using Super = iconer::util::Handler<UidType>;
+		using HandleType = Super::HandleType;
+		using IdType = Super::HandleType;
 
 		virtual constexpr ~ISession() noexcept = default;
 
@@ -65,6 +66,12 @@ export namespace iconer::app
 			return std::move(Name);
 		}
 
+		[[nodiscard]]
+		constexpr IdType GetID() const noexcept
+		{
+			return Super::GetHandle();
+		}
+
 		constexpr ISession(ISession&&) noexcept = default;
 		constexpr ISession& operator=(ISession&&) noexcept = default;
 
@@ -74,15 +81,15 @@ export namespace iconer::app
 		std::string Name;
 
 	protected:
-		explicit constexpr ISession(const HandleType& handle)
-			noexcept(nothrow_constructible<Super, const HandleType&>)
+		explicit constexpr ISession(const IdType& handle)
+			noexcept(nothrow_constructible<Super, const IdType&>)
 			: Super(handle)
 			, Name("Session")
 		{
 		}
 
-		explicit constexpr ISession(HandleType&& handle)
-			noexcept(nothrow_constructible<Super, HandleType&&>)
+		explicit constexpr ISession(IdType&& handle)
+			noexcept(nothrow_constructible<Super, IdType&&>)
 			: Super(std::move(handle))
 			, Name("Session")
 		{

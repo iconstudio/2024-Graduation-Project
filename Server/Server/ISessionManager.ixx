@@ -28,7 +28,7 @@ export namespace iconer::app
 	public:
 		using lock_t = std::shared_mutex;
 		using mapped_type = T;
-		using key_type = typename mapped_type::HandleType;
+		using key_type = typename mapped_type::IdType;
 		using data_t = std::vector<std::pair<key_type, mapped_type>>;
 		using value_type = typename data_t::value_type;
 
@@ -143,9 +143,9 @@ export namespace iconer::app
 				throw SessionLimitExceedError{};
 			}
 
-			if (not UncheckedContains(object.GetHandle()))
+			if (not UncheckedContains(object.GetID()))
 			{
-				myData.push_back(std::make_pair(object.GetHandle(), object));
+				myData.push_back(std::make_pair(object.GetID(), object));
 				MakeHoldUniques();
 			}
 		}
@@ -158,9 +158,9 @@ export namespace iconer::app
 				throw SessionLimitExceedError{};
 			}
 
-			if (not UncheckedContains(object.GetHandle()))
+			if (not UncheckedContains(object.GetID()))
 			{
-				myData.push_back(std::make_pair(std::move(object).GetHandle(), std::move(object)));
+				myData.push_back(std::make_pair(std::move(object).GetID(), std::move(object)));
 				MakeHoldUniques();
 			}
 		}

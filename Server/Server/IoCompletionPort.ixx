@@ -20,9 +20,14 @@ export namespace iconer::net
 		bool Destroy() noexcept;
 		bool Destroy(ErrorCode& error_code) noexcept;
 
-		bool Schedule(IoContext& context, std::uintptr_t id, unsigned long infobytes) noexcept;
-		bool Schedule(IoContext* const context, std::uintptr_t id, unsigned long infobytes) noexcept;
+		bool Schedule(IoContext& context, std::uintptr_t id, const unsigned long& infobytes) noexcept;
+		bool Schedule(IoContext* context, std::uintptr_t id, const unsigned long& infobytes) noexcept;
+		bool Schedule(IoContext& context, std::uintptr_t id, unsigned long&& infobytes) noexcept;
+		bool Schedule(IoContext* const context, std::uintptr_t id, unsigned long&& infobytes) noexcept;
 		[[nodiscard]] IoEvent WaitForIoResult() noexcept;
+
+		[[nodiscard]]
+		bool IsAvailable() const noexcept;
 
 		using FactoryResult = std::expected<IoCompletionPort, net::ErrorCode>;
 		[[nodiscard]] static FactoryResult Create() noexcept;
