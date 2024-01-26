@@ -103,7 +103,27 @@ noexcept
 }
 
 bool
-net::IoCompletionPort::Schedule(net::IoContext& context, std::uintptr_t id, unsigned long infobytes)
+net::IoCompletionPort::Schedule(net::IoContext& context, std::uintptr_t id, const unsigned long& infobytes)
+noexcept
+{
+	return 0 != ::PostQueuedCompletionStatus(GetHandle()
+		, infobytes
+		, std::move(id)
+		, reinterpret_cast<::WSAOVERLAPPED*>(std::addressof(context)));
+}
+
+bool
+net::IoCompletionPort::Schedule(net::IoContext* context, std::uintptr_t id, const unsigned long& infobytes)
+noexcept
+{
+	return 0 != ::PostQueuedCompletionStatus(GetHandle()
+		, infobytes
+		, std::move(id)
+		, reinterpret_cast<::WSAOVERLAPPED*>(context));
+}
+
+bool
+net::IoCompletionPort::Schedule(net::IoContext& context, std::uintptr_t id, unsigned long&& infobytes)
 noexcept
 {
 	return 0 != ::PostQueuedCompletionStatus(GetHandle()
@@ -113,7 +133,7 @@ noexcept
 }
 
 bool
-net::IoCompletionPort::Schedule(net::IoContext* const context, std::uintptr_t id, unsigned long infobytes)
+net::IoCompletionPort::Schedule(net::IoContext* context, std::uintptr_t id, unsigned long&& infobytes)
 noexcept
 {
 	return 0 != ::PostQueuedCompletionStatus(GetHandle()
@@ -148,4 +168,11 @@ noexcept
 	}
 
 	return ev_handle;
+}
+
+bool
+iconer::net::IoCompletionPort::IsAvailable()
+const noexcept
+{
+	return nullptr != myHandle;
 }

@@ -10,8 +10,13 @@ import Iconer.Application.User;
 
 using namespace iconer;
 
-constexpr std::uint16_t serverPort{ 40000 };
-constexpr app::User::HandleType serverID = 0;
+static DemoInitializerError network_init_error{ "Error when starting network system." };
+static DemoInitializerError listener_create_error{ "Error when creating the listener socket." };
+static DemoInitializerError completion_port_init_error{ "Error when creating the io completion port." };
+static DemoInitializerError listener_register_error{ "Error when registering the listener." };
+static DemoInitializerError socket_register_error{ "Error when registering a socket." };
+static DemoInitializerError socket_create_error{ "Error when creating a socket." };
+static DemoInitializerError user_awake_error{ "Error when awakening a user." };
 
 void Framework::Awake()
 {
@@ -21,19 +26,19 @@ void Framework::Awake()
 	{
 		myLogger.LogError(L"Error when starting network system.");
 
-		throw std::exception{ "Error when starting network system." };
+		throw network_init_error;
 	}
 
 	myLogger.Log(L"\tcreating the listener...\n");
 
 	if (not net::Socket::TryCreate(net::IoCategory::Asynchronous, net::InternetProtocol::TCP, net::IpAddressFamily::IPv4, serverListener))
 	{
-		throw std::exception{ "Error when creating the listener socket." };
+		throw listener_create_error;
 	}
 
-	myLogger.Log(L"\tbinding the listener to port {}...\n", ::serverPort);
+	myLogger.Log(L"\tbinding the listener to port {}...\n", serverPort);
 
-	serverListener.BindHost(::serverPort).and_then(
+	serverListener.BindHost(serverPort).and_then(
 		[](net::ErrorCode&& code) -> std::optional<bool> {
 		const std::string msg = std::format("Error when binding a address to the listener socket ({})", code);
 		throw msg;
@@ -47,44 +52,45 @@ void Framework::Awake()
 		return false;
 	});
 
-	if (not result.value())
+	if (not result.value_or(false))
 	{
-		throw std::exception{ "Error when creating the io completion port." };
+		throw completion_port_init_error;
 	}
 
-	myLogger.Log(L"\tregistering the listener with id {}...\n", ::serverID);
+	myLogger.Log(L"\tregistering the listener with id {}...\n", serverID);
 	if (ioCompletionPort.Register(serverListener, serverID))
 	{
-		throw std::exception{ "Error when registering the listener." };
+		throw listener_register_error;
 	}
 
 	myLogger.Log(L"\tallocating memory of buffers...\n");
 
-	userManager.Reserve(userNumber);
+	userManager.Reserve(usersNumber);
 	serverWorkers.reserve(workersCount);
 
 	auto user_factory = app::SessionFactory<app::User>{};
 
-	myLogger.Log(L"\tcreating {} users...\n", userNumber);
+	myLogger.Log(L"\tcreating {} users...\n", usersNumber);
 
-	app::User::HandleType id = beginUserID;
-	for (size_t i = 0; i < userNumber; ++i)
+	auto id = beginUserID;
+	for (size_t i = 0; i < usersNumber; ++i)
 	{
-		net::Socket socket;
-		if (not net::Socket::TryCreate(net::IoCategory::Asynchronous, net::InternetProtocol::TCP, net::IpAddressFamily::IPv4, socket))
+		if (net::Socket socket; net::Socket::TryCreate(net::IoCategory::Asynchronous, net::InternetProtocol::TCP, net::IpAddressFamily::IPv4, socket))
 		{
-			throw std::exception{ "Error when creating a socket." };
-		}
-
-		if (not ioCompletionPort.Register(socket, id))
-		{
-			//auto user = user_factory.Create(std::move(socket), id++);
-			app::User user{ std::move(socket), id++ };
-			userManager.Add(std::move(user));
+			if (not ioCompletionPort.Register(socket, id).has_value())
+			{
+				//auto user = user_factory.Create(std::move(socket), id++);
+				app::User user{ std::move(socket), id++ };
+				userManager.Add(std::move(user));
+			}
+			else
+			{
+				throw socket_register_error;
+			}
 		}
 		else
 		{
-			throw std::exception{ "Error when registering a socket." };
+			throw socket_create_error;
 		}
 	}
 
@@ -101,7 +107,7 @@ void Framework::Awake()
 	{
 		if (not user.OnAwake())
 		{
-			throw std::exception{ "Error when awakening a user." };
+			throw user_awake_error;
 		}
 	}
 

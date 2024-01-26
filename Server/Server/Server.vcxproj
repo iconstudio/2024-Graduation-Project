@@ -317,6 +317,7 @@
     </ClCompile>
     <ClCompile Include="Property.ixx" />
     <ClCompile Include="Room.ixx" />
+    <ClCompile Include="Serializer.ixx" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="ISession.ixx" />
     <ClCompile Include="Singleton.ixx" />

@@ -15,13 +15,13 @@ export namespace iconer::app::packets
 		// @param buffer - read buffer
 		// @return Address of SignInPacket
 		[[nodiscard]]
-		void* Read(std::span<std::byte> buffer) const override
+		BasicPacket* Read(std::span<const std::byte> buffer) const override
 		{
 			SignInPacket* result = new SignInPacket{};
 			result->myProtocol = static_cast<PacketProtocol>(buffer[0]);
 			std::memcpy(result->userName, buffer.data() + 1, buffer.size_bytes() - sizeof(PacketProtocol));
 
-			return nullptr;
+			return result;
 		}
 
 		[[nodiscard]]

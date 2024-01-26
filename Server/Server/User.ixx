@@ -22,14 +22,14 @@ export namespace iconer::app
 		using Super::Super;
 	};
 
-	class [[nodiscard]] User : ISession<std::int32_t>
+	class [[nodiscard]] User : protected ISession<std::int32_t>
 	{
 	public:
 		using Super = ISession<std::int32_t>;
-		using Super::HandleType;
-		using Super::GetHandle;
+		using Super::IdType;
+		using Super::GetID;
 
-		User(iconer::net::Socket&& socket, HandleType id) noexcept
+		User(iconer::net::Socket&& socket, IdType id) noexcept
 			: Super(id)
 			, mySocket(std::exchange(socket, iconer::net::Socket{})), myContext()
 		{

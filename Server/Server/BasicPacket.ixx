@@ -25,7 +25,7 @@ export namespace iconer::app
 		virtual std::byte* Serialize() const = 0;
 
 		[[nodiscard]]
-		virtual void* Read(std::span<std::byte> buffer) const = 0;
+		virtual BasicPacket* Read(std::span<const std::byte> buffer) const = 0;
 
 		[[nodiscard]]
 		constexpr PacketProtocol GetProtocol() const noexcept
