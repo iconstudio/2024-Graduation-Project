@@ -1,10 +1,8 @@
-module;
-#include <cstdio>
-#include <cstdlib>
 module Demo.Framework;
+import Iconer.Application.User;
 
 void
-Worker(Framework& framework, size_t nth)
+demo::Worker(demo::Framework& framework, size_t nth)
 {
 	auto& logger = framework.myLogger;
 
@@ -27,33 +25,63 @@ Worker(Framework& framework, size_t nth)
 		}
 		else // by sessions
 		{
+			auto user = std::launder(reinterpret_cast<iconer::app::User*>(io_context));
+			if (nullptr == user)
+			{
+				throw "Null user context";
+			}
 
+			// not const
+			iconer::app::UserStates user_status = user->GetState();
+			switch (user_status)
+			{
+				case iconer::app::UserStates::None:
+				{
+
+				}
+				break;
+
+				case iconer::app::UserStates::Listening:
+				{
+
+				}
+				break;
+
+				case iconer::app::UserStates::Connecting:
+				{
+
+				}
+				break;
+
+				case iconer::app::UserStates::Idle:
+				{
+
+				}
+				break;
+
+				case iconer::app::UserStates::Closing:
+				{
+
+				}
+				break;
+
+				case iconer::app::UserStates::Dead:
+				{
+
+				}
+				break;
+
+				default:
+				{
+
+				}
+				break;
+			}
 		}
 
 		if (io_context)
 		{
 			io_context->Clear();
-		}
-	}
-}
-
-void Framework::Start()
-{
-	myLogger.Log(L"\topening the listener...\n");
-
-	if (serverListener.Open().has_value())
-	{
-		myLogger.Log(L"\tThe listener is opened.\n");
-	}
-
-	myLogger.Log(L"\treserving acceptance of users...\n");
-
-	for (auto& [id, user] : userManager)
-	{
-		auto acceptance = user.ReserveAccept(serverListener);
-		if (acceptance)
-		{
-			throw std::exception{ "Error when reserving acceptance of a socket." };
 		}
 	}
 }

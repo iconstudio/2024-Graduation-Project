@@ -1,9 +1,8 @@
 export module Iconer.Application.User;
+import Iconer.Utility.Constraints;
+import Iconer.Net.Socket;
 import Iconer.Application.IContext;
 import Iconer.Application.ISession;
-import Iconer.Utility.TypeTraits;
-import Iconer.Net.Socket;
-import Iconer.Net.IoContext;
 import <cstdint>;
 import <atomic>;
 
@@ -14,118 +13,58 @@ export namespace iconer::app
 		None, Listening, Connecting, Idle, Closing, Dead
 	};
 
-	class UserContext : public IContext<UserStates>
-	{
-	public:
-		using Super = IContext<UserStates>;
-
-		using Super::Super;
-	};
-
-	class [[nodiscard]] User : protected ISession<std::int32_t>
+	class [[nodiscard]] User : protected ISession<std::int32_t>, public IContext<UserStates>
 	{
 	public:
 		using Super = ISession<std::int32_t>;
 		using Super::IdType;
 		using Super::GetID;
+		using ContextType = IContext<UserStates>;
 
-		User(iconer::net::Socket&& socket, IdType id) noexcept
-			: Super(id)
-			, mySocket(std::exchange(socket, iconer::net::Socket{})), myContext()
+		explicit constexpr User(const IdType& id, iconer::net::Socket&& socket)
+			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
+			: Super(id), ContextType()
+			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 		{
 		}
 
-		constexpr User(User&& other) noexcept
-			: Super(std::move(other).GetHandle())
-			, mySocket(std::exchange(other.mySocket, iconer::net::Socket{}))
-			, myContext(std::exchange(other.myContext, nullptr))
+		explicit constexpr User(IdType&& id, iconer::net::Socket&& socket)
+			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
+			: Super(std::move(id)), ContextType()
+			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 		{
 		}
 
-		virtual ~User() override
+		~User() noexcept(nothrow_destructibles<Super, ContextType, iconer::net::Socket> and noexcept(std::declval<iconer::net::Socket>().Close()))
 		{
 			if (mySocket.IsAvailable())
 			{
 				std::exchange(mySocket, iconer::net::Socket{}).Close();
 			}
-
-			if (myContext)
-			{
-				delete myContext;
-			}
 		}
 
-		constexpr User& operator=(User&& other) noexcept
+		bool OnAwake()
 		{
-			myHandle = std::move(other).GetHandle();
-			Name = std::move(other.Name);
-			mySocket = std::exchange(other.mySocket, iconer::net::Socket{});
-			myContext = std::exchange(other.myContext, nullptr);
-
-			return *this;
-		}
-
-		bool OnAwake() override
-		{
-			myContext = new UserContext{ UserStates::None };
-			if (nullptr == myContext)
-			{
-				return false;
-			}
-
 			return mySocket.IsAvailable();
 		}
 
-		void OnStart() override
+		void Destroy()
 		{
-
-		}
-
-		void OnUpdate(float dt) override
-		{
-		}
-
-		void OnDestroy() override
-		{
-			mySocket.CloseAsync(myContext);
+			mySocket.CloseAsync(this);
 		}
 
 		auto ReserveAccept(iconer::net::Socket& listener)
 		{
-			return listener.ReserveAccept(myContext, mySocket);
+			return listener.ReserveAccept(this, mySocket);
 		}
 
-		[[nodiscard]]
-		UserStates GetState(std::memory_order order = std::memory_order_relaxed) const noexcept
-		{
-			return myContext->GetState(order);
-		}
+		User(User&&) noexcept(nothrow_move_constructibles<Super, ContextType>) = default;
+		User& operator=(User&&) noexcept(nothrow_move_assignables<Super, ContextType>) = default;
 
-		[[nodiscard]]
-		constexpr UserContext& GetContext()&
-		{
-			return *myContext;
-		}
-
-		[[nodiscard]]
-		constexpr const UserContext& GetContext() const&
-		{
-			return *myContext;
-		}
-
-		[[nodiscard]]
-		constexpr UserContext&& GetContext()&&
-		{
-			return std::move(*myContext);
-		}
-
-		[[nodiscard]]
-		constexpr const UserContext&& GetContext() const&&
-		{
-			return std::move(*myContext);
-		}
-
-		UserContext* myContext;
 		iconer::net::Socket mySocket;
+
+	private:
+		User(const User&) = delete;
+		void operator=(const User&) = delete;
 	};
 }

@@ -8,11 +8,10 @@
 		<DisplayString>세션 객체 ({myHandle}) &lt;{&quot;$T1&quot;}&gt;</DisplayString>
 
 		<Expand HideRawView="true">
-			<Synthetic Name="[이름]">
-				<DisplayString>{__GetName()}</DisplayString>
-			</Synthetic>
-			<Item Name="[이름]">__GetName</Item>
 			<Item Name="[핸들]">myHandle</Item>
+			<Synthetic Name="[이름]">
+				<DisplayString>{Name}</DisplayString>
+			</Synthetic>
 		</Expand>
 	</Type>
 
@@ -20,11 +19,11 @@
 		<DisplayString>사용자 세션 객체 ({myHandle})</DisplayString>
 		
 		<Expand HideRawView="false">
+			<Item Name="[핸들]">myHandle</Item>
 			<Synthetic Name="[이름]">
 				<DisplayString>{__GetName()}</DisplayString>
 			</Synthetic>
-			<Item Name="[핸들]">myHandle</Item>
-			<Item Name="[문맥]">myContext</Item>
+			<Item Name="[상태]">myState</Item>
 			<Item Name="[소켓]">mySocket</Item>
 		</Expand>
 	</Type>

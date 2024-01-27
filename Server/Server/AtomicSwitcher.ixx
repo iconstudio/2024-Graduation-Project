@@ -99,7 +99,7 @@ export namespace iconer::util
 	};
 
 	template<typename T>
-	AtomicSwitcher(std::atomic<T>&, std::memory_order, std::memory_order) -> AtomicSwitcher<T, false>;
+	AtomicSwitcher(std::atomic<T>&, std::memory_order = std::memory_order_acquire, std::memory_order = std::memory_order_release) -> AtomicSwitcher<T, false>;
 	template<typename T>
-	AtomicSwitcher(volatile std::atomic<T>&, std::memory_order, std::memory_order) -> AtomicSwitcher<T, true>;
+	AtomicSwitcher(volatile std::atomic<T>&, std::memory_order = std::memory_order_acquire, std::memory_order = std::memory_order_release) -> AtomicSwitcher<T, true>;
 }
