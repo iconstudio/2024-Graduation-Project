@@ -26,17 +26,6 @@ export namespace iconer::app
 		using HandleType = Super::HandleType;
 		using IdType = Super::HandleType;
 
-		virtual constexpr ~ISession() noexcept = default;
-
-		/// <summary>
-		/// Excute once at first
-		/// </summary>
-		/// <returns></returns>
-		virtual bool OnAwake() = 0;
-		virtual void OnStart() = 0;
-		virtual void OnUpdate(float dt) = 0;
-		virtual void OnDestroy() = 0;
-
 		template<size_t Length>
 		constexpr void SetName(const char(&name)[Length])
 		{

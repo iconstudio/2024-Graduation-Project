@@ -1,5 +1,6 @@
 export module Iconer.Application.IContext;
 import Iconer.Utility.Constraints;
+import Iconer.Utility.AtomicSwitcher;
 import Iconer.Net.IoContext;
 import <utility>;
 import <atomic>;
@@ -14,17 +15,39 @@ export namespace iconer::app
 		using StatusType = S;
 		using AtomicType = std::atomic<StatusType>;
 
-		constexpr IContext() = default;
-		constexpr ~IContext() = default;
+		explicit constexpr IContext() noexcept(nothrow_default_constructibles<AtomicType>) = default;
+		constexpr ~IContext() noexcept(nothrow_destructibles<AtomicType>) = default;
 
-		explicit IContext(const StatusType& init_state) requires copyable<StatusType>
+		IContext(IContext&& other)
+			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_assignables<S>)
+		{
+			iconer::util::AtomicSwitcher switcher{ other.myState };
+
+			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
+		}
+
+		explicit IContext(const StatusType& init_state)
+			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::memory_order{})))
+			requires copyable<StatusType>
 		{
 			myState.store(init_state, std::memory_order_relaxed);
 		}
 
-		explicit IContext(StatusType&& init_state) requires movable<StatusType>
+		explicit IContext(StatusType&& init_state)
+			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::memory_order{})))
+			requires movable<StatusType>
 		{
 			myState.store(std::move(init_state), std::memory_order_relaxed);
+		}
+
+		IContext& operator=(IContext&& other)
+			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_assignables<S>)
+		{
+			iconer::util::AtomicSwitcher switcher{ other.myState };
+
+			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
+
+			return *this;
 		}
 
 		template<typename UState>
@@ -56,5 +79,9 @@ export namespace iconer::app
 		}
 
 		AtomicType myState;
+
+	private:
+		IContext(const IContext&) = delete;
+		IContext& operator=(const IContext&) = delete;
 	};
 }

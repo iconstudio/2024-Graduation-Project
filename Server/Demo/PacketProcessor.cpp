@@ -7,7 +7,7 @@ import <memory>;
 using namespace iconer;
 
 void
-PacketProcessor(Framework& framework
+demo::PacketProcessor(demo::Framework& framework
 	, std::uintptr_t session_raw_id
 	, void* packet_handle, size_t handle_size)
 {
