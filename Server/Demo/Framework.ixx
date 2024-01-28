@@ -1,10 +1,3 @@
-module;
-#include <vector>
-#include <array>
-#include <thread>
-#include <memory>
-#include <span>
-
 export module Demo.Framework;
 import Iconer.Utility.Logger;
 import Iconer.Utility.ColourfulConsole;
@@ -13,6 +6,13 @@ import Iconer.Net.IoContext;
 import Iconer.Net.Socket;
 import Iconer.Net.IoCompletionPort;
 import Iconer.Application.UserManager;
+import <memory>;
+import <string_view>;
+import <vector>;
+import <array>;
+import <span>;
+import <thread>;
+import <latch>;
 
 export namespace demo
 {
@@ -22,14 +22,26 @@ export namespace demo
 		using exception::exception;
 	};
 
+	enum class FrameworkTaskCategory
+	{
+		None, EndTask
+	};
+
+	class FrameworkTaskContext : public iconer::net::IoContext
+	{
+	public:
+		FrameworkTaskCategory myCategory;
+	};
+
 	class Framework
 	{
 	public:
 		using IdType = iconer::app::UserManager::key_type;
+		using SocketResult = iconer::net::Socket::SocketResult;
 
 		static inline constexpr std::string_view serverAddress{ "127.0.0.1" };
 		static inline constexpr std::uint16_t serverPort{ 40000 };
-		static inline constexpr size_t maxUsersNumber = 100;
+		static inline constexpr size_t maxUsersNumber = 20;
 		static inline constexpr size_t maxRoomsNumber = 500;
 		static inline constexpr IdType serverID = 0;
 		static inline constexpr IdType beginUserID = 1;
@@ -47,18 +59,43 @@ export namespace demo
 		void Destroy();
 		void Cleanup();
 
-		void CancelWorkers() noexcept;
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
+		bool CreateListenerSocket() noexcept;
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
+		bool InitializeListener() noexcept;
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
+		bool InitializeCompletionPort(iconer::net::ErrorCode& error_code) noexcept;
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
+		bool InitializeUsers();
+		/// <summary>On Start()</summary>
+		[[nodiscard]]
+		bool StartAccepts();
 
 		[[nodiscard]]
-		bool Schedule(iconer::net::IoContext& context, const IdType id, unsigned long infobytes) noexcept
+		SocketResult OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state);
+		[[nodiscard]]
+		SocketResult OnUserConnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		[[nodiscard]]
+		SocketResult OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		[[nodiscard]]
+		bool OnUserSignIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		[[nodiscard]]
+		SocketResult OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+
+		[[nodiscard]]
+		bool Schedule(iconer::net::IoContext& context, const IdType id, unsigned long info_bytes) noexcept
 		{
-			return ioCompletionPort.Schedule(context, static_cast<std::uintptr_t>(id), std::move(infobytes));
+			return ioCompletionPort.Schedule(context, static_cast<std::uintptr_t>(id), std::move(info_bytes));
 		}
 
 		[[nodiscard]]
-		bool Schedule(iconer::net::IoContext* const context, const IdType id, unsigned long infobytes) noexcept
+		bool Schedule(iconer::net::IoContext* const context, const IdType id, unsigned long info_bytes) noexcept
 		{
-			return ioCompletionPort.Schedule(context, static_cast<std::uintptr_t>(id), std::move(infobytes));
+			return ioCompletionPort.Schedule(context, static_cast<std::uintptr_t>(id), std::move(info_bytes));
 		}
 
 		[[nodiscard]]
@@ -66,6 +103,8 @@ export namespace demo
 		{
 			return ioCompletionPort.WaitForIoResult();
 		}
+
+		void CancelWorkers() noexcept;
 
 		[[nodiscard]]
 		constexpr std::span<std::byte, userRecvSize>
@@ -122,6 +161,7 @@ export namespace demo
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<std::byte[]> recvSpace;
 
 		std::vector<std::jthread> serverWorkers;
+		std::latch workerAwakens{ workersCount };
 		std::stop_source workerCanceller;
 
 		iconer::util::Logger myLogger;

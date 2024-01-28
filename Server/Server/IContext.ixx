@@ -71,10 +71,8 @@ export namespace iconer::app
 
 		template<typename UState>
 		void ReleaseState(UState&& state)
-			noexcept(noexcept(SetState(std::declval<std::memory_order>())))
+			noexcept(noexcept(SetState(std::declval<UState&&>(), std::declval<std::memory_order>())))
 		{
-			static_assert(assignable_from<StatusType, UState>);
-
 			SetState(std::forward<UState>(state), std::memory_order_release);
 		}
 

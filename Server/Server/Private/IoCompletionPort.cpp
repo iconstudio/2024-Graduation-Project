@@ -2,6 +2,7 @@ module;
 #include <WinSock2.h>
 
 module Iconer.Net.IoCompletionPort;
+import <optional>;
 import <thread>;
 
 using namespace iconer;

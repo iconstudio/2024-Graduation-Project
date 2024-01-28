@@ -177,6 +177,12 @@ export namespace iconer::net
 		static bool TryCreate(IoCategory type, const InternetProtocol& protocol, const IpAddressFamily& family, Socket& out, ErrorCode& error_code) noexcept;
 		[[nodiscard]]
 		static FactoryResult TryCreate(IoCategory type, const InternetProtocol& protocol, const IpAddressFamily& family) noexcept;
+
+		[[nodiscard]]
+		static Socket CreateTcpSocket(IoCategory type, const IpAddressFamily& family = IpAddressFamily::IPv4) noexcept;
+		[[nodiscard]]
+		static Socket CreateUdpSocket(IoCategory type, const IpAddressFamily& family = IpAddressFamily::IPv4) noexcept;
+
 		static void SetAddressReusable(Socket& target, bool flag) noexcept;
 
 		// Default methods

@@ -152,6 +152,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Default</CompileAs>
     </ClCompile>
+    <ClCompile Include="FrameworkEvents.cpp" />
     <ClCompile Include="FrameworkInitializer.cpp">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Default</CompileAs>
@@ -165,6 +166,7 @@
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Default</CompileAs>
     </ClCompile>
     <ClCompile Include="Framework.ixx" />
+    <ClCompile Include="FrameworkUpdater.cpp" />
     <ClCompile Include="PacketProcessor.cpp" />
     <ClCompile Include="Worker.cpp" />
   </ItemGroup>

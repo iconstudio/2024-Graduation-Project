@@ -1,4 +1,5 @@
 export module Iconer.Utility.File;
+import Iconer.Utility.Handler;
 import <cstdint>;
 import <cstdlib>;
 import <span>;
@@ -78,12 +79,14 @@ export namespace iconer::util
 		return (static_cast<std::int32_t>(lhs) & static_cast<std::int32_t>(rhs)) != 0;
 	}
 
-	class [[nodiscard]] File
+	class [[nodiscard]] File final : public Handler<std::FILE*>
 	{
 	public:
-		File() noexcept = default;
-		File(const FilePath& filepath, file::OpenModes mode) noexcept;
-		File(FilePath&& filepath, file::OpenModes mode) noexcept;
+		using Super = Handler<std::FILE*>;
+
+		explicit File() noexcept = default;
+		explicit File(const FilePath& filepath, file::OpenModes mode) noexcept;
+		explicit File(FilePath&& filepath, file::OpenModes mode) noexcept;
 		~File() noexcept;
 
 		bool Open(const FilePath& filename, file::OpenModes mode = file::OpenModes::Read | file::OpenModes::Binary) noexcept;
@@ -119,21 +122,25 @@ export namespace iconer::util
 		[[nodiscard]]
 		constexpr bool IsEmpty() const noexcept
 		{
-			return myHandle == nullptr;
+			return GetHandle() == nullptr;
 		}
 		[[nodiscard]]
 		constexpr bool IsOpened() const noexcept
 		{
-			return myHandle != nullptr;
+			return GetHandle() != nullptr;
 		}
 		[[nodiscard]]
 		bool IsEndOfFile() const noexcept
 		{
-			return std::feof(myHandle) != 0;
+			return std::feof(GetHandle()) != 0;
 		}
 
+		explicit File(File&&) noexcept = default;
+		File& operator=(File&&) noexcept = default;
+
 	private:
-		std::FILE* myHandle = nullptr;
+		File(const File&) = delete;
+		void operator=(const File&) = delete;
 
 		mutable file::ResultCode lastResult = file::ResultCode::None;
 		mutable ::errno_t lastError = 0;
