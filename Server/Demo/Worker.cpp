@@ -16,6 +16,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 
 		const bool& succeed = io_event.isSucceed;
 		auto& io_context = io_event.ioContext;
+		auto& io_bytes = io_event.ioBytes;
 		auto& io_id = io_event.eventId;
 
 		if (is_done or framework.IsWorkerCancelled()) [[unlikely]] {

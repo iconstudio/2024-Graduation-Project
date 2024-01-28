@@ -13,9 +13,12 @@ demo::Framework::OnReserveAccept(iconer::app::User& user, iconer::app::UserState
 			return serverListener.ReserveAccept(user, user.mySocket);
 		}
 		break;
-	}
 
-	return iconer::net::ErrorCode::OPERATION_ABORTED;
+		default:
+		{
+			return iconer::net::ErrorCode::OPERATION_ABORTED;
+		}
+	}
 }
 
 demo::Framework::SocketResult
@@ -28,54 +31,22 @@ demo::Framework::OnUserConnected(iconer::app::User& user, const IdType& id, icon
 			user.SetOperation(iconer::app::UserOperations::Recv);
 			transit_state = iconer::app::UserStates::Idle;
 
-			return user.Start(GetBuffer(id));
-		}
-		break;
-
-		case iconer::app::UserStates::Idle:
-		{
-
-		}
-		break;
-
-		case iconer::app::UserStates::InLobby:
-		{
-
-		}
-		break;
-
-		case iconer::app::UserStates::InRoom:
-		{
-
-		}
-		break;
-
-		case iconer::app::UserStates::InGame:
-		{
-
-		}
-		break;
-
-		case iconer::app::UserStates::Dead:
-		{
-
+			return user.Receive(GetBuffer(id));
 		}
 		break;
 
 		default:
 		{
-
+			return iconer::net::ErrorCode::OPERATION_ABORTED;
 		}
-		break;
 	}
-
-	return iconer::net::ErrorCode::OPERATION_ABORTED;
 }
 
 demo::Framework::SocketResult
-demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const size_t& bytes)
 {
-	const auto buffer = GetBuffer(id);
+	auto user_buffer = GetBuffer(id);
+	auto& user_recv_offset = user.recvOffset;
 
 	switch (transit_state)
 	{
@@ -111,12 +82,9 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 
 		default:
 		{
-
+			return iconer::net::ErrorCode::OPERATION_ABORTED;
 		}
-		break;
 	}
-
-	return iconer::net::ErrorCode::OPERATION_ABORTED;
 }
 
 demo::Framework::SocketResult
