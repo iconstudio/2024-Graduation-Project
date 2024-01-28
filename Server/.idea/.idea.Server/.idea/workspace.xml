@@ -10,13 +10,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="137edaab-b0ff-4f06-82c7-6c6e1815692b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Demo/Demo.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Demo.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/Demo.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Demo.vcxproj.filters" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Demo/Framework.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Framework.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Demo/Framework.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Framework.ixx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/Worker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Worker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server.vcxproj.filters" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Demo/FrameworkAnnihilator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/FrameworkAnnihilator.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Demo/FrameworkInitializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/FrameworkInitializer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Demo/FrameworkStarter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/FrameworkStarter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/ISession.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ISession.ixx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Private/IoCompletionPort.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Private/IoCompletionPort.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Private/Socket.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Private/Socket.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Socket.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Socket.ixx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/User.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/User.ixx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,24 +37,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "C++ 프로젝트.Demo.executor": "Run",
-    "C++ 프로젝트.Server.executor": "Debug",
-    "C++ 프로젝트.TestChatServer.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "ignore.virus.scanning.warn.message": "true",
-    "settings.editor.selected.configurable": "settings.sync"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;C++ 프로젝트.Demo.executor&quot;: &quot;Run&quot;,
+    &quot;C++ 프로젝트.Server.executor&quot;: &quot;Debug&quot;,
+    &quot;C++ 프로젝트.TestChatServer.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\yoyof\\AppData\\Local\\JetBrains\\Shared\\vAny\\DecompilerCache",
-      "C:\\Users\\yoyof\\AppData\\Local\\JetBrains\\Shared\\vAny\\SourcesCache",
-      "C:\\Users\\yoyof\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\yoyof\\AppData\\Local\\JetBrains\\Shared\\vAny\\DecompilerCache&quot;,
+      &quot;C:\\Users\\yoyof\\AppData\\Local\\JetBrains\\Shared\\vAny\\SourcesCache&quot;,
+      &quot;C:\\Users\\yoyof\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="C++ 프로젝트.Demo">
     <configuration name="Demo" type="CppProject" factoryName="C++ Project">
       <configuration_1>
@@ -214,6 +217,7 @@
       <updated>1705921481290</updated>
       <workItem from="1705921484383" duration="781000" />
       <workItem from="1706094163758" duration="4644000" />
+      <workItem from="1706342877211" duration="3484000" />
     </task>
     <servers />
   </component>

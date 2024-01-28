@@ -99,6 +99,35 @@
 		</Expand>
 	</Type>
 
+	<Type Name="_iobuf">
+		<DisplayString Condition="_Placeholder == nullptr">빈 표준 C 파일 구조체</DisplayString>
+		<DisplayString Condition="_Placeholder != nullptr">표준 C 파일 구조체</DisplayString>
+
+		<Expand HideRawView="true">
+			<Item Name="[내부 오프셋]">_Placeholder</Item>
+		</Expand>
+	</Type>
+
+	<Type Name="iconer::util::Logger">
+		<DisplayString Condition="myHandle.myHandle == nullptr">비어있는 기록 도구</DisplayString>
+		<DisplayString Condition="myHandle.myHandle != nullptr">기록 도구</DisplayString>
+		
+		<Expand HideRawView="true">
+			<Item Name="[파일 핸들]" Condition="myHandle.myHandle != nullptr">*myHandle.myHandle</Item>
+		</Expand>
+	</Type>
+
+	<Type Name="iconer::util::File">
+		<DisplayString Condition="myHandle == nullptr">빈 파일</DisplayString>
+		<DisplayString Condition="myHandle != nullptr">파일 ({myHandle})</DisplayString>
+
+		<Expand HideRawView="true">
+			<Item Name="[핸들]" Condition="myHandle != nullptr">*myHandle</Item>
+			<Item Name="[마지막 IO 결과]">lastResult</Item>
+			<Item Name="[오류 부호]">lastError</Item>
+		</Expand>
+	</Type>
+
 	<Type Name="iconer::util::Singleton&lt;*&gt;">
 		<DisplayString>{&quot;$T1&quot;} 싱글톤 객체</DisplayString>
 	</Type>

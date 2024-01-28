@@ -19,12 +19,14 @@ namespace
 
 iconer::util::File::File(const FilePath& filepath, file::OpenModes mode)
 noexcept
+	: Super(nullptr)
 {
 	Open(filepath, mode);
 }
 
 iconer::util::File::File(FilePath&& filepath, file::OpenModes mode)
 noexcept
+	: Super(nullptr)
 {
 	Open(std::move(filepath), mode);
 }

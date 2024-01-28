@@ -20,21 +20,21 @@ void
 iconer::util::Logger::Awake(const std::filesystem::path& log_file)
 noexcept
 {
-	myFile.Open(log_file, util::file::OpenModes::Write);
+	GetHandle().Open(log_file, util::file::OpenModes::Write);
 }
 
 void
 iconer::util::Logger::Cleanup()
 noexcept
 {
-	myFile.Close();
+	GetHandle().Close();
 }
 
 bool
 iconer::util::Logger::IsAvailable()
 const noexcept
 {
-	return myFile.IsOpened();
+	return GetHandle().IsOpened();
 }
 
 void
@@ -48,7 +48,7 @@ const noexcept
 	std::fwprintf(stdout, str);
 	iconer::util::cfc::SetConsoleColour(before);
 
-	myFile.Write(str);
+	GetHandle().Write(str);
 }
 
 void
@@ -62,7 +62,7 @@ const noexcept
 	std::fwprintf(stderr, str);
 	iconer::util::cfc::SetConsoleColour(before);
 
-	myFile.Write(str);
+	GetHandle().Write(str);
 }
 
 void
@@ -76,5 +76,5 @@ const noexcept
 	std::fwprintf(stderr, str);
 	iconer::util::cfc::SetConsoleColour(before);
 
-	myFile.Write(str);
+	GetHandle().Write(str);
 }

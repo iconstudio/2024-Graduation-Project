@@ -5,12 +5,24 @@ import Iconer.Application.IContext;
 import Iconer.Application.ISession;
 import <cstdint>;
 import <atomic>;
+import <span>;
 
 export namespace iconer::app
 {
 	enum class [[nodiscard]] UserStates
 	{
-		None, Listening, Connecting, Idle, Closing, Dead
+		None, Reserved, Idle, InLobby, InRoom, InGame, Dead
+	};
+
+	enum class [[nodiscard]] UserOperations
+	{
+		None,
+		Accept,
+		Connect, // Sign in
+		Disconnect, // Sign out (Quit)
+		Recv, Send,
+		CreateRoom, EnterRoom, LeaveRoom,
+		EnterGame, ReadyGame, StartGame, LeaveGame
 	};
 
 	class [[nodiscard]] User : protected ISession<std::int32_t>, public IContext<UserStates>
@@ -20,7 +32,9 @@ export namespace iconer::app
 		using Super::IdType;
 		using Super::GetID;
 		using ContextType = IContext<UserStates>;
+		using SocketResult = iconer::net::Socket::SocketResult;
 
+		[[nodiscard]]
 		explicit constexpr User(const IdType& id, iconer::net::Socket&& socket)
 			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
 			: Super(id), ContextType()
@@ -28,6 +42,7 @@ export namespace iconer::app
 		{
 		}
 
+		[[nodiscard]]
 		explicit constexpr User(IdType&& id, iconer::net::Socket&& socket)
 			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
 			: Super(std::move(id)), ContextType()
@@ -43,25 +58,58 @@ export namespace iconer::app
 			}
 		}
 
-		bool OnAwake()
+		User(User&& other) noexcept(nothrow_move_constructibles<Super, ContextType, iconer::net::Socket>)
+			: Super(std::move(other)), ContextType(std::move(other))
+			, mySocket(std::exchange(other.mySocket, iconer::net::Socket{}))
 		{
-			return mySocket.IsAvailable();
 		}
 
-		void Destroy()
+		User& operator=(User&& other) noexcept(nothrow_move_assignables<Super, ContextType, iconer::net::Socket>)
 		{
-			mySocket.CloseAsync(this);
+			Super::operator=(std::move(other));
+			ContextType::operator=(std::move(other));
+			mySocket = std::exchange(other.mySocket, iconer::net::Socket{});
+			return *this;
 		}
 
-		auto ReserveAccept(iconer::net::Socket& listener)
+		constexpr void SetOperation(UserOperations op) noexcept
 		{
-			return listener.ReserveAccept(this, mySocket);
+			lastOperation = op;
 		}
 
-		User(User&&) noexcept(nothrow_move_constructibles<Super, ContextType>) = default;
-		User& operator=(User&&) noexcept(nothrow_move_assignables<Super, ContextType>) = default;
+		[[nodiscard]]
+		constexpr UserOperations GetOperation() const noexcept
+		{
+			return lastOperation;
+		}
+
+		void Awake() noexcept
+		{
+			ContextType::Clear();
+		}
+
+		template<size_t Size>
+		[[nodiscard]]
+		SocketResult Start(std::span<std::byte, Size> buffer)
+		{
+			if constexpr (Size == std::dynamic_extent)
+			{
+				return mySocket.Receive(*this, buffer, buffer.size());
+			}
+			else
+			{
+				return mySocket.Receive(*this, buffer, Size);
+			}
+		}
+
+		bool Destroy() noexcept
+		{
+			SetOperation(UserOperations::Disconnect);
+			return mySocket.CloseAsync(this);
+		}
 
 		iconer::net::Socket mySocket;
+		volatile UserOperations lastOperation;
 
 	private:
 		User(const User&) = delete;

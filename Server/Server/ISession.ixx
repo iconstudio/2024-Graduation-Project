@@ -101,7 +101,9 @@ export namespace iconer::app
 		{
 			static_assert(constructible_from<S, Args&&...>);
 
-			return S{ std::forward<Args>(args)... };
+			S result = S{ std::forward<Args>(args)... };
+			result.Awake();
+			return result;
 		}
 
 		[[nodiscard]]
@@ -124,7 +126,9 @@ export namespace iconer::app
 		{
 			static_assert(constructible_from<S, Args&&...>);
 
-			return std::construct_at(handle, std::forward<Args>(args)...);
+			S* result = std::construct_at(handle, std::forward<Args>(args)...);
+			result->Awake();
+			return result;
 		}
 
 		static constexpr void DestructAt(S* handle)

@@ -5,11 +5,12 @@ module;
 #include <filesystem>
 
 export module Iconer.Utility.Logger;
+import Iconer.Utility.Handler;
 import Iconer.Utility.File;
 
 export namespace iconer::util
 {
-	class Logger final
+	class [[nodiscard]] Logger final : public Handler<iconer::util::File>
 	{
 	public:
 		Logger() noexcept = default;
@@ -43,8 +44,6 @@ export namespace iconer::util
 		Logger(Logger&&) = delete;
 		void operator=(const Logger&) = delete;
 		void operator=(Logger&&) = delete;
-
-		File myFile;
 	};
 }
 

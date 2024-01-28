@@ -275,7 +275,7 @@ const noexcept
 {
 	if (IsAvailable())
 	{
-		auto* ctx = reinterpret_cast<::LPWSAOVERLAPPED>(context);
+		auto* ctx = static_cast<::LPWSAOVERLAPPED>(context);
 		if (IsAddressReusable)
 		{
 			return (1 == ::fnTransmitFile(Super::GetHandle(), nullptr, 0, 0, ctx, nullptr, TF_DISCONNECT | TF_REUSE_SOCKET));
@@ -332,7 +332,7 @@ iconer::net::Socket::SocketResult
 iconer::net::Socket::ReserveAccept(iconer::net::IoContext* const context, iconer::net::Socket& client)
 const
 {
-	char temp_buffer[::DEFAULT_ACCEPT_SIZE * 2];
+	char temp_buffer[::DEFAULT_ACCEPT_SIZE * 2]{};
 	if (not IsAvailable())
 	{
 		return AcquireNetworkError();
@@ -345,7 +345,7 @@ const
 		, ::DEFAULT_ACCEPT_SIZE
 		, ::DEFAULT_ACCEPT_SIZE
 		, std::addressof(result_bytes)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(context))
+		, static_cast<::LPWSAOVERLAPPED>(context))
 		)
 	{
 		return std::nullopt;
@@ -379,7 +379,7 @@ const
 		, ::DEFAULT_ACCEPT_SIZE
 		, ::DEFAULT_ACCEPT_SIZE
 		, std::addressof(result_bytes)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(context))
+		, static_cast<::LPWSAOVERLAPPED>(context))
 		)
 	{
 		return std::nullopt;
@@ -501,6 +501,20 @@ iconer::net::Socket::TryCreate(iconer::net::IoCategory type
 	{
 		return std::unexpected(AcquireNetworkError());
 	}
+}
+
+iconer::net::Socket
+iconer::net::Socket::CreateTcpSocket(iconer::net::IoCategory type, const iconer::net::IpAddressFamily& family)
+noexcept
+{
+	return Create(type, InternetProtocol::TCP, family);
+}
+
+iconer::net::Socket
+iconer::net::Socket::CreateUdpSocket(iconer::net::IoCategory type, const iconer::net::IpAddressFamily& family)
+noexcept
+{
+	return Create(type, InternetProtocol::UDP, family);
 }
 
 void
