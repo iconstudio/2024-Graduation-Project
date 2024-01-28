@@ -1,30 +1,49 @@
+module;
+#include <WinSock2.h>
+
 export module Iconer.Net.IoContext;
-import <new>;
 import <cstdint>;
-import <type_traits>;
-import <variant>;
+import <new>;
+import <utility>;
 
 export namespace iconer::net
 {
-	class alignas(std::hardware_constructive_interference_size) [[nodiscard]] IoContext
+	class alignas(std::hardware_constructive_interference_size) [[nodiscard]] IoContext : public WSAOVERLAPPED
 	{
 	public:
-		constexpr IoContext() noexcept = default;
-		constexpr ~IoContext() noexcept = default;
+		using Super = WSAOVERLAPPED;
 
-		constexpr void Clear() noexcept
+		constexpr IoContext() noexcept
+			: Super()
+		{ }
+
+		~IoContext() noexcept = default;
+
+		IoContext(IoContext&& other) noexcept
 		{
-			ioLower = 0;
-			ioUpper = 0;
-			if (std::holds_alternative<void*>(myOffset))
-			{
-				myOffset = nullptr;
-			}
-			else
-			{
-				myOffset = NearFarOffsets{};
-			}
-			eventObject = nullptr;
+			this->Internal = std::exchange(other.Internal, 0);
+			this->InternalHigh = std::exchange(other.InternalHigh, 0);
+			//this->Offset = std::exchange(other.Offset, 0);
+			//this->OffsetHigh = std::exchange(other.OffsetHigh, 0);
+			CopyMemory(std::addressof(Offset), std::addressof(other.Offset), sizeof(void*));
+			ZeroMemory(std::addressof(other.Offset), sizeof(void*));
+			this->hEvent = std::exchange(other.hEvent, nullptr);
+		}
+
+		IoContext& operator=(IoContext&& other) noexcept
+		{
+			this->Internal = std::exchange(other.Internal, 0);
+			this->InternalHigh = std::exchange(other.InternalHigh, 0);
+			CopyMemory(std::addressof(Offset), std::addressof(other.Offset), sizeof(void*));
+			ZeroMemory(std::addressof(other.Offset), sizeof(void*));
+			this->hEvent = std::exchange(other.hEvent, nullptr);
+
+			return *this;
+		}
+
+		void Clear() noexcept
+		{
+			::ZeroMemory(this, sizeof(Super));
 		}
 
 		[[nodiscard]]
@@ -33,16 +52,7 @@ export namespace iconer::net
 			return std::addressof(other) == this;
 		}
 
-		constexpr IoContext(IoContext&&) noexcept = default;
-		constexpr IoContext& operator=(IoContext&&) = default;
-
 	protected:
-		struct NearFarOffsets { std::uint32_t offsetLower; std::uint32_t offsetUpper; };
-
-		std::uint64_t ioLower;
-		std::uint64_t ioUpper;
-		std::variant<NearFarOffsets, void*> myOffset;
-		void* eventObject;
 
 	private:
 		IoContext(const IoContext&) = delete;
