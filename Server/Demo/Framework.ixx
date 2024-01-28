@@ -80,7 +80,7 @@ export namespace demo
 		[[nodiscard]]
 		SocketResult OnUserConnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
 		[[nodiscard]]
-		SocketResult OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		SocketResult OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const size_t& bytes);
 		[[nodiscard]]
 		bool OnUserSignIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
 		[[nodiscard]]

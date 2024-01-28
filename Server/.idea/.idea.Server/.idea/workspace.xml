@@ -10,16 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="137edaab-b0ff-4f06-82c7-6c6e1815692b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Demo/Framework.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Framework.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/Framework.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Framework.ixx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/FrameworkAnnihilator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/FrameworkAnnihilator.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/FrameworkInitializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/FrameworkInitializer.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/FrameworkStarter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/FrameworkStarter.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/ISession.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/ISession.ixx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Private/IoCompletionPort.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Private/IoCompletionPort.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Private/Socket.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Private/Socket.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Socket.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Socket.ixx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/User.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/User.ixx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Demo/FrameworkEvents.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/FrameworkEvents.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -218,6 +209,7 @@
       <workItem from="1705921484383" duration="781000" />
       <workItem from="1706094163758" duration="4644000" />
       <workItem from="1706342877211" duration="3484000" />
+      <workItem from="1706436741003" duration="2198000" />
     </task>
     <servers />
   </component>

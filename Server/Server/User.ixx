@@ -69,6 +69,8 @@ export namespace iconer::app
 			Super::operator=(std::move(other));
 			ContextType::operator=(std::move(other));
 			mySocket = std::exchange(other.mySocket, iconer::net::Socket{});
+			lastOperation = std::exchange(other.lastOperation, UserOperations::None);
+			recvOffset = std::exchange(other.recvOffset, 0);
 			return *this;
 		}
 
@@ -90,7 +92,7 @@ export namespace iconer::app
 
 		template<size_t Size>
 		[[nodiscard]]
-		SocketResult Start(std::span<std::byte, Size> buffer)
+		SocketResult Receive(std::span<std::byte, Size> buffer)
 		{
 			if constexpr (Size == std::dynamic_extent)
 			{
@@ -110,6 +112,7 @@ export namespace iconer::app
 
 		iconer::net::Socket mySocket;
 		volatile UserOperations lastOperation;
+		volatile ptrdiff_t recvOffset;
 
 	private:
 		User(const User&) = delete;
