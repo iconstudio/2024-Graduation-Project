@@ -40,19 +40,17 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableFuzzer>true</EnableFuzzer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableFuzzer>true</EnableFuzzer>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -73,12 +71,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(ProjectDir)Network\Socket;$(ProjectDir)Network;$(ProjectDir)Application;$(ProjectDir)Utility;$(ProjectDir)Collection;$(IncludePath)</IncludePath>
+    <IntDir>Compile\$(Platform)\$(Configuration)\</IntDir>
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+    <UseStructuredOutput>true</UseStructuredOutput>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(ProjectDir)Network\Socket;$(ProjectDir)Network;$(ProjectDir)Application;$(ProjectDir)Utility;$(ProjectDir)Collection;$(IncludePath)</IncludePath>
+    <IntDir>Compile\$(Platform)\$(Configuration)\</IntDir>
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+    <UseStructuredOutput>true</UseStructuredOutput>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -120,16 +126,22 @@
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
-      <BuildStlModules>true</BuildStlModules>
-      <AnalyzeExternalRuleset>SecurityRules.ruleset</AnalyzeExternalRuleset>
       <UseFullPaths>false</UseFullPaths>
       <StringPooling>true</StringPooling>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>ws2_32.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <AdditionalDependencies>ws2_32.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ErrorReporting>PromptImmediately</ErrorReporting>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -145,10 +157,9 @@
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
-      <BuildStlModules>true</BuildStlModules>
-      <AnalyzeExternalRuleset>SecurityRules.ruleset</AnalyzeExternalRuleset>
       <UseFullPaths>false</UseFullPaths>
       <StringPooling>true</StringPooling>
+      <DiagnosticsFormat>Caret</DiagnosticsFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,153 +168,191 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>ws2_32.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <AdditionalDependencies>ws2_32.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ErrorReporting>PromptImmediately</ErrorReporting>
+    </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Collection\Array.ixx">
+    <ClCompile Include="AddressFamily.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Collection\Concurrent\ConcurrentList.ixx">
+    <ClCompile Include="Annihilator.ixx" />
+    <ClCompile Include="Array.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Collection\Concurrent\ConcurrentQueue.ixx">
+    <ClCompile Include="AtomicSwitcher.ixx" />
+    <ClCompile Include="BasicPacket.ixx" />
+    <ClCompile Include="BehaviourTree.ixx" />
+    <ClCompile Include="BorrowedPointer.ixx" />
+    <ClCompile Include="ConcurrentList.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Collection\Concurrent\ConcurrentStack.ixx">
+    <ClCompile Include="ConcurrentQueue.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Collection\Dynamic\FlatMap.ixx">
+    <ClCompile Include="ConcurrentStack.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Collection\Dynamic\SkipList.ixx">
+    <ClCompile Include="Constraints.ixx" />
+    <ClCompile Include="Coroutine.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Collection\FixedString.ixx">
+    <ClCompile Include="EndPoint.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Coroutine\Coroutine.cpp" />
-    <ClCompile Include="Coroutine\Coroutine.ixx" />
-    <ClCompile Include="Coroutine\Task.cpp" />
-    <ClCompile Include="Coroutine\Task.ixx" />
-    <ClCompile Include="Network\AddressFamily.cpp" />
-    <ClCompile Include="Network\AddressFamily.ixx" />
-    <ClCompile Include="Network\EndPoint.ixx">
+    <ClCompile Include="ErrorCode.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\ErrorCode.cpp" />
-    <ClCompile Include="Network\ErrorCode.ixx">
+    <ClCompile Include="File.ixx" />
+    <ClCompile Include="FixedString.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\InternetProtocol.ixx" />
-    <ClCompile Include="Network\IoCategory.ixx">
+    <ClCompile Include="FlatMap.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\IoCompletionPort.ixx">
+    <ClCompile Include="Handler.ixx" />
+    <ClCompile Include="IContext.ixx" />
+    <ClCompile Include="InternetProtocol.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\IoContext.ixx">
+    <ClCompile Include="IoCategory.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\IoEvent.ixx">
+    <ClCompile Include="IoCompletionPort.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\IpAddress.ixx">
+    <ClCompile Include="IoContext.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\Network.cpp" />
-    <ClCompile Include="Network\Network.ixx">
+    <ClCompile Include="IoEvent.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\Socket.cpp" />
-    <ClCompile Include="Network\Socket\Socket.ixx">
+    <ClCompile Include="IpAddress.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Network\Socket\SocketConnector.cpp" />
-    <ClCompile Include="Network\Socket\SocketObserver.cpp" />
-    <ClCompile Include="Network\Socket\SocketOptin.cpp" />
-    <ClCompile Include="Network\Socket\SocketOption.ixx" />
-    <ClCompile Include="Network\Socket\SocketOptout.cpp" />
-    <ClCompile Include="Network\Socket\SocketReceiver.cpp" />
-    <ClCompile Include="Network\Socket\SocketSender.cpp" />
+    <ClCompile Include="IProperty.ixx" />
+    <ClCompile Include="ISessionManager.ixx" />
+    <ClCompile Include="Logger.ixx" />
+    <ClCompile Include="LooseMonad.ixx" />
+    <ClCompile Include="Monad.ixx" />
+    <ClCompile Include="Network.ixx">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Packet.ixx" />
+    <ClCompile Include="Protocol.ixx" />
+    <ClCompile Include="Private\AddressFamily.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\Coroutine.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\ErrorCode.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
     <ClCompile Include="Private\File.cpp" />
+    <ClCompile Include="Private\IoCompletionPort.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
     <ClCompile Include="Private\Logger.cpp" />
+    <ClCompile Include="Private\Network.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\Socket.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\SocketConnector.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\SocketObserver.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\SocketOptin.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\SocketOptout.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\SocketReceiver.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\SocketSender.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Private\Task.cpp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="Property.ixx" />
+    <ClCompile Include="Room.ixx" />
+    <ClCompile Include="Serializer.ixx" />
     <ClCompile Include="Server.cpp" />
-    <ClCompile Include="Utility\Atomic\Atomic.ixx">
+    <ClCompile Include="ISession.ixx" />
+    <ClCompile Include="Singleton.ixx" />
+    <ClCompile Include="SkipList.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Utility\Atomic\AtomicSwitcher.ixx">
+    <ClCompile Include="Socket.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Utility\Concurrency\SpinLock.ixx" />
-    <ClCompile Include="Utility\Constraints.ixx">
+    <ClCompile Include="SocketOption.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Utility\Handler.ixx">
+    <ClCompile Include="SpinLock.ixx" />
+    <ClCompile Include="Task.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
-    <ClCompile Include="Utility\IO\File.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Utility\IProperty.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Utility\LooseMonad.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Utility\Memory\Annihilator.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Utility\Memory\BorrowedPointer.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Utility\Monad.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Utility\Property.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Utility\Singleton.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Utility\TypeList.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Utility\TypeTraits.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
-    <ClCompile Include="Utility\Visual\Logger.ixx">
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
-    </ClCompile>
+    <ClCompile Include="TypeList.ixx" />
+    <ClCompile Include="TypeTraits.ixx" />
+    <ClCompile Include="User.ixx" />
+    <ClCompile Include="UserManager.ixx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Colourful-Console\ColourfulConsole\ColourfulConsole.vcxproj">
+      <Project>{d123b380-57e9-4327-9b21-2df0902cb5b5}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BehaviourTreeHelper.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="..\Server.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
