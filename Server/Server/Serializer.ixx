@@ -10,6 +10,7 @@ module;
 #define ICONER_SERIALIZER_NODISCARD [[nodiscard("The serialized buffer has been lost!")]]
 
 export module Iconer.Utility.Serializer;
+import Iconer.Utility.Constraints;
 import Iconer.Utility.File;
 
 static constexpr unsigned char Byte = 0XFFU;
@@ -469,14 +470,21 @@ export namespace iconer::util
 		return dest;
 	}
 
-	/// <summary>Allocate a byte buffer for a string</summary>
+	/// <summary>Allocate a byte buffer for a enumeration</summary>
 	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
-		constexpr std::unique_ptr<std::byte[]> Serialize(const std::u32string_view str)
+		constexpr std::unique_ptr<std::byte[]> Serialize(const hard_enumerations auto& value)
 	{
-		auto buffer = std::make_unique<std::byte[]>(sizeof(char32_t) * str.length());
-		Serialize(buffer.get(), str);
+		auto buffer = std::make_unique<std::byte[]>(sizeof(value));
+		Serialize(buffer.get(), std::to_underlying(value));
 		return buffer;
+	}
+
+	/// <summary>Transfer a enumeration to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
+	constexpr std::byte* Serialize(std::byte* dest, const hard_enumerations auto& value)
+	{
+		return Serialize(dest, std::to_underlying(value));
 	}
 }
 
@@ -868,6 +876,18 @@ export namespace iconer::util
 
 			++out;
 		}
+
+		return it;
+	}
+
+	template<hard_enumerations T>
+	/// <summary>Read a enumeration from the byte buffer</summary>
+	/// <exception cref="std::out_of_range"/>
+	constexpr const std::byte* Deserialize(const std::byte* buffer, T& output)
+	{
+		std::underlying_type_t<T> result{};
+		auto it = Deserialize(buffer, result);
+		output = static_cast<T>(result);
 
 		return it;
 	}
