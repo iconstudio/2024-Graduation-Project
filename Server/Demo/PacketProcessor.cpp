@@ -19,9 +19,9 @@ demo::PacketProcessor(demo::Framework& framework
 		throw "Null packet error.";
 	}
 
-	std::uint8_t _pre_protocol = 0;
+	app::PacketProtocol protocol;
 	std::int16_t size = 0;
-	const std::byte* last_buf = util::Deserialize(util::Deserialize(packet_data.data(), _pre_protocol), size);
+	const std::byte* last_buf = util::Deserialize(util::Deserialize(packet_data.data(), protocol), size);
 
 	if (0 == size)
 	{
@@ -30,7 +30,7 @@ demo::PacketProcessor(demo::Framework& framework
 
 	if (size <= last_offset)
 	{
-		switch (static_cast<app::PacketProtocol>(_pre_protocol))
+		switch (protocol)
 		{
 			case app::PacketProtocol::UNKNOWN:
 			{
