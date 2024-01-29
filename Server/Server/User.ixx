@@ -35,6 +35,7 @@ export namespace iconer::app
 		using SocketResult = iconer::net::Socket::SocketResult;
 
 		explicit User() = default;
+
 		[[nodiscard]]
 		explicit constexpr User(const IdType& id, iconer::net::Socket&& socket)
 			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
@@ -101,11 +102,11 @@ export namespace iconer::app
 		{
 			if constexpr (Size == std::dynamic_extent)
 			{
-				return mySocket.Receive(*this, buffer, buffer.size());
+				return mySocket.Receive(*this, buffer.subspan(recvOffset), buffer.size() - recvOffset);
 			}
 			else
 			{
-				return mySocket.Receive(*this, buffer, Size);
+				return mySocket.Receive(*this, buffer.subspan(recvOffset), Size - recvOffset);
 			}
 		}
 
