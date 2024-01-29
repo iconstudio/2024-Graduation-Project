@@ -1,9 +1,11 @@
 module;
+#include <memory>
+#include <string>
+#include <string_view>
 
 module Demo.Framework;
 import Iconer.Utility.Serializer;
 import Iconer.Application.Packet;
-import <memory>;
 
 using namespace iconer;
 
@@ -20,7 +22,7 @@ demo::PacketProcessor(demo::Framework& framework
 
 	std::uint8_t _pre_protocol = 0;
 	std::int16_t size = 0;
-	util::Deserialize(util::Deserialize(packet_data.data(), _pre_protocol), size);
+	const std::byte* last_buf = util::Deserialize(util::Deserialize(packet_data.data(), _pre_protocol), size);
 
 	if (0 == size)
 	{
@@ -29,8 +31,7 @@ demo::PacketProcessor(demo::Framework& framework
 
 	if (size <= last_offset)
 	{
-		const app::PacketProtocol protocol = static_cast<app::PacketProtocol>(_pre_protocol);
-		switch (protocol)
+		switch (static_cast<app::PacketProtocol>(_pre_protocol))
 		{
 			case app::PacketProtocol::UNKNOWN:
 			{
