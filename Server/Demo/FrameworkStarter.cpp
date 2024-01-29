@@ -1,7 +1,7 @@
 module;
-#include <string>
-#include <string_view>
 module Demo.Framework;
+import <string>;
+import <string_view>;
 
 void
 demo::Framework::Start()
