@@ -32,7 +32,7 @@ export namespace iconer::app
 		using Super::IdType;
 		using Super::GetID;
 		using ContextType = IContext<UserStates>;
-		using SocketResult = iconer::net::Socket::SocketResult;
+		using RecvResult = iconer::net::Socket::AsyncRecvResult;
 
 		explicit User() = default;
 
@@ -98,7 +98,7 @@ export namespace iconer::app
 
 		template<size_t Size>
 		[[nodiscard]]
-		SocketResult Receive(std::span<std::byte, Size> buffer)
+		RecvResult Receive(std::span<std::byte, Size> buffer)
 		{
 			if constexpr (Size == std::dynamic_extent)
 			{

@@ -8,10 +8,10 @@ import <coroutine>;
 
 using namespace iconer;
 
-net::Socket::SocketResult RawSend(const net::Socket::HandleType& sock, ::WSABUF& buffer) noexcept;
-net::Socket::SocketResult RawSendEx(const net::Socket::HandleType& sock, ::WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;
+net::Socket::SyncSentResult RawSend(const net::Socket::HandleType& sock, ::WSABUF& buffer) noexcept;
+net::Socket::SyncSentResult RawSendEx(const net::Socket::HandleType& sock, ::WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;
 
-net::Socket::SocketResult
+net::Socket::SyncSentResult
 net::Socket::Send(std::span<const std::byte> memory)
 const noexcept
 {
@@ -24,7 +24,7 @@ const noexcept
 	return RawSend(myHandle, buffer);
 }
 
-net::Socket::SocketResult
+net::Socket::SyncSentResult
 net::Socket::Send(std::span<const std::byte> memory, size_t size) const noexcept
 {
 	::WSABUF buffer
@@ -36,7 +36,7 @@ net::Socket::Send(std::span<const std::byte> memory, size_t size) const noexcept
 	return RawSend(myHandle, buffer);
 }
 
-net::Socket::SocketResult
+net::Socket::SyncSentResult
 net::Socket::Send(const std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -50,41 +50,27 @@ const noexcept
 }
 
 bool
-net::Socket::Send(std::span<const std::byte> memory
-	, net::ErrorCode& error_code)
-	const noexcept
+net::Socket::Send(std::span<const std::byte> memory, net::ErrorCode& error_code)
+const noexcept
 {
-	return Send(memory).and_then(
-		[&](net::ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Send(memory).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
 bool
 net::Socket::Send(std::span<const std::byte> memory, size_t size, net::ErrorCode& error_code)
 const noexcept
 {
-	return Send(memory, std::move(size)).and_then(
-		[&](net::ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Send(memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
 bool
-net::Socket::Send(const std::byte* const& memory, size_t size
-	, net::ErrorCode& error_code)
-	const noexcept
+net::Socket::Send(const std::byte* const& memory, size_t size, net::ErrorCode& error_code)
+const noexcept
 {
-	return Send(memory, std::move(size)).and_then(
-		[&](net::ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Send(memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
-net::Socket::SocketResult
+net::Socket::SyncSentResult
 net::Socket::Send(net::IoContext& context, std::span<const std::byte> memory)
 const noexcept
 {
@@ -97,7 +83,7 @@ const noexcept
 	return RawSendEx(myHandle, buffer, std::addressof(context), nullptr);
 }
 
-net::Socket::SocketResult
+net::Socket::SyncSentResult
 net::Socket::Send(net::IoContext& context, std::span<const std::byte> memory, size_t size)
 const noexcept
 {
@@ -110,7 +96,7 @@ const noexcept
 	return RawSendEx(myHandle, buffer, std::addressof(context), nullptr);
 }
 
-net::Socket::SocketResult
+net::Socket::SyncSentResult
 net::Socket::Send(net::IoContext& context, const std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -124,45 +110,31 @@ const noexcept
 }
 
 bool
-net::Socket::Send(net::IoContext& context, std::span<const std::byte> memory
-	, net::ErrorCode& error_code)
-	const noexcept
+net::Socket::Send(net::IoContext& context, std::span<const std::byte> memory, net::ErrorCode& error_code)
+const noexcept
 {
-	return Send(context, memory).and_then(
-		[&](net::ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Send(context, memory).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
 bool
 net::Socket::Send(net::IoContext& context, std::span<const std::byte> memory, size_t size, net::ErrorCode& error_code)
 const noexcept
 {
-	return Send(context, memory, std::move(size)).and_then(
-		[&](net::ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Send(context, memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
 bool
-net::Socket::Send(net::IoContext& context, const std::byte* const& memory
-	, size_t size, net::ErrorCode& error_code)
-	const noexcept
+net::Socket::Send(net::IoContext& context, const std::byte* const& memory, size_t size, net::ErrorCode& error_code)
+const noexcept
 {
-	return Send(context, memory, std::move(size)).and_then(
-		[&](net::ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Send(context, memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
-net::Socket::SocketTask
+net::Socket::SendTask
 net::Socket::MakeSendTask(net::IoContext& context, std::span<const std::byte> memory)
 const noexcept
 {
-	if (SocketResult sent = Send(context, memory); not sent)
+	if (auto sent = Send(context, memory); sent.has_value())
 	{
 		co_return std::move(sent);
 	}
@@ -178,19 +150,19 @@ const noexcept
 
 	if (FALSE == result)
 	{
-		co_return net::AcquireNetworkError();
+		co_return std::unexpected(net::AcquireNetworkError());
 	}
 	else
 	{
-		co_return std::nullopt;
+		co_return transferred_bytes;
 	}
 }
 
-net::Socket::SocketTask
+net::Socket::SendTask
 net::Socket::MakeSendTask(net::IoContext& context, std::span<const std::byte> memory, size_t size)
 const noexcept
 {
-	if (SocketResult sent = Send(context, memory, size); not sent)
+	if (auto sent = Send(context, memory, size); sent.has_value())
 	{
 		co_return std::move(sent);
 	}
@@ -206,19 +178,19 @@ const noexcept
 
 	if (FALSE == result)
 	{
-		co_return net::AcquireNetworkError();
+		co_return std::unexpected(net::AcquireNetworkError());
 	}
 	else
 	{
-		co_return std::nullopt;
+		co_return transferred_bytes;
 	}
 }
 
-net::Socket::SocketTask
+net::Socket::SendTask
 net::Socket::MakeSendTask(net::IoContext& context, const std::byte* const& memory, size_t size)
 const noexcept
 {
-	if (SocketResult sent = Send(context, memory, size); not sent)
+	if (auto sent = Send(context, memory, size); sent.has_value())
 	{
 		co_return std::move(sent);
 	}
@@ -234,36 +206,36 @@ const noexcept
 
 	if (FALSE == result)
 	{
-		co_return net::AcquireNetworkError();
+		co_return std::unexpected(net::AcquireNetworkError());
 	}
 	else
 	{
-		co_return std::nullopt;
+		co_return transferred_bytes;
 	}
 }
 
-net::Socket::SocketTask
+net::Socket::SendTask
 net::Socket::MakeSendTask(const std::shared_ptr<net::IoContext>& context, std::span<const std::byte> memory)
 const noexcept
 {
 	return MakeSendTask(*context, std::move(memory));
 }
 
-net::Socket::SocketTask
+net::Socket::SendTask
 net::Socket::MakeSendTask(const std::shared_ptr<net::IoContext>& context, std::span<const std::byte> memory, size_t size)
 const noexcept
 {
 	return MakeSendTask(*context, std::move(memory), std::move(size));
 }
 
-net::Socket::SocketTask
+net::Socket::SendTask
 net::Socket::MakeSendTask(const std::shared_ptr<net::IoContext>& context, const std::byte* const& memory, size_t size)
 const noexcept
 {
 	return MakeSendTask(*context, memory, std::move(size));
 }
 
-net::Socket::SocketTask
+net::Socket::SendTask
 net::Socket::AsyncSend(net::IoContext& context, std::span<const std::byte> memory)
 const noexcept
 {
@@ -273,7 +245,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::SocketTask
+net::Socket::SendTask
 net::Socket::AsyncSend(net::IoContext& context, std::span<const std::byte> memory, size_t size)
 const noexcept
 {
@@ -283,7 +255,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::SocketTask
+net::Socket::SendTask
 net::Socket::AsyncSend(net::IoContext& context, const std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -293,7 +265,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::SocketResult
+net::Socket::SyncSentResult
 RawSend(const net::Socket::HandleType& sock
 	, ::WSABUF& buffer)
 	noexcept
@@ -304,15 +276,15 @@ RawSend(const net::Socket::HandleType& sock
 		, 0
 		, nullptr, nullptr))
 	{
-		return std::nullopt;
+		return bytes;
 	}
 	else
 	{
-		return net::AcquireNetworkError();
+		return std::unexpected(net::AcquireNetworkError());
 	}
 }
 
-net::Socket::SocketResult
+net::Socket::SyncSentResult
 RawSendEx(const net::Socket::HandleType& sock
 	, ::WSABUF& buffer
 	, void* context
@@ -326,17 +298,17 @@ RawSendEx(const net::Socket::HandleType& sock
 		, reinterpret_cast<::LPWSAOVERLAPPED>(context)
 		, routine))
 	{
-		return std::nullopt;
+		return bytes;
 	}
 	else
 	{
 		if (net::ErrorCode error = net::AcquireNetworkError(); error != net::ErrorCode::PendedIoOperation)
 		{
-			return std::move(error);
+			return std::unexpected(std::move(error));
 		}
 		else
 		{
-			return std::nullopt;
+			return 0UL;
 		}
 	}
 }
