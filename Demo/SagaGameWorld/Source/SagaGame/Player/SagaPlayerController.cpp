@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Player/SagaPlayerController.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 
@@ -14,6 +11,35 @@ void ASagaPlayerController::BeginPlay()
 	SetInputMode(GameOnlyInputMode);
 }
 
+void ASagaPlayerController::SetupInputComponent()
+{
+    Super::SetupInputComponent();
+    moveForwardKey = ASagaPlayerInputSettings::GetMoveForwardKey();
+    moveBackwardKey = ASagaPlayerInputSettings::GetMoveBackwardKey();
+    moveLeftKey = ASagaPlayerInputSettings::GetMoveLeftKey();
+    moveRightKey = ASagaPlayerInputSettings::GetMoveRightKey();
+    jumpKey = ASagaPlayerInputSettings::GetJumpKey();
+
+    // Jump 액션에 대한 입력 바인딩
+    //InputComponent->BindAction("Jump", IE_Pressed, this, &ASagaPlayerController::Jump);
+}
+
+void ASagaPlayerController::StartMoveForward()
+{
+
+}
+
+void ASagaPlayerController::EndMoveForward()
+{
+
+}
+
+void ASagaPlayerController::StartJump()
+{
+    // 서버로 키 입력 전송
+    //SendKeyToServer(EKeys::SpaceBar);
+}
+
 void ASagaPlayerController::SendKeyToServer(FKey Key)
 {
     //FString KeyString = Key.ToString();
@@ -23,20 +49,6 @@ void ASagaPlayerController::SendKeyToServer(FKey Key)
 
     //// 데이터 전송
     //bool Successful = SagaClientSocket->Send((uint8*)TCHAR_TO_UTF8(SerializedChar), Size, Sent);
-}
-
-void ASagaPlayerController::SetupInputComponent()
-{
-    Super::SetupInputComponent();
-
-    // Jump 액션에 대한 입력 바인딩
-    //InputComponent->BindAction("Jump", IE_Pressed, this, &ASagaPlayerController::Jump);
-}
-
-void ASagaPlayerController::Jump()
-{
-    // 서버로 키 입력 전송
-    //SendKeyToServer(EKeys::SpaceBar);
 }
 
 FSocket* ASagaPlayerController::CreateSocket()
