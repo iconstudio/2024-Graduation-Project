@@ -1,5 +1,7 @@
 module;
 #include <cstdio>
+#include <string>
+#include <string_view>
 module Demo.Framework;
 
 void

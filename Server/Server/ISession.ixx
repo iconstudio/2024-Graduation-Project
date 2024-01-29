@@ -5,6 +5,7 @@ import Iconer.Utility.Property;
 import <concepts>;
 import <memory>;
 import <string>;
+import <string_view>;
 
 export namespace iconer::app
 {

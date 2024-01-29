@@ -350,7 +350,7 @@ export namespace iconer::util
 		return buffer;
 	}
 
-	// <summary>Transfer a string to the byte buffer</summary>
+	/// <summary>Transfer a string to the byte buffer</summary>
 	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::string_view str)
 	{
@@ -370,7 +370,7 @@ export namespace iconer::util
 		return buffer;
 	}
 
-	// <summary>Transfer a wide string to the byte buffer</summary>
+	/// <summary>Transfer a wide string to the byte buffer</summary>
 	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::wstring_view str)
 	{
@@ -387,6 +387,68 @@ export namespace iconer::util
 	constexpr std::unique_ptr<std::byte[]> Serialize(const std::wstring_view str)
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(wchar_t) * str.length());
+		Serialize(buffer.get(), str);
+		return buffer;
+	}
+
+	/// <summary>Transfer an utf-8 string to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
+	constexpr std::byte* Serialize(std::byte* dest, const std::u8string_view str)
+	{
+		return std::ranges::transform(str.cbegin(), str.cend(), dest
+			, [](const char8_t& ch) noexcept {
+				return std::bit_cast<std::byte>(ch);
+		}).out;
+	}
+
+	/// <summary>Allocate a byte buffer for an utf-8 string</summary>
+	/// <exception cref="std::bad_alloc"/>
+	ICONER_SERIALIZER_NODISCARD
+		constexpr std::unique_ptr<std::byte[]> Serialize(const std::u8string_view str)
+	{
+		auto buffer = std::make_unique<std::byte[]>(sizeof(char8_t) * str.length());
+		Serialize(buffer.get(), str);
+		return buffer;
+	}
+
+	/// <summary>Transfer a wide string to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
+	constexpr std::byte* Serialize(std::byte* dest, const std::u16string_view str)
+	{
+		std::ranges::for_each(str, [&dest](const char16_t& ch) noexcept {
+			dest = Serialize(dest, ch);
+		});
+
+		return dest;
+	}
+
+	/// <summary>Allocate a byte buffer for a string</summary>
+	/// <exception cref="std::bad_alloc"/>
+	ICONER_SERIALIZER_NODISCARD
+		constexpr std::unique_ptr<std::byte[]> Serialize(const std::u16string_view str)
+	{
+		auto buffer = std::make_unique<std::byte[]>(sizeof(char16_t) * str.length());
+		Serialize(buffer.get(), str);
+		return buffer;
+	}
+
+	/// <summary>Transfer a wide string to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
+	constexpr std::byte* Serialize(std::byte* dest, const std::u32string_view str)
+	{
+		std::ranges::for_each(str, [&dest](const char32_t& ch) noexcept {
+			dest = Serialize(dest, ch);
+		});
+
+		return dest;
+	}
+
+	/// <summary>Allocate a byte buffer for a string</summary>
+	/// <exception cref="std::bad_alloc"/>
+	ICONER_SERIALIZER_NODISCARD
+		constexpr std::unique_ptr<std::byte[]> Serialize(const std::u32string_view str)
+	{
+		auto buffer = std::make_unique<std::byte[]>(sizeof(char32_t) * str.length());
 		Serialize(buffer.get(), str);
 		return buffer;
 	}
@@ -573,7 +635,20 @@ export namespace iconer::util
 
 		return it;
 	}
-	
+
+	// Read a string from the byte buffer
+	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, std::string& output)
+	{
+		output.reserve(length);
+
+		for (auto it = buffer; it < buffer + length; ++it)
+		{
+			output.push_back(std::bit_cast<char>(*it));
+		}
+
+		return buffer + length;
+	}
+
 }
 
 module :private;
@@ -630,7 +705,7 @@ namespace iconer::util::test
 	{
 		std::byte buffer[2]{};
 
-		constexpr int cvt = L'가';
+		constexpr auto cvt = L'가';
 		Serialize(buffer, L'가');
 
 		return buffer[1];
@@ -640,7 +715,7 @@ namespace iconer::util::test
 	{
 		std::byte buffer[2]{};
 
-		constexpr int cvt = u'가';
+		constexpr auto cvt = u'가';
 		Serialize(buffer, u'가');
 
 		return buffer[1];
@@ -650,7 +725,7 @@ namespace iconer::util::test
 	{
 		std::byte buffer[4]{};
 
-		constexpr int cvt = U'가';
+		constexpr auto cvt = U'가';
 		Serialize(buffer, U'가');
 
 		return buffer[1];
@@ -681,8 +756,7 @@ namespace iconer::util::test
 	
 	constexpr char16_t aaa11()
 	{
-		constexpr char16_t test_char16 = u'하';
-		constexpr int test_char16_cvt = test_char16;
+		constexpr auto test_char16 = u'하';
 
 		std::byte buffer[2]{};
 		Serialize(buffer, test_char16);
@@ -757,7 +831,33 @@ namespace iconer::util::test
 
 		return result;
 	}
+
+	constexpr size_t aaa17()
+	{
+		constexpr std::string_view test_str = "가나다라마바사아자차카타파하";
+
+		std::byte buffer[test_str.size() * 2 + 1]{};
+		Serialize(buffer, test_str);
+
+		std::string result{};
+		Deserialize(buffer, test_str.length(), result);
+
+		return result.length();
+	}
 	
+	constexpr char aaa18()
+	{
+		constexpr std::string_view test_str = "가나다라마바사아자차카타파하";
+
+		std::byte buffer[test_str.size() * 2 + 1]{};
+		Serialize(buffer, test_str);
+
+		std::string result{};
+		Deserialize(buffer, test_str.length(), result);
+
+		return result.at(0);
+	}
+
 	constexpr void testments()
 	{
 		constexpr auto v_aaa1 = aaa1();
@@ -776,5 +876,7 @@ namespace iconer::util::test
 		constexpr auto v_aaa14 = aaa14();
 		constexpr auto v_aaa15 = aaa15();
 		constexpr auto v_aaa16 = aaa16();
+		constexpr auto v_aaa17 = aaa17();
+		constexpr auto v_aaa18 = aaa18();
 	}
 }

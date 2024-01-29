@@ -1,5 +1,6 @@
 module;
 #include <bit>
+#include <string>
 #include <string_view>
 
 module Demo.Framework;

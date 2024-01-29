@@ -75,7 +75,6 @@
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>Compile\$(Platform)\$(Configuration)\</IntDir>
-    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <UseStructuredOutput>true</UseStructuredOutput>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -83,7 +82,6 @@
     <AllProjectBMIsArePublic>true</AllProjectBMIsArePublic>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>Compile\$(Platform)\$(Configuration)\</IntDir>
-    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
     <UseStructuredOutput>true</UseStructuredOutput>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
