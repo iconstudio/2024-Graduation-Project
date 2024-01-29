@@ -1,3 +1,4 @@
+module;
 module Demo.Framework;
 
 demo::Framework::SocketResult

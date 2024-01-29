@@ -1,6 +1,7 @@
+module;
 module Demo.Framework;
 import Iconer.Net;
-import <format>;
+import <memory>;
 
 using namespace iconer;
 
@@ -21,7 +22,8 @@ demo::Framework::Awake()
 {
 	LockPhase();
 
-	myLogger.Awake(L"server.log");
+	using namespace std::string_view_literals;
+	myLogger.Awake(L"server.log"sv);
 	
 	if (const auto startup_err = net::Startup())
 	{
