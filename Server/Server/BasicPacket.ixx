@@ -12,12 +12,12 @@ export namespace iconer::app
 		virtual constexpr ~BasicPacket() noexcept = default;
 
 		explicit constexpr BasicPacket(const PacketProtocol& protocol) noexcept
-			: myProtocol(protocol)
+			: myProtocol(protocol), mySize(0)
 		{
 		}
 
 		explicit constexpr BasicPacket(PacketProtocol&& protocol) noexcept
-			: myProtocol(std::move(protocol))
+			: myProtocol(std::move(protocol)), mySize(0)
 		{
 		}
 
@@ -36,11 +36,24 @@ export namespace iconer::app
 		[[nodiscard]]
 		virtual size_t GetByteSize() const noexcept = 0;
 
+		[[nodiscard]]
+		static consteval size_t MinSize() noexcept
+		{
+			return sizeof(PacketProtocol) + sizeof(std::uint32_t);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedMinSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(sizeof(PacketProtocol) + sizeof(std::uint32_t));
+		}
+
 		constexpr BasicPacket(const BasicPacket&) noexcept = default;
 		constexpr BasicPacket& operator=(const BasicPacket&) noexcept = default;
 		constexpr BasicPacket(BasicPacket&&) noexcept = default;
 		constexpr BasicPacket& operator=(BasicPacket&&) noexcept = default;
 
 		PacketProtocol myProtocol;
+		std::uint32_t mySize;
 	};
 }
