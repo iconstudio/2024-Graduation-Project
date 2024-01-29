@@ -1,3 +1,6 @@
+module;
+#include <string_view>
+
 module Demo.Framework;
 import Iconer.Application.User;
 

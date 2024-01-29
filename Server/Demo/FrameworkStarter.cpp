@@ -1,3 +1,5 @@
+module;
+#include <string_view>
 module Demo.Framework;
 
 void
