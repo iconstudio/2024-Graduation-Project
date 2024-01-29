@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestChatServer", "Tests\Tes
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Demo", "Demo\Demo.vcxproj", "{01656469-A3FD-4BDD-8436-FE96F53737AF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test Client", "Test Client\Test Client.vcxproj", "{25E41881-34E0-4EB3-96CB-D8559BC7A1A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -51,6 +53,14 @@ Global
 		{01656469-A3FD-4BDD-8436-FE96F53737AF}.Release|x64.Build.0 = Release|x64
 		{01656469-A3FD-4BDD-8436-FE96F53737AF}.Release|x86.ActiveCfg = Release|Win32
 		{01656469-A3FD-4BDD-8436-FE96F53737AF}.Release|x86.Build.0 = Release|Win32
+		{25E41881-34E0-4EB3-96CB-D8559BC7A1A9}.Debug|x64.ActiveCfg = Debug|x64
+		{25E41881-34E0-4EB3-96CB-D8559BC7A1A9}.Debug|x64.Build.0 = Debug|x64
+		{25E41881-34E0-4EB3-96CB-D8559BC7A1A9}.Debug|x86.ActiveCfg = Debug|Win32
+		{25E41881-34E0-4EB3-96CB-D8559BC7A1A9}.Debug|x86.Build.0 = Debug|Win32
+		{25E41881-34E0-4EB3-96CB-D8559BC7A1A9}.Release|x64.ActiveCfg = Release|x64
+		{25E41881-34E0-4EB3-96CB-D8559BC7A1A9}.Release|x64.Build.0 = Release|x64
+		{25E41881-34E0-4EB3-96CB-D8559BC7A1A9}.Release|x86.ActiveCfg = Release|Win32
+		{25E41881-34E0-4EB3-96CB-D8559BC7A1A9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
