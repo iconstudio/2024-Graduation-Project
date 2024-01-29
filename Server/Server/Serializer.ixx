@@ -1,9 +1,11 @@
 module;
+#include <bit>
 #include <memory>
 #include <string>
 #include <string_view>
 #include <format>
-#include <bit>
+#include <algorithm>
+#include <ranges>
 #define ICONER_SERIALIZER_NODISCARD [[nodiscard("The serialized buffer has been lost!")]]
 
 export module Iconer.Utility.Serializer;
@@ -20,14 +22,16 @@ constexpr char RShift(const T& value, const size_t& times) noexcept
 
 export namespace iconer::util
 {
-	// Transfer a boolean value to the byte buffer
+	/// <summary>Transfer a boolean value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const bool& value)
 	{
 		dest[0] = std::bit_cast<std::byte>(value);
 		return dest + 1;
 	}
 
-	// Allocate a byte buffer for a boolean value
+	/// <summary>Allocate a byte buffer for a boolean value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const bool& value)
 	{
@@ -36,14 +40,16 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer a character to the byte buffer
+	/// <summary>Transfer a character to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const char& value)
 	{
 		dest[0] = std::bit_cast<std::byte>(value);
 		return dest + 1;
 	}
 
-	// Allocate a byte buffer for a character
+	/// <summary>Allocate a byte buffer for a character</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const char& value)
 	{
@@ -52,14 +58,16 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer an unsigned character to the byte buffer
+	/// <summary>Transfer an unsigned character to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const unsigned char& value)
 	{
 		dest[0] = std::bit_cast<std::byte>(value);
 		return dest + 1;
 	}
 
-	// Allocate a byte buffer for an unsigned character
+	/// <summary>Allocate a byte buffer for an unsigned character</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const unsigned char& value)
 	{
@@ -68,14 +76,16 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer an utf-8 character to the byte buffer
+	/// <summary>Transfer an utf-8 character to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const char8_t& value)
 	{
 		dest[0] = std::bit_cast<std::byte>(value);
 		return dest + 1;
 	}
 
-	// Allocate a byte buffer for an utf-8 character
+	/// <summary>Allocate a byte buffer for an utf-8 character</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const char8_t& value)
 	{
@@ -84,7 +94,8 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer a 16-bit integer value to the byte buffer
+	/// <summary>Transfer a 16-bit integer value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::int16_t& value)
 	{
 		const auto longer = static_cast<std::int32_t>(value);
@@ -94,7 +105,8 @@ export namespace iconer::util
 		return dest + 2;
 	}
 	
-	// Allocate a byte buffer for a 16-bit integer value
+	/// <summary>Allocate a byte buffer for a 16-bit integer value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const std::int16_t& value)
 	{
@@ -103,7 +115,8 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer an unsigned 16-bit integer value to the byte buffer
+	/// <summary>Transfer an unsigned 16-bit integer value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::uint16_t& value)
 	{
 		const auto longer = static_cast<std::uint32_t>(value);
@@ -113,7 +126,8 @@ export namespace iconer::util
 		return dest + 2;
 	}
 	
-	// Allocate a byte buffer for an unsigned 16-bit integer value
+	/// <summary>Allocate a byte buffer for an unsigned 16-bit integer value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const std::uint16_t& value)
 	{
@@ -122,7 +136,8 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer an utf-16 character to the byte buffer
+	/// <summary>Transfer an utf-16 character to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const char16_t& value)
 	{
 		const auto longer = static_cast<std::uint32_t>(value);
@@ -132,7 +147,8 @@ export namespace iconer::util
 		return dest + 2;
 	}
 
-	// Allocate a byte buffer for an utf-16 character
+	/// <summary>Allocate a byte buffer for an utf-16 character</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const char16_t& value)
 	{
@@ -141,7 +157,8 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer a wide character to the byte buffer
+	/// <summary>Transfer a wide character to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const wchar_t& value)
 	{
 		const auto longer = static_cast<std::uint32_t>(value);
@@ -151,7 +168,8 @@ export namespace iconer::util
 		return dest + 2;
 	}
 	
-	// Allocate a byte buffer for a wide character
+	/// <summary>Allocate a byte buffer for a wide character</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const wchar_t& value)
 	{
@@ -160,7 +178,8 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer a 32-bit integer value to the byte buffer
+	/// <summary>Transfer a 32-bit integer value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::int32_t& value)
 	{
 		const auto longer = static_cast<std::int64_t>(value);
@@ -172,7 +191,8 @@ export namespace iconer::util
 		return dest + 4;
 	}
 
-	// Allocate a byte buffer for a 32-bit integer value
+	/// <summary>Allocate a byte buffer for a 32-bit integer value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const std::int32_t& value)
 	{
@@ -181,7 +201,8 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer an unsigned 32-bit integer value to the byte buffer
+	/// <summary>Transfer an unsigned 32-bit integer value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::uint32_t& value)
 	{
 		const auto longer = static_cast<std::uint64_t>(value);
@@ -193,7 +214,8 @@ export namespace iconer::util
 		return dest + 4;
 	}
 
-	// Allocate a byte buffer for  an unsigned 32-bit integer value
+	/// <summary>Allocate a byte buffer for  an unsigned 32-bit integer value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const std::uint32_t& value)
 	{
@@ -202,7 +224,8 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer a 32-bit integer value to the byte buffer
+	/// <summary>Transfer a 32-bit integer value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const long& value)
 	{
 		const auto longer = static_cast<std::int64_t>(value);
@@ -214,7 +237,8 @@ export namespace iconer::util
 		return dest + 4;
 	}
 
-	// Allocate a byte buffer for a 32-bit integer value
+	/// <summary>Allocate a byte buffer for a 32-bit integer value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const long& value)
 	{
@@ -223,7 +247,8 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer an unsigned 32-bit integer value to the byte buffer
+	/// <summary>Transfer an unsigned 32-bit integer value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const unsigned long& value)
 	{
 		const auto longer = static_cast<std::uint64_t>(value);
@@ -235,7 +260,8 @@ export namespace iconer::util
 		return dest + 4;
 	}
 
-	// Allocate a byte buffer for an unsigned 32-bit integer value
+	/// <summary>Allocate a byte buffer for an unsigned 32-bit integer value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const unsigned long& value)
 	{
@@ -244,7 +270,8 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer a 64-bit integer value to the byte buffer
+	/// <summary>Transfer a 64-bit integer value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::int64_t& value)
 	{
 		std::byte* it = dest;
@@ -256,7 +283,8 @@ export namespace iconer::util
 		return it;
 	}
 
-	// Allocate a byte buffer for a 64-bit integer value
+	/// <summary>Allocate a byte buffer for a 64-bit integer value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const std::int64_t& value)
 	{
@@ -265,7 +293,8 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer an unsigned 64-bit integer value to the byte buffer
+	/// <summary>Transfer an unsigned 64-bit integer value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::uint64_t& value)
 	{
 		std::byte* it = dest;
@@ -277,7 +306,8 @@ export namespace iconer::util
 		return it;
 	}
 
-	// Allocate a byte buffer for an unsigned 64-bit integer value
+	/// <summary>Allocate a byte buffer for an unsigned 64-bit integer value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const std::uint64_t& value)
 	{
@@ -286,13 +316,15 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer a 32-bit floating point value to the byte buffer
+	/// <summary>Transfer a 32-bit floating point value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::float_t& value)
 	{
 		return Serialize(dest, std::bit_cast<std::int32_t>(value));
 	}
 
-	// Allocate a byte buffer for a 32-bit floating point value
+	/// <summary>Allocate a byte buffer for a 32-bit floating point value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const std::float_t& value)
 	{
@@ -301,18 +333,61 @@ export namespace iconer::util
 		return buffer;
 	}
 	
-	// Transfer a 32-bit floating point value to the byte buffer
+	/// <summary>Transfer a 32-bit floating point value to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::double_t& value)
 	{
 		return Serialize(dest, std::bit_cast<std::int64_t>(value));
 	}
 
-	// Allocate a byte buffer for a 64-bit floating point value
+	/// <summary>Allocate a byte buffer for a 64-bit floating point value</summary>
+	/// <exception cref="std::bad_alloc"/>
 	ICONER_SERIALIZER_NODISCARD
 	constexpr std::unique_ptr<std::byte[]> Serialize(const std::double_t& value)
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(std::int64_t));
 		Serialize(buffer.get(), std::bit_cast<std::int64_t>(value));
+		return buffer;
+	}
+
+	// <summary>Transfer a string to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
+	constexpr std::byte* Serialize(std::byte* dest, const std::string_view str)
+	{
+		return std::ranges::transform(str.cbegin(), str.cend(), dest
+			, [](const char& ch) noexcept {
+			return std::bit_cast<std::byte>(ch);
+		}).out;
+	}
+	
+	/// <summary>Allocate a byte buffer for a string</summary>
+	/// <exception cref="std::bad_alloc"/>
+	ICONER_SERIALIZER_NODISCARD
+	constexpr std::unique_ptr<std::byte[]> Serialize(const std::string_view str)
+	{
+		auto buffer = std::make_unique<std::byte[]>(sizeof(char) * str.length());
+		Serialize(buffer.get(), str);
+		return buffer;
+	}
+
+	// <summary>Transfer a wide string to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
+	constexpr std::byte* Serialize(std::byte* dest, const std::wstring_view str)
+	{
+		std::ranges::for_each(str, [&dest](const wchar_t& ch) noexcept {
+			dest = Serialize(dest, ch);
+		});
+
+		return dest;
+	}
+
+	/// <summary>Allocate a byte buffer for a wide string</summary>
+	/// <exception cref="std::bad_alloc"/>
+	ICONER_SERIALIZER_NODISCARD
+	constexpr std::unique_ptr<std::byte[]> Serialize(const std::wstring_view str)
+	{
+		auto buffer = std::make_unique<std::byte[]>(sizeof(wchar_t) * str.length());
+		Serialize(buffer.get(), str);
 		return buffer;
 	}
 }
