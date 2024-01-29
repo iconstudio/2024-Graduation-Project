@@ -150,7 +150,7 @@ export namespace demo
 		}
 
 		friend void Worker(Framework& framework, size_t nth);
-		friend void PacketProcessor(Framework& framework, std::uintptr_t session_raw_id, void* packet_handle, size_t handle_size);
+		friend ptrdiff_t PacketProcessor(Framework& framework, const IdType& session_id, const std::byte* packet_ptr, ptrdiff_t last_offset);
 		static void LockPhase() noexcept;
 		static void UnlockPhase() noexcept;
 
@@ -171,5 +171,5 @@ export namespace demo
 	};
 
 	void Worker(Framework& framework, size_t nth);
-	void PacketProcessor(Framework& framework, std::uintptr_t session_raw_id, void* packet_handle, size_t handle_size);
+	ptrdiff_t PacketProcessor(Framework& framework, const Framework::IdType& session_id, const std::byte* packet_handle, ptrdiff_t last_offset);
 }
