@@ -34,11 +34,13 @@ export namespace iconer::app
 		using ContextType = IContext<UserStates>;
 		using SocketResult = iconer::net::Socket::SocketResult;
 
+		explicit User() = default;
 		[[nodiscard]]
 		explicit constexpr User(const IdType& id, iconer::net::Socket&& socket)
 			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
 			: Super(id), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
+			, lastOperation(), recvOffset(0)
 		{
 		}
 
@@ -47,6 +49,7 @@ export namespace iconer::app
 			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
 			: Super(std::move(id)), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
+			, lastOperation(), recvOffset(0)
 		{
 		}
 
@@ -61,6 +64,8 @@ export namespace iconer::app
 		User(User&& other) noexcept(nothrow_move_constructibles<Super, ContextType, iconer::net::Socket>)
 			: Super(std::move(other)), ContextType(std::move(other))
 			, mySocket(std::exchange(other.mySocket, iconer::net::Socket{}))
+			, lastOperation(std::exchange(other.lastOperation, UserOperations::None))
+			, recvOffset(std::exchange(other.recvOffset, 0))
 		{
 		}
 
