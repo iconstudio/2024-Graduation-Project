@@ -10,17 +10,17 @@ using namespace iconer;
 ptrdiff_t
 demo::PacketProcessor(demo::Framework& framework
 	, const demo::Framework::IdType& session_id
-	, const std::byte* packet_ptr
+	, std::span<std::byte, demo::Framework::userRecvSize> packet_data
 	, ptrdiff_t last_offset)
 {
-	if (nullptr == packet_ptr)
+	if (nullptr == packet_data.data())
 	{
 		throw "Null packet error.";
 	}
 
 	std::uint8_t _pre_protocol = 0;
 	std::int16_t size = 0;
-	util::Deserialize(util::Deserialize(packet_ptr, _pre_protocol), size);
+	util::Deserialize(util::Deserialize(packet_data.data(), _pre_protocol), size);
 
 	if (0 == size)
 	{
