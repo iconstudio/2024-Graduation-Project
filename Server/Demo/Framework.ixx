@@ -1,11 +1,3 @@
-module;
-#include <memory>
-#include <vector>
-#include <array>
-#include <span>
-#include <thread>
-#include <latch>
-
 export module Demo.Framework;
 import Iconer.Utility.Logger;
 import Iconer.Utility.ColourfulConsole;
@@ -14,8 +6,14 @@ import Iconer.Net.IoContext;
 import Iconer.Net.Socket;
 import Iconer.Net.IoCompletionPort;
 import Iconer.Application.UserManager;
-import <string>;
-import <string_view>;
+import <memory>;
+import <vector>;
+import <array>;
+import <span>;
+import <thread>;
+import <latch>;
+export import <string>;
+export import <string_view>;
 
 export namespace demo
 {
