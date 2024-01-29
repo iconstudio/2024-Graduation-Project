@@ -39,13 +39,13 @@ export namespace iconer::app
 		[[nodiscard]]
 		static consteval size_t MinSize() noexcept
 		{
-			return sizeof(PacketProtocol) + sizeof(std::uint32_t);
+			return sizeof(PacketProtocol) + sizeof(std::int16_t);
 		}
 
 		[[nodiscard]]
 		static consteval ptrdiff_t SignedMinSize() noexcept
 		{
-			return static_cast<ptrdiff_t>(sizeof(PacketProtocol) + sizeof(std::uint32_t));
+			return static_cast<ptrdiff_t>(sizeof(PacketProtocol) + sizeof(std::int16_t));
 		}
 
 		constexpr BasicPacket(const BasicPacket&) noexcept = default;
@@ -54,6 +54,6 @@ export namespace iconer::app
 		constexpr BasicPacket& operator=(BasicPacket&&) noexcept = default;
 
 		PacketProtocol myProtocol;
-		std::uint32_t mySize;
+		std::int16_t mySize;
 	};
 }
