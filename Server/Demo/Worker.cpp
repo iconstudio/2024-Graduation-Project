@@ -71,7 +71,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 					{
 						logger.LogError(L"\tReceving has failed on user {}\n", user_id);
 					}
-					else if (auto error = framework.OnReceived(*user, user_id, status))
+					else if (auto error = framework.OnReceived(*user, user_id, status, io_bytes))
 					{
 						logger.LogError(L"\ttReceving has failed on user {} due to {}\n", user_id, error.value());
 					}
