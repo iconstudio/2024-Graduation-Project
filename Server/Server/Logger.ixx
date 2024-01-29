@@ -1,20 +1,19 @@
-module;
-#include <string>
-#include <string_view>
-#include <format>
-#include <filesystem>
-
 export module Iconer.Utility.Logger;
 import Iconer.Utility.Handler;
 import Iconer.Utility.File;
+export import <string>;
+export import <string_view>;
+import <format>;
+import <filesystem>;
 
 export namespace iconer::util
 {
-	class [[nodiscard]] Logger final : public Handler<iconer::util::File>
+	class [[nodiscard]] Logger final : Handler<iconer::util::File>
 	{
 	public:
+		using Super = Handler<iconer::util::File>;
+
 		Logger() noexcept = default;
-		~Logger() noexcept = default;
 
 		void Awake(const std::filesystem::path& log_file) noexcept;
 		void Cleanup() noexcept;
