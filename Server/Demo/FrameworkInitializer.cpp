@@ -59,7 +59,10 @@ demo::Framework::Awake()
 	}
 
 	myLogger.Log(L"\tallocating memory of buffers...\n");
+	recvSpace = std::make_unique<std::byte[]>(userRecvSize * maxUsersNumber);
+	userSpace = std::make_unique<app::User[]>(maxUsersNumber);
 
+	myLogger.Log(L"\tallocating space of objects...\n");
 	userManager.Reserve(maxUsersNumber);
 	serverWorkers.reserve(workersCount);
 
