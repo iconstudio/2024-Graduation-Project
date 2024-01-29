@@ -3,7 +3,6 @@ module;
 #include <string_view>
 
 module Demo.Framework;
-import Iconer.Utility.Serializer;
 import Iconer.Application.BasicPacket;
 
 using namespace iconer;
@@ -70,30 +69,11 @@ demo::Framework::OnReceived(app::User& user, const IdType& id, app::UserStates& 
 		constexpr ptrdiff_t minimal_size = app::BasicPacket::SignedMinSize();
 		if (minimal_size <= user_recv_offset)
 		{
-			auto buffer_ptr = user_buffer.data();
-
-			app::PacketProtocol protocol = static_cast<app::PacketProtocol>(std::bit_cast<std::uint8_t>(buffer_ptr[0]));
-			app::PacketProtocol protocol = static_cast<app::PacketProtocol>(std::bit_cast<std::uint8_t>(buffer_ptr[1]));
-
-
-			auto ptr = iconer::util::Serialize(0);
-
-			if (user_recv_offset == userRecvSize)
-			{
-
-			}
-			else
-			{
-			}
-
-			auto recently_recv_buffer = user_buffer.subspan(user_recv_offset);
-
+			user_recv_offset -= PacketProcessor(*this, id, user_buffer.data(), user_recv_offset);
 		}
-		else
-		{
-			// continue
-			return user.Receive(user_buffer);
-		}
+
+		// continue
+		return user.Receive(user_buffer);
 
 		switch (transit_state)
 		{
