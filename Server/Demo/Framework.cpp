@@ -1,3 +1,7 @@
+module;
+#include <string>
+#include <string_view>
+
 module Demo.Framework;
 import <atomic>;
 
