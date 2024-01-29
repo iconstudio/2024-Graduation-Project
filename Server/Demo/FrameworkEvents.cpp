@@ -71,49 +71,11 @@ demo::Framework::OnReceived(app::User& user, const IdType& id, app::UserStates& 
 
 		if (minimal_size <= user_recv_offset)
 		{
-			user_recv_offset -= PacketProcessor(*this, id, user_buffer, user_recv_offset);
+			user_recv_offset -= PacketProcessor(*this, user, id, transit_state, user_buffer, user_recv_offset);
 		}
 
 		// continue
 		return user.Receive(user_buffer);
-
-		switch (transit_state)
-		{
-			case app::UserStates::Idle:
-			{
-
-			}
-			break;
-
-			case app::UserStates::InLobby:
-			{
-
-			}
-			break;
-
-			case app::UserStates::InRoom:
-			{
-
-			}
-			break;
-
-			case app::UserStates::InGame:
-			{
-
-			}
-			break;
-
-			case app::UserStates::Dead:
-			{
-
-			}
-			break;
-
-			default:
-			{
-				return net::ErrorCode::OPERATION_ABORTED;
-			}
-		}
 	}
 
 	return std::unexpected(net::ErrorCode::OPERATION_ABORTED);

@@ -149,7 +149,7 @@ export namespace demo
 		}
 
 		friend void Worker(Framework& framework, size_t nth);
-		friend ptrdiff_t PacketProcessor(Framework& framework, const IdType& session_id, std::span<std::byte, userRecvSize> packet_data, ptrdiff_t last_offset);
+		friend ptrdiff_t PacketProcessor(Framework& framework, iconer::app::User& user, const IdType& user_id, iconer::app::UserStates& transit_state, std::span<std::byte, userRecvSize> packet_data, ptrdiff_t last_offset);
 		static void LockPhase() noexcept;
 		static void UnlockPhase() noexcept;
 
@@ -170,5 +170,5 @@ export namespace demo
 	};
 
 	void Worker(Framework& framework, size_t nth);
-	ptrdiff_t PacketProcessor(Framework& framework, const Framework::IdType& session_id, std::span<std::byte, Framework::userRecvSize> packet_data, ptrdiff_t last_offset);
+	ptrdiff_t PacketProcessor(Framework& framework, const iconer::app::User& user, Framework::IdType& user_id, iconer::app::UserStates& transit_state, std::span<std::byte, Framework::userRecvSize> packet_data, ptrdiff_t last_offset);
 }

@@ -10,7 +10,7 @@ using namespace iconer;
 
 ptrdiff_t
 demo::PacketProcessor(demo::Framework& framework
-	, const demo::Framework::IdType& session_id
+	, app::User& user, const demo::Framework::IdType& user_id, app::UserStates& transit_state
 	, std::span<std::byte, demo::Framework::userRecvSize> packet_data
 	, ptrdiff_t last_offset)
 {
@@ -40,6 +40,42 @@ demo::PacketProcessor(demo::Framework& framework
 			case app::PacketProtocol::CS_SIGNIN:
 			{
 
+				switch (transit_state)
+				{
+					case app::UserStates::Idle:
+					{
+
+					}
+					break;
+
+					case app::UserStates::InLobby:
+					{
+
+					}
+					break;
+
+					case app::UserStates::InRoom:
+					{
+
+					}
+					break;
+
+					case app::UserStates::InGame:
+					{
+
+					}
+					break;
+
+					case app::UserStates::Dead:
+					{
+
+					}
+					break;
+
+					default:
+					{
+					}
+				}
 			}
 			break;
 
