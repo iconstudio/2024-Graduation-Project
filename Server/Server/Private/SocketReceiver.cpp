@@ -8,7 +8,7 @@ import <coroutine>;
 
 using namespace iconer;
 
-net::Socket::SocketResult
+net::Socket::SyncRecvResult
 net::Socket::Receive(std::span<std::byte> memory)
 const noexcept
 {
@@ -16,15 +16,15 @@ const noexcept
 		, reinterpret_cast<char*>(memory.data()), static_cast<int>(memory.size_bytes())
 		, 0); SOCKET_ERROR != bytes)
 	{
-		return std::nullopt;
+		return bytes;
 	}
 	else
 	{
-		return AcquireNetworkError();
+		return std::unexpected(AcquireNetworkError());
 	}
 }
 
-net::Socket::SocketResult
+net::Socket::SyncRecvResult
 net::Socket::Receive(std::span<std::byte> memory, size_t size)
 const noexcept
 {
@@ -32,15 +32,15 @@ const noexcept
 		, reinterpret_cast<char*>(memory.data()), static_cast<int>(std::min(memory.size_bytes(), size))
 		, 0); SOCKET_ERROR != bytes)
 	{
-		return std::nullopt;
+		return bytes;
 	}
 	else
 	{
-		return AcquireNetworkError();
+		return std::unexpected(AcquireNetworkError());
 	}
 }
 
-net::Socket::SocketResult
+net::Socket::SyncRecvResult
 net::Socket::Receive(std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -48,50 +48,36 @@ const noexcept
 		, reinterpret_cast<char*>(memory), static_cast<int>(size)
 		, 0); SOCKET_ERROR != bytes)
 	{
-		return std::nullopt;
+		return bytes;
 	}
 	else
 	{
-		return AcquireNetworkError();
+		return std::unexpected(AcquireNetworkError());
 	}
 }
 
 bool
-net::Socket::Receive(std::span<std::byte> memory
-	, net::ErrorCode& error_code)
-	const noexcept
+net::Socket::Receive(std::span<std::byte> memory, net::ErrorCode& error_code)
+const noexcept
 {
-	return Receive(memory).and_then(
-		[&](net::ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Receive(memory).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
 bool
 net::Socket::Receive(std::span<std::byte> memory, size_t size, net::ErrorCode& error_code)
 const noexcept
 {
-	return Receive(memory, std::move(size)).and_then(
-		[&](net::ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Receive(memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
 bool
-net::Socket::Receive(std::byte* const& memory, size_t size
-	, net::ErrorCode& error_code)
-	const noexcept
+net::Socket::Receive(std::byte* const& memory, size_t size, net::ErrorCode& error_code)
+const noexcept
 {
-	return Receive(memory, std::move(size)).and_then(
-		[&](net::ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Receive(memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
-net::Socket::SocketResult
+net::Socket::AsyncRecvResult
 net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory)
 const noexcept
 {
@@ -110,22 +96,22 @@ const noexcept
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
-		return std::nullopt;
+		return bytes;
 	}
 	else
 	{
 		if (auto error = AcquireNetworkError(); error != ErrorCode::PendedIoOperation)
 		{
-			return std::move(error);
+			return std::unexpected(std::move(error));
 		}
 		else
 		{
-			return std::nullopt;
+			return 0UL;
 		}
 	}
 }
 
-net::Socket::SocketResult
+net::Socket::AsyncRecvResult
 net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory, size_t size) const noexcept
 {
 	::WSABUF buffer
@@ -143,22 +129,22 @@ net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory, size_
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
-		return std::nullopt;
+		return bytes;
 	}
 	else
 	{
 		if (auto error = AcquireNetworkError(); error != ErrorCode::PendedIoOperation)
 		{
-			return std::move(error);
+			return std::unexpected(std::move(error));
 		}
 		else
 		{
-			return std::nullopt;
+			return 0UL;
 		}
 	}
 }
 
-net::Socket::SocketResult
+net::Socket::AsyncRecvResult
 net::Socket::Receive(net::IoContext& context, std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -177,61 +163,47 @@ const noexcept
 		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
-		return std::nullopt;
+		return bytes;
 	}
 	else
 	{
 		if (auto error = AcquireNetworkError(); error != ErrorCode::PendedIoOperation)
 		{
-			return std::move(error);
+			return std::unexpected(std::move(error));
 		}
 		else
 		{
-			return std::nullopt;
+			return 0UL;
 		}
 	}
 }
 
 bool
-net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory
-	, net::ErrorCode& error_code)
-	const noexcept
+net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory, net::ErrorCode& error_code)
+const noexcept
 {
-	return Receive(context, memory).and_then(
-		[&](ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Receive(context, memory).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
 bool
 net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory, size_t size, net::ErrorCode& error_code)
 const noexcept
 {
-	return Receive(context, memory, std::move(size)).and_then(
-		[&](ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Receive(context, memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
 bool
-net::Socket::Receive(net::IoContext& context, std::byte* const& memory, size_t size
-	, net::ErrorCode& error_code)
-	const noexcept
+net::Socket::Receive(net::IoContext& context, std::byte* const& memory, size_t size, net::ErrorCode& error_code)
+const noexcept
 {
-	return Receive(context, memory, std::move(size)).and_then(
-		[&](ErrorCode&& tr_error_code) noexcept -> std::optional<bool> {
-		error_code = std::move(tr_error_code);
-		return false;
-	}).value_or(true);
+	return Receive(context, memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
-net::Socket::SocketTask
+net::Socket::RecvTask
 net::Socket::MakeReceiveTask(net::IoContext& context, std::span<std::byte> memory)
 const noexcept
 {
-	if (SocketResult sent = Receive(context, memory); not sent)
+	if (auto sent = Receive(context, memory); sent.has_value())
 	{
 		co_return std::move(sent);
 	}
@@ -247,19 +219,19 @@ const noexcept
 
 	if (FALSE == result)
 	{
-		co_return AcquireNetworkError();
+		co_return std::unexpected(AcquireNetworkError());
 	}
 	else
 	{
-		co_return std::nullopt;
+		co_return transferred_bytes;
 	}
 }
 
-net::Socket::SocketTask
+net::Socket::RecvTask
 net::Socket::MakeReceiveTask(net::IoContext& context, std::span<std::byte> memory, size_t size)
 const noexcept
 {
-	if (SocketResult sent = Receive(context, memory, size); not sent)
+	if (auto sent = Receive(context, memory, std::move(size)); sent.has_value())
 	{
 		co_return std::move(sent);
 	}
@@ -275,19 +247,19 @@ const noexcept
 
 	if (FALSE == result)
 	{
-		co_return AcquireNetworkError();
+		co_return std::unexpected(AcquireNetworkError());
 	}
 	else
 	{
-		co_return std::nullopt;
+		co_return transferred_bytes;
 	}
 }
 
-net::Socket::SocketTask
+net::Socket::RecvTask
 net::Socket::MakeReceiveTask(net::IoContext& context, std::byte* const& memory, size_t size)
 const noexcept
 {
-	if (SocketResult sent = Receive(context, memory, size); not sent)
+	if (auto sent = Receive(context, memory, std::move(size)); sent.has_value())
 	{
 		co_return std::move(sent);
 	}
@@ -303,36 +275,36 @@ const noexcept
 
 	if (FALSE == result)
 	{
-		co_return AcquireNetworkError();
+		co_return std::unexpected(AcquireNetworkError());
 	}
 	else
 	{
-		co_return std::nullopt;
+		co_return transferred_bytes;
 	}
 }
 
-net::Socket::SocketTask
+net::Socket::RecvTask
 net::Socket::MakeReceiveTask(const std::shared_ptr<net::IoContext>& context, std::span<std::byte> memory)
 const noexcept
 {
 	return MakeReceiveTask(*context, std::move(memory));
 }
 
-net::Socket::SocketTask
+net::Socket::RecvTask
 net::Socket::MakeReceiveTask(const std::shared_ptr<net::IoContext>& context, std::span<std::byte> memory, size_t size)
 const noexcept
 {
 	return MakeReceiveTask(*context, std::move(memory), std::move(size));
 }
 
-net::Socket::SocketTask
+net::Socket::RecvTask
 net::Socket::MakeReceiveTask(const std::shared_ptr<net::IoContext>& context, std::byte* const& memory, size_t size)
 const noexcept
 {
 	return MakeReceiveTask(*context, memory, std::move(size));
 }
 
-net::Socket::SocketTask
+net::Socket::RecvTask
 net::Socket::AsyncRecv(net::IoContext& context, std::span<std::byte> memory)
 const noexcept
 {
@@ -342,7 +314,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::SocketTask
+net::Socket::RecvTask
 net::Socket::AsyncRecv(net::IoContext& context, std::span<std::byte> memory, size_t size)
 const noexcept
 {
@@ -352,7 +324,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::SocketTask
+net::Socket::RecvTask
 net::Socket::AsyncRecv(net::IoContext& context, std::byte* const& memory, size_t size)
 const noexcept
 {

@@ -71,9 +71,9 @@ demo::Worker(demo::Framework& framework, size_t nth)
 					{
 						logger.LogError(L"\tReceving has failed on user {}\n", user_id);
 					}
-					else if (auto error = framework.OnReceived(*user, user_id, status, io_bytes))
+					else if (auto error = framework.OnReceived(*user, user_id, status, io_bytes); not error.has_value())
 					{
-						logger.LogError(L"\ttReceving has failed on user {} due to {}\n", user_id, error.value());
+						logger.LogError(L"\ttReceving has failed on user {} due to {}\n", user_id, error.error());
 					}
 					else
 					{
@@ -88,9 +88,9 @@ demo::Worker(demo::Framework& framework, size_t nth)
 					{
 						logger.LogError(L"\tReserving an acceptance has failed on user {}\n", user_id);
 					}
-					else if (auto error = framework.OnReserveAccept(*user, status))
+					else if (auto error = framework.OnReserveAccept(*user, status); not error.has_value())
 					{
-						logger.LogError(L"\tReserving an acceptance has failed on user {} due to {}\n", user_id, error.value());
+						logger.LogError(L"\tReserving an acceptance has failed on user {} due to {}\n", user_id, error.error());
 					}
 					else
 					{
@@ -105,9 +105,9 @@ demo::Worker(demo::Framework& framework, size_t nth)
 					{
 						logger.LogError(L"\tConnection has failed on user {}\n", user_id);
 					}
-					else if (auto error = framework.OnUserConnected(*user, user_id, status))
+					else if (auto error = framework.OnUserConnected(*user, user_id, status); not error.has_value())
 					{
-						logger.LogError(L"\tConnection has failed on user {} due to {}\n", user_id, error.value());
+						logger.LogError(L"\tConnection has failed on user {} due to {}\n", user_id, error.error());
 					}
 					else
 					{
@@ -122,9 +122,9 @@ demo::Worker(demo::Framework& framework, size_t nth)
 					{
 						logger.LogError(L"\tUser {} has failed to disconnect\n", user_id);
 					}
-					else if (auto error = framework.OnUserDisconnected(*user, user_id, status))
+					else if (auto error = framework.OnUserDisconnected(*user, user_id, status); not error.has_value())
 					{
-						logger.LogError(L"\tUser {} would not be disconnected due to {}\n", user_id, error.value());
+						logger.LogError(L"\tUser {} would not be disconnected due to {}\n", user_id, error.error());
 					}
 					else
 					{

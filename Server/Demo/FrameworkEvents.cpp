@@ -28,7 +28,7 @@ demo::Framework::OnReserveAccept(app::User& user, app::UserStates& transit_state
 	}
 }
 
-demo::Framework::SocketResult
+demo::Framework::RecvResult
 demo::Framework::OnUserConnected(app::User& user, const IdType& id, app::UserStates& transit_state)
 {
 	switch (transit_state)
@@ -43,12 +43,12 @@ demo::Framework::OnUserConnected(app::User& user, const IdType& id, app::UserSta
 
 		default:
 		{
-			return net::ErrorCode::OPERATION_ABORTED;
+			return std::unexpected(net::ErrorCode::OPERATION_ABORTED);
 		}
 	}
 }
 
-demo::Framework::SocketResult
+demo::Framework::RecvResult
 demo::Framework::OnReceived(app::User& user, const IdType& id, app::UserStates& transit_state, const ptrdiff_t& bytes)
 {
 	if (0 < bytes)
@@ -116,7 +116,7 @@ demo::Framework::OnReceived(app::User& user, const IdType& id, app::UserStates& 
 		}
 	}
 
-	return net::ErrorCode::OPERATION_ABORTED;
+	return std::unexpected(net::ErrorCode::OPERATION_ABORTED);
 }
 
 bool
