@@ -1,97 +1,152 @@
 module;
+#include <bit>
+#include <string_view>
+
 module Demo.Framework;
+import Iconer.Utility.Serializer;
+import Iconer.Application.BasicPacket;
+
+using namespace iconer;
 
 demo::Framework::SocketResult
-demo::Framework::OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state)
+demo::Framework::OnReserveAccept(app::User& user, app::UserStates& transit_state)
 {
 	switch (transit_state)
 	{
-		case iconer::app::UserStates::None:
+		case app::UserStates::None:
 		{
-			user.SetOperation(iconer::app::UserOperations::Connect);
-			transit_state = iconer::app::UserStates::Reserved;
+			user.SetOperation(app::UserOperations::Connect);
+			transit_state = app::UserStates::Reserved;
 
 			return serverListener.ReserveAccept(user, user.mySocket);
 		}
-		break;
 
 		default:
 		{
-			return iconer::net::ErrorCode::OPERATION_ABORTED;
+			return net::ErrorCode::OPERATION_ABORTED;
 		}
 	}
 }
 
 demo::Framework::SocketResult
-demo::Framework::OnUserConnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+demo::Framework::OnUserConnected(app::User& user, const IdType& id, app::UserStates& transit_state)
 {
 	switch (transit_state)
 	{
-		case iconer::app::UserStates::Reserved:
+		case app::UserStates::Reserved:
 		{
-			user.SetOperation(iconer::app::UserOperations::Recv);
-			transit_state = iconer::app::UserStates::Idle;
+			user.SetOperation(app::UserOperations::Recv);
+			transit_state = app::UserStates::Idle;
 
 			return user.Receive(GetBuffer(id));
 		}
-		break;
 
 		default:
 		{
-			return iconer::net::ErrorCode::OPERATION_ABORTED;
+			return net::ErrorCode::OPERATION_ABORTED;
 		}
 	}
 }
 
 demo::Framework::SocketResult
-demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const size_t& bytes)
+demo::Framework::OnReceived(app::User& user, const IdType& id, app::UserStates& transit_state, const ptrdiff_t& bytes)
 {
-	auto user_buffer = GetBuffer(id);
-	auto& user_recv_offset = user.recvOffset;
-
-	switch (transit_state)
+	if (0 < bytes)
 	{
-		case iconer::app::UserStates::Idle:
+		if (bytes <= 0)
 		{
+			throw "Error";
+		}
+
+		auto user_buffer = GetBuffer(id);
+		auto& user_recv_offset = user.recvOffset;
+
+		user_recv_offset += bytes;
+		if (user_recv_offset <= 0 or userRecvSize < static_cast<size_t>(user_recv_offset))
+		{
+			throw "Error";
+		}
+
+		constexpr ptrdiff_t minimal_size = app::BasicPacket::SignedMinSize();
+		if (minimal_size <= user_recv_offset)
+		{
+			auto buffer_ptr = user_buffer.data();
+
+			app::PacketProtocol protocol = static_cast<app::PacketProtocol>(std::bit_cast<std::uint8_t>(buffer_ptr[0]));
+			app::PacketProtocol protocol = static_cast<app::PacketProtocol>(std::bit_cast<std::uint8_t>(buffer_ptr[1]));
+
+
+			auto ptr = iconer::util::Serialize(0);
+
+			if (user_recv_offset == userRecvSize)
+			{
+
+			}
+			else
+			{
+			}
+
+			auto recently_recv_buffer = user_buffer.subspan(user_recv_offset);
 
 		}
-		break;
-
-		case iconer::app::UserStates::InLobby:
+		else
 		{
-
+			// continue
+			return user.Receive(user_buffer);
 		}
-		break;
 
-		case iconer::app::UserStates::InRoom:
+		switch (transit_state)
 		{
+			case app::UserStates::Idle:
+			{
 
-		}
-		break;
+			}
+			break;
 
-		case iconer::app::UserStates::InGame:
-		{
+			case app::UserStates::InLobby:
+			{
 
-		}
-		break;
+			}
+			break;
 
-		case iconer::app::UserStates::Dead:
-		{
+			case app::UserStates::InRoom:
+			{
 
-		}
-		break;
+			}
+			break;
 
-		default:
-		{
-			return iconer::net::ErrorCode::OPERATION_ABORTED;
+			case app::UserStates::InGame:
+			{
+
+			}
+			break;
+
+			case app::UserStates::Dead:
+			{
+
+			}
+			break;
+
+			default:
+			{
+				return net::ErrorCode::OPERATION_ABORTED;
+			}
 		}
 	}
+
+	return net::ErrorCode::OPERATION_ABORTED;
+}
+
+bool
+demo::Framework::OnUserSignIn(app::User& user, const IdType& id, app::UserStates& transit_state)
+{
+	return false;
 }
 
 demo::Framework::SocketResult
-demo::Framework::OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+demo::Framework::OnUserDisconnected(app::User& user, const IdType& id, app::UserStates& transit_state)
 {
-	
-	
-	return iconer::net::ErrorCode::OPERATION_ABORTED;
+
+
+	return net::ErrorCode::OPERATION_ABORTED;
 }
