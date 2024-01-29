@@ -57,7 +57,6 @@ demo::Framework::OnReceived(app::User& user, const IdType& id, app::UserStates& 
 			throw "Error";
 		}
 
-		auto user_buffer = GetBuffer(id);
 		auto& user_recv_offset = user.recvOffset;
 
 		user_recv_offset += bytes;
@@ -67,9 +66,11 @@ demo::Framework::OnReceived(app::User& user, const IdType& id, app::UserStates& 
 		}
 
 		constexpr ptrdiff_t minimal_size = app::BasicPacket::SignedMinSize();
+		auto user_buffer = GetBuffer(id);
+
 		if (minimal_size <= user_recv_offset)
 		{
-			user_recv_offset -= PacketProcessor(*this, id, user_buffer.data(), user_recv_offset);
+			user_recv_offset -= PacketProcessor(*this, id, user_buffer, user_recv_offset);
 		}
 
 		// continue
