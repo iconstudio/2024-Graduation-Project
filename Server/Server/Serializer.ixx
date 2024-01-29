@@ -649,6 +649,22 @@ export namespace iconer::util
 		return buffer + length;
 	}
 
+	// Read a wide string from the byte buffer
+	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, std::wstring& output)
+	{
+		output.reserve(length);
+
+		for (auto it = buffer; it < buffer + length;)
+		{
+			wchar_t ch{};
+
+			it = Deserialize(it, ch);
+
+			output.push_back(ch);
+		}
+
+		return buffer + length;
+	}
 }
 
 module :private;
@@ -857,6 +873,20 @@ namespace iconer::util::test
 
 		return result.at(0);
 	}
+	
+	constexpr wchar_t aaa19()
+	{
+		constexpr std::wstring_view test_str = L"가aa나다라마바사아자차카타파하";
+
+		std::byte buffer[test_str.size() * 2 + 1]{};
+		Serialize(buffer, test_str);
+
+		std::wstring result{};
+		Deserialize(buffer, test_str.length(), result);
+
+		constexpr wchar_t target = test_str.at(3);
+		return result.at(3);
+	}
 
 	constexpr void testments()
 	{
@@ -878,5 +908,6 @@ namespace iconer::util::test
 		constexpr auto v_aaa16 = aaa16();
 		constexpr auto v_aaa17 = aaa17();
 		constexpr auto v_aaa18 = aaa18();
+		constexpr auto v_aaa19 = aaa19();
 	}
 }
