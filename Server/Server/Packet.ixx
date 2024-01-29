@@ -1,40 +1,24 @@
 export module Iconer.Application.Packet;
-import Iconer.Utility.TypeTraits;
 export import Iconer.Application.BasicPacket;
+import <cstddef>;
+import <utility>;
 
 export namespace iconer::app::packets
 {
+#pragma pack(push, 1)
 	struct [[nodiscard]] SignInPacket : public BasicPacket
 	{
-		[[nodiscard]]
-		constexpr size_t GetByteSize() const noexcept override
+		constexpr std::byte* Write(std::byte* buffer)
 		{
-			return byte_size_v<PacketProtocol, wchar_t[64]>;
+			return iconer::util::Serialize(BasicPacket::Write(buffer), userName);
 		}
 
-		// @param buffer - read buffer
-		// @return Address of SignInPacket
-		[[nodiscard]]
-		BasicPacket* Read(std::span<const std::byte> buffer) const override
+		constexpr const std::byte* Read(const std::byte* buffer, const size_t& buffer_length)
 		{
-			SignInPacket* result = new SignInPacket{};
-			result->myProtocol = static_cast<PacketProtocol>(buffer[0]);
-			std::memcpy(result->userName, buffer.data() + 1, buffer.size_bytes() - sizeof(PacketProtocol));
-
-			return result;
-		}
-
-		[[nodiscard]]
-		std::byte* Serialize() const override
-		{
-			std::byte* result = new std::byte[GetByteSize()]{};
-			result[0] = static_cast<std::byte>(myProtocol);
-			
-			std::memcpy(result + 1, userName, sizeof(userName));
-
-			return result;
+			return iconer::util::Deserialize(BasicPacket::Read(buffer), buffer_length, userName);
 		}
 
 		wchar_t userName[64];
 	};
+#pragma pack(pop)
 }
