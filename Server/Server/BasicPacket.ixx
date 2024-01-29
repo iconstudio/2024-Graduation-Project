@@ -28,12 +28,6 @@ export namespace iconer::app
 		virtual BasicPacket* Read(std::span<const std::byte> buffer) const = 0;
 
 		[[nodiscard]]
-		constexpr PacketProtocol GetProtocol() const noexcept
-		{
-			return myProtocol;
-		}
-
-		[[nodiscard]]
 		virtual size_t GetByteSize() const noexcept = 0;
 
 		[[nodiscard]]
