@@ -116,6 +116,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,6 +135,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
