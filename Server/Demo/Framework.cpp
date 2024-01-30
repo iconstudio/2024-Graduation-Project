@@ -105,7 +105,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			}
 			else
 			{
-				myLogger.Log(L"\tAcceptance is reserved on user {}\n", id);
+				myLogger.Log(L"\tReceving is proceed on user {}\n", id);
 			}
 		}
 		break;
