@@ -75,7 +75,7 @@ demo::Framework::StartAccepts()
 {
 	for (auto& [id, user] : userManager)
 	{
-		user.SetOperation(iconer::app::UserOperations::Accept);
+		user.SetOperation(iconer::app::Operations::Accept);
 
 		if (not Schedule(user, id, 0))
 		{

@@ -14,17 +14,6 @@ export namespace iconer::app
 		None, Reserved, Idle, InLobby, InRoom, InGame, Dead
 	};
 
-	enum class [[nodiscard]] UserOperations
-	{
-		None,
-		Accept,
-		Connect, // Sign in
-		Disconnect, // Sign out (Quit)
-		Recv, Send,
-		CreateRoom, EnterRoom, LeaveRoom,
-		EnterGame, ReadyGame, StartGame, LeaveGame
-	};
-
 	class [[nodiscard]] User : protected ISession<std::int32_t>, public IContext<UserStates>
 	{
 	public:
@@ -41,7 +30,7 @@ export namespace iconer::app
 			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
 			: Super(id), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
-			, lastOperation(), recvOffset(0)
+			, recvOffset(0)
 		{
 		}
 
@@ -50,7 +39,7 @@ export namespace iconer::app
 			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
 			: Super(std::move(id)), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
-			, lastOperation(), recvOffset(0)
+			, recvOffset(0)
 		{
 		}
 
@@ -65,7 +54,6 @@ export namespace iconer::app
 		User(User&& other) noexcept(nothrow_move_constructibles<Super, ContextType, iconer::net::Socket>)
 			: Super(std::move(other)), ContextType(std::move(other))
 			, mySocket(std::exchange(other.mySocket, iconer::net::Socket{}))
-			, lastOperation(std::exchange(other.lastOperation, UserOperations::None))
 			, recvOffset(std::exchange(other.recvOffset, 0))
 		{
 		}
@@ -75,20 +63,8 @@ export namespace iconer::app
 			Super::operator=(std::move(other));
 			ContextType::operator=(std::move(other));
 			mySocket = std::exchange(other.mySocket, iconer::net::Socket{});
-			lastOperation = std::exchange(other.lastOperation, UserOperations::None);
 			recvOffset = std::exchange(other.recvOffset, 0);
 			return *this;
-		}
-
-		constexpr void SetOperation(UserOperations op) noexcept
-		{
-			lastOperation = op;
-		}
-
-		[[nodiscard]]
-		constexpr UserOperations GetOperation() const noexcept
-		{
-			return lastOperation;
 		}
 
 		void Awake() noexcept
@@ -112,12 +88,11 @@ export namespace iconer::app
 
 		bool Destroy() noexcept
 		{
-			SetOperation(UserOperations::Disconnect);
+			SetOperation(Operations::Disconnect);
 			return mySocket.CloseAsync(this);
 		}
 
 		iconer::net::Socket mySocket;
-		volatile UserOperations lastOperation;
 		volatile ptrdiff_t recvOffset;
 
 	private:
