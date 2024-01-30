@@ -19,8 +19,6 @@ std::byte recv_buffer[512]{};
 net::IoContext recv_ctx{};
 net::IoContext send_ctx{};
 
-app::packets::SignInPacket sign_packet{};
-
 volatile bool cmd_assigned = false;
 char command[256]{};
 constexpr unsigned cmd_size = sizeof(command);
@@ -61,11 +59,13 @@ int main()
 
 	std::cout << "Starting receiving...\n";
 	
+
+	//constexpr auto&& nickname = L"Iconer";
+	//std::copy_n(nickname, sizeof(nickname) / sizeof(wchar_t), sign_packet.userName);
+
+	constexpr app::packets::SignInPacket sign_packet{ L"Iconer" };
+
 	std::byte signin_buffer[512]{};
-
-	constexpr auto&& nickname = L"Iconer";
-	std::copy_n(nickname, sizeof(nickname) / sizeof(wchar_t), sign_packet.userName);
-
 	sign_packet.Write(signin_buffer);
 
 	app::packets::SignInPacket pk{};
