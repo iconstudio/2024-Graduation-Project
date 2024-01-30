@@ -400,8 +400,6 @@ export namespace iconer::util
 	constexpr std::byte* Serialize(std::byte* dest, const std::wstring_view str)
 	{
 		std::ranges::for_each(str, [&dest](const wchar_t& ch) noexcept {
-			if (ch == 0) return;
-
 			dest = Serialize(dest, ch);
 		});
 
