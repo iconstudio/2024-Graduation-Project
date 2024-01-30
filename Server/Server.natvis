@@ -65,8 +65,8 @@
 	</Type>
 
 	<Type Name="iconer::net::Socket">
-		<DisplayString Condition="myHandle == (SOCKET)(-1)">빈 소켓</DisplayString>
 		<DisplayString Condition="myHandle != (SOCKET)(-1)">소켓 ({myHandle})</DisplayString>
+		<DisplayString Condition="myHandle == (SOCKET)(-1)">빈 소켓</DisplayString>
 
 		<Expand HideRawView="false">
 			<Item Name="[핸들]">myHandle</Item>
@@ -98,8 +98,8 @@
 	<Type Name="iconer::net::IoContext" Priority="MediumLow">
 		<Intrinsic Category="Property" Name="__IsInProgress" Expression="Internal == 0"/>
 
-		<DisplayString Condition="__IsInProgress()">IO 문맥 객체 (초기 상태)</DisplayString>
 		<DisplayString Condition="!__IsInProgress()">IO 문맥 객체 ({Internal}~{InternalHigh} 진행)</DisplayString>
+		<DisplayString Condition="__IsInProgress()">IO 문맥 객체 (초기 상태)</DisplayString>
 		
 		<Expand HideRawView="true">
 			<Item Name="[시작점]">Internal</Item>
@@ -172,6 +172,20 @@
 		</Expand>
 	</Type>
 
+	<Type Name="iconer::coroutine::Coroutine" Priority="MediumLow">
+		<Intrinsic Category="Method" Name="__IsAvailable" Expression="myHandle._Ptr != nullptr"/>
+		<Intrinsic Category="Method" Name="__IsWorking" Expression="isTriggered._Storage._Value"/>
+		
+		<DisplayString Condition="__IsAvailable()">코루틴</DisplayString>
+		<DisplayString Condition="!__IsAvailable()">빈 코루틴</DisplayString>
+		<DisplayString Condition="__IsAvailable() &amp;&amp; __IsWorking()">작동 중인 코루틴</DisplayString>
+		<DisplayString Condition="__IsAvailable() &amp;&amp; !__IsWorking()">작동 중이지 않은 코루틴</DisplayString>
+		
+		<Expand HideRawView="false">
+			<Item Name="[핸들]">myHandle</Item>
+		</Expand>
+	</Type>
+	
 	<Type Name="iconer::util::Logger">
 		<DisplayString Condition="myHandle.myHandle == nullptr">비어있는 기록 도구</DisplayString>
 		<DisplayString Condition="myHandle.myHandle != nullptr">기록 도구</DisplayString>
@@ -242,6 +256,17 @@
 		</Expand>
 	</Type>
 
+	<Type Name="std::coroutine_handle&lt;*&gt;">
+		<Intrinsic Category="Method" Name="__IsAvailable" Expression="_Ptr != nullptr"/>
+		
+		<DisplayString Condition="__IsAvailable()">코루틴 핸들</DisplayString>
+		<DisplayString Condition="!__IsAvailable()">빈 코루틴 핸들</DisplayString>
+		
+		<Expand HideRawView="true">
+			<Item Name="[핸들 주소]" Condition="__IsAvailable()">_Ptr</Item>
+		</Expand>
+	</Type>
+		
 	<Type Name="std::monostate">
 		<DisplayString>단일원</DisplayString>
 	</Type>
