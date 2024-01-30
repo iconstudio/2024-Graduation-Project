@@ -1,5 +1,4 @@
-module;
-module Demo.Framework;
+module Demo.Framework.PacketProcessor;
 import Iconer.Utility.Serializer;
 import Iconer.Application.Packet;
 import <memory>;
@@ -9,9 +8,10 @@ import <string_view>;
 using namespace iconer;
 
 ptrdiff_t
-demo::PacketProcessor(demo::Framework& framework
-	, app::User& user, const demo::Framework::IdType& user_id, app::UserStates& transit_state
-	, std::span<std::byte, demo::Framework::userRecvSize> packet_data
+demo::PacketProcessor(Framework& framework
+	, const iconer::app::User& user, const Framework::IdType& user_id
+	, iconer::app::UserStates& transit_state
+	, std::span<std::byte, Framework::userRecvSize> packet_data
 	, ptrdiff_t last_offset)
 {
 	if (nullptr == packet_data.data())
