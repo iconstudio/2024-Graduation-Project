@@ -15,7 +15,7 @@ demo::Framework::OnReserveAccept(app::User& user, app::UserStates& transit_state
 	{
 		case app::UserStates::None:
 		{
-			user.SetOperation(app::UserOperations::Connect);
+			user.SetOperation(app::Operations::Connect);
 			transit_state = app::UserStates::Reserved;
 
 			return serverListener.ReserveAccept(user, user.mySocket);
@@ -35,7 +35,7 @@ demo::Framework::OnUserConnected(app::User& user, const IdType& id, app::UserSta
 	{
 		case app::UserStates::Reserved:
 		{
-			user.SetOperation(app::UserOperations::Recv);
+			user.SetOperation(app::Operations::Recv);
 			transit_state = app::UserStates::Idle;
 
 			return user.Receive(GetBuffer(id));

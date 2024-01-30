@@ -7,6 +7,17 @@ import <atomic>;
 
 export namespace iconer::app
 {
+	enum class [[nodiscard]] Operations
+	{
+		None,
+		Accept = 10,
+		Connect, // Sign in
+		Disconnect, // Sign out (Quit)
+		Recv, Send,
+		CreateRoom, EnterRoom, LeaveRoom,
+		EnterGame, ReadyGame, StartGame, LeaveGame
+	};
+
 	template<typename S>
 	class IContext : public iconer::net::IoContext
 	{
@@ -20,6 +31,7 @@ export namespace iconer::app
 
 		IContext(IContext&& other)
 			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_assignables<S>)
+			: lastOperation(std::exchange(other.lastOperation, Operations::None))
 		{
 			iconer::util::AtomicSwitcher switcher{ other.myState };
 
@@ -29,6 +41,7 @@ export namespace iconer::app
 		explicit IContext(const StatusType& init_state)
 			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::memory_order{})))
 			requires copyable<StatusType>
+			: lastOperation()
 		{
 			myState.store(init_state, std::memory_order_relaxed);
 		}
@@ -36,6 +49,7 @@ export namespace iconer::app
 		explicit IContext(StatusType&& init_state)
 			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::memory_order{})))
 			requires movable<StatusType>
+			: lastOperation()
 		{
 			myState.store(std::move(init_state), std::memory_order_relaxed);
 		}
@@ -46,6 +60,7 @@ export namespace iconer::app
 			iconer::util::AtomicSwitcher switcher{ other.myState };
 
 			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
+			lastOperation = std::exchange(other.lastOperation, Operations::None);
 
 			return *this;
 		}
@@ -76,7 +91,30 @@ export namespace iconer::app
 			SetState(std::forward<UState>(state), std::memory_order_release);
 		}
 
+		constexpr void SetOperation(Operations op) noexcept
+		{
+			lastOperation = op;
+		}
+
+		constexpr void SetOperation(Operations op) volatile noexcept
+		{
+			lastOperation = op;
+		}
+
+		[[nodiscard]]
+		constexpr Operations GetOperation() const noexcept
+		{
+			return lastOperation;
+		}
+
+		[[nodiscard]]
+		constexpr Operations GetOperation() const volatile noexcept
+		{
+			return lastOperation;
+		}
+
 		AtomicType myState;
+		Operations lastOperation;
 
 	private:
 		IContext(const IContext&) = delete;
