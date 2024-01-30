@@ -13,7 +13,7 @@ namespace
 
 	iconer::util::cfc::Palette logPalette{ iconer::util::cfc::colors::BrightYellow, iconer::util::cfc::colors::Black };
 	iconer::util::cfc::Palette wrnPalette{ iconer::util::cfc::colors::LightRed, iconer::util::cfc::colors::Black };
-	iconer::util::cfc::Palette errPalette{ iconer::util::cfc::colors::Black, iconer::util::cfc::colors::Red };
+	iconer::util::cfc::Palette errPalette{ iconer::util::cfc::colors::Red, iconer::util::cfc::colors::Black };
 }
 
 void
