@@ -24,6 +24,50 @@ const noexcept
 	return this->Bind(EndPoint{ std::move(address), port });
 }
 
+iconer::net::Socket::SocketResult
+iconer::net::Socket::BindAny(std::uint16_t port)
+const noexcept
+{
+	switch (myFamily)
+	{
+		case IpAddressFamily::IPv4:
+		{
+			::SOCKADDR_IN sockaddr
+			{
+				.sin_family = AF_INET,
+				.sin_port = ::htons(port),
+				.sin_addr = ::in4addr_any,
+				.sin_zero{}
+			};
+
+			if (0 == ::bind(myHandle, reinterpret_cast<const SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)))
+			{
+				return std::nullopt;
+			}
+		}
+		break;
+
+		case IpAddressFamily::IPv6:
+		{
+			::SOCKADDR_IN6 sockaddr
+			{
+				.sin6_family = AF_INET,
+				.sin6_port = ::htons(port),
+				.sin6_flowinfo = 0,
+				.sin6_addr = ::in6addr_any
+			};
+
+			if (0 == ::bind(myHandle, reinterpret_cast<const ::SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)))
+			{
+				return std::nullopt;
+			}
+		}
+		break;
+	}
+
+	return AcquireNetworkError();
+}
+
 net::Socket::SocketResult
 net::Socket::BindHost(std::uint16_t port)
 const noexcept
