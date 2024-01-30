@@ -87,6 +87,151 @@ demo::Framework::StartAccepts()
 }
 
 void
+demo::Framework::RouteOperation(bool is_succeed
+	, const ptrdiff_t& io_bytes, const iconer::app::Operations& operation
+	, iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+{
+	switch (operation)
+	{
+		case iconer::app::Operations::Recv:
+		{
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tReceving has failed on user {}\n", id);
+			}
+			else if (auto error = OnReceived(user, id, transit_state, io_bytes); not error.has_value())
+			{
+				myLogger.LogError(L"\ttReceving has failed on user {} due to {}\n", id, error.error());
+			}
+			else
+			{
+				myLogger.Log(L"\tAcceptance is reserved on user {}\n", id);
+			}
+		}
+		break;
+
+		case iconer::app::Operations::Accept:
+		{
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tReserving an acceptance has failed on user {}\n", id);
+			}
+			else if (auto error = OnReserveAccept(user, transit_state); error.has_value())
+			{
+				myLogger.LogError(L"\tReserving an acceptance has failed on user {} due to {}\n", id, error.value());
+			}
+			else
+			{
+				myLogger.Log(L"\tAcceptance is reserved on user {}\n", id);
+			}
+		}
+		break;
+
+		case iconer::app::Operations::Connect:
+		{
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tConnection has failed on user {}\n", id);
+			}
+			else if (auto error = OnUserConnected(user, id, transit_state); not error.has_value())
+			{
+				myLogger.LogError(L"\tConnection has failed on user {} due to {}\n", id, error.error());
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} is connected\n", id);
+			}
+		}
+		break;
+
+		case iconer::app::Operations::Disconnect:
+		{
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUser {} has failed to disconnect\n", id);
+			}
+			else if (auto error = OnUserDisconnected(user, id, transit_state); error.has_value())
+			{
+				myLogger.LogError(L"\tUser {} would not be disconnected due to {}\n", id, error.value());
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} has been disconnected\n", id);
+			}
+		}
+		break;
+
+		case iconer::app::Operations::CreateRoom:
+		{
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUser {} could not create a room\n", id);
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} created a room {}\n", id, 0);
+			}
+		}
+		break;
+
+		case iconer::app::Operations::EnterRoom:
+		{
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUser {} could not enter to room {}\n", id, 0);
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} entered to room {}\n", id, 0);
+			}
+		}
+		break;
+
+		case iconer::app::Operations::LeaveRoom:
+		{
+
+		}
+		break;
+
+		case iconer::app::Operations::ReadyGame:
+		{
+
+		}
+		break;
+
+		case iconer::app::Operations::EnterGame:
+		{
+
+		}
+		break;
+
+		case iconer::app::Operations::StartGame:
+		{
+
+		}
+		break;
+
+		case iconer::app::Operations::LeaveGame:
+		{
+
+		}
+		break;
+
+		default:
+		{
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUnknown operation '{}' has failed on user {}\n", static_cast<int>(operation), id);
+			}
+			else
+			{
+				myLogger.Log(L"\tAn unknown operation '{}' has been executed on user {}\n", static_cast<int>(operation), id);
+			}
+		}
+		break;
+	}
+}
+void
 demo::Framework::LockPhase()
 noexcept
 {
