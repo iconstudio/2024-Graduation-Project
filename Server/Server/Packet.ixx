@@ -10,33 +10,35 @@ export namespace iconer::app::packets
 #pragma pack(push, 1)
 	struct [[nodiscard]] SignInPacket : public BasicPacket
 	{
+		using Super = BasicPacket;
+
 		[[nodiscard]]
-		static consteval size_t ByteSize() noexcept
+		static consteval size_t WannabeSize() noexcept
 		{
-			return sizeof(PacketProtocol) + sizeof(std::int16_t) + sizeof(userName);
+			return Super::MinSize() + sizeof(userName);
 		}
 
 		[[nodiscard]]
-		static consteval std::int16_t SignedByteSize() noexcept
+		static consteval ptrdiff_t SignedWannabeSizeSize() noexcept
 		{
-			return static_cast<std::int16_t>(sizeof(BasicPacket) + sizeof(userName));
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(userName));
 		}
 
 		constexpr SignInPacket() noexcept
-			: BasicPacket{ PacketProtocol::CS_SIGNIN, SignInPacket::SignedByteSize() }
+			: Super(PacketProtocol::CS_SIGNIN, SignInPacket::SignedWannabeSizeSize())
 			, userName()
 		{
 		}
 
 		explicit constexpr SignInPacket(const wchar_t* begin, const wchar_t* end)
-			: BasicPacket{ PacketProtocol::CS_SIGNIN, SignInPacket::SignedByteSize() }
+			: Super(PacketProtocol::CS_SIGNIN, SignInPacket::SignedWannabeSizeSize())
 			, userName()
 		{
 			std::copy(begin, end, userName);
 		}
 
 		explicit constexpr SignInPacket(const wchar_t* nts, const size_t length)
-			: BasicPacket{ PacketProtocol::CS_SIGNIN, SignInPacket::SignedByteSize() }
+			: Super(PacketProtocol::CS_SIGNIN, SignInPacket::SignedWannabeSizeSize())
 			, userName()
 		{
 			std::copy_n(nts, length, userName);
@@ -44,7 +46,7 @@ export namespace iconer::app::packets
 
 		template<size_t Length>
 		explicit constexpr SignInPacket(const wchar_t(&str)[Length])
-			: BasicPacket{ PacketProtocol::CS_SIGNIN, SignInPacket::SignedByteSize() }
+			: Super(PacketProtocol::CS_SIGNIN, SignInPacket::SignedWannabeSizeSize())
 			, userName()
 		{
 			std::copy_n(str, Length, userName);
@@ -52,7 +54,7 @@ export namespace iconer::app::packets
 
 		template<size_t Length>
 		explicit constexpr SignInPacket(wchar_t(&&str)[Length])
-			: BasicPacket{ PacketProtocol::CS_SIGNIN, SignInPacket::SignedByteSize() }
+			: Super(PacketProtocol::CS_SIGNIN, SignInPacket::SignedWannabeSizeSize())
 			, userName()
 		{
 			std::move(str, str + Length, userName);
@@ -60,15 +62,15 @@ export namespace iconer::app::packets
 
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
-			return iconer::util::Serialize(BasicPacket::Write(buffer), std::wstring_view{ userName });
+			return iconer::util::Serialize(Super::Write(buffer), std::wstring_view{ userName });
 		}
 
 		constexpr const std::byte* Read(const std::byte* buffer, const size_t& buffer_length)
 		{
-			return iconer::util::Deserialize(BasicPacket::Read(buffer), buffer_length, userName);
+			return iconer::util::Deserialize(Super::Read(buffer), buffer_length, userName);
 		}
 
-		wchar_t userName[64];
+		wchar_t userName[16];
 	};
 #pragma pack(pop)
 }
