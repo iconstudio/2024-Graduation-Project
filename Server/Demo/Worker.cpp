@@ -26,26 +26,43 @@ demo::Worker(demo::Framework& framework, size_t nth)
 
 		if (0 == io_id) [[unlikely]] // by server framework
 		{
-			auto task = static_cast<demo::FrameworkTaskContext*>(io_context);
-			if (nullptr == task)
+			auto user = std::launder(static_cast<iconer::app::User*>(io_context));
+			if (nullptr == user)
 			{
-				throw "Null framework context";
+				auto task = std::launder(static_cast<demo::FrameworkTaskContext*>(io_context));
+				if (nullptr == task)
+				{
+					logger.LogError(L"\tWorker {}: Event by server has null context.\n", nth);
+					throw "Null framework context";
+				}
+
+				switch (task->myCategory)
+				{
+					case demo::FrameworkTaskCategory::EndTask:
+					{
+						is_done = true;
+					}
+					break;
+
+					default:
+					{
+					}
+					break;
+				}
+
+				delete task;
+				logger.Log(L"\tWorker {}: Event by server has done.\n", nth);
 			}
-
-			switch (task->myCategory)
+			else // Accept the user
 			{
-				case demo::FrameworkTaskCategory::EndTask:
-				{
-					is_done = true;
-					delete task;
-				}
-				break;
+				// not const
+				iconer::app::UserStates status = user->AcquireState();
 
-				default:
-				{
-					delete task;
-				}
-				break;
+				framework.RouteOperation(io_event.isSucceed, io_bytes, user->GetOperation(), *user, user->GetID(), status);
+
+				user->ReleaseState(status);
+
+				logger.Log(L"\tWorker {}: Event by server from user {} has done.\n", nth, user->GetID());
 			}
 		}
 		else [[likely]] // by sessions
