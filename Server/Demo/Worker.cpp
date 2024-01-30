@@ -1,8 +1,6 @@
 module;
 module Demo.Framework;
 import Iconer.Application.User;
-import <string>;
-import <string_view>;
 
 void
 demo::Worker(demo::Framework& framework, size_t nth)
@@ -17,10 +15,10 @@ demo::Worker(demo::Framework& framework, size_t nth)
 	{
 		auto io_event = framework.WaitForIoResult();
 
-		const bool& succeed = io_event.isSucceed;
 		auto& io_context = io_event.ioContext;
 		auto& io_bytes = io_event.ioBytes;
 		auto& io_id = io_event.eventId;
+		logger.DebugLog(L"\tWorker {}: Event by session {} ({} bytes).\n", nth, io_id, io_bytes);
 
 		if (is_done or framework.IsWorkerCancelled()) [[unlikely]] {
 			break;
@@ -55,6 +53,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 			auto user = static_cast<iconer::app::User*>(io_context);
 			if (nullptr == user)
 			{
+				logger.LogError(L"\tWorker {}: Event by user has null context.\n", nth);
 				throw "Null user context";
 			}
 
@@ -72,5 +71,5 @@ demo::Worker(demo::Framework& framework, size_t nth)
 		}
 	}
 
-	logger.Log(L"\tWorker {} is finished\n", nth);
+	logger.DebugLog(L"\tWorker {} is finished\n", nth);
 }

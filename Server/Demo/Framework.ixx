@@ -25,7 +25,7 @@ export namespace demo
 
 	enum class FrameworkTaskCategory
 	{
-		None, EndTask
+		None, EndTask = 2000
 	};
 
 	class FrameworkTaskContext : public iconer::net::IoContext
