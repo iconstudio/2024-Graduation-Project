@@ -110,7 +110,7 @@ noexcept
 	return 0 != ::PostQueuedCompletionStatus(GetHandle()
 		, infobytes
 		, std::move(id)
-		, reinterpret_cast<::WSAOVERLAPPED*>(std::addressof(context)));
+		, static_cast<::WSAOVERLAPPED*>(std::addressof(context)));
 }
 
 bool
@@ -120,7 +120,7 @@ noexcept
 	return 0 != ::PostQueuedCompletionStatus(GetHandle()
 		, infobytes
 		, std::move(id)
-		, reinterpret_cast<::WSAOVERLAPPED*>(context));
+		, static_cast<::WSAOVERLAPPED*>(context));
 }
 
 bool
@@ -130,7 +130,7 @@ noexcept
 	return 0 != ::PostQueuedCompletionStatus(GetHandle()
 		, std::move(infobytes)
 		, std::move(id)
-		, reinterpret_cast<::WSAOVERLAPPED*>(std::addressof(context)));
+		, static_cast<::WSAOVERLAPPED*>(std::addressof(context)));
 }
 
 bool
@@ -140,7 +140,7 @@ noexcept
 	return 0 != ::PostQueuedCompletionStatus(GetHandle()
 		, std::move(infobytes)
 		, std::move(id)
-		, reinterpret_cast<::WSAOVERLAPPED*>(context));
+		, static_cast<::WSAOVERLAPPED*>(context));
 }
 
 net::IoEvent
@@ -159,7 +159,7 @@ noexcept
 			, std::addressof(overlapped)
 			, INFINITE);
 
-		ev_handle.ioContext = reinterpret_cast<net::IoContext*>(overlapped);
+		ev_handle.ioContext = static_cast<net::IoContext*>(overlapped);
 		ev_handle.isSucceed = (1 == result);
 	}
 	catch (...)
