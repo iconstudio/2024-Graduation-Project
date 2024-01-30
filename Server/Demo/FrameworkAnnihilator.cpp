@@ -8,7 +8,11 @@ void
 demo::Framework::Destroy()
 {
 	LockPhase();
-	if (not Schedule(new FrameworkTaskContext{ .myCategory = FrameworkTaskCategory::EndTask }, serverID, 0))
+
+	auto task = new FrameworkTaskContext;
+	task->myCategory = FrameworkTaskCategory::EndTask;
+
+	if (not Schedule(task, serverID, 0))
 	{
 		myLogger.LogError(L"An error is occured when closing tasks");
 	}

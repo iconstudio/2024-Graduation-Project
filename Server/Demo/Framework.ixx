@@ -31,6 +31,9 @@ export namespace demo
 	class FrameworkTaskContext : public iconer::net::IoContext
 	{
 	public:
+		explicit FrameworkTaskContext() noexcept = default;
+		~FrameworkTaskContext() = default;
+
 		FrameworkTaskCategory myCategory;
 	};
 
