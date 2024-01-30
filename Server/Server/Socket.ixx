@@ -63,6 +63,8 @@ export namespace iconer::net
 		SocketResult Connect(IpAddress&& address, std::uint16_t port) const noexcept;
 		SocketResult Connect(const EndPoint& endpoint) const noexcept;
 		SocketResult Connect(EndPoint&& endpoint) const noexcept;
+		SocketResult ConnectToAny(std::uint16_t port) const noexcept;
+		SocketResult ConnectToHost(std::uint16_t port) const noexcept;
 		[[nodiscard]]
 		SocketTask ConnectAsync(const EndPoint& endpoint) const noexcept;
 		[[nodiscard]]
