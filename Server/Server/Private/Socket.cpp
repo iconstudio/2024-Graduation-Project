@@ -90,7 +90,8 @@ noexcept
 	: Handler(INVALID_SOCKET)
 	, myProtocol(InternetProtocol::Unknown), myFamily(IpAddressFamily::Unknown)
 	, IsAddressReusable(this, false, SetAddressReusable)
-{}
+{
+}
 
 iconer::net::Socket::Socket(iconer::net::Socket::HandleType sock, iconer::net::InternetProtocol protocol, iconer::net::IpAddressFamily family)
 noexcept
