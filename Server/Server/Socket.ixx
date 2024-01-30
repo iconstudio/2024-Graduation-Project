@@ -28,7 +28,7 @@ export namespace iconer::net
 		using SocketResult = std::optional<ErrorCode>;
 		using SyncSentResult = std::expected<unsigned long, ErrorCode>;
 		using SyncRecvResult = std::expected<int, ErrorCode>;
-		using AsyncRecvResult = std::expected<unsigned long, ErrorCode>;
+		using AsyncRecvResult = std::expected<unsigned int, ErrorCode>;
 		using SocketTask = iconer::coroutine::Task<SocketResult>;
 		using SendTask = iconer::coroutine::Task<SyncSentResult>;
 		using RecvTask = iconer::coroutine::Task<AsyncRecvResult>;
