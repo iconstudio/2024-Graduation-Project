@@ -168,6 +168,7 @@
     <ClCompile Include="Framework.ixx" />
     <ClCompile Include="FrameworkUpdater.cpp" />
     <ClCompile Include="PacketProcessor.cpp" />
+    <ClCompile Include="PacketProcessor.ixx" />
     <ClCompile Include="Worker.cpp" />
   </ItemGroup>
   <ItemGroup>
