@@ -3,6 +3,7 @@ export import Iconer.Application.BasicPacket;
 import Iconer.Utility.Serializer;
 import <cstddef>;
 import <utility>;
+import <algorithm>;
 
 export namespace iconer::app::packets
 {
@@ -23,7 +24,39 @@ export namespace iconer::app::packets
 
 		constexpr SignInPacket() noexcept
 			: BasicPacket{ PacketProtocol::CS_SIGNIN, SignInPacket::SignedByteSize() }
-		{}
+			, userName()
+		{
+		}
+
+		explicit constexpr SignInPacket(const wchar_t* begin, const wchar_t* end)
+			: BasicPacket{ PacketProtocol::CS_SIGNIN, SignInPacket::SignedByteSize() }
+			, userName()
+		{
+			std::copy(begin, end, userName);
+		}
+
+		explicit constexpr SignInPacket(const wchar_t* nts, const size_t length)
+			: BasicPacket{ PacketProtocol::CS_SIGNIN, SignInPacket::SignedByteSize() }
+			, userName()
+		{
+			std::copy_n(nts, length, userName);
+		}
+
+		template<size_t Length>
+		explicit constexpr SignInPacket(const wchar_t(&str)[Length])
+			: BasicPacket{ PacketProtocol::CS_SIGNIN, SignInPacket::SignedByteSize() }
+			, userName()
+		{
+			std::copy_n(str, Length, userName);
+		}
+
+		template<size_t Length>
+		explicit constexpr SignInPacket(wchar_t(&&str)[Length])
+			: BasicPacket{ PacketProtocol::CS_SIGNIN, SignInPacket::SignedByteSize() }
+			, userName()
+		{
+			std::move(str, str + Length, userName);
+		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
