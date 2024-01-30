@@ -40,10 +40,20 @@ int main()
 
 	std::cout << "Creating a socket...\n";
 	auto startup_r = net::Startup();
+	if (startup_r.has_value())
+	{
+		return 5;
+	}
+
 	app_socket = net::Socket::CreateTcpSocket(net::IoCategory::Asynchronous);
 
 	std::cout << "Binding...\n";
 	auto bind_r = app_socket.BindHost(40001);
+	if (bind_r.has_value())
+	{
+		return 4;
+	}
+
 	app_socket.IsAddressReusable = true;
 
 	std::cout << "Connecting to host...\n";
@@ -54,29 +64,30 @@ int main()
 	auto connect_r = app_socket.ConnectToHost(40000U);
 	if (connect_r.has_value())
 	{
-		return 1;
+		return 3;
 	}
 
 	std::cout << "Starting receiving...\n";
-	
-
-	//constexpr auto&& nickname = L"Iconer";
-	//std::copy_n(nickname, sizeof(nickname) / sizeof(wchar_t), sign_packet.userName);
-
-	constexpr app::packets::SignInPacket sign_packet{ L"Iconer" };
-
-	std::byte signin_buffer[512]{};
-	sign_packet.Write(signin_buffer);
 
 	app::packets::SignInPacket pk{};
-
-	auto it = pk.Read(signin_buffer, app::packets::SignInPacket::ByteSize());
 
 	auto receiver = Receiver();
 	//auto sender = Sender();
 	
 	receiver.StartAsync();
 	//sender.StartAsync();
+
+	constexpr app::packets::SignInPacket sign_packet{ L"Iconer" };
+
+	std::byte signin_buffer[512]{};
+	sign_packet.Write(signin_buffer);
+	auto it = pk.Read(signin_buffer, app::packets::SignInPacket::WannabeSize());
+
+	auto sent_signin_r = app_socket.Send(send_ctx, signin_buffer, app::packets::SignInPacket::WannabeSize());
+	if (not sent_signin_r.has_value())
+	{
+		return 2;
+	}
 
 	while (true)
 	{
