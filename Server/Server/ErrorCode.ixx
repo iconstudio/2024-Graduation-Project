@@ -376,12 +376,17 @@ struct std::formatter<iconer::net::ErrorCode, wchar_t>
 	{
 		auto it = context.begin();
 		const auto end = context.end();
+
 		if (it == end or *it != L'{')
 		{
 			throw std::format_error{ "Invalid format string." };
 		}
 
-		++it;
+		while (it != end && *it != '}')
+		{
+			++it;
+		}
+
 		if (it != end and *it != L'}')
 		{
 			throw std::format_error{ "Missing '}' in format string." };
