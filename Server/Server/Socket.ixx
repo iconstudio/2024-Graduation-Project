@@ -44,6 +44,7 @@ export namespace iconer::net
 		SocketResult Bind(IpAddress&& address, std::uint16_t port) const noexcept;
 		SocketResult Bind(const EndPoint& endpoint) const noexcept;
 		SocketResult Bind(EndPoint&& endpoint) const noexcept;
+		SocketResult BindAny(std::uint16_t port) const noexcept;
 		SocketResult BindHost(std::uint16_t port) const noexcept;
 
 		bool ReusableAddress() const noexcept;
