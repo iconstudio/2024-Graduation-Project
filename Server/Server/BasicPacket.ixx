@@ -1,3 +1,4 @@
+module;
 export module Iconer.Application.BasicPacket;
 export import :Protocol;
 export import Iconer.Utility.Serializer;
@@ -10,19 +11,14 @@ export namespace iconer::app
 #pragma pack(push, 1)
 	struct [[nodiscard]] BasicPacket
 	{
-		constexpr std::byte* Write(std::byte* buffer)
+		constexpr std::byte* Write(std::byte* buffer) const
 		{
 			return iconer::util::Serialize(iconer::util::Serialize(buffer, std::to_underlying(myProtocol)), mySize);
 		}
 
 		constexpr const std::byte* Read(const std::byte* buffer)
 		{
-			std::underlying_type_t<PacketProtocol> protocol{};
-
-			const std::byte* it = iconer::util::Deserialize(iconer::util::Deserialize(buffer, protocol), mySize);
-			myProtocol = static_cast<PacketProtocol>(protocol);
-
-			return it;
+			return iconer::util::Deserialize(iconer::util::Deserialize(buffer, myProtocol), mySize);
 		}
 
 		[[nodiscard]]
