@@ -80,9 +80,9 @@ const noexcept
 			{
 				.sin_family = AF_INET,
 				.sin_port = ::htons(port),
+				.sin_addr = ::in4addr_loopback,
 				.sin_zero{}
 			};
-			sockaddr.sin_addr = ::in4addr_any;
 
 			if (0 == ::bind(myHandle, reinterpret_cast<const SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)))
 			{
@@ -98,9 +98,8 @@ const noexcept
 				.sin6_family = AF_INET,
 				.sin6_port = ::htons(port),
 				.sin6_flowinfo = 0,
-				.sin6_addr{}
+				.sin6_addr = ::in6addr_loopback
 			};
-			sockaddr.sin6_addr = ::in6addr_any;
 
 			if (0 == ::bind(myHandle, reinterpret_cast<const ::SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)))
 			{
