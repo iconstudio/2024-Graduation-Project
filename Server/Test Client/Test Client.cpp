@@ -16,21 +16,32 @@ int main()
 {
 	std::cout << "Client initiated\n";
 
+	std::cout << "Creating a socket...\n";
+	auto startup_r = net::Startup();
 	app_socket = net::Socket::CreateTcpSocket(net::IoCategory::Synchronous);
 
-	app_socket.BindHost(40001);
+	std::cout << "Binding...\n";
+	auto bind_r = app_socket.BindHost(40001);
 	app_socket.IsAddressReusable = true;
 
+	std::cout << "Connecting to host...\n";
 	server_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
 	server_ep = net::EndPoint{ server_address, 40000 };
-	app_socket.Connect(server_ep);
+	//auto connect_r = app_socket.Connect(server_ep);
+	auto connect_r = app_socket.ConnectToHost(40000U);
+	if (connect_r.has_value())
+	{
+		return 1;
+	}
+
+	std::cout << "Starting receiving...\n";
 
 	std::byte recv_buffer[512]{};
 	while (true)
 	{
 		auto recv = app_socket.Receive(recv_buffer);
 
-		if (recv.has_value())
+		if (not recv.has_value())
 		{
 			std::cout << "Receive error: \n" << std::to_string(recv.error());
 			break;
@@ -39,4 +50,7 @@ int main()
 		{
 		}
 	}
+
+	net::Cleanup();
+	return 0;
 }
