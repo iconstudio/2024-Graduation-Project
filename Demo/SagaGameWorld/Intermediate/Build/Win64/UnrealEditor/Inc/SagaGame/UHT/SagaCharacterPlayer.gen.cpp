@@ -59,6 +59,10 @@ void EmptyLinkFunctionForGeneratedCodeSagaCharacterPlayer() {}
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_QuaterMoveAction_MetaData[];
 #endif
 		static const UECodeGen_Private::FObjectPtrPropertyParams NewProp_QuaterMoveAction;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_AttackAction_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPtrPropertyParams NewProp_AttackAction;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UECodeGen_Private::FClassParams ClassParams;
@@ -136,6 +140,14 @@ void EmptyLinkFunctionForGeneratedCodeSagaCharacterPlayer() {}
 	};
 #endif
 	const UECodeGen_Private::FObjectPtrPropertyParams Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_QuaterMoveAction = { "QuaterMoveAction", nullptr, (EPropertyFlags)0x0024080000000015, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaCharacterPlayer, QuaterMoveAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_QuaterMoveAction_MetaData), Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_QuaterMoveAction_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_AttackAction_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Input" },
+		{ "ModuleRelativePath", "Character/SagaCharacterPlayer.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPtrPropertyParams Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_AttackAction = { "AttackAction", nullptr, (EPropertyFlags)0x0024080000000015, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaCharacterPlayer, AttackAction), Z_Construct_UClass_UInputAction_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_AttackAction_MetaData), Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_AttackAction_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_ASagaCharacterPlayer_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_CameraBoom,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_FollowCamera,
@@ -144,6 +156,7 @@ void EmptyLinkFunctionForGeneratedCodeSagaCharacterPlayer() {}
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_ShoulderMoveAction,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_ShoulderLookAction,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_QuaterMoveAction,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterPlayer_Statics::NewProp_AttackAction,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_ASagaCharacterPlayer_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<ASagaCharacterPlayer>::IsAbstract,
@@ -183,9 +196,9 @@ void EmptyLinkFunctionForGeneratedCodeSagaCharacterPlayer() {}
 		static const FClassRegisterCompiledInInfo ClassInfo[];
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterPlayer_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_ASagaCharacterPlayer, ASagaCharacterPlayer::StaticClass, TEXT("ASagaCharacterPlayer"), &Z_Registration_Info_UClass_ASagaCharacterPlayer, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ASagaCharacterPlayer), 158174706U) },
+		{ Z_Construct_UClass_ASagaCharacterPlayer, ASagaCharacterPlayer::StaticClass, TEXT("ASagaCharacterPlayer"), &Z_Registration_Info_UClass_ASagaCharacterPlayer, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ASagaCharacterPlayer), 3613727006U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterPlayer_h_294545614(TEXT("/Script/SagaGame"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterPlayer_h_2250490680(TEXT("/Script/SagaGame"),
 		Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterPlayer_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterPlayer_h_Statics::ClassInfo),
 		nullptr, 0,
 		nullptr, 0);

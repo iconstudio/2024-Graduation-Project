@@ -10,9 +10,12 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 void EmptyLinkFunctionForGeneratedCodeSagaCharacterBase() {}
 // Cross Module References
 	ENGINE_API UClass* Z_Construct_UClass_ACharacter();
+	ENGINE_API UClass* Z_Construct_UClass_UAnimMontage_NoRegister();
 	SAGAGAME_API UClass* Z_Construct_UClass_ASagaCharacterBase();
 	SAGAGAME_API UClass* Z_Construct_UClass_ASagaCharacterBase_NoRegister();
+	SAGAGAME_API UClass* Z_Construct_UClass_USagaAttackAnimationInterface_NoRegister();
 	SAGAGAME_API UClass* Z_Construct_UClass_USagaCharacterControlData_NoRegister();
+	SAGAGAME_API UClass* Z_Construct_UClass_USagaComboActionData_NoRegister();
 	SAGAGAME_API UEnum* Z_Construct_UEnum_SagaGame_ECharacterControlType();
 	UPackage* Z_Construct_UPackage__Script_SagaGame();
 // End Cross Module References
@@ -89,7 +92,20 @@ void EmptyLinkFunctionForGeneratedCodeSagaCharacterBase() {}
 		static const UECodeGen_Private::FMetaDataPairParam NewProp_CharacterControlManager_MetaData[];
 #endif
 		static const UECodeGen_Private::FMapPropertyParams NewProp_CharacterControlManager;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ComboActionMontage_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPtrPropertyParams NewProp_ComboActionMontage;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_ComboActionData_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPtrPropertyParams NewProp_ComboActionData;
+#if WITH_METADATA
+		static const UECodeGen_Private::FMetaDataPairParam NewProp_DeadMontage_MetaData[];
+#endif
+		static const UECodeGen_Private::FObjectPtrPropertyParams NewProp_DeadMontage;
 		static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
+		static const UECodeGen_Private::FImplementedInterfaceParams InterfaceParams[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UECodeGen_Private::FClassParams ClassParams;
 	};
@@ -122,12 +138,42 @@ void EmptyLinkFunctionForGeneratedCodeSagaCharacterBase() {}
 	};
 #endif
 	const UECodeGen_Private::FMapPropertyParams Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_CharacterControlManager = { "CharacterControlManager", nullptr, (EPropertyFlags)0x0020080000000001, UECodeGen_Private::EPropertyGenFlags::Map, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaCharacterBase, CharacterControlManager), EMapPropertyFlags::None, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_CharacterControlManager_MetaData), Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_CharacterControlManager_MetaData) }; // 2868312813
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_ComboActionMontage_MetaData[] = {
+		{ "Category", "Animation" },
+		{ "ModuleRelativePath", "Character/SagaCharacterBase.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPtrPropertyParams Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_ComboActionMontage = { "ComboActionMontage", nullptr, (EPropertyFlags)0x0024080000000005, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaCharacterBase, ComboActionMontage), Z_Construct_UClass_UAnimMontage_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_ComboActionMontage_MetaData), Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_ComboActionMontage_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_ComboActionData_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Attack" },
+		{ "ModuleRelativePath", "Character/SagaCharacterBase.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPtrPropertyParams Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_ComboActionData = { "ComboActionData", nullptr, (EPropertyFlags)0x0024080000000015, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaCharacterBase, ComboActionData), Z_Construct_UClass_USagaComboActionData_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_ComboActionData_MetaData), Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_ComboActionData_MetaData) };
+#if WITH_METADATA
+	const UECodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_DeadMontage_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "Stat" },
+		{ "ModuleRelativePath", "Character/SagaCharacterBase.h" },
+	};
+#endif
+	const UECodeGen_Private::FObjectPtrPropertyParams Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_DeadMontage = { "DeadMontage", nullptr, (EPropertyFlags)0x0024080000000015, UECodeGen_Private::EPropertyGenFlags::Object | UECodeGen_Private::EPropertyGenFlags::ObjectPtr, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ASagaCharacterBase, DeadMontage), Z_Construct_UClass_UAnimMontage_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_DeadMontage_MetaData), Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_DeadMontage_MetaData) };
 	const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_ASagaCharacterBase_Statics::PropPointers[] = {
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_CharacterControlManager_ValueProp,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_CharacterControlManager_Key_KeyProp_Underlying,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_CharacterControlManager_Key_KeyProp,
 		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_CharacterControlManager,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_ComboActionMontage,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_ComboActionData,
+		(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ASagaCharacterBase_Statics::NewProp_DeadMontage,
 	};
+		const UECodeGen_Private::FImplementedInterfaceParams Z_Construct_UClass_ASagaCharacterBase_Statics::InterfaceParams[] = {
+			{ Z_Construct_UClass_USagaAttackAnimationInterface_NoRegister, (int32)VTABLE_OFFSET(ASagaCharacterBase, ISagaAttackAnimationInterface), false },  // 1071105303
+		};
+	static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaCharacterBase_Statics::InterfaceParams) < 64);
 	const FCppClassTypeInfoStatic Z_Construct_UClass_ASagaCharacterBase_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<ASagaCharacterBase>::IsAbstract,
 	};
@@ -138,11 +184,11 @@ void EmptyLinkFunctionForGeneratedCodeSagaCharacterBase() {}
 		DependentSingletons,
 		nullptr,
 		Z_Construct_UClass_ASagaCharacterBase_Statics::PropPointers,
-		nullptr,
+		InterfaceParams,
 		UE_ARRAY_COUNT(DependentSingletons),
 		0,
 		UE_ARRAY_COUNT(Z_Construct_UClass_ASagaCharacterBase_Statics::PropPointers),
-		0,
+		UE_ARRAY_COUNT(InterfaceParams),
 		0x009000A4u,
 		METADATA_PARAMS(UE_ARRAY_COUNT(Z_Construct_UClass_ASagaCharacterBase_Statics::Class_MetaDataParams), Z_Construct_UClass_ASagaCharacterBase_Statics::Class_MetaDataParams)
 	};
@@ -170,9 +216,9 @@ void EmptyLinkFunctionForGeneratedCodeSagaCharacterBase() {}
 		{ ECharacterControlType_StaticEnum, TEXT("ECharacterControlType"), &Z_Registration_Info_UEnum_ECharacterControlType, CONSTRUCT_RELOAD_VERSION_INFO(FEnumReloadVersionInfo, 2868312813U) },
 	};
 	const FClassRegisterCompiledInInfo Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterBase_h_Statics::ClassInfo[] = {
-		{ Z_Construct_UClass_ASagaCharacterBase, ASagaCharacterBase::StaticClass, TEXT("ASagaCharacterBase"), &Z_Registration_Info_UClass_ASagaCharacterBase, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ASagaCharacterBase), 3177430472U) },
+		{ Z_Construct_UClass_ASagaCharacterBase, ASagaCharacterBase::StaticClass, TEXT("ASagaCharacterBase"), &Z_Registration_Info_UClass_ASagaCharacterBase, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ASagaCharacterBase), 283542531U) },
 	};
-	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterBase_h_1250040500(TEXT("/Script/SagaGame"),
+	static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterBase_h_2394186782(TEXT("/Script/SagaGame"),
 		Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterBase_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterBase_h_Statics::ClassInfo),
 		nullptr, 0,
 		Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterBase_h_Statics::EnumInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterBase_h_Statics::EnumInfo));

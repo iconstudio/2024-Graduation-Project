@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\cppdemo202312280021.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\cppdemo202312280021.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\cppdemo202312280021Editor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.gitattributes" />
+    <None Include="..\..\.gitignore" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\cppdemo202312280021">
+      <UniqueIdentifier>{20BE4BB8-B10E-319E-8057-EA3912355EBA}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\cppdemo202312280021\cppdemo202312280021.Build.cs">
+      <Filter>Source\cppdemo202312280021</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\cppdemo202312280021.cpp">
+      <Filter>Source\cppdemo202312280021</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\cppdemo202312280021.h">
+      <Filter>Source\cppdemo202312280021</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\NetworkManager.cpp">
+      <Filter>Source\cppdemo202312280021</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\NetworkManager.h">
+      <Filter>Source\cppdemo202312280021</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\NetworkView.cpp">
+      <Filter>Source\cppdemo202312280021</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\NetworkView.h">
+      <Filter>Source\cppdemo202312280021</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Socket.cpp">
+      <Filter>Source\cppdemo202312280021</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Socket.h">
+      <Filter>Source\cppdemo202312280021</Filter>
+    </ClInclude>
+    <Filter Include="Source\cppdemo202312280021\Private">
+      <UniqueIdentifier>{61FF91EA-F1B3-3E7A-BD67-40D17AE8E948}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\BasicPacket.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\Constraints.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\EndPoint.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\ErrorCode.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\Expected.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\HandleObject.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\IconerBlueprinter.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\IoContext.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\IoSynchronousType.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\IPAddress.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\IpAddressFamily.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\IProperty.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\NativeSocket.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\NativeSocket_Connectors.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\NativeSocket_Observers.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\NativeSocket_Receivers.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\NativeSocket_Senders.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\PacketProtocol.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\PacketSubProtocols.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\PacketType.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\SocketOptions.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\cppdemo202312280021\Private\SocketTask.cpp">
+      <Filter>Source\cppdemo202312280021\Private</Filter>
+    </ClCompile>
+    <Filter Include="Source\cppdemo202312280021\Public">
+      <UniqueIdentifier>{AC51B9CE-B580-3334-83EA-80705C8C535C}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\BasicPacket.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\Constraints.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\EndPoint.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\ErrorCode.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\Expected.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\HandleObject.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\IconerBlueprinter.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\IoContext.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\IoSynchronousType.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\IPAddress.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\IpAddressFamily.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\IProperty.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\NativeSocket.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\PacketProtocol.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\PacketSubProtocols.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\PacketType.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\SocketOptions.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\cppdemo202312280021\Public\SocketTask.h">
+      <Filter>Source\cppdemo202312280021\Public</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
