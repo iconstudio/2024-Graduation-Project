@@ -2,12 +2,33 @@
 <AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
 	<Intrinsic Category="Method" Name="__UnwrapTy" Expression="&quot;$T1&quot;"/>
 
-	<Type Name="iconer::app::ISession&lt;*&gt;">
+	<Type Name="iconer::app::ISessionManager&lt;*&gt;">
+		<DisplayString>세션 관리자 인터페이스 &lt;{&quot;$T1&quot;}&gt;</DisplayString>
+	</Type>
+
+	<Type Name="iconer::app::User" Priority="High">
+		<Intrinsic Category="Property" Name="__GetName" Expression="Name"/>
+		
+		<DisplayString>사용자 세션 객체 ({myHandle})</DisplayString>
+		
+		<Expand HideRawView="true">
+			<Item Name="[핸들]">myHandle</Item>
+			<Synthetic Name="[이름]">
+				<DisplayString>{__GetName()}</DisplayString>
+			</Synthetic>
+			<Item Name="[상태]">myState</Item>
+			<Item Name="[명령]">lastOperation</Item>
+			<Item Name="[소켓]">mySocket</Item>
+			<Item Name="[수신 바이트 수]">recvOffset</Item>
+		</Expand>
+	</Type>
+
+	<Type Name="iconer::app::ISession&lt;*&gt;" Priority="MediumHigh">
 		<Intrinsic Category="Property" Name="__GetName" Expression="Name"/>
 		
 		<DisplayString>세션 객체 ({myHandle}) &lt;{&quot;$T1&quot;}&gt;</DisplayString>
 
-		<Expand HideRawView="true">
+		<Expand HideRawView="false">
 			<Item Name="[핸들]">myHandle</Item>
 			<Synthetic Name="[이름]">
 				<DisplayString>{Name}</DisplayString>
@@ -15,16 +36,12 @@
 		</Expand>
 	</Type>
 
-	<Type Name="iconer::app::User">
-		<DisplayString>사용자 세션 객체 ({myHandle})</DisplayString>
-		
+	<Type Name="iconer::app::IContext&lt;*&gt;" Priority="MediumLow">		
+		<DisplayString>응용 문맥 객체 &lt;{&quot;$T1&quot;}&gt;</DisplayString>
+
 		<Expand HideRawView="false">
-			<Item Name="[핸들]">myHandle</Item>
-			<Synthetic Name="[이름]">
-				<DisplayString>{__GetName()}</DisplayString>
-			</Synthetic>
 			<Item Name="[상태]">myState</Item>
-			<Item Name="[소켓]">mySocket</Item>
+			<Item Name="[명령]">lastOperation</Item>
 		</Expand>
 	</Type>
 
@@ -59,21 +76,58 @@
 		</Expand>
 	</Type>
 
-	<Type Name="iconer::net::IoContext">
-		<Intrinsic Category="Property" Name="__IsInProgress" Expression="ioUpper == 0"/>
+	<Type Name="iconer::net::IoContext" Priority="MediumLow">
+		<Intrinsic Category="Property" Name="__IsInProgress" Expression="Internal == 0"/>
 
 		<DisplayString Condition="__IsInProgress()">IO 문맥 객체 (초기 상태)</DisplayString>
-		<DisplayString Condition="!__IsInProgress()">IO 문맥 객체 ({ioLower}~{ioUpper} 진행)</DisplayString>
-
-		<Expand>
-			<Item Name="[IO 시작점]">ioLower</Item>
-			<Item Name="[IO 종단점]">ioUpper</Item>
+		<DisplayString Condition="!__IsInProgress()">IO 문맥 객체 ({Internal}~{InternalHigh} 진행)</DisplayString>
+		
+		<Expand HideRawView="true">
+			<Item Name="[시작점]">Internal</Item>
+			<Item Name="[종단점]">InternalHigh</Item>
 			<Synthetic Name="[IO 오프셋]">
-				<DisplayString Condition="myOffset._Which == 0">위치: {myOffset._Head}</DisplayString>
-				<DisplayString Condition="myOffset._Which == 1">핸들: {myOffset._Tail}</DisplayString>
+				<Expand>
+					<Item Name="[위치 시작점]">__Offset()</Item>
+					<Item Name="[위치 종단점]">__OffsetHigh()</Item>
+					<Item Name="[핸들]">__Pointer()</Item>
+				</Expand>
 			</Synthetic>
-			<Item Name="[IO 오프셋]">myOffset</Item>
-			<Item Name="[IO 이벤트 객체]">eventObject</Item>
+			<Item Name="[Windows 이벤트 객체]">hEvent</Item>
+		</Expand>
+	</Type>
+	
+	<Type Name="iconer::net::IoEvent" Priority="MediumLow">
+		<DisplayString Condition="isSucceed == true">성공한 네트워크 이벤트 객체 ({eventId})</DisplayString>
+		<DisplayString Condition="isSucceed != true">실패한 네트워크 이벤트 객체 ({eventId})</DisplayString>
+		
+		<Expand HideRawView="true">
+			<Item Name="[고유 ID]">eventId</Item>
+			<Item Name="[IO 바이트 크기]">ioBytes</Item>
+			<Item Name="[IO 문맥 객체]" Condition="ioContext != nullptr">*ioContext</Item>
+			<Synthetic Name="[IO 문맥 객체]" Condition="ioContext == nullptr">
+				<DisplayString>없음</DisplayString>
+			</Synthetic>
+		</Expand>
+	</Type>
+
+	<Type Name="_OVERLAPPED" Priority="Low">
+		<Intrinsic Category="Property" Name="__Offset" Expression="Offset" Optional="true"/>
+		<Intrinsic Category="Property" Name="__OffsetHigh" Expression="OffsetHigh" Optional="true"/>
+		<Intrinsic Category="Property" Name="__Pointer" Expression="Pointer" Optional="true"/>
+		
+		<DisplayString>Windows IO 문맥 객체</DisplayString>
+
+		<Expand HideRawView="true">
+			<Item Name="[시작점]">Internal</Item>
+			<Item Name="[종단점]">InternalHigh</Item>
+			<Synthetic Name="[IO 오프셋]">
+				<Expand>
+					<Item Name="[위치 시작점]">__Offset()</Item>
+					<Item Name="[위치 종단점]">__OffsetHigh()</Item>
+					<Item Name="[핸들]">__Pointer()</Item>
+				</Expand>
+			</Synthetic>
+			<Item Name="[Windows 이벤트 객체]">hEvent</Item>
 		</Expand>
 	</Type>
 
@@ -96,15 +150,6 @@
 		
 		<Expand HideRawView="true">
 			<Item Name="[핸들]">myHandle</Item>
-		</Expand>
-	</Type>
-
-	<Type Name="_iobuf">
-		<DisplayString Condition="_Placeholder == nullptr">빈 표준 C 파일 구조체</DisplayString>
-		<DisplayString Condition="_Placeholder != nullptr">표준 C 파일 구조체</DisplayString>
-
-		<Expand HideRawView="true">
-			<Item Name="[내부 오프셋]">_Placeholder</Item>
 		</Expand>
 	</Type>
 
@@ -155,8 +200,44 @@
 		</Expand>
 	</Type>
 
+	<Type Name="std::optional&lt;*&gt;">
+		<Intrinsic Category="Method" Name="__HasValue" Expression="_Has_value"/>
+		
+		<DisplayString Condition="!__HasValue()">빈 선택 객체 &lt;{&quot;$T1&quot;}&gt;</DisplayString>
+		<DisplayString Condition="__HasValue()">선택 객체 &lt;{&quot;$T1&quot;}&gt;</DisplayString>
+		
+		<Expand HideRawView="0">
+			<Item Name="[값]" Optional="true" Condition="_Has_value">_Value</Item>
+		</Expand>
+	</Type>
+
+	<Type Name="std::stop_source">
+		<Intrinsic Category="Method" Name="__HasState" Expression="_State != nullptr"/>
+		
+		<DisplayString Condition="!__HasState()">빈 스레드 정지원</DisplayString>
+		<DisplayString Condition="__HasState()">스레드 정지원</DisplayString>
+		
+		<Expand HideRawView="false">
+			<Item Name="[정지 토큰의 수]" Condition="__HasState()">_State->_Stop_tokens</Item>
+			<Item Name="[정지원의 수]" Condition="__HasState()">_State->_Stop_sources</Item>
+		</Expand>
+	</Type>
+
 	<Type Name="std::monostate">
 		<DisplayString>단일원</DisplayString>
+	</Type>
+
+	<Type Name="std::byte">
+		<DisplayString>바이트</DisplayString>
+	</Type>
+
+	<Type Name="_iobuf">
+		<DisplayString Condition="_Placeholder == nullptr">빈 표준 C 파일 구조체</DisplayString>
+		<DisplayString Condition="_Placeholder != nullptr">표준 C 파일 구조체</DisplayString>
+
+		<Expand HideRawView="true">
+			<Item Name="[내부 오프셋]">_Placeholder</Item>
+		</Expand>
 	</Type>
 
 	<Type Name="util::Identity&lt;*&gt;">
