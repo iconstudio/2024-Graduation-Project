@@ -32,6 +32,12 @@
     <Filter Include="Source\SagaGame">
       <UniqueIdentifier>{2EEABB16-FE22-372C-B2A5-8477CE2D78FA}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\SagaGame\AnimNotify_AttackHitChecking.cpp">
+      <Filter>Source\SagaGame</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\AnimNotify_AttackHitChecking.h">
+      <Filter>Source\SagaGame</Filter>
+    </ClInclude>
     <None Include="..\..\Source\SagaGame\SagaGame.Build.cs">
       <Filter>Source\SagaGame</Filter>
     </None>
@@ -65,10 +71,22 @@
     <ClInclude Include="..\..\Source\SagaGame\Character\SagaCharacterControlData.h">
       <Filter>Source\SagaGame\Character</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\SagaGame\Character\SagaCharacterNPC.cpp">
+      <Filter>Source\SagaGame\Character</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Character\SagaCharacterNPC.h">
+      <Filter>Source\SagaGame\Character</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\SagaGame\Character\SagaCharacterPlayer.cpp">
       <Filter>Source\SagaGame\Character</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\SagaGame\Character\SagaCharacterPlayer.h">
+      <Filter>Source\SagaGame\Character</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\SagaGame\Character\SagaComboActionData.cpp">
+      <Filter>Source\SagaGame\Character</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Character\SagaComboActionData.h">
       <Filter>Source\SagaGame\Character</Filter>
     </ClInclude>
     <Filter Include="Source\SagaGame\Game">
@@ -79,6 +97,15 @@
     </ClCompile>
     <ClInclude Include="..\..\Source\SagaGame\Game\SagaGameModeBase.h">
       <Filter>Source\SagaGame\Game</Filter>
+    </ClInclude>
+    <Filter Include="Source\SagaGame\Interface">
+      <UniqueIdentifier>{FFF4DD2E-9856-33DE-93F3-6BD6F948C3B0}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\SagaGame\Interface\SagaAttackAnimationInterface.cpp">
+      <Filter>Source\SagaGame\Interface</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Interface\SagaAttackAnimationInterface.h">
+      <Filter>Source\SagaGame\Interface</Filter>
     </ClInclude>
     <Filter Include="Source\SagaGame\Network">
       <UniqueIdentifier>{21784C7B-8B17-38E5-91A2-DE7E03376DD2}</UniqueIdentifier>
@@ -94,6 +121,12 @@
     </ClCompile>
     <ClInclude Include="..\..\Source\SagaGame\Network\NetworkStructs.h">
       <Filter>Source\SagaGame\Network</Filter>
+    </ClInclude>
+    <Filter Include="Source\SagaGame\Physics">
+      <UniqueIdentifier>{A6A2BEFD-FF0E-33C7-A23A-94523B289C17}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\SagaGame\Physics\SagaCollision.h">
+      <Filter>Source\SagaGame\Physics</Filter>
     </ClInclude>
     <Filter Include="Source\SagaGame\Player">
       <UniqueIdentifier>{9C32F3C6-6EFF-3591-B9ED-361812393E0A}</UniqueIdentifier>

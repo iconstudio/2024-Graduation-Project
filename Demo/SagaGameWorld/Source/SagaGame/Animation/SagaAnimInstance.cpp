@@ -16,7 +16,7 @@ void USagaAnimInstance::NativeInitializeAnimation()
 	Super::NativeInitializeAnimation();
 
 	//초기화 로직
-	GetOwningActor(); //현재 AnimInstance를 사용하고 있는 액터정보 얻어올 수 있음.
+	//GetOwningActor(); //현재 AnimInstance를 사용하고 있는 액터정보 얻어올 수 있음.
 	//액터타입으로 반환되기 때문에 캐릭터로 형변환해줌
 	Owner = Cast<ACharacter>(GetOwningActor());
 	if (Owner)

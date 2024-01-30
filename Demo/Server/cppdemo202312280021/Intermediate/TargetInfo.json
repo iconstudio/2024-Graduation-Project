@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "cppdemo202312280021",
+			"Path": "..\\Source\\cppdemo202312280021.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "cppdemo202312280021Editor",
+			"Path": "..\\Source\\cppdemo202312280021Editor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
