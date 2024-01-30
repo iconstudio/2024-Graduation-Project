@@ -18,7 +18,6 @@ demo::Worker(demo::Framework& framework, size_t nth)
 		auto& io_context = io_event.ioContext;
 		auto& io_bytes = io_event.ioBytes;
 		auto& io_id = io_event.eventId;
-		logger.DebugLog(L"\tWorker {}: Event by session {} ({} bytes).\n", nth, io_id, io_bytes);
 
 		if (is_done or framework.IsWorkerCancelled()) [[unlikely]] {
 			break;
@@ -36,6 +35,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 					throw "Null framework context";
 				}
 
+				logger.DebugLog(L"\tWorker {}: Event by server ({} bytes).\n", nth, io_bytes);
 				switch (task->myCategory)
 				{
 					case demo::FrameworkTaskCategory::EndTask:
@@ -51,10 +51,12 @@ demo::Worker(demo::Framework& framework, size_t nth)
 				}
 
 				delete task;
-				logger.Log(L"\tWorker {}: Event by server has done.\n", nth);
+				logger.DebugLog(L"\tWorker {}: Event by server has done.\n", nth);
 			}
 			else // Accept the user
 			{
+				logger.DebugLog(L"\tWorker {}: Event by session {} ({} bytes).\n", nth, io_id, io_bytes);
+
 				// not const
 				iconer::app::UserStates status = user->AcquireState();
 
@@ -62,7 +64,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 
 				user->ReleaseState(status);
 
-				logger.Log(L"\tWorker {}: Event by server from user {} has done.\n", nth, user->GetID());
+				logger.DebugLog(L"\tWorker {}: Event by server from user {} has done.\n", nth, user->GetID());
 			}
 		}
 		else [[likely]] // by sessions
