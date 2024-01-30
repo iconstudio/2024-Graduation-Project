@@ -8,7 +8,7 @@ import <utility>;
 
 export namespace iconer::net
 {
-	class alignas(std::hardware_constructive_interference_size) [[nodiscard]] IoContext : public WSAOVERLAPPED
+	class [[nodiscard]] IoContext : public WSAOVERLAPPED
 	{
 	public:
 		using Super = WSAOVERLAPPED;
