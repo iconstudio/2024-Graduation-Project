@@ -55,11 +55,16 @@ USagaNetwork::Shutdown()
 void
 USagaNetwork::SendKeyToServer(FKey Key)
 {
-	//FString KeyString = Key.ToString();
+	FString KeyString = Key.ToString();
 	//TCHAR* SerializedChar = KeyString.GetCharArray().GetData();
 	//int32 Size = FCString::Strlen(SerializedChar) + 1;
 	//int32 Sent = 0;
 
 	//// 데이터 전송
 	//bool Successful = SagaClientSocket->Send((uint8*)TCHAR_TO_UTF8(SerializedChar), Size, Sent);
+}
+
+void
+USagaNetwork::AssignPlayerID(APlayerController* PlayerController)
+{
 }
