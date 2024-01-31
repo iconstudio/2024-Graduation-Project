@@ -14,7 +14,7 @@ public:
 	// Read a boolean value from the byte buffer
 	static constexpr const uint8* Deserialize(const uint8* buffer, bool& output)
 	{
-		output = std::bit_cast<char>(buffer[0]);
+		output = static_cast<bool>(buffer[0]);
 
 		return buffer + 1;
 	}
