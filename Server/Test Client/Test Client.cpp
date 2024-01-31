@@ -125,6 +125,8 @@ coroutine::Coroutine Receiver()
 
 		recv_ctx.Clear();
 	}
+
+	co_return;
 }
 
 coroutine::Coroutine Sender()
