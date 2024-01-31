@@ -1,76 +1,56 @@
 #include "Player/SagaPlayerController.h"
-#include "Interfaces/IPv4/IPv4Address.h"
+#include "Network/SagaNetwork.h"
+#include "Network/SagaPlayerInputSettings.h"
 
-void ASagaPlayerController::BeginPlay()
+void
+ASagaPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-    CreateSocket();
 
 	FInputModeGameOnly GameOnlyInputMode;
 	SetInputMode(GameOnlyInputMode);
 }
 
-void ASagaPlayerController::SetupInputComponent()
+void
+ASagaPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
-    moveForwardKey = ASagaPlayerInputSettings::GetMoveForwardKey();
-    moveBackwardKey = ASagaPlayerInputSettings::GetMoveBackwardKey();
-    moveLeftKey = ASagaPlayerInputSettings::GetMoveLeftKey();
-    moveRightKey = ASagaPlayerInputSettings::GetMoveRightKey();
-    jumpKey = ASagaPlayerInputSettings::GetJumpKey();
+    MoveForwardKey = USagaPlayerInputSettings::GetMoveForwardKey();
+    MoveBackwardKey = USagaPlayerInputSettings::GetMoveBackwardKey();
+    MoveLeftKey = USagaPlayerInputSettings::GetMoveLeftKey();
+    MoveRightKey = USagaPlayerInputSettings::GetMoveRightKey();
+    JumpKey = USagaPlayerInputSettings::GetJumpKey();
 
-    // Jump ¾×¼Ç¿¡ ´ëÇÑ ÀÔ·Â ¹ÙÀÎµù
+    // Jump ì•¡ì…˜ì— ëŒ€í•œ ìž…ë ¥ ë°”ì¸ë”©
     //InputComponent->BindAction("Jump", IE_Pressed, this, &ASagaPlayerController::Jump);
 }
 
-void ASagaPlayerController::StartMoveForward()
+void
+ASagaPlayerController::StartMoveForward()
 {
 
 }
 
-void ASagaPlayerController::EndMoveForward()
+void
+ASagaPlayerController::EndMoveForward()
 {
 
 }
 
-void ASagaPlayerController::StartJump()
+void
+ASagaPlayerController::StartMoveBackward()
 {
-    // ¼­¹ö·Î Å° ÀÔ·Â Àü¼Û
-    //SendKeyToServer(EKeys::SpaceBar);
 }
 
-void ASagaPlayerController::SendKeyToServer(FKey Key)
+void
+ASagaPlayerController::EndMoveBackward()
 {
-    //FString KeyString = Key.ToString();
-    //TCHAR* SerializedChar = KeyString.GetCharArray().GetData();
-    //int32 Size = FCString::Strlen(SerializedChar) + 1;
-    //int32 Sent = 0;
-
-    //// µ¥ÀÌÅÍ Àü¼Û
-    //bool Successful = SagaClientSocket->Send((uint8*)TCHAR_TO_UTF8(SerializedChar), Size, Sent);
 }
 
-FSocket* ASagaPlayerController::CreateSocket()
+void
+ASagaPlayerController::StartJump()
 {
-    FSocket* Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("default"), false);
-
-    FIPv4Address ServerAddress;
-    FIPv4Address::Parse(TEXT("127.0.0.1"), ServerAddress); // ¼­¹ö ÁÖ¼Ò
-    int32 Port = 9000; // Æ÷Æ® ¹øÈ£
-    TSharedRef<FInternetAddr> Addr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
-    Addr->SetIp(ServerAddress.Value);
-    Addr->SetPort(Port);
-
-    bool Connected = Socket->Connect(*Addr);
-    if (Connected)
-    {
-        // ¿¬°á ¼º°ø
-    }
-    else
-    {
-        // ¿¬°á ½ÇÆÐ Ã³¸®
-    }
-
-    return Socket;
+    // ì„œë²„ë¡œ í‚¤ ìž…ë ¥ ì „ì†¡
+	auto internal_network = Cast<USagaNetwork>(GetGameInstance());
+	internal_network->SendKeyToServer(JumpKey);
 }
