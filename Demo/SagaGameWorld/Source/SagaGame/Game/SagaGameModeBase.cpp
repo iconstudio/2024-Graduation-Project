@@ -6,7 +6,7 @@
 
 ASagaGameMode::ASagaGameMode()
 {
-	static ConstructorHelpers::FClassFinder<APawn> SagaCharacterClassRef(TEXT("/Script/SagaGame.SagaCharacterPlayer"));
+	static ConstructorHelpers::FClassFinder<APawn> SagaCharacterClassRef(TEXT("/Script/Engine.Blueprint'/Game/BP/BP_SagaCharacterPlayer.BP_SagaCharacterPlayer_C'"));
 	if (SagaCharacterClassRef.Class)
 	{
 		DefaultPawnClass = SagaCharacterClassRef.Class;

@@ -12,6 +12,9 @@ class SAGAGAME_API ASagaCharacterPlayer : public ASagaCharacterBase
 public:
 	ASagaCharacterPlayer();
 
+private:
+	int16 PlayerHP;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -49,10 +52,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> QuaterMoveAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> AttackAction;
+
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
 
 	void QuaterMove(const FInputActionValue& Value);
 
 	ECharacterControlType CurrentCharacterControlType;
+
+	void Attack();
 };
