@@ -1,15 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
-
 #include "CoreMinimal.h"
 #include "Character/SagaCharacterBase.h"
 #include "InputActionValue.h"
 #include "SagaCharacterPlayer.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class SAGAGAME_API ASagaCharacterPlayer : public ASagaCharacterBase
 {
@@ -24,7 +18,7 @@ protected:
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	//ƒ≥∏Ø≈Õ ƒ¡∆Æ∑— ∫Œ∫–
+	//Ï∫êÎ¶≠ÌÑ∞ Ïª®Ìä∏Î°§ Î∂ÄÎ∂Ñ
 protected:
 	void ChangeCharacterControl();
 	void SetCharacterControl(ECharacterControlType NewCharacterControlType);
