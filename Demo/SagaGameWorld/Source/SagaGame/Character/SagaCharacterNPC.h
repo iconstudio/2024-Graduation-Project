@@ -13,5 +13,9 @@ UCLASS()
 class SAGAGAME_API ASagaCharacterNPC : public ASagaCharacterBase
 {
 	GENERATED_BODY()
-	
+public:
+	ASagaCharacterNPC();
+
+protected:
+	void SetDead() override;
 };

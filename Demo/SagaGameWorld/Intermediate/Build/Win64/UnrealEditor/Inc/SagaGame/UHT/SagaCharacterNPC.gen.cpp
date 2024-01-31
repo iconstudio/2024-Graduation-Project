@@ -76,7 +76,6 @@ void EmptyLinkFunctionForGeneratedCodeSagaCharacterNPC() {}
 	{
 		return ASagaCharacterNPC::StaticClass();
 	}
-	ASagaCharacterNPC::ASagaCharacterNPC() {}
 	DEFINE_VTABLE_PTR_HELPER_CTOR(ASagaCharacterNPC);
 	ASagaCharacterNPC::~ASagaCharacterNPC() {}
 	struct Z_CompiledInDeferFile_FID_SagaGame_Source_SagaGame_Character_SagaCharacterNPC_h_Statics
