@@ -17,7 +17,7 @@ void EmptyLinkFunctionForGeneratedCodeSagaGame_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0x9967AA61,
+				0x331EC506,
 				0x5FDABFDF,
 				METADATA_PARAMS(0, nullptr)
 			};
@@ -25,5 +25,5 @@ void EmptyLinkFunctionForGeneratedCodeSagaGame_init() {}
 		}
 		return Z_Registration_Info_UPackage__Script_SagaGame.OuterSingleton;
 	}
-	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_SagaGame(Z_Construct_UPackage__Script_SagaGame, TEXT("/Script/SagaGame"), Z_Registration_Info_UPackage__Script_SagaGame, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x9967AA61, 0x5FDABFDF));
+	static FRegisterCompiledInInfo Z_CompiledInDeferPackage_UPackage__Script_SagaGame(Z_Construct_UPackage__Script_SagaGame, TEXT("/Script/SagaGame"), Z_Registration_Info_UPackage__Script_SagaGame, CONSTRUCT_RELOAD_VERSION_INFO(FPackageReloadVersionInfo, 0x331EC506, 0x5FDABFDF));
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
