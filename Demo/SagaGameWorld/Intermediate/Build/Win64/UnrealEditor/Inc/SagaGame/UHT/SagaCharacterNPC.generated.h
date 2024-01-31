@@ -29,8 +29,6 @@ public: \
 
 
 #define FID_SagaGame_Source_SagaGame_Character_SagaCharacterNPC_h_15_ENHANCED_CONSTRUCTORS \
-	/** Standard constructor, called after all reflected properties have been initialized */ \
-	NO_API ASagaCharacterNPC(); \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	NO_API ASagaCharacterNPC(ASagaCharacterNPC&&); \
