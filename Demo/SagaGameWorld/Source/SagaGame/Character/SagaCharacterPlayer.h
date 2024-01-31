@@ -18,6 +18,9 @@ class SAGAGAME_API ASagaCharacterPlayer : public ASagaCharacterBase
 public:
 	ASagaCharacterPlayer();
 
+private:
+	int16 PlayerHP;
+
 protected:
 	virtual void BeginPlay() override;
 
