@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include <type_traits>
 #include <bit>
+#include <memory>
 #include <string_view>
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Serializer.generated.h"
