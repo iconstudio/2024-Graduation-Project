@@ -11,6 +11,8 @@
 
 ASagaCharacterPlayer::ASagaCharacterPlayer()
 {
+	PlayerHP = 150;
+
 	//Ä«¸Þ¶ó
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);

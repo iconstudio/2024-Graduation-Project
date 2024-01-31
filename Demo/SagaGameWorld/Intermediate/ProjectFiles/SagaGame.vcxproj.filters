@@ -107,6 +107,15 @@
     <ClInclude Include="..\..\Source\SagaGame\Interface\SagaAttackAnimationInterface.h">
       <Filter>Source\SagaGame\Interface</Filter>
     </ClInclude>
+    <Filter Include="Source\SagaGame\Item">
+      <UniqueIdentifier>{CA807486-8EF7-3786-9D04-03CD31E91C8E}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\SagaGame\Item\SagaItemBox.cpp">
+      <Filter>Source\SagaGame\Item</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\SagaGame\Item\SagaItemBox.h">
+      <Filter>Source\SagaGame\Item</Filter>
+    </ClInclude>
     <Filter Include="Source\SagaGame\Network">
       <UniqueIdentifier>{21784C7B-8B17-38E5-91A2-DE7E03376DD2}</UniqueIdentifier>
     </Filter>
