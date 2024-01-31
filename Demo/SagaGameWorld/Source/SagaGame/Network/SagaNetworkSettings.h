@@ -12,7 +12,7 @@ class SAGAGAME_API USagaNetworkSettings : public UBlueprintFunctionLibrary
 
 public:
 	static inline constexpr ESagaNetworkConnectionCategory ConnectionCategory = ESagaNetworkConnectionCategory::Host;
-	static inline constexpr FString RemoteAddress                             = TEXT("127.0.0.1");
+	static inline const FString RemoteAddress                                 = TEXT("127.0.0.1");
 	static inline constexpr int32 RemotePort                                  = 40000U;
 	static inline constexpr int32 LocalPort                                   = 40001U;
 
