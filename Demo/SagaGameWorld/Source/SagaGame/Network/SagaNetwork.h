@@ -26,10 +26,10 @@ public:
 	void AssignPlayerID(APlayerController* PlayerController);
 
 	/* Local Events */
-
+	
+	void OnConnected();
 	void OnPlayerConnected();
 	void OnPlayerDisconnected();
-	void OnConnected();
 
 	/* Observers */
 
