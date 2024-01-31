@@ -2,7 +2,6 @@
 #include "CoreMinimal.h"
 
 #include "SagaNetworkView.h"
-#include "SagaLocalPlayer.generated.h"
 
 class SAGAGAME_API FSagaLocalPlayer : public ISagaNetworkView
 {

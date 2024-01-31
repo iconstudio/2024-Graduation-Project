@@ -15,8 +15,8 @@ USagaNetwork::Init()
 		throw "error!";
 	}
 	
-	LocalEndPoint = USagaNetworkUtility::MakeEndPoint(FIPv4Address::InternalLoopback, USagaNetworkSettings::GetLocalPort());
-	if (not LocalSocket->Bind(*LocalEndPoint))
+	auto local_endpoint = USagaNetworkUtility::MakeEndPoint(FIPv4Address::InternalLoopback, USagaNetworkSettings::GetLocalPort());
+	if (not LocalSocket->Bind(*local_endpoint))
 	{
 		throw "error!";
 	}
@@ -26,8 +26,8 @@ USagaNetwork::Init()
 		throw "error!";
 	}
 
-	ServerEndPoint = USagaNetworkSettings::CreateRemoteEndPoint();
-	if (LocalSocket->Connect(*ServerEndPoint))
+	auto remote_endpoint = USagaNetworkSettings::CreateRemoteEndPoint();
+	if (LocalSocket->Connect(*remote_endpoint))
 	{
 		// 연결 성공
 	}

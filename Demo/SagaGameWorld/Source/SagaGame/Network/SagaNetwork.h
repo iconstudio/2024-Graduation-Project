@@ -41,8 +41,6 @@ public:
 
 protected:
 	FSocket* LocalSocket;
-	TSharedRef<FInternetAddr> LocalEndPoint;
-	TSharedRef<FInternetAddr> ServerEndPoint;
 
 	/// <remarks>로컬 플레이어도 포함</remarks>
 	TArray<USagaNetworkView*> EveryClients;
