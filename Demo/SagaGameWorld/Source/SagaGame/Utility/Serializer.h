@@ -4,6 +4,7 @@
 #include <bit>
 #include <memory>
 #include <string_view>
+
 #include "Serializer.generated.h"
 
 template <typename... Ts>
