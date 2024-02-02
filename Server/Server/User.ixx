@@ -101,6 +101,8 @@ export namespace iconer::app
 			}
 		}
 
+		SendResult SendSignInPacket();
+
 		bool Destroy() noexcept
 		{
 			SetOperation(Operations::OpDisconnect);
