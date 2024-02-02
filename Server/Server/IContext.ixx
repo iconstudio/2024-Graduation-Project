@@ -7,7 +7,7 @@ import <atomic>;
 
 export namespace iconer::app
 {
-	enum class [[nodiscard]] Operations
+	enum class [[nodiscard]] Operations : std::uint8_t
 	{
 		None,
 		/// <summary>Phase 0</summary>
