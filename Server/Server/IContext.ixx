@@ -74,6 +74,18 @@ export namespace iconer::app
 			return *this;
 		}
 
+		iconer::util::AtomicSwitcher<S, false> GetStateSwitcher()
+			noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<S, false>, AtomicType>)
+		{
+			return iconer::util::AtomicSwitcher{ myState };
+		}
+
+		iconer::util::AtomicSwitcher<S, true> GetStateSwitcher()
+			volatile noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<S, true>, AtomicType>)
+		{
+			return iconer::util::AtomicSwitcher{ myState };
+		}
+
 		template<typename UState>
 		void SetState(UState&& state, std::memory_order order = std::memory_order_relaxed)
 			noexcept(nothrow_assignable<UState, StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<UState&&>(), std::declval<std::memory_order>())))
