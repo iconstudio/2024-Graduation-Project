@@ -5,6 +5,7 @@ import Iconer.Net.ErrorCode;
 import Iconer.Net.IoContext;
 import Iconer.Net.Socket;
 import Iconer.Net.IoCompletionPort;
+import Iconer.Application.IContext;
 import Iconer.Application.UserManager;
 import <memory>;
 import <vector>;
