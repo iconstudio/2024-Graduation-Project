@@ -31,10 +31,61 @@ demo::Framework::OnUserConnected(iconer::app::User& user, const IdType& id, icon
 	{
 		case iconer::app::UserStates::Reserved:
 		{
-			user.SetOperation(app::Operations::Recv);
-			transit_state = app::UserStates::Idle;
+			user.SetOperation(iconer::app::Operations::OpSignIn);
 
-			return user.Receive(GetBuffer(id));
+			auto recv_r = user.Receive(GetBuffer(id));
+			if (recv_r)
+			{
+				transit_state = iconer::app::UserStates::Connected;
+			}
+
+			return recv_r;
+		}
+
+		default:
+		{
+			return std::unexpected(iconer::net::ErrorCode::OPERATION_ABORTED);
+		}
+	}
+}
+
+demo::Framework::SendResult
+demo::Framework::OnUserSignedIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+{
+	switch (transit_state)
+	{
+		case iconer::app::UserStates::Connected:
+		{
+			user.SetOperation(iconer::app::Operations::OpAssignID);
+			transit_state = iconer::app::UserStates::Idle;
+
+			//return user.Receive(GetBuffer(id));
+		}
+
+		default:
+		{
+			return std::unexpected(iconer::net::ErrorCode::OPERATION_ABORTED);
+		}
+	}
+}
+
+demo::Framework::RecvResult
+demo::Framework::OnNotifyUserId(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+{
+	switch (transit_state)
+	{
+		case iconer::app::UserStates::Idle:
+		{
+			user.SetOperation(iconer::app::Operations::OpAssignID);
+			transit_state = iconer::app::UserStates::InLobby;
+
+			auto recv_r = user.Receive(GetBuffer(id));
+			if (recv_r)
+			{
+				transit_state = iconer::app::UserStates::InLobby;
+			}
+
+			return recv_r;
 		}
 
 		default:
@@ -47,28 +98,42 @@ demo::Framework::OnUserConnected(iconer::app::User& user, const IdType& id, icon
 demo::Framework::RecvResult
 demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes)
 {
-	if (0 < bytes)
+	auto user_buffer = GetBuffer(id);
+	auto& user_recv_offset = user.recvOffset;
+
+	auto recently_recv_buffer = user_buffer.subspan(user_recv_offset);
+
+	switch (transit_state)
 	{
-		if (bytes <= 0)
+		case iconer::app::UserStates::Idle:
 		{
-			throw "Error";
+
 		}
+		break;
 
-		auto& user_recv_offset = user.recvOffset;
-
-		user_recv_offset += bytes;
-		if (user_recv_offset <= 0 or userRecvSize < static_cast<size_t>(user_recv_offset))
+		case iconer::app::UserStates::InLobby:
 		{
-			throw "Error";
+
 		}
+		break;
 
-		constexpr ptrdiff_t minimal_size = app::BasicPacket::SignedMinSize();
-		auto user_buffer = GetBuffer(id);
-
-		if (minimal_size <= user_recv_offset)
+		case iconer::app::UserStates::InRoom:
 		{
-			user_recv_offset -= PacketProcessor(*this, user, id, transit_state, user_buffer, user_recv_offset);
+
 		}
+		break;
+
+		case iconer::app::UserStates::InGame:
+		{
+
+		}
+		break;
+
+		case iconer::app::UserStates::Dead:
+		{
+
+		}
+		break;
 
 		default:
 		{
