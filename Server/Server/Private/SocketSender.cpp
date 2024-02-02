@@ -8,10 +8,10 @@ import <coroutine>;
 
 using namespace iconer;
 
-net::Socket::SyncSentResult RawSend(const net::Socket::HandleType& sock, ::WSABUF& buffer) noexcept;
-net::Socket::SyncSentResult RawSendEx(const net::Socket::HandleType& sock, ::WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;
+net::Socket::SyncSendResult RawSend(const net::Socket::HandleType& sock, ::WSABUF& buffer) noexcept;
+net::Socket::SyncSendResult RawSendEx(const net::Socket::HandleType& sock, ::WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;
 
-net::Socket::SyncSentResult
+net::Socket::SyncSendResult
 net::Socket::Send(std::span<const std::byte> memory)
 const noexcept
 {
@@ -24,7 +24,7 @@ const noexcept
 	return RawSend(myHandle, buffer);
 }
 
-net::Socket::SyncSentResult
+net::Socket::SyncSendResult
 net::Socket::Send(std::span<const std::byte> memory, size_t size) const noexcept
 {
 	::WSABUF buffer
@@ -36,7 +36,7 @@ net::Socket::Send(std::span<const std::byte> memory, size_t size) const noexcept
 	return RawSend(myHandle, buffer);
 }
 
-net::Socket::SyncSentResult
+net::Socket::SyncSendResult
 net::Socket::Send(const std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -70,7 +70,7 @@ const noexcept
 	return Send(memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
-net::Socket::SyncSentResult
+net::Socket::SyncSendResult
 net::Socket::Send(net::IoContext& context, std::span<const std::byte> memory)
 const noexcept
 {
@@ -83,7 +83,7 @@ const noexcept
 	return RawSendEx(myHandle, buffer, std::addressof(context), nullptr);
 }
 
-net::Socket::SyncSentResult
+net::Socket::SyncSendResult
 net::Socket::Send(net::IoContext& context, std::span<const std::byte> memory, size_t size)
 const noexcept
 {
@@ -96,7 +96,7 @@ const noexcept
 	return RawSendEx(myHandle, buffer, std::addressof(context), nullptr);
 }
 
-net::Socket::SyncSentResult
+net::Socket::SyncSendResult
 net::Socket::Send(net::IoContext& context, const std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -265,7 +265,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::SyncSentResult
+net::Socket::SyncSendResult
 RawSend(const net::Socket::HandleType& sock
 	, ::WSABUF& buffer)
 	noexcept
@@ -284,7 +284,7 @@ RawSend(const net::Socket::HandleType& sock
 	}
 }
 
-net::Socket::SyncSentResult
+net::Socket::SyncSendResult
 RawSendEx(const net::Socket::HandleType& sock
 	, ::WSABUF& buffer
 	, void* context

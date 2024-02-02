@@ -42,7 +42,8 @@ export namespace demo
 	{
 	public:
 		using IdType = iconer::app::UserManager::key_type;
-		using SocketResult = iconer::net::Socket::SocketResult;
+		using SocketResult = iconer::net::Socket::ActionResult;
+		using SendResult = iconer::net::Socket::SyncSendResult;
 		using RecvResult = iconer::net::Socket::AsyncRecvResult;
 
 		static inline constexpr std::string_view serverAddress{ "127.0.0.1" };
@@ -87,6 +88,10 @@ export namespace demo
 		SocketResult OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state);
 		[[nodiscard]]
 		RecvResult OnUserConnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		[[nodiscard]]
+		SendResult OnUserSignedIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		[[nodiscard]]
+		RecvResult OnNotifyUserId(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
 		[[nodiscard]]
 		RecvResult OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes);
 		[[nodiscard]]

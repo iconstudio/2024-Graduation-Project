@@ -15,7 +15,7 @@ export namespace iconer::net
 		explicit constexpr IoCompletionPort() noexcept = default;
 		~IoCompletionPort() noexcept = default;
 
-		net::Socket::SocketResult Register(net::Socket& socket, std::uintptr_t id) noexcept;
+		net::Socket::ActionResult Register(net::Socket& socket, std::uintptr_t id) noexcept;
 		bool TryRegister(net::Socket& socket, std::uintptr_t id, net::ErrorCode& error_code) noexcept;
 		bool Destroy() noexcept;
 		bool Destroy(ErrorCode& error_code) noexcept;
