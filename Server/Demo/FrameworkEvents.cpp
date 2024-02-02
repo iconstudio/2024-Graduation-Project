@@ -4,14 +4,12 @@ module;
 module Demo.Framework;
 import Iconer.Application.User;
 
-using namespace iconer;
-
 demo::Framework::SocketResult
-demo::Framework::OnReserveAccept(app::User& user, app::UserStates& transit_state)
+demo::Framework::OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state)
 {
 	switch (transit_state)
 	{
-		case app::UserStates::None:
+		case iconer::app::UserStates::None:
 		{
 			user.SetOperation(iconer::app::Operations::OpAccept);
 			transit_state = iconer::app::UserStates::Reserved;
@@ -21,17 +19,17 @@ demo::Framework::OnReserveAccept(app::User& user, app::UserStates& transit_state
 
 		default:
 		{
-			return net::ErrorCode::OPERATION_ABORTED;
+			return iconer::net::ErrorCode::OPERATION_ABORTED;
 		}
 	}
 }
 
 demo::Framework::RecvResult
-demo::Framework::OnUserConnected(app::User& user, const IdType& id, app::UserStates& transit_state)
+demo::Framework::OnUserConnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
 {
 	switch (transit_state)
 	{
-		case app::UserStates::Reserved:
+		case iconer::app::UserStates::Reserved:
 		{
 			user.SetOperation(app::Operations::Recv);
 			transit_state = app::UserStates::Idle;
@@ -41,13 +39,13 @@ demo::Framework::OnUserConnected(app::User& user, const IdType& id, app::UserSta
 
 		default:
 		{
-			return std::unexpected(net::ErrorCode::OPERATION_ABORTED);
+			return std::unexpected(iconer::net::ErrorCode::OPERATION_ABORTED);
 		}
 	}
 }
 
 demo::Framework::RecvResult
-demo::Framework::OnReceived(app::User& user, const IdType& id, app::UserStates& transit_state, const ptrdiff_t& bytes)
+demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes)
 {
 	if (0 < bytes)
 	{
@@ -72,23 +70,25 @@ demo::Framework::OnReceived(app::User& user, const IdType& id, app::UserStates& 
 			user_recv_offset -= PacketProcessor(*this, user, id, transit_state, user_buffer, user_recv_offset);
 		}
 
-		// continue
-		return user.Receive(user_buffer);
+		default:
+		{
+			return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
+		}
 	}
 
-	return std::unexpected(net::ErrorCode::OPERATION_ABORTED);
+	return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
 }
 
 bool
-demo::Framework::OnUserSignIn(app::User& user, const IdType& id, app::UserStates& transit_state)
+demo::Framework::OnUserSignIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
 {
 	return false;
 }
 
 demo::Framework::SocketResult
-demo::Framework::OnUserDisconnected(app::User& user, const IdType& id, app::UserStates& transit_state)
+demo::Framework::OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
 {
-
-
-	return net::ErrorCode::OPERATION_ABORTED;
+	
+	
+	return iconer::net::ErrorCode::OPERATION_ABORTED;
 }
