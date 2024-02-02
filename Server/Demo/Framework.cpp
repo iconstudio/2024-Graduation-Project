@@ -75,7 +75,7 @@ demo::Framework::StartAccepts()
 {
 	for (auto& [id, user] : userManager)
 	{
-		user.SetOperation(iconer::app::Operations::Accept);
+		user.SetOperation(iconer::app::Operations::OpReserveSession);
 
 		if (not Schedule(user, id, 0))
 		{
@@ -93,7 +93,8 @@ demo::Framework::RouteOperation(bool is_succeed
 {
 	switch (operation)
 	{
-		case iconer::app::Operations::Recv:
+		// Phase 0
+		case iconer::app::Operations::OpReserveSession:
 		{
 			if (not is_succeed)
 			{
@@ -109,8 +110,10 @@ demo::Framework::RouteOperation(bool is_succeed
 			}
 		}
 		break;
-
-		case iconer::app::Operations::Accept:
+		
+		// Phase 1
+		// an user is connected
+		case iconer::app::Operations::OpAccept:
 		{
 			if (not is_succeed)
 			{
@@ -127,7 +130,9 @@ demo::Framework::RouteOperation(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::Connect:
+		// Phase 2
+		// received a nickname
+		case iconer::app::Operations::OpSignIn:
 		{
 			if (not is_succeed)
 			{
@@ -144,7 +149,44 @@ demo::Framework::RouteOperation(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::Disconnect:
+		// Phase 3
+		// sent an id of user
+		case iconer::app::Operations::OpAssignID:
+		{
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\Notifying the id to user {} has failed\n", id);
+			}
+			else if (auto error = OnNotifyUserId(user, id, transit_state); not error.has_value())
+			{
+				myLogger.LogError(L"\tNotifying the id to user {} has failed due to {}\n", id, error.error());
+			}
+			else
+			{
+				myLogger.Log(L"\The Id is notified to user {}\n", id);
+			}
+		}
+		break;
+
+		// Phase 4~
+		case iconer::app::Operations::OpRecv:
+		{
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tReceving has failed on user {}\n", id);
+			}
+			else if (auto error = OnReceived(user, id, transit_state, io_bytes); not error.has_value())
+			{
+				myLogger.LogError(L"\ttReceving has failed on user {} due to {}\n", id, error.error());
+			}
+			else
+			{
+				myLogger.Log(L"\tReceving is proceed on user {}\n", id);
+			}
+		}
+		break;
+
+		case iconer::app::Operations::OpDisconnect:
 		{
 			if (not is_succeed)
 			{
