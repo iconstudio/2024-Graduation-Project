@@ -40,6 +40,9 @@
     <Filter Include="Application">
       <UniqueIdentifier>{4b77abee-1092-4f31-ab21-ea862a7d69f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Application\Implementain">
+      <UniqueIdentifier>{478c6415-88b6-4bc7-b55a-f0d46e2974b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -230,6 +233,9 @@
     </ClCompile>
     <ClCompile Include="Serializer.ixx">
       <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Application\Implementain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

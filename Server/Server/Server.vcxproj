@@ -340,6 +340,7 @@
     </ClCompile>
     <ClCompile Include="TypeList.ixx" />
     <ClCompile Include="TypeTraits.ixx" />
+    <ClCompile Include="User.cpp" />
     <ClCompile Include="User.ixx" />
     <ClCompile Include="UserManager.ixx" />
   </ItemGroup>
