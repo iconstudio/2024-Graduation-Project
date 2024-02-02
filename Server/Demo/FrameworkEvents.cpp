@@ -1,7 +1,8 @@
 module;
+#include <string_view>
+
 module Demo.Framework;
-import Iconer.Application.BasicPacket;
-import Demo.Framework.PacketProcessor;
+import Iconer.Application.User;
 
 using namespace iconer;
 
