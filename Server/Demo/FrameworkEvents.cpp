@@ -12,8 +12,8 @@ demo::Framework::OnReserveAccept(app::User& user, app::UserStates& transit_state
 	{
 		case app::UserStates::None:
 		{
-			user.SetOperation(app::Operations::Connect);
-			transit_state = app::UserStates::Reserved;
+			user.SetOperation(iconer::app::Operations::OpAccept);
+			transit_state = iconer::app::UserStates::Reserved;
 
 			return serverListener.ReserveAccept(user, user.mySocket);
 		}

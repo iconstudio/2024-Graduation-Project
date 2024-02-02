@@ -10,12 +10,21 @@ export namespace iconer::app
 	enum class [[nodiscard]] Operations
 	{
 		None,
-		Accept = 10,
-		Connect, // Sign in
-		Disconnect, // Sign out (Quit)
-		Recv, Send,
-		CreateRoom, EnterRoom, LeaveRoom,
-		EnterGame, ReadyGame, StartGame, LeaveGame
+		/// <summary>Phase 0</summary>
+		OpReserveSession = 10,
+		/// <summary>Phase 1</summary>
+		OpAccept,
+		/// <summary>Phase 2 - Sign in</summary>
+		OpSignIn,
+		/// <summary>Phase 3</summary>
+		OpAssignID,
+		/// <summary>Phase 4 ~ </summary>
+		OpRecv, OpSend,
+		OpCreateRoom, OpEnterRoom, OpLeaveRoom,
+		OpEnterGame, OpReadyGame, OpStartGame, OpLeaveGame,
+
+		/// <summary>Phase 10 - Sign out (Quit)</summary>
+		OpDisconnect,
 	};
 
 	template<typename S>
