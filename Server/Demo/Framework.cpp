@@ -119,7 +119,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.LogError(L"\tReserving an acceptance has failed on user {}\n", id);
 			}
-			else if (auto error = OnReserveAccept(user, transit_state); error.has_value())
+			else if (auto error = OnUserConnected(user, id, transit_state); error.has_value())
 			{
 				myLogger.LogError(L"\tReserving an acceptance has failed on user {} due to {}\n", id, error.value());
 			}
@@ -138,7 +138,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.LogError(L"\tConnection has failed on user {}\n", id);
 			}
-			else if (auto error = OnUserConnected(user, id, transit_state); not error.has_value())
+			else if (auto error = OnUserSignedIn(user, id, transit_state); not error.has_value())
 			{
 				myLogger.LogError(L"\tConnection has failed on user {} due to {}\n", id, error.error());
 			}
@@ -155,7 +155,7 @@ demo::Framework::RouteOperation(bool is_succeed
 		{
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\Notifying the id to user {} has failed\n", id);
+				myLogger.LogError(L"\tNotifying the id to user {} has failed\n", id);
 			}
 			else if (auto error = OnNotifyUserId(user, id, transit_state); not error.has_value())
 			{
@@ -163,7 +163,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			}
 			else
 			{
-				myLogger.Log(L"\The Id is notified to user {}\n", id);
+				myLogger.Log(L"\tThe Id is notified to user {}\n", id);
 			}
 		}
 		break;
@@ -203,7 +203,7 @@ demo::Framework::RouteOperation(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::CreateRoom:
+		case iconer::app::Operations::OpCreateRoom:
 		{
 			if (not is_succeed)
 			{
@@ -216,7 +216,7 @@ demo::Framework::RouteOperation(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::EnterRoom:
+		case iconer::app::Operations::OpEnterRoom:
 		{
 			if (not is_succeed)
 			{
@@ -229,31 +229,31 @@ demo::Framework::RouteOperation(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::LeaveRoom:
+		case iconer::app::Operations::OpLeaveRoom:
 		{
 
 		}
 		break;
 
-		case iconer::app::Operations::ReadyGame:
+		case iconer::app::Operations::OpReadyGame:
 		{
 
 		}
 		break;
 
-		case iconer::app::Operations::EnterGame:
+		case iconer::app::Operations::OpEnterGame:
 		{
 
 		}
 		break;
 
-		case iconer::app::Operations::StartGame:
+		case iconer::app::Operations::OpStartGame:
 		{
 
 		}
 		break;
 
-		case iconer::app::Operations::LeaveGame:
+		case iconer::app::Operations::OpLeaveGame:
 		{
 
 		}
