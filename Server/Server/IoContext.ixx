@@ -13,37 +13,39 @@ export namespace iconer::net
 	public:
 		using Super = WSAOVERLAPPED;
 
-		constexpr IoContext() noexcept
+		explicit constexpr IoContext() noexcept
 			: Super()
-		{ }
-
-		~IoContext() noexcept = default;
+		{
+			Internal = 0;
+			InternalHigh = 0;
+			hEvent = nullptr;
+		}
 
 		IoContext(IoContext&& other) noexcept
 		{
-			this->Internal = std::exchange(other.Internal, 0);
-			this->InternalHigh = std::exchange(other.InternalHigh, 0);
-			//this->Offset = std::exchange(other.Offset, 0);
-			//this->OffsetHigh = std::exchange(other.OffsetHigh, 0);
-			CopyMemory(std::addressof(Offset), std::addressof(other.Offset), sizeof(void*));
-			ZeroMemory(std::addressof(other.Offset), sizeof(void*));
-			this->hEvent = std::exchange(other.hEvent, nullptr);
+			Internal = std::exchange(other.Internal, 0);
+			InternalHigh = std::exchange(other.InternalHigh, 0);
+			//Offset = std::exchange(other.Offset, 0);
+			//OffsetHigh = std::exchange(other.OffsetHigh, 0);
+			memcpy(std::addressof(Offset), std::addressof(other.Offset), sizeof(void*));
+			memset(std::addressof(other.Offset), 0, sizeof(void*));
+			hEvent = std::exchange(other.hEvent, nullptr);
 		}
 
 		IoContext& operator=(IoContext&& other) noexcept
 		{
-			this->Internal = std::exchange(other.Internal, 0);
-			this->InternalHigh = std::exchange(other.InternalHigh, 0);
-			CopyMemory(std::addressof(Offset), std::addressof(other.Offset), sizeof(void*));
-			ZeroMemory(std::addressof(other.Offset), sizeof(void*));
-			this->hEvent = std::exchange(other.hEvent, nullptr);
+			Internal = std::exchange(other.Internal, 0);
+			InternalHigh = std::exchange(other.InternalHigh, 0);
+			memcpy(std::addressof(Offset), std::addressof(other.Offset), sizeof(void*));
+			memset(std::addressof(other.Offset), 0, sizeof(void*));
+			hEvent = std::exchange(other.hEvent, nullptr);
 
 			return *this;
 		}
 
 		void Clear() noexcept
 		{
-			::ZeroMemory(this, sizeof(Super));
+			::memset(this, 0, sizeof(Super));
 		}
 
 		[[nodiscard]]
@@ -51,8 +53,6 @@ export namespace iconer::net
 		{
 			return std::addressof(other) == this;
 		}
-
-	protected:
 
 	private:
 		IoContext(const IoContext&) = delete;
