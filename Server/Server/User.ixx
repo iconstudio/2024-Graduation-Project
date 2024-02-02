@@ -75,6 +75,20 @@ export namespace iconer::app
 
 		template<size_t Size>
 		[[nodiscard]]
+		RecvResult Send(std::span<std::byte, Size> buffer)
+		{
+			if constexpr (Size == std::dynamic_extent)
+			{
+				return mySocket.Receive(*this, buffer.subspan(recvOffset), buffer.size() - recvOffset);
+			}
+			else
+			{
+				return mySocket.Receive(*this, buffer.subspan(recvOffset), Size - recvOffset);
+			}
+		}
+
+		template<size_t Size>
+		[[nodiscard]]
 		RecvResult Receive(std::span<std::byte, Size> buffer)
 		{
 			if constexpr (Size == std::dynamic_extent)
