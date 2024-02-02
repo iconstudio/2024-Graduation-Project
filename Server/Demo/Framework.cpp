@@ -98,15 +98,15 @@ demo::Framework::RouteOperation(bool is_succeed
 		{
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tReceving has failed on user {}\n", id);
+				myLogger.LogError(L"\tReserving an acceptance has failed on user {}\n", id);
 			}
-			else if (auto error = OnReceived(user, id, transit_state, io_bytes); not error.has_value())
+			else if (auto error = OnReserveAccept(user, transit_state); error.has_value())
 			{
-				myLogger.LogError(L"\ttReceving has failed on user {} due to {}\n", id, error.error());
+				myLogger.LogError(L"\tReserving an acceptance has failed on user {} due to {}\n", id, error.value());
 			}
 			else
 			{
-				myLogger.Log(L"\tReceving is proceed on user {}\n", id);
+				myLogger.Log(L"\tAcceptance is reserved on user {}\n", id);
 			}
 		}
 		break;
