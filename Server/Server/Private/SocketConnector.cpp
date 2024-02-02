@@ -9,14 +9,14 @@ import <coroutine>;
 
 using namespace iconer;
 
-net::Socket::SocketResult
+net::Socket::ActionResult
 net::Socket::Connect(const net::IpAddress& address, std::uint16_t port)
 const noexcept
 {
 	return this->Connect(EndPoint{ address, port });
 }
 
-net::Socket::SocketResult
+net::Socket::ActionResult
 net::Socket::Connect(net::IpAddress&& address, std::uint16_t port)
 const noexcept
 {

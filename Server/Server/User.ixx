@@ -21,6 +21,7 @@ export namespace iconer::app
 		using Super::IdType;
 		using Super::GetID;
 		using ContextType = IContext<UserStates>;
+		using SendResult = iconer::net::Socket::SyncSendResult;
 		using RecvResult = iconer::net::Socket::AsyncRecvResult;
 
 		explicit User() = default;

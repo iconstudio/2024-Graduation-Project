@@ -10,21 +10,21 @@ import <mutex>;
 
 using namespace iconer;
 
-net::Socket::SocketResult
+net::Socket::ActionResult
 net::Socket::Bind(const net::IpAddress& address, std::uint16_t port)
 const noexcept
 {
 	return this->Bind(EndPoint{ address, port });
 }
 
-net::Socket::SocketResult
+net::Socket::ActionResult
 net::Socket::Bind(net::IpAddress&& address, std::uint16_t port)
 const noexcept
 {
 	return this->Bind(EndPoint{ std::move(address), port });
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::BindAny(std::uint16_t port)
 const noexcept
 {
@@ -68,7 +68,7 @@ const noexcept
 	return AcquireNetworkError();
 }
 
-net::Socket::SocketResult
+net::Socket::ActionResult
 net::Socket::BindHost(std::uint16_t port)
 const noexcept
 {
@@ -112,7 +112,7 @@ const noexcept
 	return AcquireNetworkError();
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::ConnectToAny(std::uint16_t port)
 const noexcept
 {
@@ -176,7 +176,7 @@ const noexcept
 	return std::nullopt;
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::ConnectToHost(std::uint16_t port)
 const noexcept
 {

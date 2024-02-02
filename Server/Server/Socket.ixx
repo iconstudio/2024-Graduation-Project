@@ -25,12 +25,12 @@ export namespace iconer::net
 
 		using Super = iconer::util::Handler<std::uintptr_t>;
 		using FactoryResult = std::expected<Socket, ErrorCode>;
-		using SocketResult = std::optional<ErrorCode>;
-		using SyncSentResult = std::expected<unsigned long, ErrorCode>;
+		using ActionResult = std::optional<ErrorCode>;
+		using SyncSendResult = std::expected<unsigned long, ErrorCode>;
 		using SyncRecvResult = std::expected<int, ErrorCode>;
 		using AsyncRecvResult = std::expected<unsigned int, ErrorCode>;
-		using SocketTask = iconer::coroutine::Task<SocketResult>;
-		using SendTask = iconer::coroutine::Task<SyncSentResult>;
+		using SocketTask = iconer::coroutine::Task<ActionResult>;
+		using SendTask = iconer::coroutine::Task<SyncSendResult>;
 		using RecvTask = iconer::coroutine::Task<AsyncRecvResult>;
 
 		// Constructors, Destructors, Assignees
@@ -40,12 +40,12 @@ export namespace iconer::net
 
 		// Opt-in Interfaces
 
-		SocketResult Bind(const IpAddress& address, std::uint16_t port) const noexcept;
-		SocketResult Bind(IpAddress&& address, std::uint16_t port) const noexcept;
-		SocketResult Bind(const EndPoint& endpoint) const noexcept;
-		SocketResult Bind(EndPoint&& endpoint) const noexcept;
-		SocketResult BindAny(std::uint16_t port) const noexcept;
-		SocketResult BindHost(std::uint16_t port) const noexcept;
+		ActionResult Bind(const IpAddress& address, std::uint16_t port) const noexcept;
+		ActionResult Bind(IpAddress&& address, std::uint16_t port) const noexcept;
+		ActionResult Bind(const EndPoint& endpoint) const noexcept;
+		ActionResult Bind(EndPoint&& endpoint) const noexcept;
+		ActionResult BindAny(std::uint16_t port) const noexcept;
+		ActionResult BindHost(std::uint16_t port) const noexcept;
 
 		bool ReusableAddress() const noexcept;
 		void ReusableAddress(bool flag) noexcept;
@@ -58,13 +58,13 @@ export namespace iconer::net
 
 		// Opt-out Methods
 
-		SocketResult Open() const noexcept;
-		SocketResult Connect(const IpAddress& address, std::uint16_t port) const noexcept;
-		SocketResult Connect(IpAddress&& address, std::uint16_t port) const noexcept;
-		SocketResult Connect(const EndPoint& endpoint) const noexcept;
-		SocketResult Connect(EndPoint&& endpoint) const noexcept;
-		SocketResult ConnectToAny(std::uint16_t port) const noexcept;
-		SocketResult ConnectToHost(std::uint16_t port) const noexcept;
+		ActionResult Open() const noexcept;
+		ActionResult Connect(const IpAddress& address, std::uint16_t port) const noexcept;
+		ActionResult Connect(IpAddress&& address, std::uint16_t port) const noexcept;
+		ActionResult Connect(const EndPoint& endpoint) const noexcept;
+		ActionResult Connect(EndPoint&& endpoint) const noexcept;
+		ActionResult ConnectToAny(std::uint16_t port) const noexcept;
+		ActionResult ConnectToHost(std::uint16_t port) const noexcept;
 		[[nodiscard]]
 		SocketTask ConnectAsync(const EndPoint& endpoint) const noexcept;
 		[[nodiscard]]
@@ -83,25 +83,25 @@ export namespace iconer::net
 
 		// Asynchronous Accept
 
-		SocketResult ReserveAccept(IoContext& context, Socket& client) const;
-		SocketResult ReserveAccept(IoContext& context, Socket& client, std::span<std::byte> accept_buffer) const;
-		SocketResult ReserveAccept(IoContext* const context, Socket& client) const;
-		SocketResult ReserveAccept(IoContext* const context, Socket& client, std::span<std::byte> accept_buffer) const;
+		ActionResult ReserveAccept(IoContext& context, Socket& client) const;
+		ActionResult ReserveAccept(IoContext& context, Socket& client, std::span<std::byte> accept_buffer) const;
+		ActionResult ReserveAccept(IoContext* const context, Socket& client) const;
+		ActionResult ReserveAccept(IoContext* const context, Socket& client, std::span<std::byte> accept_buffer) const;
 
 		// Synchronous Send
 
-		SyncSentResult Send(std::span<const std::byte> memory) const noexcept;
-		SyncSentResult Send(std::span<const std::byte> memory, size_t size) const noexcept;
-		SyncSentResult Send(_In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
+		SyncSendResult Send(std::span<const std::byte> memory) const noexcept;
+		SyncSendResult Send(std::span<const std::byte> memory, size_t size) const noexcept;
+		SyncSendResult Send(_In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
 		bool Send(std::span<const std::byte> memory, ErrorCode& error_code) const noexcept;
 		bool Send(std::span<const std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
 		bool Send(_In_reads_bytes_(size)const std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
 
 		// Maybe asynchronous Send
 
-		SyncSentResult Send(IoContext& context, std::span<const std::byte> memory) const noexcept;
-		SyncSentResult Send(IoContext& context, std::span<const std::byte> memory, size_t size) const noexcept;
-		SyncSentResult Send(IoContext& context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
+		SyncSendResult Send(IoContext& context, std::span<const std::byte> memory) const noexcept;
+		SyncSendResult Send(IoContext& context, std::span<const std::byte> memory, size_t size) const noexcept;
+		SyncSendResult Send(IoContext& context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
 		bool Send(IoContext& context, std::span<const std::byte> memory, ErrorCode& error_code) const noexcept;
 		bool Send(IoContext& context, std::span<const std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
 		bool Send(IoContext& context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;

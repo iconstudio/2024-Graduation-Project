@@ -34,7 +34,7 @@ noexcept
 {
 }
 
-net::Socket::SocketResult
+net::Socket::ActionResult
 net::IoCompletionPort::Register(net::Socket& socket, std::uintptr_t id)
 noexcept
 {

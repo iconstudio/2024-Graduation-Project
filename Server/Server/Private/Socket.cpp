@@ -29,8 +29,8 @@ void SocketFunctionInitializer(const iconer::net::Socket::HandleType& sock);
 
 ::SOCKADDR_STORAGE SerializeEndpoint(const iconer::net::EndPoint& endpoint) noexcept;
 ::SOCKADDR_STORAGE SerializeEndpoint(iconer::net::EndPoint&& endpoint) noexcept;
-iconer::net::Socket::SocketResult RawSetOption(const iconer::net::Socket::HandleType& sock, int option, const void* buffer, int buff_size) noexcept;
-iconer::net::Socket::SocketResult RawGetOption(const iconer::net::Socket::HandleType& sock, int option) noexcept;
+iconer::net::Socket::ActionResult RawSetOption(const iconer::net::Socket::HandleType& sock, int option, const void* buffer, int buff_size) noexcept;
+iconer::net::Socket::ActionResult RawGetOption(const iconer::net::Socket::HandleType& sock, int option) noexcept;
 
 struct [[nodiscard]] SerializedIpAddress
 {
@@ -102,7 +102,7 @@ noexcept
 	std::call_once(internalInitFlag, ::SocketFunctionInitializer, sock);
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::Bind(const iconer::net::EndPoint& endpoint)
 const noexcept
 {
@@ -117,7 +117,7 @@ const noexcept
 	return std::nullopt;
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::Bind(iconer::net::EndPoint&& endpoint)
 const noexcept
 {
@@ -132,7 +132,7 @@ const noexcept
 	return std::nullopt;
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::Open()
 const noexcept
 {
@@ -145,7 +145,7 @@ const noexcept
 	return std::nullopt;
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::Connect(const iconer::net::EndPoint& endpoint)
 const noexcept
 {
@@ -171,7 +171,7 @@ const noexcept
 	return std::nullopt;
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::Connect(iconer::net::EndPoint&& endpoint)
 const noexcept
 {
@@ -315,21 +315,21 @@ const noexcept
 	}
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::ReserveAccept(iconer::net::IoContext& context, iconer::net::Socket& client)
 const
 {
 	return ReserveAccept(std::addressof(context), client);
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::ReserveAccept(iconer::net::IoContext& context, Socket& client, std::span<std::byte> accept_buffer)
 const
 {
 	return ReserveAccept(std::addressof(context), client, std::move(accept_buffer));
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::ReserveAccept(iconer::net::IoContext* const context, iconer::net::Socket& client)
 const
 {
@@ -364,7 +364,7 @@ const
 	}
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 iconer::net::Socket::ReserveAccept(iconer::net::IoContext* const context, iconer::net::Socket& client, std::span<std::byte> accept_buffer)
 const
 {
@@ -685,7 +685,7 @@ noexcept
 	return result;
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 RawSetOption(const iconer::net::Socket::HandleType& sock, int option, const void* buffer, int buff_size)
 noexcept
 {
@@ -700,7 +700,7 @@ noexcept
 	return iconer::net::AcquireNetworkError();
 }
 
-iconer::net::Socket::SocketResult
+iconer::net::Socket::ActionResult
 RawGetOption(const iconer::net::Socket::HandleType& sock, int option)
 noexcept
 {
