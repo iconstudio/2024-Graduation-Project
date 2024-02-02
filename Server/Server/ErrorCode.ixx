@@ -344,20 +344,7 @@ struct std::formatter<iconer::net::ErrorCode, char>
 		format_parse_context::iterator
 		parse(format_parse_context& context)
 	{
-		auto it = context.begin();
-		const auto end = context.end();
-		if (it == end or *it != '{')
-		{
-			throw std::format_error{ "Invalid format string." };
-		}
-
-		++it;
-		if (it != end and *it != '}')
-		{
-			throw std::format_error{ "Missing '}' in format string." };
-		}
-
-		return it;
+		return context.begin();
 	}
 
 	static format_context::iterator
@@ -374,25 +361,7 @@ struct std::formatter<iconer::net::ErrorCode, wchar_t>
 		wformat_parse_context::iterator
 		parse(wformat_parse_context& context)
 	{
-		auto it = context.begin();
-		const auto end = context.end();
-
-		if (it == end or *it != L'{')
-		{
-			throw std::format_error{ "Invalid format string." };
-		}
-
-		while (it != end && *it != '}')
-		{
-			++it;
-		}
-
-		if (it != end and *it != L'}')
-		{
-			throw std::format_error{ "Missing '}' in format string." };
-		}
-
-		return it;
+		return context.begin();
 	}
 
 	static wformat_context::iterator
