@@ -131,7 +131,7 @@ demo::Framework::RouteOperation(bool is_succeed
 		break;
 
 		// Phase 2
-		// received a nickname
+		// received a nickname, and send an id of user
 		case iconer::app::Operations::OpSignIn:
 		{
 			if (not is_succeed)
