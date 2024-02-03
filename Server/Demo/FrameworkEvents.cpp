@@ -57,9 +57,14 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const IdType& id, icone
 		case iconer::app::UserStates::Connected:
 		{
 			user.SetOperation(iconer::app::Operations::OpAssignID);
-			transit_state = iconer::app::UserStates::Idle;
 
-			//return user.Receive(GetBuffer(id));
+			auto send_r = user.SendSignInPacket();
+			if (send_r)
+			{
+				transit_state = iconer::app::UserStates::Idle;
+			}
+
+			return send_r;
 		}
 
 		default:
@@ -76,13 +81,13 @@ demo::Framework::OnNotifyUserId(iconer::app::User& user, const IdType& id, icone
 	{
 		case iconer::app::UserStates::Idle:
 		{
-			user.SetOperation(iconer::app::Operations::OpAssignID);
-			transit_state = iconer::app::UserStates::InLobby;
+			user.SetOperation(iconer::app::Operations::OpRecv);
 
 			auto recv_r = user.Receive(GetBuffer(id));
 			if (recv_r)
 			{
-				transit_state = iconer::app::UserStates::InLobby;
+				// not now
+				//transit_state = iconer::app::UserStates::InLobby;
 			}
 
 			return recv_r;
