@@ -11,7 +11,12 @@ export namespace iconer::app
 {
 	enum class [[nodiscard]] UserStates
 	{
-		None, Reserved, Connected, Idle, InLobby, InRoom, InGame, Dead
+		None
+		, Reserved
+		, Connected, PendingID, Idle
+		, InLobby, InRoom
+		, InGame
+		, Dead
 	};
 
 	class [[nodiscard]] User : protected ISession<std::int32_t>, public IContext<UserStates>
