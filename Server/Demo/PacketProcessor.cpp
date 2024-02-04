@@ -40,42 +40,6 @@ demo::PacketProcessor(Framework& framework
 			case app::PacketProtocol::CS_SIGNIN:
 			{
 
-				switch (transit_state)
-				{
-					case app::UserStates::Idle:
-					{
-
-					}
-					break;
-
-					case app::UserStates::InLobby:
-					{
-
-					}
-					break;
-
-					case app::UserStates::InRoom:
-					{
-
-					}
-					break;
-
-					case app::UserStates::InGame:
-					{
-
-					}
-					break;
-
-					case app::UserStates::Dead:
-					{
-
-					}
-					break;
-
-					default:
-					{
-					}
-				}
 			}
 			break;
 
