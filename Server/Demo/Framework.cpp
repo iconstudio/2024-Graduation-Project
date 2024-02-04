@@ -75,6 +75,8 @@ demo::Framework::StartAccepts()
 {
 	for (auto& [id, user] : userManager)
 	{
+		user.Awake();
+
 		user.SetOperation(iconer::app::Operations::OpReserveSession);
 
 		if (not Schedule(user, id, 0))
