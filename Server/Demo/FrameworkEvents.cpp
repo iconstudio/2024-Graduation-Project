@@ -63,7 +63,7 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const IdType& id, icone
 			auto send_r = user.SendSignInPacket();
 			if (send_r)
 			{
-				transit_state = iconer::app::UserStates::Idle;
+				transit_state = iconer::app::UserStates::PendingID;
 			}
 
 			return send_r;
@@ -81,15 +81,14 @@ demo::Framework::OnNotifyUserId(iconer::app::User& user, const IdType& id, icone
 {
 	switch (transit_state)
 	{
-		case iconer::app::UserStates::Idle:
+		case iconer::app::UserStates::PendingID:
 		{
 			user.SetOperation(iconer::app::Operations::OpRecv);
 
 			auto recv_r = user.Receive(GetBuffer(id));
 			if (recv_r)
 			{
-				// not now
-				transit_state = iconer::app::UserStates::InLobby;
+				transit_state = iconer::app::UserStates::Idle;
 			}
 
 			return recv_r;
