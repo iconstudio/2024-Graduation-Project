@@ -161,7 +161,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			}
 			else if (auto error = OnNotifyUserId(user, id, transit_state); not error.has_value())
 			{
-				myLogger.LogError(L"\tNotifying the id to user {} has failed due to {}\n", id, error.error());
+				myLogger.LogError(L"\tUser {} cannot start receving due to {}\n", id, error.error());
 			}
 			else
 			{
@@ -179,7 +179,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			}
 			else if (auto error = OnReceived(user, id, transit_state, io_bytes); not error.has_value())
 			{
-				myLogger.LogError(L"\ttReceving has failed on user {} due to {}\n", id, error.error());
+				myLogger.LogError(L"\tReceving has failed on user {} due to {}\n", id, error.error());
 			}
 			else
 			{
