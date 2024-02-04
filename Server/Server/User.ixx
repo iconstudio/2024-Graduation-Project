@@ -5,6 +5,7 @@ import Iconer.Application.IContext;
 import Iconer.Application.ISession;
 import <cstdint>;
 import <atomic>;
+import <string>;
 import <span>;
 
 export namespace iconer::app
@@ -29,27 +30,29 @@ export namespace iconer::app
 		using SendResult = iconer::net::Socket::SyncSendResult;
 		using RecvResult = iconer::net::Socket::AsyncRecvResult;
 
+		static inline constexpr size_t nicknameLength = 64;
+
 		explicit User() = default;
 
 		[[nodiscard]]
 		explicit constexpr User(const IdType& id, iconer::net::Socket&& socket)
-			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
+			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<std::wstring, ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
 			: Super(id), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
-			, recvOffset(0)
+			, myName(), recvOffset(0)
 		{
 		}
 
 		[[nodiscard]]
 		explicit constexpr User(IdType&& id, iconer::net::Socket&& socket)
-			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
+			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<std::wstring, ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
 			: Super(std::move(id)), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
-			, recvOffset(0)
+			, myName(), recvOffset(0)
 		{
 		}
 
-		~User() noexcept(nothrow_destructibles<Super, ContextType, iconer::net::Socket>)
+		~User() noexcept(nothrow_destructibles<Super, ContextType, std::wstring, iconer::net::Socket>)
 		{
 			if (mySocket.IsAvailable())
 			{
@@ -57,26 +60,38 @@ export namespace iconer::app
 			}
 		}
 
-		User(User&& other) noexcept(nothrow_move_constructibles<Super, ContextType, iconer::net::Socket>)
+		User(User&& other)
+			noexcept(nothrow_move_constructibles<Super, ContextType, std::wstring, iconer::net::Socket>)
 			: Super(std::move(other)), ContextType(std::move(other))
+			, myName(std::exchange(other.myName, {}))
 			, mySocket(std::exchange(other.mySocket, iconer::net::Socket{}))
 			, recvOffset(std::exchange(other.recvOffset, 0))
 		{
 		}
 
-		User& operator=(User&& other) noexcept(nothrow_move_assignables<Super, ContextType, iconer::net::Socket>)
+		User& operator=(User&& other)
+			noexcept(nothrow_move_assignables<Super, ContextType, std::wstring, iconer::net::Socket>)
 		{
 			Super::operator=(std::move(other));
 			ContextType::operator=(std::move(other));
+			myName = std::exchange(other.myName, {});
 			mySocket = std::exchange(other.mySocket, iconer::net::Socket{});
 			recvOffset = std::exchange(other.recvOffset, 0);
 			return *this;
 		}
 
-		void Awake() noexcept
+		void Awake()
 		{
 			ContextType::Clear();
 			recvOffset = 0;
+			myName.reserve(nicknameLength);
+		}
+
+		void Cleanup() noexcept
+		{
+			ContextType::Clear();
+			recvOffset = 0;
+			myName.clear();
 		}
 
 		template<size_t Size>
@@ -115,6 +130,7 @@ export namespace iconer::app
 			return mySocket.CloseAsync(this);
 		}
 
+		std::wstring myName;
 		iconer::net::Socket mySocket;
 		volatile ptrdiff_t recvOffset;
 
