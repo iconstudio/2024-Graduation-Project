@@ -237,6 +237,15 @@
     <ClCompile Include="User.cpp">
       <Filter>Application\Implementain</Filter>
     </ClCompile>
+    <ClCompile Include="ConcurrentSet.ixx">
+      <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="ConcurrentMap.ixx">
+      <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="HashComparator.ixx">
+      <Filter>Collection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
