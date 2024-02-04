@@ -65,6 +65,8 @@ demo::Worker(demo::Framework& framework, size_t nth)
 				//user->ReleaseState(status);
 
 				logger.DebugLog(L"\tWorker {}: Event by server from user {} has done.\n", nth, user->GetID());
+
+				io_context->Clear();
 			}
 		}
 		else [[likely]] // by sessions
@@ -82,12 +84,9 @@ demo::Worker(demo::Framework& framework, size_t nth)
 			framework.RouteOperation(io_event.isSucceed, io_bytes, user->GetOperation(), *user, static_cast<demo::Framework::IdType>(io_id), status);
 
 			logger.DebugLog(L"\tWorker {}: Event by user {} has done.\n", nth, user->GetID());
-		};
 
-		if (io_context)
-		{
 			io_context->Clear();
-		}
+		};
 	}
 
 	logger.DebugLog(L"\tWorker {} is finished\n", nth);
