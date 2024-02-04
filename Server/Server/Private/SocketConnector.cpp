@@ -23,28 +23,28 @@ const noexcept
 	return this->Connect(EndPoint{ std::move(address), port });
 }
 
-net::Socket::SocketTask
+net::Socket::ActionTask
 net::Socket::ConnectAsync(const net::EndPoint& endpoint)
 const noexcept
 {
 	co_return this->Connect(endpoint);
 }
 
-net::Socket::SocketTask
+net::Socket::ActionTask
 net::Socket::ConnectAsync(net::EndPoint&& endpoint)
 const noexcept
 {
 	co_return this->Connect(std::move(endpoint));
 }
 
-net::Socket::SocketTask
+net::Socket::ActionTask
 net::Socket::ConnectAsync(const net::IpAddress& address, std::uint16_t port)
 const noexcept
 {
 	co_return this->Connect(EndPoint{ address, port });
 }
 
-net::Socket::SocketTask
+net::Socket::ActionTask
 net::Socket::ConnectAsync(net::IpAddress&& address, std::uint16_t port)
 const noexcept
 {

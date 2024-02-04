@@ -26,12 +26,10 @@ export namespace iconer::net
 		using Super = iconer::util::Handler<std::uintptr_t>;
 		using FactoryResult = std::expected<Socket, ErrorCode>;
 		using ActionResult = std::optional<ErrorCode>;
-		using SyncSendResult = std::expected<unsigned long, ErrorCode>;
-		using SyncRecvResult = std::expected<int, ErrorCode>;
-		using AsyncRecvResult = std::expected<unsigned int, ErrorCode>;
-		using SocketTask = iconer::coroutine::Task<ActionResult>;
-		using SendTask = iconer::coroutine::Task<SyncSendResult>;
-		using RecvTask = iconer::coroutine::Task<AsyncRecvResult>;
+		using IoResult = std::expected<int, ErrorCode>;
+		using AsyncResult = std::expected<unsigned long, ErrorCode>;
+		using ActionTask = iconer::coroutine::Task<ActionResult>;
+		using IoTask = iconer::coroutine::Task<AsyncResult>;
 
 		// Constructors, Destructors, Assignees
 
@@ -66,13 +64,13 @@ export namespace iconer::net
 		ActionResult ConnectToAny(std::uint16_t port) const noexcept;
 		ActionResult ConnectToHost(std::uint16_t port) const noexcept;
 		[[nodiscard]]
-		SocketTask ConnectAsync(const EndPoint& endpoint) const noexcept;
+		ActionTask ConnectAsync(const EndPoint& endpoint) const noexcept;
 		[[nodiscard]]
-		SocketTask ConnectAsync(EndPoint&& endpoint) const noexcept;
+		ActionTask ConnectAsync(EndPoint&& endpoint) const noexcept;
 		[[nodiscard]]
-		SocketTask ConnectAsync(const IpAddress& address, std::uint16_t port) const noexcept;
+		ActionTask ConnectAsync(const IpAddress& address, std::uint16_t port) const noexcept;
 		[[nodiscard]]
-		SocketTask ConnectAsync(IpAddress&& address, std::uint16_t port) const noexcept;
+		ActionTask ConnectAsync(IpAddress&& address, std::uint16_t port) const noexcept;
 
 		// Synchronous Accept
 
@@ -90,36 +88,36 @@ export namespace iconer::net
 
 		// Synchronous Send
 
-		SyncSendResult Send(std::span<const std::byte> memory) const noexcept;
-		SyncSendResult Send(std::span<const std::byte> memory, size_t size) const noexcept;
-		SyncSendResult Send(_In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
+		IoResult Send(std::span<const std::byte> memory) const noexcept;
+		IoResult Send(std::span<const std::byte> memory, size_t size) const noexcept;
+		IoResult Send(_In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
 		bool Send(std::span<const std::byte> memory, ErrorCode& error_code) const noexcept;
 		bool Send(std::span<const std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
 		bool Send(_In_reads_bytes_(size)const std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
 
 		// Maybe asynchronous Send
 
-		SyncSendResult Send(IoContext& context, std::span<const std::byte> memory) const noexcept;
-		SyncSendResult Send(IoContext& context, std::span<const std::byte> memory, size_t size) const noexcept;
-		SyncSendResult Send(IoContext& context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
+		AsyncResult Send(IoContext& context, std::span<const std::byte> memory) const noexcept;
+		AsyncResult Send(IoContext& context, std::span<const std::byte> memory, size_t size) const noexcept;
+		AsyncResult Send(IoContext& context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
 		bool Send(IoContext& context, std::span<const std::byte> memory, ErrorCode& error_code) const noexcept;
 		bool Send(IoContext& context, std::span<const std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
 		bool Send(IoContext& context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
 
 		// Synchronous Receive
 
-		SyncRecvResult Receive(std::span<std::byte> memory) const noexcept;
-		SyncRecvResult Receive(std::span<std::byte> memory, size_t size) const noexcept;
-		SyncRecvResult Receive(_In_reads_bytes_(size)std::byte* const& memory, size_t size) const noexcept;
+		IoResult Receive(std::span<std::byte> memory) const noexcept;
+		IoResult Receive(std::span<std::byte> memory, size_t size) const noexcept;
+		IoResult Receive(_In_reads_bytes_(size)std::byte* const& memory, size_t size) const noexcept;
 		bool Receive(std::span<std::byte> memory, ErrorCode& error_code) const noexcept;
 		bool Receive(std::span<std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
 		bool Receive(_In_reads_bytes_(size)std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
 
 		// Maybe asynchronous Receive
 
-		AsyncRecvResult Receive(IoContext& context, std::span<std::byte> memory) const noexcept;
-		AsyncRecvResult Receive(IoContext& context, std::span<std::byte> memory, size_t size) const noexcept;
-		AsyncRecvResult Receive(IoContext& context, _In_reads_bytes_(size)std::byte* const& memory, size_t size) const noexcept;
+		AsyncResult Receive(IoContext& context, std::span<std::byte> memory) const noexcept;
+		AsyncResult Receive(IoContext& context, std::span<std::byte> memory, size_t size) const noexcept;
+		AsyncResult Receive(IoContext& context, _In_reads_bytes_(size)std::byte* const& memory, size_t size) const noexcept;
 		bool Receive(IoContext& context, std::span<std::byte> memory, ErrorCode& error_code) const noexcept;
 		bool Receive(IoContext& context, std::span<std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
 		bool Receive(IoContext& context, _In_reads_bytes_(size)std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
@@ -127,46 +125,46 @@ export namespace iconer::net
 		// Asynchronous Send & Receive
 
 		[[nodiscard]]
-		SendTask MakeSendTask(IoContext& context, std::span<const std::byte> memory) const noexcept;
+		IoTask MakeSendTask(IoContext& context, std::span<const std::byte> memory) const noexcept;
 		[[nodiscard]]
-		SendTask MakeSendTask(IoContext& context, std::span<const std::byte> memory, size_t size) const noexcept;
+		IoTask MakeSendTask(IoContext& context, std::span<const std::byte> memory, size_t size) const noexcept;
 		[[nodiscard]]
-		SendTask MakeSendTask(IoContext& context, const _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+		IoTask MakeSendTask(IoContext& context, const _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
 		[[nodiscard]]
-		RecvTask MakeReceiveTask(IoContext& context, std::span<std::byte> memory) const noexcept;
+		IoTask MakeReceiveTask(IoContext& context, std::span<std::byte> memory) const noexcept;
 		[[nodiscard]]
-		RecvTask MakeReceiveTask(IoContext& context, std::span<std::byte> memory, size_t size) const noexcept;
+		IoTask MakeReceiveTask(IoContext& context, std::span<std::byte> memory, size_t size) const noexcept;
 		[[nodiscard]]
-		RecvTask MakeReceiveTask(IoContext& context, _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+		IoTask MakeReceiveTask(IoContext& context, _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
 
 		[[nodiscard]]
-		SendTask MakeSendTask(const std::shared_ptr<IoContext>& context, std::span<const std::byte> memory) const noexcept;
+		IoTask MakeSendTask(const std::shared_ptr<IoContext>& context, std::span<const std::byte> memory) const noexcept;
 		[[nodiscard]]
-		SendTask MakeSendTask(const std::shared_ptr<IoContext>& context, std::span<const std::byte> memory, size_t size) const noexcept;
+		IoTask MakeSendTask(const std::shared_ptr<IoContext>& context, std::span<const std::byte> memory, size_t size) const noexcept;
 		[[nodiscard]]
-		SendTask MakeSendTask(const std::shared_ptr<IoContext>& context, const _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+		IoTask MakeSendTask(const std::shared_ptr<IoContext>& context, const _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
 		[[nodiscard]]
 
-		RecvTask MakeReceiveTask(const std::shared_ptr<IoContext>& context, std::span<std::byte> memory) const noexcept;
+		IoTask MakeReceiveTask(const std::shared_ptr<IoContext>& context, std::span<std::byte> memory) const noexcept;
 		[[nodiscard]]
-		RecvTask MakeReceiveTask(const std::shared_ptr<IoContext>& context, std::span<std::byte> memory, size_t size) const noexcept;
+		IoTask MakeReceiveTask(const std::shared_ptr<IoContext>& context, std::span<std::byte> memory, size_t size) const noexcept;
 		[[nodiscard]]
-		RecvTask MakeReceiveTask(const std::shared_ptr<IoContext>& context, _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+		IoTask MakeReceiveTask(const std::shared_ptr<IoContext>& context, _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
 
 		// Asynchronous Send & Receive
 
 		[[nodiscard]]
-		SendTask AsyncSend(IoContext& context, std::span<const std::byte> memory) const noexcept;
+		IoTask AsyncSend(IoContext& context, std::span<const std::byte> memory) const noexcept;
 		[[nodiscard]]
-		SendTask AsyncSend(IoContext& context, std::span<const std::byte> memory, size_t size) const noexcept;
+		IoTask AsyncSend(IoContext& context, std::span<const std::byte> memory, size_t size) const noexcept;
 		[[nodiscard]]
-		SendTask AsyncSend(IoContext& context, const _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+		IoTask AsyncSend(IoContext& context, const _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
 		[[nodiscard]]
-		RecvTask AsyncRecv(IoContext& context, std::span<std::byte> memory) const noexcept;
+		IoTask AsyncRecv(IoContext& context, std::span<std::byte> memory) const noexcept;
 		[[nodiscard]]
-		RecvTask AsyncRecv(IoContext& context, std::span<std::byte> memory, size_t size) const noexcept;
+		IoTask AsyncRecv(IoContext& context, std::span<std::byte> memory, size_t size) const noexcept;
 		[[nodiscard]]
-		RecvTask AsyncRecv(IoContext& context, _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
+		IoTask AsyncRecv(IoContext& context, _In_reads_bytes_(size) std::byte* const& memory, size_t size) const noexcept;
 
 		// Observers
 

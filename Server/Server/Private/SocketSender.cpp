@@ -8,23 +8,26 @@ import <coroutine>;
 
 using namespace iconer;
 
-net::Socket::SyncSendResult RawSend(const net::Socket::HandleType& sock, ::WSABUF& buffer) noexcept;
-net::Socket::SyncSendResult RawSendEx(const net::Socket::HandleType& sock, ::WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;
+net::Socket::AsyncResult RawSend(const net::Socket::HandleType& sock, ::WSABUF& buffer) noexcept;
+net::Socket::AsyncResult RawSendEx(const net::Socket::HandleType& sock, ::WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;
 
-net::Socket::SyncSendResult
+net::Socket::IoResult
 net::Socket::Send(std::span<const std::byte> memory)
 const noexcept
 {
-	::WSABUF buffer
+	if (int bytes = ::send(myHandle
+		, reinterpret_cast<const char*>(memory.data()), static_cast<int>(memory.size_bytes())
+		, 0); SOCKET_ERROR != bytes)
 	{
-		.len = static_cast<::ULONG>(memory.size_bytes()),
-		.buf = reinterpret_cast<char*>(const_cast<std::byte*>(memory.data())),
-	};
-
-	return RawSend(myHandle, buffer);
+		return bytes;
+	}
+	else
+	{
+		return std::unexpected(AcquireNetworkError());
+	}
 }
 
-net::Socket::SyncSendResult
+net::Socket::IoResult
 net::Socket::Send(std::span<const std::byte> memory, size_t size) const noexcept
 {
 	::WSABUF buffer
@@ -36,7 +39,7 @@ net::Socket::Send(std::span<const std::byte> memory, size_t size) const noexcept
 	return RawSend(myHandle, buffer);
 }
 
-net::Socket::SyncSendResult
+net::Socket::IoResult
 net::Socket::Send(const std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -70,7 +73,7 @@ const noexcept
 	return Send(memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
-net::Socket::SyncSendResult
+net::Socket::AsyncResult
 net::Socket::Send(net::IoContext& context, std::span<const std::byte> memory)
 const noexcept
 {
@@ -83,7 +86,7 @@ const noexcept
 	return RawSendEx(myHandle, buffer, std::addressof(context), nullptr);
 }
 
-net::Socket::SyncSendResult
+net::Socket::AsyncResult
 net::Socket::Send(net::IoContext& context, std::span<const std::byte> memory, size_t size)
 const noexcept
 {
@@ -96,7 +99,7 @@ const noexcept
 	return RawSendEx(myHandle, buffer, std::addressof(context), nullptr);
 }
 
-net::Socket::SyncSendResult
+net::Socket::AsyncResult
 net::Socket::Send(net::IoContext& context, const std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -130,7 +133,7 @@ const noexcept
 	return Send(context, memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
-net::Socket::SendTask
+net::Socket::IoTask
 net::Socket::MakeSendTask(net::IoContext& context, std::span<const std::byte> memory)
 const noexcept
 {
@@ -158,7 +161,7 @@ const noexcept
 	}
 }
 
-net::Socket::SendTask
+net::Socket::IoTask
 net::Socket::MakeSendTask(net::IoContext& context, std::span<const std::byte> memory, size_t size)
 const noexcept
 {
@@ -186,7 +189,7 @@ const noexcept
 	}
 }
 
-net::Socket::SendTask
+net::Socket::IoTask
 net::Socket::MakeSendTask(net::IoContext& context, const std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -214,28 +217,28 @@ const noexcept
 	}
 }
 
-net::Socket::SendTask
+net::Socket::IoTask
 net::Socket::MakeSendTask(const std::shared_ptr<net::IoContext>& context, std::span<const std::byte> memory)
 const noexcept
 {
 	return MakeSendTask(*context, std::move(memory));
 }
 
-net::Socket::SendTask
+net::Socket::IoTask
 net::Socket::MakeSendTask(const std::shared_ptr<net::IoContext>& context, std::span<const std::byte> memory, size_t size)
 const noexcept
 {
 	return MakeSendTask(*context, std::move(memory), std::move(size));
 }
 
-net::Socket::SendTask
+net::Socket::IoTask
 net::Socket::MakeSendTask(const std::shared_ptr<net::IoContext>& context, const std::byte* const& memory, size_t size)
 const noexcept
 {
 	return MakeSendTask(*context, memory, std::move(size));
 }
 
-net::Socket::SendTask
+net::Socket::IoTask
 net::Socket::AsyncSend(net::IoContext& context, std::span<const std::byte> memory)
 const noexcept
 {
@@ -245,7 +248,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::SendTask
+net::Socket::IoTask
 net::Socket::AsyncSend(net::IoContext& context, std::span<const std::byte> memory, size_t size)
 const noexcept
 {
@@ -255,7 +258,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::SendTask
+net::Socket::IoTask
 net::Socket::AsyncSend(net::IoContext& context, const std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -265,7 +268,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::SyncSendResult
+net::Socket::AsyncResult
 RawSend(const net::Socket::HandleType& sock
 	, ::WSABUF& buffer)
 	noexcept
@@ -284,7 +287,7 @@ RawSend(const net::Socket::HandleType& sock
 	}
 }
 
-net::Socket::SyncSendResult
+net::Socket::AsyncResult
 RawSendEx(const net::Socket::HandleType& sock
 	, ::WSABUF& buffer
 	, void* context

@@ -31,8 +31,7 @@ export namespace iconer::app
 		using Super::IdType;
 		using Super::GetID;
 		using ContextType = IContext<UserStates>;
-		using SendResult = iconer::net::Socket::SyncSendResult;
-		using RecvResult = iconer::net::Socket::AsyncRecvResult;
+		using IoResult = iconer::net::Socket::AsyncResult;
 
 		static inline constexpr size_t nicknameLength = 64;
 
@@ -100,7 +99,7 @@ export namespace iconer::app
 
 		template<size_t Size>
 		[[nodiscard]]
-		RecvResult Send(std::span<std::byte, Size> buffer)
+		IoResult Send(std::span<std::byte, Size> buffer)
 		{
 			if constexpr (Size == std::dynamic_extent)
 			{
@@ -114,7 +113,7 @@ export namespace iconer::app
 
 		template<size_t Size>
 		[[nodiscard]]
-		RecvResult Receive(std::span<std::byte, Size> buffer)
+		IoResult Receive(std::span<std::byte, Size> buffer)
 		{
 			if constexpr (Size == std::dynamic_extent)
 			{
@@ -126,7 +125,7 @@ export namespace iconer::app
 			}
 		}
 
-		SendResult SendSignInPacket();
+		IoResult SendSignInPacket();
 
 		bool Destroy() noexcept
 		{
