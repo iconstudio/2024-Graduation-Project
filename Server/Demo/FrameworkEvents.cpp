@@ -5,6 +5,7 @@ module Demo.Framework;
 import Iconer.Application.User;
 import Iconer.Application.BasicPacket;
 import Demo.Framework.PacketProcessor;
+import <stdexcept>;
 
 demo::Framework::AcceptResult
 demo::Framework::OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state)
@@ -24,6 +25,12 @@ demo::Framework::OnReserveAccept(iconer::app::User& user, iconer::app::UserState
 			return iconer::net::ErrorCode::OPERATION_ABORTED;
 		}
 	}
+}
+
+void
+demo::Framework::OnFailedReservingAccept(iconer::app::User& user, iconer::app::UserStates& transit_state)
+{
+	throw std::runtime_error{ "Error when reserving acceptance of a socket." };
 }
 
 demo::Framework::IoResult
@@ -49,6 +56,11 @@ demo::Framework::OnUserConnected(iconer::app::User& user, const IdType& id, icon
 			return std::unexpected(iconer::net::ErrorCode::OPERATION_ABORTED);
 		}
 	}
+}
+
+void
+demo::Framework::OnFailedUserConnect(iconer::app::User& user, iconer::app::UserStates& transit_state)
+{
 }
 
 demo::Framework::IoResult
@@ -89,6 +101,11 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const IdType& id, icone
 	}
 }
 
+void
+demo::Framework::OnFailedUserSignIn(iconer::app::User& user, iconer::app::UserStates& transit_state)
+{
+}
+
 demo::Framework::IoResult
 demo::Framework::OnNotifyUserId(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
 {
@@ -112,6 +129,11 @@ demo::Framework::OnNotifyUserId(iconer::app::User& user, const IdType& id, icone
 			return std::unexpected(iconer::net::ErrorCode::OPERATION_ABORTED);
 		}
 	}
+}
+
+void
+demo::Framework::OnFailedNotifyId(iconer::app::User& user, iconer::app::UserStates& transit_state)
+{
 }
 
 demo::Framework::IoResult
@@ -148,6 +170,11 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 	}
 
 	return user.Receive(GetBuffer(id));
+}
+
+void
+demo::Framework::OnFailedReceive(iconer::app::User& user, iconer::app::UserStates& transit_state)
+{
 }
 
 demo::Framework::AcceptResult
