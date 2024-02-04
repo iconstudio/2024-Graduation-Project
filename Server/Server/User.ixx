@@ -90,8 +90,16 @@ export namespace iconer::app
 			myName.reserve(nicknameLength);
 		}
 
+		bool Destroy() noexcept
+		{
+			SetOperation(Operations::OpDisconnect);
+			return mySocket.CloseAsync(this);
+		}
+
 		void Cleanup() noexcept
 		{
+			SetOperation(Operations::None);
+			SetState(UserStates::None);
 			ContextType::Clear();
 			recvOffset = 0;
 			myName.clear();
@@ -126,12 +134,6 @@ export namespace iconer::app
 		}
 
 		IoResult SendSignInPacket();
-
-		bool Destroy() noexcept
-		{
-			SetOperation(Operations::OpDisconnect);
-			return mySocket.CloseAsync(this);
-		}
 
 		constexpr User& PositionX(const float& v) noexcept
 		{
