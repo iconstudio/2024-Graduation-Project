@@ -44,7 +44,7 @@ export namespace iconer::app
 		using AtomicType = std::atomic<StatusType>;
 
 		explicit constexpr IContext() noexcept(nothrow_default_constructibles<AtomicType>) = default;
-		constexpr ~IContext() noexcept(nothrow_destructibles<AtomicType>) = default;
+		~IContext() noexcept(nothrow_destructibles<AtomicType>) = default;
 
 		IContext(IContext&& other)
 			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_assignables<S>)
