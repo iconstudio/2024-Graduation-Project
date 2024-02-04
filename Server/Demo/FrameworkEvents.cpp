@@ -136,6 +136,10 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 
 	return user.Receive(GetBuffer(id));
 }
+
+demo::Framework::SocketResult
+demo::Framework::OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+{
 	switch (transit_state)
 	{
 		case iconer::app::UserStates::Idle:
@@ -167,20 +171,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 
 		}
 		break;
-
-		default:
-		{
-			return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
-		}
 	}
 
-	return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
-}
-
-demo::Framework::SocketResult
-demo::Framework::OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
-{
-	
-	
 	return iconer::net::ErrorCode::OPERATION_ABORTED;
 }
