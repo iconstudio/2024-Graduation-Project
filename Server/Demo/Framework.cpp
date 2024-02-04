@@ -54,7 +54,7 @@ demo::Framework::InitializeUsers()
 			if (not ioCompletionPort.Register(socket, id).has_value())
 			{
 				auto user = user_factory.Create(id++, std::move(socket));
-				userManager.Add(std::move(user));
+				userManager->Add(std::move(user));
 			}
 			else
 			{
@@ -73,7 +73,7 @@ demo::Framework::InitializeUsers()
 bool
 demo::Framework::StartAccepts()
 {
-	for (auto& [id, user] : userManager)
+	for (auto& [id, user] : *userManager)
 	{
 		user.Awake();
 

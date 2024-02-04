@@ -6,7 +6,8 @@ import Iconer.Net.IoContext;
 import Iconer.Net.Socket;
 import Iconer.Net.IoCompletionPort;
 import Iconer.Application.IContext;
-import Iconer.Application.UserManager;
+import Iconer.Application.User;
+import Iconer.Application.ISessionManager;
 import <memory>;
 import <vector>;
 import <array>;
@@ -41,7 +42,7 @@ export namespace demo
 	class Framework
 	{
 	public:
-		using IdType = iconer::app::UserManager::key_type;
+		using IdType = iconer::app::User::IdType;
 		using SocketResult = iconer::net::Socket::ActionResult;
 		using SendResult = iconer::net::Socket::SyncSendResult;
 		using RecvResult = iconer::net::Socket::AsyncRecvResult;
@@ -166,7 +167,8 @@ export namespace demo
 		iconer::net::Socket serverListener;
 		iconer::net::IoCompletionPort ioCompletionPort;
 
-		alignas(std::hardware_constructive_interference_size) iconer::app::UserManager userManager;
+		// import Iconer.Application.UserManager;
+		alignas(std::hardware_constructive_interference_size) iconer::app::ISessionManager<iconer::app::User>* userManager;
 
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<iconer::app::User[]> userSpace;
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<std::byte[]> recvSpace;
