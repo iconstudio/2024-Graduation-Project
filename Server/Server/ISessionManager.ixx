@@ -317,14 +317,12 @@ export namespace iconer::app
 		[[nodiscard]]
 		size_type GetSize() const noexcept
 		{
-			std::shared_lock lock{ myLock, std::try_to_lock_t{} };
 			return myData.size();
 		}
 
 		[[nodiscard]]
 		size_t GetCapacity() const noexcept
 		{
-			std::shared_lock lock{ myLock, std::try_to_lock_t{} };
 			return myData.capacity();
 		}
 
