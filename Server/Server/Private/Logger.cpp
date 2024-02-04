@@ -1,6 +1,7 @@
 module;
 #include <cstdio>
 #include <cstdlib>
+#include <mutex>
 
 module Iconer.Utility.Logger;
 import Iconer.Utility.ColourfulConsole;
@@ -14,6 +15,8 @@ namespace
 	iconer::util::cfc::Palette logPalette{ iconer::util::cfc::colors::BrightYellow, iconer::util::cfc::colors::Black };
 	iconer::util::cfc::Palette wrnPalette{ iconer::util::cfc::colors::LightRed, iconer::util::cfc::colors::Black };
 	iconer::util::cfc::Palette errPalette{ iconer::util::cfc::colors::Red, iconer::util::cfc::colors::Black };
+
+	std::recursive_mutex consoleLock;
 }
 
 void
@@ -44,6 +47,8 @@ const noexcept
 	const auto str = msg.data();
 
 	iconer::util::cfc::Palette before = iconer::util::cfc::GetConsoleColour();
+
+	std::scoped_lock lock { consoleLock };
 	iconer::util::cfc::SetConsoleColour(logPalette);
 	std::fwprintf(stdout, str);
 	iconer::util::cfc::SetConsoleColour(before);
@@ -58,6 +63,8 @@ const noexcept
 	const auto str = msg.data();
 
 	iconer::util::cfc::Palette before = iconer::util::cfc::GetConsoleColour();
+
+	std::scoped_lock lock{ consoleLock };
 	iconer::util::cfc::SetConsoleColour(errPalette);
 	std::fwprintf(stderr, str);
 	iconer::util::cfc::SetConsoleColour(before);
@@ -72,6 +79,8 @@ const noexcept
 	const auto str = msg.data();
 
 	iconer::util::cfc::Palette before = iconer::util::cfc::GetConsoleColour();
+
+	std::scoped_lock lock{ consoleLock };
 	iconer::util::cfc::SetConsoleColour(wrnPalette);
 	std::fwprintf(stderr, str);
 	iconer::util::cfc::SetConsoleColour(before);
