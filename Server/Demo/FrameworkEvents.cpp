@@ -87,7 +87,7 @@ demo::Framework::OnNotifyUserId(iconer::app::User& user, const IdType& id, icone
 			if (recv_r)
 			{
 				// not now
-				//transit_state = iconer::app::UserStates::InLobby;
+				transit_state = iconer::app::UserStates::InLobby;
 			}
 
 			return recv_r;
