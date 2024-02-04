@@ -135,3 +135,56 @@ struct std::formatter<iconer::util::IProperty<T, Context, Custom, Copyable, Read
 		}
 	}
 };
+
+export template<typename T, typename Context, bool Custom, bool Copyable, bool Readonly, bool Nothrow>
+struct std::formatter<iconer::util::IProperty<T, Context, Custom, Copyable, Readonly, Nothrow>, wchar_t>
+	: protected std::formatter<T>
+{
+	using property_t = iconer::util::IProperty<T, Context, Custom, Copyable, Readonly, Nothrow>;
+
+	using std::formatter<T, wchar_t>::parse;
+
+	wformat_context::iterator
+		format(const property_t& property, wformat_context& context) const
+	{
+		static auto&& meta = typeid(T);
+
+		if constexpr (Readonly)
+		{
+			return format_to(context.out(), L"ReadonlyProperty<{}>({})", meta.name(), static_cast<const T&>(property));
+		}
+		else
+		{
+			if constexpr (Custom)
+			{
+				return format_to(context.out(), L"CustomProperty<{}>({})", meta.name(), static_cast<const T&>(property));
+			}
+			else
+			{
+				return format_to(context.out(), L"Property<{}>({})", meta.name(), static_cast<const T&>(property));
+			}
+		}
+	}
+
+	wformat_context::iterator
+		format(property_t&& property, wformat_context& context) const
+	{
+		static auto&& meta = typeid(T);
+
+		if constexpr (Readonly)
+		{
+			return format_to(context.out(), L"ReadonlyProperty<{}>({})", meta.name(), static_cast<T&&>(std::move(property)));
+		}
+		else
+		{
+			if constexpr (Custom)
+			{
+				return format_to(context.out(), L"CustomProperty<{}>({})", meta.name(), static_cast<T&&>(std::move(property)));
+			}
+			else
+			{
+				return format_to(context.out(), L"Property<{}>({})", meta.name(), static_cast<T&&>(std::move(property)));
+			}
+		}
+	}
+};
