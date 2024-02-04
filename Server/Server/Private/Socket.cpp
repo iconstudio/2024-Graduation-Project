@@ -500,7 +500,7 @@ iconer::net::Socket::TryCreate(iconer::net::IoCategory type
 	}
 	else
 	{
-		return std::unexpected(AcquireNetworkError());
+		return std::unexpected{ AcquireNetworkError() };
 	}
 }
 

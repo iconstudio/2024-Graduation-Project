@@ -20,7 +20,7 @@ const noexcept
 	}
 	else
 	{
-		return std::unexpected(AcquireNetworkError());
+		return std::unexpected{ AcquireNetworkError() };
 	}
 }
 
@@ -36,7 +36,7 @@ const noexcept
 	}
 	else
 	{
-		return std::unexpected(AcquireNetworkError());
+		return std::unexpected{ AcquireNetworkError() };
 	}
 }
 
@@ -52,7 +52,7 @@ const noexcept
 	}
 	else
 	{
-		return std::unexpected(AcquireNetworkError());
+		return std::unexpected{ AcquireNetworkError() };
 	}
 }
 
@@ -219,7 +219,7 @@ const noexcept
 
 	if (FALSE == result)
 	{
-		co_return std::unexpected(AcquireNetworkError());
+		co_return std::unexpected{ AcquireNetworkError() };
 	}
 	else
 	{
@@ -247,7 +247,7 @@ const noexcept
 
 	if (FALSE == result)
 	{
-		co_return std::unexpected(AcquireNetworkError());
+		co_return std::unexpected{ AcquireNetworkError() };
 	}
 	else
 	{
@@ -275,7 +275,7 @@ const noexcept
 
 	if (FALSE == result)
 	{
-		co_return std::unexpected(AcquireNetworkError());
+		co_return std::unexpected{ AcquireNetworkError() };
 	}
 	else
 	{

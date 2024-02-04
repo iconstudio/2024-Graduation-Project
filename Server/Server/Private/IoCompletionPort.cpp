@@ -22,7 +22,7 @@ noexcept
 
 	if (nullptr == ptr)
 	{
-		return std::unexpected(AcquireNetworkError());
+		return std::unexpected{ AcquireNetworkError() };
 	}
 
 	return IoCompletionPort{ ptr };

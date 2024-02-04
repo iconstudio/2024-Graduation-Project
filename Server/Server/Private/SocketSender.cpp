@@ -23,7 +23,7 @@ const noexcept
 	}
 	else
 	{
-		return std::unexpected(AcquireNetworkError());
+		return std::unexpected{ AcquireNetworkError() };
 	}
 }
 
