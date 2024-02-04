@@ -11,11 +11,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="137edaab-b0ff-4f06-82c7-6c6e1815692b" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Server/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Server/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/Framework.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Framework.ixx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/FrameworkEvents.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/FrameworkEvents.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Demo/Worker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/Worker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/IContext.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/IContext.ixx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Demo/FrameworkInitializer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Demo/FrameworkInitializer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/Property.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Property.ixx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/UserManager.ixx" beforeDir="false" afterPath="$PROJECT_DIR$/Server/UserManager.ixx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -267,6 +265,7 @@
       <workItem from="1706436741003" duration="2198000" />
       <workItem from="1706449213089" duration="903000" />
       <workItem from="1706793289423" duration="4952000" />
+      <workItem from="1706972649564" duration="1745000" />
     </task>
     <servers />
   </component>
