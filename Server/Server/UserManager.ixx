@@ -10,7 +10,8 @@ import <mutex>;
 template<>
 struct std::hash<iconer::app::User*>
 {
-	auto operator()(const iconer::app::User* const ptr) const
+	[[nodiscard]]
+	auto operator()(const iconer::app::User* const ptr) const noexcept
 	{
 		if (nullptr == ptr)
 		{
