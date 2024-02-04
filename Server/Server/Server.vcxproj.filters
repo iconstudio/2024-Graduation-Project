@@ -255,4 +255,7 @@
   <ItemGroup>
     <Natvis Include="..\Server.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>
