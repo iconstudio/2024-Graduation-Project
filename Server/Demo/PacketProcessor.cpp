@@ -23,7 +23,7 @@ demo::PacketProcessor(Framework& framework
 	std::int16_t size = 0;
 	const std::byte* last_buf = util::Deserialize(util::Deserialize(packet_data.data(), protocol), size);
 
-	if (0 == size)
+	if (0 <= size)
 	{
 		throw "Packet size error.";
 	}
