@@ -12,16 +12,24 @@ export namespace iconer::app
 		None,
 		/// <summary>Phase 0</summary>
 		OpReserveSession = 10,
+
 		/// <summary>Phase 1</summary>
 		OpAccept,
+
 		/// <summary>Phase 2 - Sign in</summary>
 		OpSignIn,
+
 		/// <summary>Phase 3</summary>
 		OpAssignID,
+
 		/// <summary>Phase 4 ~ </summary>
 		OpRecv, OpSend,
+
+		/// <summary>Phase 5 ~ </summary>
 		OpCreateRoom, OpEnterRoom, OpLeaveRoom,
-		OpEnterGame, OpReadyGame, OpStartGame, OpLeaveGame,
+
+		/// <summary>Phase 6 ~ </summary>
+		OpNotifyMember, OpEnterGame, OpReadyGame, OpStartGame, OpLeaveGame,
 
 		/// <summary>Phase 10 - Sign out (Quit)</summary>
 		OpDisconnect,
