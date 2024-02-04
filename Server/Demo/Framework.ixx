@@ -94,8 +94,7 @@ export namespace demo
 		RecvResult OnNotifyUserId(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
 		[[nodiscard]]
 		RecvResult OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes);
-		[[nodiscard]]
-		bool OnUserSignIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+
 		[[nodiscard]]
 		SocketResult OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
 

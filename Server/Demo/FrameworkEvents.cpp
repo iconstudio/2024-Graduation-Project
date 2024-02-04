@@ -177,12 +177,6 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 	return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
 }
 
-bool
-demo::Framework::OnUserSignIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
-{
-	return false;
-}
-
 demo::Framework::SocketResult
 demo::Framework::OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
 {
