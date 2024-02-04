@@ -6,7 +6,7 @@ import Iconer.Application.User;
 import Iconer.Application.BasicPacket;
 import Demo.Framework.PacketProcessor;
 
-demo::Framework::SocketResult
+demo::Framework::AcceptResult
 demo::Framework::OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state)
 {
 	switch (transit_state)
@@ -26,7 +26,7 @@ demo::Framework::OnReserveAccept(iconer::app::User& user, iconer::app::UserState
 	}
 }
 
-demo::Framework::RecvResult
+demo::Framework::IoResult
 demo::Framework::OnUserConnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
 {
 	switch (transit_state)
@@ -51,13 +51,26 @@ demo::Framework::OnUserConnected(iconer::app::User& user, const IdType& id, icon
 	}
 }
 
-demo::Framework::SendResult
-demo::Framework::OnUserSignedIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+demo::Framework::IoResult
+demo::Framework::OnUserSignedIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes)
 {
 	switch (transit_state)
 	{
 		case iconer::app::UserStates::Connected:
 		{
+			// Small receiving phase
+			auto user_buffer = GetBuffer(id);
+			auto& user_recv_offset = user.recvOffset;
+
+			user_recv_offset += bytes;
+
+			if (iconer::app::BasicPacket::MinSize() <= user_recv_offset)
+			{
+			}
+			else
+			{
+			}
+
 			user.SetOperation(iconer::app::Operations::OpAssignID);
 
 			auto send_r = user.SendSignInPacket();
@@ -76,7 +89,7 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const IdType& id, icone
 	}
 }
 
-demo::Framework::RecvResult
+demo::Framework::IoResult
 demo::Framework::OnNotifyUserId(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
 {
 	switch (transit_state)
@@ -101,7 +114,7 @@ demo::Framework::OnNotifyUserId(iconer::app::User& user, const IdType& id, icone
 	}
 }
 
-demo::Framework::RecvResult
+demo::Framework::IoResult
 demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes)
 {
 	auto user_buffer = GetBuffer(id);
@@ -137,7 +150,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 	return user.Receive(GetBuffer(id));
 }
 
-demo::Framework::SocketResult
+demo::Framework::AcceptResult
 demo::Framework::OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
 {
 	switch (transit_state)

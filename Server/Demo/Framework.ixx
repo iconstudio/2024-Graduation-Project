@@ -43,9 +43,8 @@ export namespace demo
 	{
 	public:
 		using IdType = iconer::app::User::IdType;
-		using SocketResult = iconer::net::Socket::ActionResult;
-		using SendResult = iconer::net::Socket::SyncSendResult;
-		using RecvResult = iconer::net::Socket::AsyncRecvResult;
+		using AcceptResult = iconer::net::Socket::ActionResult;
+		using IoResult = iconer::net::Socket::AsyncResult;
 
 		static inline constexpr std::string_view serverAddress{ "127.0.0.1" };
 		static inline constexpr std::uint16_t serverPort{ 40000 };
@@ -86,18 +85,18 @@ export namespace demo
 		void RouteOperation(bool is_succeed, const ptrdiff_t& io_bytes, const iconer::app::Operations& operation, iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
 
 		[[nodiscard]]
-		SocketResult OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state);
+		AcceptResult OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state);
 		[[nodiscard]]
-		RecvResult OnUserConnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		IoResult OnUserConnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
 		[[nodiscard]]
-		SendResult OnUserSignedIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		IoResult OnUserSignedIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes);
 		[[nodiscard]]
-		RecvResult OnNotifyUserId(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		IoResult OnNotifyUserId(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
 		[[nodiscard]]
-		RecvResult OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes);
+		IoResult OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes);
 
 		[[nodiscard]]
-		SocketResult OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		AcceptResult OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
 
 		[[nodiscard]]
 		bool Schedule(iconer::net::IoContext& context, const IdType id, unsigned long info_bytes) noexcept

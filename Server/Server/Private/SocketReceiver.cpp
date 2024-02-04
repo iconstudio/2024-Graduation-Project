@@ -8,7 +8,7 @@ import <coroutine>;
 
 using namespace iconer;
 
-net::Socket::SyncRecvResult
+net::Socket::IoResult
 net::Socket::Receive(std::span<std::byte> memory)
 const noexcept
 {
@@ -24,7 +24,7 @@ const noexcept
 	}
 }
 
-net::Socket::SyncRecvResult
+net::Socket::IoResult
 net::Socket::Receive(std::span<std::byte> memory, size_t size)
 const noexcept
 {
@@ -40,7 +40,7 @@ const noexcept
 	}
 }
 
-net::Socket::SyncRecvResult
+net::Socket::IoResult
 net::Socket::Receive(std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -77,7 +77,7 @@ const noexcept
 	return Receive(memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
-net::Socket::AsyncRecvResult
+net::Socket::AsyncResult
 net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory)
 const noexcept
 {
@@ -111,7 +111,7 @@ const noexcept
 	}
 }
 
-net::Socket::AsyncRecvResult
+net::Socket::AsyncResult
 net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory, size_t size) const noexcept
 {
 	::WSABUF buffer
@@ -144,7 +144,7 @@ net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory, size_
 	}
 }
 
-net::Socket::AsyncRecvResult
+net::Socket::AsyncResult
 net::Socket::Receive(net::IoContext& context, std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -199,7 +199,7 @@ const noexcept
 	return Receive(context, memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
-net::Socket::RecvTask
+net::Socket::IoTask
 net::Socket::MakeReceiveTask(net::IoContext& context, std::span<std::byte> memory)
 const noexcept
 {
@@ -227,7 +227,7 @@ const noexcept
 	}
 }
 
-net::Socket::RecvTask
+net::Socket::IoTask
 net::Socket::MakeReceiveTask(net::IoContext& context, std::span<std::byte> memory, size_t size)
 const noexcept
 {
@@ -255,7 +255,7 @@ const noexcept
 	}
 }
 
-net::Socket::RecvTask
+net::Socket::IoTask
 net::Socket::MakeReceiveTask(net::IoContext& context, std::byte* const& memory, size_t size)
 const noexcept
 {
@@ -283,28 +283,28 @@ const noexcept
 	}
 }
 
-net::Socket::RecvTask
+net::Socket::IoTask
 net::Socket::MakeReceiveTask(const std::shared_ptr<net::IoContext>& context, std::span<std::byte> memory)
 const noexcept
 {
 	return MakeReceiveTask(*context, std::move(memory));
 }
 
-net::Socket::RecvTask
+net::Socket::IoTask
 net::Socket::MakeReceiveTask(const std::shared_ptr<net::IoContext>& context, std::span<std::byte> memory, size_t size)
 const noexcept
 {
 	return MakeReceiveTask(*context, std::move(memory), std::move(size));
 }
 
-net::Socket::RecvTask
+net::Socket::IoTask
 net::Socket::MakeReceiveTask(const std::shared_ptr<net::IoContext>& context, std::byte* const& memory, size_t size)
 const noexcept
 {
 	return MakeReceiveTask(*context, memory, std::move(size));
 }
 
-net::Socket::RecvTask
+net::Socket::IoTask
 net::Socket::AsyncRecv(net::IoContext& context, std::span<std::byte> memory)
 const noexcept
 {
@@ -314,7 +314,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::RecvTask
+net::Socket::IoTask
 net::Socket::AsyncRecv(net::IoContext& context, std::span<std::byte> memory, size_t size)
 const noexcept
 {
@@ -324,7 +324,7 @@ const noexcept
 	return task;
 }
 
-net::Socket::RecvTask
+net::Socket::IoTask
 net::Socket::AsyncRecv(net::IoContext& context, std::byte* const& memory, size_t size)
 const noexcept
 {
