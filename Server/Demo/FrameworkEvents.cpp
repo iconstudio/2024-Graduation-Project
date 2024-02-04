@@ -3,6 +3,8 @@ module;
 
 module Demo.Framework;
 import Iconer.Application.User;
+import Iconer.Application.BasicPacket;
+import Demo.Framework.PacketProcessor;
 
 demo::Framework::SocketResult
 demo::Framework::OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state)
@@ -106,8 +108,35 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 	auto user_buffer = GetBuffer(id);
 	auto& user_recv_offset = user.recvOffset;
 
-	auto recently_recv_buffer = user_buffer.subspan(user_recv_offset);
+	user_recv_offset += bytes;
 
+	if (iconer::app::BasicPacket::MinSize() <= user_recv_offset)
+	{
+		auto proceed_bytes = PacketProcessor(*this, user, id, transit_state, user_buffer, bytes);
+		if (proceed_bytes < 0) [[unlikely]]
+		{
+			myLogger.LogWarning(L"Cannot assembly a packet due to `PacketProcessor`'s failure");
+
+			return std::unexpected(iconer::net::ErrorCode::NoBufferStorage);
+		}
+		else if (0 == proceed_bytes)
+		{
+			myLogger.DebugLogWarning(L"Cannot assembly a packet in `PacketProcessor` due to lack of bytes");
+		}
+		else
+		{
+			myLogger.DebugLog(L"A packet is assembled");
+
+			user_recv_offset -= proceed_bytes;
+		};
+	}
+	else
+	{
+		myLogger.DebugLogWarning(L"Cannot assembly a packet due to lack of bytes");
+	}
+
+	return user.Receive(GetBuffer(id));
+}
 	switch (transit_state)
 	{
 		case iconer::app::UserStates::Idle:
