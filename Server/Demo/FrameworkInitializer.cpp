@@ -29,7 +29,7 @@ demo::Framework::Awake()
 	
 	if (const auto startup_err = net::Startup())
 	{
-		myLogger.LogError(L"Error when starting network system.");
+		myLogger.LogError(L"Error {} occured when starting network system.", startup_err.value());
 
 		throw network_init_error;
 	}
