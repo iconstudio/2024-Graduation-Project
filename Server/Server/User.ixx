@@ -44,7 +44,7 @@ export namespace iconer::app
 		{
 		}
 
-		~User() noexcept(nothrow_destructibles<Super, ContextType, iconer::net::Socket> and noexcept(std::declval<iconer::net::Socket>().Close()))
+		~User() noexcept(nothrow_destructibles<Super, ContextType, iconer::net::Socket>)
 		{
 			if (mySocket.IsAvailable())
 			{
@@ -71,6 +71,7 @@ export namespace iconer::app
 		void Awake() noexcept
 		{
 			ContextType::Clear();
+			recvOffset = 0;
 		}
 
 		template<size_t Size>
