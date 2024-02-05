@@ -2,11 +2,12 @@
 #include <cstdio>
 #include <iostream>
 
-import Iconer.Coroutine;
+import Iconer.Utility.Serializer;
 import Iconer.Net;
 import Iconer.Net.IpAddress;
 import Iconer.Net.EndPoint;
 import Iconer.Net.Socket;
+import Iconer.Coroutine;
 import Iconer.Application.Packet;
 
 using namespace iconer;
@@ -15,11 +16,15 @@ net::Socket app_socket{};
 net::IpAddress server_address{};
 net::EndPoint server_ep{};
 
-std::byte recv_buffer[512]{};
+static std::byte recv_space[512]{};
+static std::span<std::byte, 512> recv_buffer{ recv_space };
 unsigned long received_bytes = 0;
 
 net::IoContext recv_ctx{};
 net::IoContext send_ctx{};
+
+using IdType = int;
+IdType clientId = -1;
 
 volatile bool cmd_assigned = false;
 char command[256]{};
@@ -35,6 +40,7 @@ struct FSagaPlayerCharacter
 
 coroutine::Coroutine Receiver();
 coroutine::Coroutine Sender();
+void PullReceiveBuffer(const unsigned long size);
 
 int main()
 {
@@ -112,9 +118,11 @@ int main()
 
 coroutine::Coroutine Receiver()
 {
+	std::byte temp_buffer[512]{};
+
 	while (true)
 	{
-		auto recv = co_await app_socket.MakeReceiveTask(recv_ctx, recv_buffer);
+		auto recv = co_await app_socket.MakeReceiveTask(recv_ctx, recv_buffer.subspan(received_bytes));
 
 		if (not recv.has_value())
 		{
@@ -126,6 +134,53 @@ coroutine::Coroutine Receiver()
 			const auto& bytes = recv.value();
 
 			received_bytes += bytes;
+
+			if (received_bytes <= app::BasicPacket::MinSize())
+			{
+				app::BasicPacket basic_pk{};
+				const auto seek = basic_pk.Read(recv_space);
+
+				if (basic_pk.mySize <= 0)
+				{
+					throw "error!";
+				}
+				else if (const auto sz = static_cast<unsigned long>(basic_pk.mySize); received_bytes <= sz)
+				{
+					switch (basic_pk.myProtocol)
+					{
+						case app::PacketProtocol::SC_SIGNIN_SUCCESS:
+						{
+							util::Deserialize(seek, clientId);
+
+							std::cout << "Local player's id is " << clientId << '\n';
+
+							const unsigned long wanna_size = sz + sizeof(clientId);
+							PullReceiveBuffer(wanna_size);
+						}
+						break;
+
+						case app::PacketProtocol::SC_SIGNIN_FAILURE:
+						{
+						}
+						break;
+
+						case app::PacketProtocol::SC_CREATE_PLAYER:
+						{
+						}
+						break;
+
+						case app::PacketProtocol::SC_MOVE_CHARACTER:
+						{
+						}
+						break;
+
+						case app::PacketProtocol::SC_UPDATE_CHARACTER:
+						{
+						}
+						break;
+					}
+				}
+			}
 		}
 
 		recv_ctx.Clear();
@@ -154,4 +209,9 @@ coroutine::Coroutine Sender()
 	}
 
 	co_return;
+}
+
+void
+PullReceiveBuffer(const unsigned long size)
+{
 }
