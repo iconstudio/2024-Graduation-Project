@@ -33,7 +33,7 @@ export namespace iconer::app
 		using ContextType = IContext<UserStates>;
 		using IoResult = iconer::net::Socket::AsyncResult;
 
-		static inline constexpr size_t nicknameLength = 64;
+		static inline constexpr size_t nicknameLength = 16;
 
 		explicit User() = default;
 
