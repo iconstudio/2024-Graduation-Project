@@ -77,7 +77,7 @@ int main()
 
 	std::cout << "Starting receiving...\n";
 
-	app::packets::SignInPacket pk{};
+	app::packets::CS_SignInPacket pk{};
 
 	auto receiver = Receiver();
 	//auto sender = Sender();
@@ -85,13 +85,13 @@ int main()
 	receiver.StartAsync();
 	//sender.StartAsync();
 
-	constexpr app::packets::SignInPacket sign_packet{ L"Iconer" };
+	constexpr app::packets::CS_SignInPacket sign_packet{ L"Iconer" };
 
 	std::byte signin_buffer[512]{};
 	sign_packet.Write(signin_buffer);
-	auto it = pk.Read(signin_buffer, app::packets::SignInPacket::WannabeSize());
+	auto it = pk.Read(signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
 
-	auto sent_signin_r = app_socket.Send(send_ctx, signin_buffer, app::packets::SignInPacket::WannabeSize());
+	auto sent_signin_r = app_socket.Send(send_ctx, signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
 	if (not sent_signin_r.has_value())
 	{
 		return 2;

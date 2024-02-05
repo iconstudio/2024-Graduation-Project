@@ -8,7 +8,12 @@ import <algorithm>;
 export namespace iconer::app::packets
 {
 #pragma pack(push, 1)
-	struct [[nodiscard]] SignInPacket : public BasicPacket
+	/// <summary>
+	/// Login packet for client
+	/// </summary>
+	/// <param name="userName">Nickname of client</param>
+	/// <remarks>Client would send it to the server</remarks>
+	struct [[nodiscard]] CS_SignInPacket : public BasicPacket
 	{
 		using Super = BasicPacket;
 
@@ -24,37 +29,37 @@ export namespace iconer::app::packets
 			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(userName));
 		}
 
-		constexpr SignInPacket() noexcept
-			: Super(PacketProtocol::CS_SIGNIN, SignInPacket::SignedWannabeSizeSize())
+		constexpr CS_SignInPacket() noexcept
+			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSizeSize())
 			, userName()
 		{
 		}
 
-		explicit constexpr SignInPacket(const wchar_t* begin, const wchar_t* end)
-			: Super(PacketProtocol::CS_SIGNIN, SignInPacket::SignedWannabeSizeSize())
+		explicit constexpr CS_SignInPacket(const wchar_t* begin, const wchar_t* end)
+			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSizeSize())
 			, userName()
 		{
 			std::copy(begin, end, userName);
 		}
 
-		explicit constexpr SignInPacket(const wchar_t* nts, const size_t length)
-			: Super(PacketProtocol::CS_SIGNIN, SignInPacket::SignedWannabeSizeSize())
+		explicit constexpr CS_SignInPacket(const wchar_t* nts, const size_t length)
+			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSizeSize())
 			, userName()
 		{
 			std::copy_n(nts, length, userName);
 		}
 
 		template<size_t Length>
-		explicit constexpr SignInPacket(const wchar_t(&str)[Length])
-			: Super(PacketProtocol::CS_SIGNIN, SignInPacket::SignedWannabeSizeSize())
+		explicit constexpr CS_SignInPacket(const wchar_t(&str)[Length])
+			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSizeSize())
 			, userName()
 		{
 			std::copy_n(str, Length, userName);
 		}
 
 		template<size_t Length>
-		explicit constexpr SignInPacket(wchar_t(&&str)[Length])
-			: Super(PacketProtocol::CS_SIGNIN, SignInPacket::SignedWannabeSizeSize())
+		explicit constexpr CS_SignInPacket(wchar_t(&&str)[Length])
+			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSizeSize())
 			, userName()
 		{
 			std::move(str, str + Length, userName);
