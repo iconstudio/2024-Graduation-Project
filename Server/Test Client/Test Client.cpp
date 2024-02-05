@@ -16,6 +16,8 @@ net::IpAddress server_address{};
 net::EndPoint server_ep{};
 
 std::byte recv_buffer[512]{};
+unsigned long received_bytes = 0;
+
 net::IoContext recv_ctx{};
 net::IoContext send_ctx{};
 
@@ -121,6 +123,9 @@ coroutine::Coroutine Receiver()
 		}
 		else
 		{
+			const auto& bytes = recv.value();
+
+			received_bytes += bytes;
 		}
 
 		recv_ctx.Clear();
