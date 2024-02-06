@@ -8,6 +8,7 @@ import Iconer.Net.IoCompletionPort;
 import Iconer.Application.IContext;
 import Iconer.Application.User;
 import Iconer.Application.ISessionManager;
+import Iconer.Application.IContext;
 import <memory>;
 import <vector>;
 import <array>;
@@ -25,18 +26,17 @@ export namespace demo
 		using exception::exception;
 	};
 
-	enum class FrameworkTaskCategory
-	{
-		None, EndTask = 2000
-	};
-
-	class FrameworkTaskContext : public iconer::net::IoContext
+	class FrameworkTaskContext : public iconer::app::IContext
 	{
 	public:
-		explicit FrameworkTaskContext() noexcept = default;
-		~FrameworkTaskContext() = default;
+		using Super = iconer::app::IContext;
 
-		FrameworkTaskCategory myCategory;
+		explicit constexpr FrameworkTaskContext() noexcept
+			: Super(iconer::app::Operations::OpEndWorkers)
+		{
+		}
+
+		~FrameworkTaskContext() = default;
 	};
 
 	class Framework

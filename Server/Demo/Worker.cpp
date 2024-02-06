@@ -36,9 +36,9 @@ demo::Worker(demo::Framework& framework, size_t nth)
 				}
 
 				logger.DebugLog(L"\tWorker {}: Event by server ({} bytes).\n", nth, io_bytes);
-				switch (task->myCategory)
+				switch (task->GetOperation())
 				{
-					case demo::FrameworkTaskCategory::EndTask:
+					case iconer::app::Operations::OpEndWorkers:
 					{
 						is_done = true;
 					}
