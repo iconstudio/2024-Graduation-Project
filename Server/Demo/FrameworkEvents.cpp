@@ -3,136 +3,113 @@ module;
 
 module Demo.Framework;
 import Iconer.Application.User;
-import Iconer.Application.BasicPacket;
+import Iconer.Application.Packet;
 import Demo.Framework.PacketProcessor;
 import <stdexcept>;
 
 demo::Framework::AcceptResult
-demo::Framework::OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state)
+demo::Framework::OnReserveAccept(iconer::app::User& user)
 {
-	switch (transit_state)
+	if (user.TryChangeState(iconer::app::UserStates::None, iconer::app::UserStates::Reserved))
 	{
-		case iconer::app::UserStates::None:
-		{
-			user.SetOperation(iconer::app::Operations::OpAccept);
-			transit_state = iconer::app::UserStates::Reserved;
-
-			return serverListener.ReserveAccept(user, user.mySocket);
-		}
-
-		default:
-		{
-			return iconer::net::ErrorCode::OPERATION_ABORTED;
-		}
+		user.SetOperation(iconer::app::Operations::OpAccept);
+		return serverListener.ReserveAccept(user, user.mySocket);
+	}
+	else
+	{
+		return iconer::net::ErrorCode::OPERATION_ABORTED;
 	}
 }
 
 void
-demo::Framework::OnFailedReservingAccept(iconer::app::User& user, iconer::app::UserStates& transit_state)
+demo::Framework::OnFailedReservingAccept(iconer::app::User& user)
 {
 	throw std::runtime_error{ "Error when reserving acceptance of a socket." };
 }
 
 demo::Framework::IoResult
-demo::Framework::OnUserConnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+demo::Framework::OnUserConnected(iconer::app::User& user)
 {
-	switch (transit_state)
+	if (user.TryChangeState(iconer::app::UserStates::Reserved, iconer::app::UserStates::Connected))
 	{
-		case iconer::app::UserStates::Reserved:
-		{
-			user.SetOperation(iconer::app::Operations::OpSignIn);
+		user.SetOperation(iconer::app::Operations::OpSignIn);
 
-			auto recv_r = user.Receive(GetBuffer(id));
-			if (recv_r)
-			{
-				transit_state = iconer::app::UserStates::Connected;
-			}
-
-			return recv_r;
-		}
-
-		default:
-		{
-			return std::unexpected(iconer::net::ErrorCode::OPERATION_ABORTED);
-		}
+		return user.Receive(GetBuffer(user.GetID()));
+	}
+	else
+	{
+		return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
 	}
 }
 
 void
-demo::Framework::OnFailedUserConnect(iconer::app::User& user, iconer::app::UserStates& transit_state)
+demo::Framework::OnFailedUserConnect(iconer::app::User& user)
 {
 }
 
 demo::Framework::IoResult
-demo::Framework::OnUserSignedIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes)
+demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 {
-	switch (transit_state)
+	if (bytes <= 0)
 	{
-		case iconer::app::UserStates::Connected:
+		return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
+	}
+
+	// Small receiving phase
+	auto user_buffer = GetBuffer(user.GetID());
+	auto& user_recv_offset = user.recvOffset;
+
+	user_recv_offset += bytes;
+
+	if (iconer::app::packets::CS_SignInPacket::SignedWannabeSize() <= user_recv_offset)
+	{
+		thread_local iconer::app::packets::CS_SignInPacket pk{};
+		pk.Read(user_buffer.data(), user_recv_offset);
+
+		if (pk.myProtocol != iconer::app::PacketProtocol::CS_SIGNIN or pk.mySize <= 0)
 		{
-			// Small receiving phase
-			auto user_buffer = GetBuffer(id);
-			auto& user_recv_offset = user.recvOffset;
-
-			user_recv_offset += bytes;
-
-			if (iconer::app::BasicPacket::MinSize() <= user_recv_offset)
-			{
-			}
-			else
-			{
-			}
-
-			user.SetOperation(iconer::app::Operations::OpAssignID);
-
-			auto send_r = user.SendSignInPacket();
-			if (send_r)
-			{
-				transit_state = iconer::app::UserStates::PendingID;
-			}
-
-			return send_r;
+			return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
 		}
 
-		default:
-		{
-			return std::unexpected(iconer::net::ErrorCode::OPERATION_ABORTED);
-		}
+		// Don't necessary to pull back buffer of the receive buffer
+		user_recv_offset -= iconer::app::packets::CS_SignInPacket::SignedWannabeSize();
+
+		while (not user.TryChangeState(iconer::app::UserStates::Connected, iconer::app::UserStates::PendingID));
+
+		user.SetOperation(iconer::app::Operations::OpAssignID);
+
+		return user.SendSignInPacket();
+	}
+	else
+	{
+		// Restart receive
+		// Still at OpSignIn
+		return user.Receive(GetBuffer(user.GetID()));
 	}
 }
 
 void
-demo::Framework::OnFailedUserSignIn(iconer::app::User& user, iconer::app::UserStates& transit_state)
+demo::Framework::OnFailedUserSignIn(iconer::app::User& user)
 {
 }
 
 demo::Framework::IoResult
-demo::Framework::OnNotifyUserId(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+demo::Framework::OnNotifyUserId(iconer::app::User& user)
 {
-	switch (transit_state)
+	if (user.TryChangeState(iconer::app::UserStates::PendingID, iconer::app::UserStates::Idle))
 	{
-		case iconer::app::UserStates::PendingID:
-		{
-			user.SetOperation(iconer::app::Operations::OpRecv);
+		user.SetOperation(iconer::app::Operations::OpSignIn);
 
-			auto recv_r = user.Receive(GetBuffer(id));
-			if (recv_r)
-			{
-				transit_state = iconer::app::UserStates::Idle;
-			}
-
-			return recv_r;
-		}
-
-		default:
-		{
-			return std::unexpected(iconer::net::ErrorCode::OPERATION_ABORTED);
-		}
+		return user.Receive(GetBuffer(user.GetID()));
+	}
+	else
+	{
+		return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
 	}
 }
 
 void
-demo::Framework::OnFailedNotifyId(iconer::app::User& user, iconer::app::UserStates& transit_state)
+demo::Framework::OnFailedNotifyId(iconer::app::User& user)
 {
 }
 
@@ -147,8 +124,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 	if (iconer::app::BasicPacket::MinSize() <= user_recv_offset)
 	{
 		auto proceed_bytes = PacketProcessor(*this, user, id, transit_state, user_buffer, bytes);
-		if (proceed_bytes < 0) [[unlikely]]
-		{
+		if (proceed_bytes < 0) [[unlikely]] {
 			myLogger.LogWarning(L"Cannot assembly a packet due to `PacketProcessor`'s failure");
 
 			return std::unexpected(iconer::net::ErrorCode::NoBufferStorage);
