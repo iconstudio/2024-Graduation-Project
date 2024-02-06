@@ -57,7 +57,7 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
-		constexpr IdType GetID() const noexcept
+		constexpr const IdType& GetID() const noexcept
 		{
 			return Super::GetHandle();
 		}

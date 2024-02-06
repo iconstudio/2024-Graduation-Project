@@ -98,7 +98,7 @@ demo::Framework::RouteOperation(bool is_succeed
 	//iconer::app::UserStates& status = switcher.myValue;
 	iconer::app::UserStates transit_state = user.AcquireState();
 
-	const IdType id = user.GetID();
+	const IdType& id = user.GetID();
 
 	switch (operation)
 	{
