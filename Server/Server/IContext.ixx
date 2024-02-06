@@ -142,26 +142,54 @@ export namespace iconer::app
 		{
 			SetState(state, std::memory_order_release);
 		}
-		
+
 		void ReleaseState(StatusType&& state)
 			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
 			requires movable<StatusType>
 		{
 			SetState(std::move(state), std::memory_order_release);
 		}
-		
+
 		void ReleaseState(const StatusType& state) volatile
 			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
 			requires copyable<StatusType>
 		{
 			SetState(state, std::memory_order_release);
 		}
-		
+
 		void ReleaseState(StatusType&& state) volatile
 			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
 			requires movable<StatusType>
 		{
 			SetState(std::move(state), std::memory_order_release);
+		}
+
+		[[nodiscard]]
+		bool TryChangeState(StatusType from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
+			requires copyable<StatusType>
+		{
+			return myState.compare_exchange_strong(from_state, to_state, order);
+		}
+		
+		[[nodiscard]]
+		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
+			requires movable<StatusType>
+		{
+			return myState.compare_exchange_strong(from_state, std::move(to_state), order);
+		}
+
+		[[nodiscard]]
+		bool TryChangeState(StatusType from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
+			requires copyable<StatusType>
+		{
+			return myState.compare_exchange_strong(from_state, to_state, order);
+		}
+
+		[[nodiscard]]
+		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
+			requires movable<StatusType>
+		{
+			return myState.compare_exchange_strong(from_state, std::move(to_state), order);
 		}
 
 		constexpr void SetOperation(const Operations& op) noexcept
@@ -173,7 +201,7 @@ export namespace iconer::app
 		{
 			lastOperation = std::move(op);
 		}
-		
+
 		constexpr void SetOperation(const Operations& op) volatile noexcept
 		{
 			lastOperation = op;
