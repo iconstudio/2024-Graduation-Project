@@ -96,24 +96,28 @@ export namespace iconer::app
 
 		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed)
 			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
+			requires copyable<StatusType>
 		{
 			myState.store(state, order);
 		}
-		
+
 		void SetState(StatusType&& state, std::memory_order order = std::memory_order_relaxed)
 			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
+			requires movable<StatusType>
 		{
 			myState.store(state, order);
 		}
-		
+
 		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed) volatile
 			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
+			requires copyable<StatusType>
 		{
 			myState.store(state, order);
 		}
-		
+
 		void SetState(StatusType&& state, std::memory_order order = std::memory_order_relaxed) volatile
 			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
+			requires movable<StatusType>
 		{
 			myState.store(state, order);
 		}
