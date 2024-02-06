@@ -82,14 +82,14 @@ export namespace iconer::app
 			return *this;
 		}
 
-		iconer::util::AtomicSwitcher<S, false> GetStateSwitcher()
-			noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<S, false>, AtomicType>)
+		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
+			noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
 		{
 			return iconer::util::AtomicSwitcher{ myState };
 		}
 
-		iconer::util::AtomicSwitcher<S, true> GetStateSwitcher()
-			volatile noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<S, true>, AtomicType>)
+		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
+			volatile noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
 		{
 			return iconer::util::AtomicSwitcher{ myState };
 		}
