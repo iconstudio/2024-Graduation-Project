@@ -55,11 +55,13 @@ demo::Worker(demo::Framework& framework, size_t nth)
 			}
 			else // Accept the user
 			{
-				logger.DebugLog(L"\tWorker {}: Event by session {} ({} bytes).\n", nth, io_id, io_bytes);
+				const auto& id = user->GetID();
+
+				logger.DebugLog(L"\tWorker {}: Event by server from user {} ({} bytes).\n", nth, id, io_bytes);
 
 				framework.RouteOperation(io_event.isSucceed, io_bytes, user->GetOperation(), *user);
 
-				logger.DebugLog(L"\tWorker {}: Event by server from user {} has done.\n", nth, user->GetID());
+				logger.DebugLog(L"\tWorker {}: Event by server from user {} has done.\n", nth, id);
 
 				io_context->Clear();
 			}
