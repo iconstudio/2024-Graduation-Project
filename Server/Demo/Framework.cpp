@@ -191,12 +191,12 @@ demo::Framework::RouteOperation(bool is_succeed
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tReceving has failed on user {}\n", id);
-				OnFailedReceive(user, transit_state);
+				OnFailedReceive(user);
 			}
-			else if (auto error = OnReceived(user, id, transit_state, io_bytes); not error.has_value())
+			else if (auto error = OnReceived(user, io_bytes); not error.has_value())
 			{
 				myLogger.LogError(L"\tReceving has failed on user {} due to {}\n", id, error.error());
-				OnFailedReceive(user, transit_state);
+				OnFailedReceive(user);
 			}
 			else
 			{
@@ -211,7 +211,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.LogError(L"\tUser {} has failed to disconnect\n", id);
 			}
-			else if (auto error = OnUserDisconnected(user, id, transit_state); error.has_value())
+			else if (auto error = OnUserDisconnected(user); error.has_value())
 			{
 				myLogger.LogError(L"\tUser {} would not be disconnected due to {}\n", id, error.value());
 			}
