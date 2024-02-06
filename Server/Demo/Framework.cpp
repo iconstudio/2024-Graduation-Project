@@ -80,7 +80,7 @@ demo::Framework::StartAccepts()
 
 		user.SetOperation(iconer::app::Operations::OpReserveSession);
 
-		if (not Schedule(user, id, 0))
+		if (not Schedule(user, id))
 		{
 			return false;
 		}
