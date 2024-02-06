@@ -117,10 +117,6 @@ demo::Framework::OnFailedNotifyId(iconer::app::User& user)
 {
 	user.Cleanup();
 	user.Destroy();
-
-	user.SetOperation(iconer::app::Operations::OpReserveSession);
-
-	Schedule(user, user.GetID(), 0);
 }
 
 demo::Framework::IoResult
@@ -174,38 +170,9 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 demo::Framework::AcceptResult
 demo::Framework::OnUserDisconnected(iconer::app::User& user)
 {
-	switch (transit_state)
-	{
-		case iconer::app::UserStates::Idle:
-		{
+	// Reserve the user again
+	user.SetOperation(iconer::app::Operations::OpReserveSession);
+	Schedule(user, user.GetID());
 
-		}
-		break;
-
-		case iconer::app::UserStates::InLobby:
-		{
-
-		}
-		break;
-
-		case iconer::app::UserStates::InRoom:
-		{
-
-		}
-		break;
-
-		case iconer::app::UserStates::InGame:
-		{
-
-		}
-		break;
-
-		case iconer::app::UserStates::Dead:
-		{
-
-		}
-		break;
-	}
-
-	return iconer::net::ErrorCode::OPERATION_ABORTED;
+	return std::nullopt;
 }
