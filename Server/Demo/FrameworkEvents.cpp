@@ -124,8 +124,9 @@ demo::Framework::OnFailedNotifyId(iconer::app::User& user)
 }
 
 demo::Framework::IoResult
-demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes)
+demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 {
+	const IdType& id = user.GetID();
 	auto user_buffer = GetBuffer(id);
 	auto& user_recv_offset = user.recvOffset;
 
@@ -133,10 +134,13 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 
 	if (iconer::app::BasicPacket::MinSize() <= user_recv_offset)
 	{
+		auto transit_state = user.AcquireState();
+
 		auto proceed_bytes = PacketProcessor(*this, user, id, transit_state, user_buffer, bytes);
 		if (proceed_bytes < 0) [[unlikely]] {
 			myLogger.LogWarning(L"Cannot assembly a packet due to `PacketProcessor`'s failure");
 
+			user.ReleaseState(transit_state);
 			return std::unexpected(iconer::net::ErrorCode::NoBufferStorage);
 		}
 		else if (0 == proceed_bytes)
@@ -149,6 +153,8 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 
 			user_recv_offset -= proceed_bytes;
 		};
+
+		user.ReleaseState(transit_state);
 	}
 	else
 	{
@@ -159,14 +165,14 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 }
 
 void
-demo::Framework::OnFailedReceive(iconer::app::User& user, iconer::app::UserStates& transit_state)
+demo::Framework::OnFailedReceive(iconer::app::User& user)
 {
 	user.Cleanup();
 	user.Destroy();
 }
 
 demo::Framework::AcceptResult
-demo::Framework::OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state)
+demo::Framework::OnUserDisconnected(iconer::app::User& user)
 {
 	switch (transit_state)
 	{

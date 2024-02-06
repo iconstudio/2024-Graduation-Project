@@ -98,19 +98,19 @@ export namespace demo
 		IoResult OnNotifyUserId(iconer::app::User& user);
 		void OnFailedNotifyId(iconer::app::User& user);
 		[[nodiscard]]
-		IoResult OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes);
-		void OnFailedReceive(iconer::app::User& user, iconer::app::UserStates& transit_state);
+		IoResult OnReceived(iconer::app::User& user, const ptrdiff_t& bytes);
+		void OnFailedReceive(iconer::app::User& user);
 		[[nodiscard]]
-		AcceptResult OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
+		AcceptResult OnUserDisconnected(iconer::app::User& user);
 
 		[[nodiscard]]
-		bool Schedule(iconer::net::IoContext& context, const IdType id, unsigned long info_bytes) noexcept
+		bool Schedule(iconer::net::IoContext& context, const IdType id, unsigned long info_bytes = 0) noexcept
 		{
 			return ioCompletionPort.Schedule(context, static_cast<std::uintptr_t>(id), std::move(info_bytes));
 		}
 
 		[[nodiscard]]
-		bool Schedule(iconer::net::IoContext* const context, const IdType id, unsigned long info_bytes) noexcept
+		bool Schedule(iconer::net::IoContext* const context, const IdType id, unsigned long info_bytes = 0) noexcept
 		{
 			return ioCompletionPort.Schedule(context, static_cast<std::uintptr_t>(id), std::move(info_bytes));
 		}
