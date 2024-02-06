@@ -176,14 +176,24 @@ export namespace iconer::app
 			SetState(std::move(state), std::memory_order_release);
 		}
 
-		constexpr void SetOperation(Operations op) noexcept
+		constexpr void SetOperation(const Operations& op) noexcept
 		{
 			lastOperation = op;
 		}
 
-		constexpr void SetOperation(Operations op) volatile noexcept
+		constexpr void SetOperation(Operations&& op) noexcept
+		{
+			lastOperation = std::move(op);
+		}
+		
+		constexpr void SetOperation(const Operations& op) volatile noexcept
 		{
 			lastOperation = op;
+		}
+
+		constexpr void SetOperation(Operations&& op) volatile noexcept
+		{
+			lastOperation = std::move(op);
 		}
 
 		[[nodiscard]]
