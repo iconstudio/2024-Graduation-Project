@@ -81,7 +81,7 @@ export namespace iconer::util
 		{
 		}
 
-		explicit constexpr BorrowedPointer(T* ptr, const size_t size) noexcept
+		explicit constexpr BorrowedPointer(const T* ptr, const size_t size) noexcept
 			: myData(ptr), mySize(size)
 		{
 		}
@@ -99,31 +99,31 @@ export namespace iconer::util
 		}
 
 		template<typename U>
-		explicit constexpr BorrowedPointer(U* ptr, const size_t size) noexcept
+		explicit constexpr BorrowedPointer(const U* ptr, const size_t size) noexcept
 			: myData(ptr), mySize(size)
 		{
 		}
 
 		[[nodiscard]]
-		constexpr T*& Get() & noexcept
+		constexpr const T*& Get() & noexcept
 		{
 			return myData;
 		}
 
 		[[nodiscard]]
-		constexpr T* const& Get() const& noexcept
+		constexpr const T* const& Get() const& noexcept
 		{
 			return myData;
 		}
 
 		[[nodiscard]]
-		constexpr T*&& Get() && noexcept
+		constexpr const T*&& Get() && noexcept
 		{
 			return std::move(myData);
 		}
 
 		[[nodiscard]]
-		constexpr T* const&& Get() const&& noexcept
+		constexpr const T* const&& Get() const&& noexcept
 		{
 			return std::move(myData);
 		}
@@ -140,7 +140,7 @@ export namespace iconer::util
 			return std::move(mySize);
 		}
 
-		constexpr operator T* () const noexcept
+		constexpr operator const T* () const noexcept
 		{
 			return myData;
 		}
@@ -151,7 +151,7 @@ export namespace iconer::util
 		BorrowedPointer& operator=(BorrowedPointer&&) noexcept = default;
 
 	private:
-		T* myData;
+		const T* myData;
 		size_t mySize;
 	};
 
