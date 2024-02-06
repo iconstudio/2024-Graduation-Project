@@ -94,10 +94,6 @@ demo::Framework::RouteOperation(bool is_succeed
 	, const ptrdiff_t& io_bytes, iconer::app::Operations operation
 	, iconer::app::User& user)
 {
-	//auto switcher = user.GetStateSwitcher();
-	//iconer::app::UserStates& status = switcher.myValue;
-	iconer::app::UserStates transit_state = user.AcquireState();
-
 	const IdType& id = user.GetID();
 
 	switch (operation)
@@ -291,8 +287,6 @@ demo::Framework::RouteOperation(bool is_succeed
 		}
 		break;
 	}
-
-	user.ReleaseState(transit_state);
 }
 void
 demo::Framework::LockPhase()
