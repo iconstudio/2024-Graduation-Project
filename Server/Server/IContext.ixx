@@ -94,14 +94,25 @@ export namespace iconer::app
 			return iconer::util::AtomicSwitcher{ myState };
 		}
 
-		template<typename UState>
-		void SetState(UState&& state, std::memory_order order = std::memory_order_relaxed)
-			noexcept(nothrow_assignable<UState, StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<UState&&>(), std::declval<std::memory_order>())))
+		void SetState(std::memory_order state, std::memory_order order = std::memory_order_relaxed)
+			noexcept(nothrow_assignable<std::memory_order, StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<std::memory_order>(), std::declval<std::memory_order>())))
 		{
-			myState.store(std::forward<UState>(state), order);
+			myState.store(state, order);
+		}
+		
+		void SetState(std::memory_order state, std::memory_order order = std::memory_order_relaxed) volatile
+			noexcept(nothrow_assignable<std::memory_order, StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<std::memory_order>(), std::declval<std::memory_order>())))
+		{
+			myState.store(state, order);
 		}
 
 		StatusType GetState(std::memory_order order = std::memory_order_relaxed) const
+			noexcept(noexcept(std::declval<AtomicType>().load(std::declval<std::memory_order>())))
+		{
+			return myState.load(order);
+		}
+		
+		StatusType GetState(std::memory_order order = std::memory_order_relaxed) const volatile
 			noexcept(noexcept(std::declval<AtomicType>().load(std::declval<std::memory_order>())))
 		{
 			return myState.load(order);
@@ -111,13 +122,26 @@ export namespace iconer::app
 			noexcept(noexcept(GetState(std::declval<std::memory_order>())))
 		{
 			return GetState(std::memory_order_acquire);
+			//return GetState(std::memory_order_consume);
+		}
+		
+		StatusType AcquireState() const volatile
+			noexcept(noexcept(GetState(std::declval<std::memory_order>())))
+		{
+			return GetState(std::memory_order_acquire);
+			//return GetState(std::memory_order_consume);
 		}
 
-		template<typename UState>
-		void ReleaseState(UState&& state)
-			noexcept(noexcept(SetState(std::declval<UState&&>(), std::declval<std::memory_order>())))
+		void ReleaseState(std::memory_order state)
+			noexcept(noexcept(SetState(std::declval<std::memory_order>(), std::declval<std::memory_order>())))
 		{
-			SetState(std::forward<UState>(state), std::memory_order_release);
+			SetState(state, std::memory_order_release);
+		}
+		
+		void ReleaseState(std::memory_order state)
+			volatile noexcept(noexcept(SetState(std::declval<std::memory_order>(), std::declval<std::memory_order>())))
+		{
+			SetState(state, std::memory_order_release);
 		}
 
 		constexpr void SetOperation(Operations op) noexcept
@@ -142,8 +166,8 @@ export namespace iconer::app
 			return lastOperation;
 		}
 
-		AtomicType myState;
-		Operations lastOperation;
+		volatile AtomicType myState;
+		volatile Operations lastOperation;
 
 	private:
 		IContext(const IContext&) = delete;
