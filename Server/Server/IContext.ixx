@@ -43,8 +43,23 @@ export namespace iconer::app
 		using StatusType = S;
 		using AtomicType = std::atomic<StatusType>;
 
-		explicit constexpr IContext() noexcept(nothrow_default_constructibles<AtomicType>) = default;
-		~IContext() noexcept(nothrow_destructibles<AtomicType>) = default;
+		static inline constexpr bool IsNothrowDefaultConstructible = nothrow_default_constructibles<AtomicType>;
+		static inline constexpr bool IsNothrowDestructible = nothrow_destructibles<AtomicType>;
+
+		explicit constexpr IContext() noexcept(IsNothrowDefaultConstructible) = default;
+		~IContext() noexcept(IsNothrowDestructible) = default;
+
+		explicit constexpr IContext(const StatusType& init_state)
+			noexcept(nothrow_copy_constructibles<AtomicType>) requires copyable<StatusType>
+			: myState(init_state), lastOperation()
+		{
+		}
+
+		explicit constexpr IContext(StatusType&& init_state)
+			noexcept(nothrow_move_constructibles<AtomicType>) requires movable<StatusType>
+			: myState(std::move(init_state)), lastOperation()
+		{
+		}
 
 		IContext(IContext&& other)
 			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_assignables<S>)
@@ -53,20 +68,6 @@ export namespace iconer::app
 			iconer::util::AtomicSwitcher switcher{ other.myState };
 
 			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
-		}
-
-		explicit IContext(const StatusType& init_state)
-			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::memory_order{})))requires copyable<StatusType>
-			: lastOperation()
-		{
-			myState.store(init_state, std::memory_order_relaxed);
-		}
-
-		explicit IContext(StatusType&& init_state)
-			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::memory_order{})))requires movable<StatusType>
-			: lastOperation()
-		{
-			myState.store(std::move(init_state), std::memory_order_relaxed);
 		}
 
 		IContext& operator=(IContext&& other)
