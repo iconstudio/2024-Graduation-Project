@@ -2,30 +2,190 @@ export module Iconer.Application.ISession;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.Handler;
 import Iconer.Utility.Property;
+import Iconer.Utility.AtomicSwitcher;
 import <concepts>;
 import <memory>;
+import <atomic>;
 import <string>;
 import <string_view>;
 
 export namespace iconer::app
 {
-	template<typename IdType>
+	template<typename I, typename S>
 	class ISession;
 
-	template<typename T>
-	concept sessions = requires
-	{
-		typename T::Super;
-		typename T::HandleType;
-	}&& std::derived_from<T, ISession<typename T::HandleType>>;
-
-	template<typename UidType>
-	class [[nodiscard]] ISession : protected iconer::util::Handler<UidType>
+	template<typename I, typename S>
+	class [[nodiscard]] ISession : protected iconer::util::Handler<I>
 	{
 	public:
-		using Super = iconer::util::Handler<UidType>;
+		using Super = iconer::util::Handler<I>;
 		using HandleType = Super::HandleType;
 		using IdType = Super::HandleType;
+		using StatusType = S;
+		using AtomicType = std::atomic<StatusType>;
+
+		static inline constexpr bool IsNothrowDefaultConstructible = nothrow_default_constructibles<AtomicType>;
+		static inline constexpr bool IsNothrowDestructible = nothrow_destructibles<AtomicType>;
+
+		explicit constexpr ISession() noexcept(IsNothrowDefaultConstructible) = default;
+		~ISession() noexcept(IsNothrowDestructible) = default;
+
+		explicit constexpr ISession(const IdType& handle)
+			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<AtomicType>)
+			: Super(handle)
+			, myState(), Name("Session")
+		{
+		}
+
+		explicit constexpr ISession(IdType&& handle)
+			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<AtomicType>)
+			: Super(std::move(handle))
+			, myState(), Name("Session")
+		{
+		}
+
+		ISession(ISession&& other)
+			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_constructibles<Super, StatusType, std::wstring>)
+			: Super(std::move(other))
+			, myState(), Name(std::move(other.Name))
+		{
+			iconer::util::AtomicSwitcher switcher{ other.myState };
+			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
+		}
+
+		ISession& operator=(ISession&& other)
+			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_assignables<Super, StatusType, std::wstring>)
+		{
+			iconer::util::AtomicSwitcher switcher{ other.myState };
+			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
+
+			Super::operator=(std::move(other));
+			return *this;
+		}
+
+		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed)
+			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
+			requires copyable<StatusType>
+		{
+			myState.store(state, order);
+		}
+
+		void SetState(StatusType&& state, std::memory_order order = std::memory_order_relaxed)
+			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
+			requires movable<StatusType>
+		{
+			myState.store(std::move(state), order);
+		}
+
+		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed) volatile
+			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
+			requires copyable<StatusType>
+		{
+			myState.store(state, order);
+		}
+
+		void SetState(StatusType&& state, std::memory_order order = std::memory_order_relaxed) volatile
+			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
+			requires movable<StatusType>
+		{
+			myState.store(std::move(state), order);
+		}
+
+		StatusType GetState(std::memory_order order = std::memory_order_relaxed) const
+			noexcept(noexcept(std::declval<AtomicType>().load(std::declval<std::memory_order>())))
+		{
+			return myState.load(order);
+		}
+
+		StatusType GetState(std::memory_order order = std::memory_order_relaxed) const volatile
+			noexcept(noexcept(std::declval<AtomicType>().load(std::declval<std::memory_order>())))
+		{
+			return myState.load(order);
+		}
+
+		StatusType AcquireState() const
+			noexcept(noexcept(GetState(std::declval<std::memory_order>())))
+		{
+			return GetState(std::memory_order_acquire);
+			//return GetState(std::memory_order_consume);
+		}
+
+		StatusType AcquireState() const volatile
+			noexcept(noexcept(GetState(std::declval<std::memory_order>())))
+		{
+			return GetState(std::memory_order_acquire);
+			//return GetState(std::memory_order_consume);
+		}
+
+		void ReleaseState(const StatusType& state)
+			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
+			requires copyable<StatusType>
+		{
+			SetState(state, std::memory_order_release);
+		}
+
+		void ReleaseState(StatusType&& state)
+			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
+			requires movable<StatusType>
+		{
+			SetState(std::move(state), std::memory_order_release);
+		}
+
+		void ReleaseState(const StatusType& state) volatile
+			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
+			requires copyable<StatusType>
+		{
+			SetState(state, std::memory_order_release);
+		}
+
+		void ReleaseState(StatusType&& state) volatile
+			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
+			requires movable<StatusType>
+		{
+			SetState(std::move(state), std::memory_order_release);
+		}
+
+		[[nodiscard]]
+		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
+			requires movable<StatusType>
+		{
+			return myState.compare_exchange_strong(from_state, std::move(to_state), order);
+		}
+
+		[[nodiscard]]
+		bool TryChangeState(StatusType from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
+			requires copyable<StatusType>
+		{
+			return myState.compare_exchange_strong(from_state, to_state, order);
+		}
+
+		[[nodiscard]]
+		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
+			requires movable<StatusType>
+		{
+			return myState.compare_exchange_strong(from_state, std::move(to_state), order);
+		}
+
+		[[nodiscard]]
+		bool TryChangeState(StatusType from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
+			requires copyable<StatusType>
+		{
+			return myState.compare_exchange_strong(from_state, to_state, order);
+		}
+
+		[[nodiscard]]
+		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
+			noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
+		{
+			return iconer::util::AtomicSwitcher{ myState };
+		}
+
+		[[nodiscard]]
+		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
+			volatile noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
+		{
+			return iconer::util::AtomicSwitcher{ myState };
+		}
 
 		template<size_t Length>
 		constexpr void SetName(const char(&name)[Length])
@@ -62,30 +222,15 @@ export namespace iconer::app
 			return Super::GetHandle();
 		}
 
-		constexpr ISession(ISession&&) noexcept = default;
-		constexpr ISession& operator=(ISession&&) noexcept = default;
-
 		template<typename S>
 		friend class SessionFactory;
+		template<typename S>
+		friend class ISessionManager;
 
 		std::string Name;
 
 	protected:
-		explicit constexpr ISession(const IdType& handle)
-			noexcept(nothrow_constructible<Super, const IdType&>)
-			: Super(handle)
-			, Name("Session")
-		{
-		}
-
-		explicit constexpr ISession(IdType&& handle)
-			noexcept(nothrow_constructible<Super, IdType&&>)
-			: Super(std::move(handle))
-			, Name("Session")
-		{
-		}
-
-		explicit constexpr ISession() noexcept = default;
+		volatile AtomicType myState;
 
 	private:
 		ISession(const ISession&) = delete;
