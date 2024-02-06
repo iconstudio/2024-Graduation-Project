@@ -57,12 +57,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 			{
 				logger.DebugLog(L"\tWorker {}: Event by session {} ({} bytes).\n", nth, io_id, io_bytes);
 
-				auto switcher = user->GetStateSwitcher();
-				iconer::app::UserStates& status = switcher.myValue;
-
 				framework.RouteOperation(io_event.isSucceed, io_bytes, user->GetOperation(), *user, user->GetID(), status);
-
-				//user->ReleaseState(status);
 
 				logger.DebugLog(L"\tWorker {}: Event by server from user {} has done.\n", nth, user->GetID());
 
@@ -78,14 +73,11 @@ demo::Worker(demo::Framework& framework, size_t nth)
 				throw "Null user context";
 			}
 
-			auto switcher = user->GetStateSwitcher();
-			iconer::app::UserStates& status = switcher.myValue;
-
-			framework.RouteOperation(io_event.isSucceed, io_bytes, user->GetOperation(), *user, static_cast<demo::Framework::IdType>(io_id), status);
+			framework.RouteOperation(io_event.isSucceed, io_bytes, user->GetOperation(), *user);
 
 			logger.DebugLog(L"\tWorker {}: Event by user {} has done.\n", nth, user->GetID());
 
-			io_context->Clear();
+			user->Clear();
 		};
 	}
 
