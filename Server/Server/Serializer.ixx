@@ -7,6 +7,8 @@ import Iconer.Utility.File;
 import <cstdint>;
 import <cmath>;
 import <bit>;
+import <tuple>;
+import <utility>;
 import <memory>;
 import <stdexcept>;
 export import <string>;
@@ -381,7 +383,7 @@ export namespace iconer::util
 	{
 		return std::ranges::transform(str.cbegin(), str.cend(), dest
 			, [](const char& ch) noexcept {
-				return std::bit_cast<std::byte>(ch);
+			return std::bit_cast<std::byte>(ch);
 		}).out;
 	}
 
@@ -422,7 +424,7 @@ export namespace iconer::util
 	{
 		return std::ranges::transform(str.cbegin(), str.cend(), dest
 			, [](const char8_t& ch) noexcept {
-				return std::bit_cast<std::byte>(ch);
+			return std::bit_cast<std::byte>(ch);
 		}).out;
 	}
 
@@ -483,6 +485,52 @@ export namespace iconer::util
 	constexpr std::byte* Serialize(std::byte* dest, const hard_enumerations auto& value)
 	{
 		return Serialize(dest, std::to_underlying(value));
+	}
+}
+
+namespace iconer::util::detail
+{
+	template<typename Tuple, size_t... Indices>
+	constexpr std::byte* Serialize(std::byte* dest, Tuple&& tuple, std::index_sequence<Indices...>)
+	{
+		std::byte* it = dest;
+
+		((it = iconer::util::Serialize(it, std::get<Indices>(std::forward<Tuple>(tuple)))), ...);
+	}
+}
+
+export namespace iconer::util
+{
+	template<typename... Args>
+	constexpr std::byte* Serialize(std::byte* dest, const std::tuple<Args...>& tuple)
+	{
+		if constexpr (0 < sizeof...(Args))
+		{
+			return iconer::util::detail::Serialize(dest, tuple, std::index_sequence_for<Args...>);
+		}
+		else
+		{
+			return dest;
+		}
+	}
+
+	template<typename... Args>
+	constexpr std::byte* Serialize(std::byte* dest, std::tuple<Args...>&& tuple)
+	{
+		if constexpr (0 < sizeof...(Args))
+		{
+			return iconer::util::detail::Serialize(dest, std::move(tuple), std::index_sequence_for<Args...>);
+		}
+		else
+		{
+			return dest;
+		}
+	}
+
+	template<typename... Args> requires (1 < sizeof...(Args))
+		constexpr std::byte* Serialize(std::byte* dest, Args&&... args)
+	{
+		return iconer::util::detail::Serialize(dest, std::forward_as_tuple(std::forward<Args>(args)...));
 	}
 }
 
@@ -633,13 +681,13 @@ export namespace iconer::util
 	constexpr const std::byte* Deserialize(const std::byte* buffer, std::int64_t& output)
 	{
 		output = static_cast<std::int64_t>((static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[7])) << 56U)
-		| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[6])) << 48U)
-		| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[5])) << 40U)
-		| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[4])) << 32U)
-		| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
-		| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[2])) << 16U)
-		| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
-		| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0])));
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[6])) << 48U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[5])) << 40U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[4])) << 32U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[2])) << 16U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0])));
 
 		return buffer + 8;
 	}
