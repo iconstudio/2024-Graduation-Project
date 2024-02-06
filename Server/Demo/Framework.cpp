@@ -143,12 +143,12 @@ demo::Framework::RouteOperation(bool is_succeed
 		{
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tConnection has failed on user {}\n", id);
+				myLogger.LogError(L"\tSigning In has failed on user {}\n", id);
 				OnFailedUserSignIn(user, transit_state);
 			}
 			else if (auto error = OnUserSignedIn(user, id, transit_state, io_bytes); not error.has_value())
 			{
-				myLogger.LogError(L"\tConnection has failed on user {} due to {}\n", id, error.error());
+				myLogger.LogError(L"\tSigning In has failed on user {} due to {}\n", id, error.error());
 				OnFailedUserSignIn(user, transit_state);
 			}
 			else
