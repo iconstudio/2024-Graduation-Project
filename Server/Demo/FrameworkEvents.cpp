@@ -45,6 +45,8 @@ demo::Framework::OnUserConnected(iconer::app::User& user)
 void
 demo::Framework::OnFailedUserConnect(iconer::app::User& user)
 {
+	user.Cleanup();
+	user.Destroy();
 }
 
 demo::Framework::IoResult
@@ -91,6 +93,8 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 void
 demo::Framework::OnFailedUserSignIn(iconer::app::User& user)
 {
+	user.Cleanup();
+	user.Destroy();
 }
 
 demo::Framework::IoResult
@@ -111,6 +115,12 @@ demo::Framework::OnNotifyUserId(iconer::app::User& user)
 void
 demo::Framework::OnFailedNotifyId(iconer::app::User& user)
 {
+	user.Cleanup();
+	user.Destroy();
+
+	user.SetOperation(iconer::app::Operations::OpReserveSession);
+
+	Schedule(user, user.GetID(), 0);
 }
 
 demo::Framework::IoResult
@@ -151,6 +161,8 @@ demo::Framework::OnReceived(iconer::app::User& user, const IdType& id, iconer::a
 void
 demo::Framework::OnFailedReceive(iconer::app::User& user, iconer::app::UserStates& transit_state)
 {
+	user.Cleanup();
+	user.Destroy();
 }
 
 demo::Framework::AcceptResult
