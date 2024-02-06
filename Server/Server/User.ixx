@@ -9,6 +9,7 @@ import Iconer.Application.IContext;
 import Iconer.Application.ISession;
 import <cstdint>;
 import <initializer_list>;
+import <memory>;
 import <string>;
 import <span>;
 
@@ -395,6 +396,7 @@ export namespace iconer::app
 		iconer::net::Socket mySocket;
 		volatile ptrdiff_t recvOffset;
 
+		std::unique_ptr<std::byte[]> preSignInPacket;
 		glm::mat4 myTransform;
 
 	private:
