@@ -91,7 +91,7 @@ demo::Framework::StartAccepts()
 
 void
 demo::Framework::RouteOperation(bool is_succeed
-	, const ptrdiff_t& io_bytes, const iconer::app::Operations& operation
+	, const ptrdiff_t& io_bytes, iconer::app::Operations operation
 	, iconer::app::User& user)
 {
 	//auto switcher = user.GetStateSwitcher();
