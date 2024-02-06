@@ -206,6 +206,16 @@
 		</Expand>
 	</Type>
 
+	<Type Name="iconer::util::AtomicSwitcher&lt;*&gt;">
+		<DisplayString>원자적 권한 전환기 {&quot;$T1&quot;}</DisplayString>
+		
+		<Expand HideRawView="false">
+			<Item Name="[원본 원자]">myTarget</Item>
+			<Item Name="[현재 값]">myValue</Item>
+			<Item Name="[소거 권한]">finalOrder</Item>
+		</Expand>
+	</Type>
+
 	<Type Name="iconer::util::Singleton&lt;*&gt;">
 		<DisplayString>{&quot;$T1&quot;} 싱글톤 객체</DisplayString>
 	</Type>
