@@ -108,12 +108,12 @@ demo::Framework::RouteOperation(bool is_succeed
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tReserving an acceptance has failed on user {}\n", id);
-				OnFailedReservingAccept(user, transit_state);
+				OnFailedReservingAccept(user);
 			}
-			else if (auto error = OnReserveAccept(user, transit_state); error.has_value())
+			else if (auto error = OnReserveAccept(user); error.has_value())
 			{
 				myLogger.LogError(L"\tReserving an acceptance has failed on user {} due to {}\n", id, error.value());
-				OnFailedReservingAccept(user, transit_state);
+				OnFailedReservingAccept(user);
 			}
 			else
 			{
@@ -129,12 +129,12 @@ demo::Framework::RouteOperation(bool is_succeed
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\ttConnection has failed on user {}\n", id);
-				OnFailedUserConnect(user, transit_state);
+				OnFailedUserConnect(user);
 			}
-			else if (auto error = OnUserConnected(user, id, transit_state); not error.has_value())
+			else if (auto error = OnUserConnected(user); not error.has_value())
 			{
 				myLogger.LogError(L"\tUser {} is connected, but acceptance has failed due to {}\n", id, error.error());
-				OnFailedUserConnect(user, transit_state);
+				OnFailedUserConnect(user);
 			}
 			else
 			{
@@ -150,12 +150,12 @@ demo::Framework::RouteOperation(bool is_succeed
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tSigning In has failed on user {}\n", id);
-				OnFailedUserSignIn(user, transit_state);
+				OnFailedUserSignIn(user);
 			}
-			else if (auto error = OnUserSignedIn(user, id, transit_state, io_bytes); not error.has_value())
+			else if (auto error = OnUserSignedIn(user, io_bytes); not error.has_value())
 			{
 				myLogger.LogError(L"\tSigning In has failed on user {} due to {}\n", id, error.error());
-				OnFailedUserSignIn(user, transit_state);
+				OnFailedUserSignIn(user);
 			}
 			else
 			{
@@ -171,12 +171,12 @@ demo::Framework::RouteOperation(bool is_succeed
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tNotifying the id to user {} has failed\n", id);
-				OnFailedNotifyId(user, transit_state);
+				OnFailedNotifyId(user);
 			}
-			else if (auto error = OnNotifyUserId(user, id, transit_state); not error.has_value())
+			else if (auto error = OnNotifyUserId(user); not error.has_value())
 			{
 				myLogger.LogError(L"\tUser {} cannot start receving due to {}\n", id, error.error());
-				OnFailedNotifyId(user, transit_state);
+				OnFailedNotifyId(user);
 			}
 			else
 			{

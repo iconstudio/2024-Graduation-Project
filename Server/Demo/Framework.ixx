@@ -85,22 +85,21 @@ export namespace demo
 		void RouteOperation(bool is_succeed, const ptrdiff_t& io_bytes, iconer::app::Operations operation, iconer::app::User& user);
 
 		[[nodiscard]]
-		AcceptResult OnReserveAccept(iconer::app::User& user, iconer::app::UserStates& transit_state);
+		AcceptResult OnReserveAccept(iconer::app::User& user);
 		[[noreturn]]
-		void OnFailedReservingAccept(iconer::app::User& user, iconer::app::UserStates& transit_state);
+		void OnFailedReservingAccept(iconer::app::User& user);
 		[[nodiscard]]
-		IoResult OnUserConnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
-		void OnFailedUserConnect(iconer::app::User& user, iconer::app::UserStates& transit_state);
+		IoResult OnUserConnected(iconer::app::User& user);
+		void OnFailedUserConnect(iconer::app::User& user);
 		[[nodiscard]]
-		IoResult OnUserSignedIn(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes);
-		void OnFailedUserSignIn(iconer::app::User& user, iconer::app::UserStates& transit_state);
+		IoResult OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes);
+		void OnFailedUserSignIn(iconer::app::User& user);
 		[[nodiscard]]
-		IoResult OnNotifyUserId(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
-		void OnFailedNotifyId(iconer::app::User& user, iconer::app::UserStates& transit_state);
+		IoResult OnNotifyUserId(iconer::app::User& user);
+		void OnFailedNotifyId(iconer::app::User& user);
 		[[nodiscard]]
 		IoResult OnReceived(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state, const ptrdiff_t& bytes);
 		void OnFailedReceive(iconer::app::User& user, iconer::app::UserStates& transit_state);
-
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user, const IdType& id, iconer::app::UserStates& transit_state);
 
