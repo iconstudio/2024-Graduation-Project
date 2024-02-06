@@ -84,12 +84,7 @@ export namespace iconer::app
 			return *this;
 		}
 
-		void Awake()
-		{
-			ContextType::Clear();
-			recvOffset = 0;
-			myName.reserve(nicknameLength);
-		}
+		void Awake();
 
 		bool Destroy() noexcept
 		{
