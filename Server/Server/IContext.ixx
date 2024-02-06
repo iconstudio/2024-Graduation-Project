@@ -56,17 +56,15 @@ export namespace iconer::app
 		}
 
 		explicit IContext(const StatusType& init_state)
-			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::memory_order{})))
-			requires copyable<StatusType>
-		: lastOperation()
+			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::memory_order{})))requires copyable<StatusType>
+			: lastOperation()
 		{
 			myState.store(init_state, std::memory_order_relaxed);
 		}
 
 		explicit IContext(StatusType&& init_state)
-			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::memory_order{})))
-			requires movable<StatusType>
-		: lastOperation()
+			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::memory_order{})))requires movable<StatusType>
+			: lastOperation()
 		{
 			myState.store(std::move(init_state), std::memory_order_relaxed);
 		}
@@ -170,7 +168,7 @@ export namespace iconer::app
 		{
 			return myState.compare_exchange_strong(from_state, to_state, order);
 		}
-		
+
 		[[nodiscard]]
 		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
 			requires movable<StatusType>
