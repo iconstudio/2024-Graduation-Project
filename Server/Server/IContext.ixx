@@ -105,7 +105,7 @@ export namespace iconer::app
 			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
 			requires movable<StatusType>
 		{
-			myState.store(state, order);
+			myState.store(std::move(state), order);
 		}
 
 		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed) volatile
@@ -119,7 +119,7 @@ export namespace iconer::app
 			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
 			requires movable<StatusType>
 		{
-			myState.store(state, order);
+			myState.store(std::move(state), order);
 		}
 
 		StatusType GetState(std::memory_order order = std::memory_order_relaxed) const
