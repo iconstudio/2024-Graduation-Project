@@ -17,7 +17,7 @@ export namespace iconer::app
 		OpAccept,
 
 		/// <summary>Phase 2 - Sign in</summary>
-		OpSignIn,
+		OpSignIn, OpSignInFailed,
 
 		/// <summary>Phase 3</summary>
 		OpAssignID,
