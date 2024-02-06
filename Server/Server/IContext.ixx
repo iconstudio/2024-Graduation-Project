@@ -148,16 +148,32 @@ export namespace iconer::app
 			//return GetState(std::memory_order_consume);
 		}
 
-		void ReleaseState(std::memory_order state)
+		void ReleaseState(const StatusType& state)
 			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
+			requires copyable<StatusType>
 		{
 			SetState(state, std::memory_order_release);
 		}
-
-		void ReleaseState(std::memory_order state) volatile
+		
+		void ReleaseState(StatusType&& state)
 			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
+			requires movable<StatusType>
+		{
+			SetState(std::move(state), std::memory_order_release);
+		}
+		
+		void ReleaseState(const StatusType& state) volatile
+			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
+			requires copyable<StatusType>
 		{
 			SetState(state, std::memory_order_release);
+		}
+		
+		void ReleaseState(StatusType&& state) volatile
+			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
+			requires movable<StatusType>
+		{
+			SetState(std::move(state), std::memory_order_release);
 		}
 
 		constexpr void SetOperation(Operations op) noexcept
