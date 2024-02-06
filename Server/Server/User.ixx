@@ -43,7 +43,7 @@ export namespace iconer::app
 			: Super(id), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, myName(), recvOffset(0)
-			, preSignInContext(nullptr), preSignInPacket()
+			, preSignInPacket()
 		{
 		}
 
@@ -53,7 +53,7 @@ export namespace iconer::app
 			: Super(std::move(id)), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, myName(), recvOffset(0)
-			, preSignInContext(nullptr), preSignInPacket()
+			, preSignInPacket()
 		{
 		}
 
@@ -117,7 +117,7 @@ export namespace iconer::app
 			}
 		}
 
-		IoResult SendSignInPacket() const;
+		IoResult SendSignInPacket();
 
 		constexpr User& PositionX(const float& v) noexcept
 		{
@@ -378,7 +378,6 @@ export namespace iconer::app
 		iconer::net::Socket mySocket;
 		volatile ptrdiff_t recvOffset;
 
-		iconer::net::IoContext* preSignInContext;
 		std::unique_ptr<std::byte[]> preSignInPacket;
 
 		glm::mat4 myTransform;
