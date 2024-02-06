@@ -57,7 +57,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 			{
 				logger.DebugLog(L"\tWorker {}: Event by session {} ({} bytes).\n", nth, io_id, io_bytes);
 
-				framework.RouteOperation(io_event.isSucceed, io_bytes, user->GetOperation(), *user, user->GetID(), status);
+				framework.RouteOperation(io_event.isSucceed, io_bytes, user->GetOperation(), *user);
 
 				logger.DebugLog(L"\tWorker {}: Event by server from user {} has done.\n", nth, user->GetID());
 
