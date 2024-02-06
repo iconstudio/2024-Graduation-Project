@@ -1,19 +1,19 @@
 module;
 #define ICONER_SERIALIZER_NODISCARD [[nodiscard("The serialized buffer has been lost!")]]
+#include <cstdint>
+#include <cmath>
+#include <bit>
+#include <tuple>
+#include <algorithm>
+#include <utility>
 
 export module Iconer.Utility.Serializer;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.File;
-import <cstdint>;
-import <cmath>;
-import <bit>;
-import <tuple>;
-import <utility>;
 import <memory>;
 import <stdexcept>;
 export import <string>;
 export import <string_view>;
-import <algorithm>;
 
 static constexpr unsigned char Byte = 0XFFU;
 
