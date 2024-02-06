@@ -1,36 +1,41 @@
 export module Iconer.Utility.AtomicSwitcher;
+import Iconer.Utility.Constraints;
 import <type_traits>;
 import <atomic>;
 
-namespace iconer::util::detail
+export namespace iconer::util
 {
-	template<typename Atomic, typename T, bool is_volatile>
-	class AtomicSwitcherImpl
+	template<typename Atomic>
+	class AtomicSwitcher
 	{
 	public:
-		using data_t = std::conditional_t<is_volatile, volatile Atomic, Atomic>;
-		using value_type = T;
+		static_assert(is_specialization_v<remove_cvref_t<Atomic>, std::atomic>);
 
-		explicit AtomicSwitcherImpl(data_t& target, const std::memory_order init_order, const std::memory_order final_order)
-			noexcept(std::is_nothrow_constructible_v<T> and noexcept(std::declval<data_t>().load(std::memory_order{})))
+		using data_t = Atomic;
+		using value_type = Atomic::value_type;
+
+		explicit AtomicSwitcher(data_t& target
+			, const std::memory_order init_order = std::memory_order_acquire
+			, const std::memory_order final_order = std::memory_order_release)
+			noexcept(nothrow_default_constructibles<value_type> and noexcept(std::declval<data_t>().load(std::memory_order{})))
 			: myTarget(target), myValue(target.load(init_order))
 			, finalOrder(final_order)
 		{
 		}
 
-		~AtomicSwitcherImpl() noexcept(std::is_nothrow_move_assignable_v<T> and std::is_nothrow_destructible_v<T>)
+		~AtomicSwitcher() noexcept(nothrow_move_constructibles<value_type> and nothrow_destructibles<value_type>)
 		{
 			myTarget.store(std::move(myValue), finalOrder);
 		}
 
 		template<typename U>
-		constexpr void SetValue(U&& value) noexcept(std::is_nothrow_assignable_v<T, U&&>)
+		constexpr void SetValue(U&& value) noexcept(nothrow_assignable<value_type, U&&>)
 		{
 			myValue = std::forward<U>(value);
 		}
 
 		template<typename U>
-		constexpr void SetValue(U&& value) volatile noexcept(std::is_nothrow_assignable_v<volatile T, U&&>)
+		constexpr void SetValue(U&& value) volatile noexcept(nothrow_assignable<volatile value_type, U&&>)
 		{
 			myValue = std::forward<U>(value);
 		}
@@ -63,43 +68,13 @@ namespace iconer::util::detail
 		value_type myValue;
 		std::memory_order finalOrder;
 	};
-}
-
-export namespace iconer::util
-{
-	template<typename T, bool is_volatile>
-	class AtomicSwitcher;
 
 	template<typename T>
-	class AtomicSwitcher<T, false> final : public detail::AtomicSwitcherImpl<std::atomic<T>, T, false>
-	{
-	public:
-		using super = detail::AtomicSwitcherImpl<std::atomic<T>, T, false>;
-
-		AtomicSwitcher(std::atomic<T>& target
-			, const std::memory_order init_order = std::memory_order_acquire
-			, const std::memory_order final_order = std::memory_order_release)
-			: super(target, init_order, final_order)
-		{
-		}
-	};
-
+	AtomicSwitcher(std::atomic<T>&) -> AtomicSwitcher<std::atomic<T>>;
 	template<typename T>
-	class AtomicSwitcher<T, true> final : public detail::AtomicSwitcherImpl<std::atomic<T>, T, true>
-	{
-	public:
-		using super = detail::AtomicSwitcherImpl<std::atomic<T>, T, true>;
-
-		AtomicSwitcher(volatile std::atomic<T>& target
-			, const std::memory_order init_order = std::memory_order_acquire
-			, const std::memory_order final_order = std::memory_order_release)
-			: super(target, init_order, final_order)
-		{
-		}
-	};
-
+	AtomicSwitcher(volatile std::atomic<T>&) -> AtomicSwitcher<volatile std::atomic<T>>;
 	template<typename T>
-	AtomicSwitcher(std::atomic<T>&, std::memory_order = std::memory_order_acquire, std::memory_order = std::memory_order_release) -> AtomicSwitcher<T, false>;
+	AtomicSwitcher(std::atomic<T>&, std::memory_order, std::memory_order) -> AtomicSwitcher<std::atomic<T>>;
 	template<typename T>
-	AtomicSwitcher(volatile std::atomic<T>&, std::memory_order = std::memory_order_acquire, std::memory_order = std::memory_order_release) -> AtomicSwitcher<T, true>;
+	AtomicSwitcher(volatile std::atomic<T>&, std::memory_order, std::memory_order) -> AtomicSwitcher<volatile std::atomic<T>>;
 }
