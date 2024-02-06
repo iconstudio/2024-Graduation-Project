@@ -100,6 +100,11 @@ export namespace iconer::app::packets
 			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(clientId));
 		}
 
+		constexpr SC_SucceedSignInPacket() noexcept
+			: SC_SucceedSignInPacket(-1)
+		{
+		}
+
 		constexpr SC_SucceedSignInPacket(int id) noexcept
 			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, CS_SignInPacket::SignedWannabeSizeSize())
 			, clientId(id)
@@ -139,20 +144,22 @@ export namespace iconer::app::packets
 			return static_cast<ptrdiff_t>(Super::MinSize());
 		}
 
-		constexpr SC_FailedSignInPacket(int id) noexcept
+		constexpr SC_FailedSignInPacket() noexcept
 			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, CS_SignInPacket::SignedWannabeSizeSize())
 		{
 		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
-			return Super::Write(buffer);
+			return iconer::util::Serialize(Super::Write(buffer), errCause);
 		}
 
 		constexpr const std::byte* Read(const std::byte* buffer)
 		{
-			return Super::Read(buffer);
+			return iconer::util::Deserialize(Super::Read(buffer), errCause);
 		}
+
+		int errCause;
 	};
 #pragma pack(pop)
 }
