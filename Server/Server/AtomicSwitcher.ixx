@@ -23,6 +23,9 @@ export namespace iconer::util
 		{
 		}
 
+		template<typename U>
+		AtomicSwitcher(const std::atomic<U>&&, const std::memory_order init_order = std::memory_order_acquire, const std::memory_order final_order = std::memory_order_release) = delete;
+
 		~AtomicSwitcher() noexcept(nothrow_move_constructibles<value_type> and nothrow_destructibles<value_type>)
 		{
 			myTarget.store(std::move(myValue), finalOrder);
