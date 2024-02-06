@@ -122,17 +122,17 @@ demo::Framework::RouteOperation(bool is_succeed
 		{
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tReserving an acceptance has failed on user {}\n", id);
+				myLogger.LogError(L"\ttConnection has failed on user {}\n", id);
 				OnFailedUserConnect(user, transit_state);
 			}
 			else if (auto error = OnUserConnected(user, id, transit_state); error.has_value())
 			{
-				myLogger.LogError(L"\tReserving an acceptance has failed on user {} due to {}\n", id, error.value());
+				myLogger.LogError(L"\tUser {} is connected, but acceptance has failed due to {}\n", id, error.error());
 				OnFailedUserConnect(user, transit_state);
 			}
 			else
 			{
-				myLogger.Log(L"\tAcceptance is reserved on user {}\n", id);
+				myLogger.Log(L"\tUser {} is connected\n", id);
 			}
 		}
 		break;
@@ -153,7 +153,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			}
 			else
 			{
-				myLogger.Log(L"\tUser {} is connected\n", id);
+				myLogger.Log(L"\tUser {} is signed in\n", id);
 			}
 		}
 		break;
