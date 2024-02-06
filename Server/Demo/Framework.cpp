@@ -125,7 +125,7 @@ demo::Framework::RouteOperation(bool is_succeed
 				myLogger.LogError(L"\ttConnection has failed on user {}\n", id);
 				OnFailedUserConnect(user, transit_state);
 			}
-			else if (auto error = OnUserConnected(user, id, transit_state); error.has_value())
+			else if (auto error = OnUserConnected(user, id, transit_state); not error.has_value())
 			{
 				myLogger.LogError(L"\tUser {} is connected, but acceptance has failed due to {}\n", id, error.error());
 				OnFailedUserConnect(user, transit_state);
