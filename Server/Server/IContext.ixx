@@ -3,7 +3,6 @@ import Iconer.Utility.Constraints;
 import Iconer.Utility.AtomicSwitcher;
 import Iconer.Net.IoContext;
 import <utility>;
-import <atomic>;
 
 export namespace iconer::app
 {
@@ -35,170 +34,32 @@ export namespace iconer::app
 		OpDisconnect,
 	};
 
-	template<typename S>
 	class IContext : public iconer::net::IoContext
 	{
 	public:
 		using Super = iconer::net::IoContext;
-		using StatusType = S;
-		using AtomicType = std::atomic<StatusType>;
 
-		static inline constexpr bool IsNothrowDefaultConstructible = nothrow_default_constructibles<AtomicType>;
-		static inline constexpr bool IsNothrowDestructible = nothrow_destructibles<AtomicType>;
+		explicit constexpr IContext() noexcept = default;
+		~IContext() noexcept = default;
 
-		explicit constexpr IContext() noexcept(IsNothrowDefaultConstructible) = default;
-		~IContext() noexcept(IsNothrowDestructible) = default;
-
-		explicit constexpr IContext(const StatusType& init_state)
-			noexcept(nothrow_copy_constructibles<AtomicType>) requires copyable<StatusType>
-			: myState(init_state), lastOperation()
+		explicit constexpr IContext(const Operations& ops) noexcept
+			: lastOperation(ops)
 		{
 		}
 
-		explicit constexpr IContext(StatusType&& init_state)
-			noexcept(nothrow_move_constructibles<AtomicType>) requires movable<StatusType>
-			: myState(std::move(init_state)), lastOperation()
+		explicit constexpr IContext(Operations&& ops) noexcept
+			: lastOperation(std::move(ops))
 		{
 		}
 
-		IContext(IContext&& other)
-			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_assignables<S>)
-			: lastOperation(std::exchange(other.lastOperation, Operations::None))
+		constexpr void SetOperation(const Operations& ops) noexcept
 		{
-			iconer::util::AtomicSwitcher switcher{ other.myState };
-
-			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
+			lastOperation = ops;
 		}
 
-		IContext& operator=(IContext&& other)
-			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_assignables<S>)
+		constexpr void SetOperation(Operations&& ops) noexcept
 		{
-			iconer::util::AtomicSwitcher switcher{ other.myState };
-
-			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
-			lastOperation = std::exchange(other.lastOperation, Operations::None);
-
-			return *this;
-		}
-
-		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed)
-			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
-			requires copyable<StatusType>
-		{
-			myState.store(state, order);
-		}
-
-		void SetState(StatusType&& state, std::memory_order order = std::memory_order_relaxed)
-			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
-			requires movable<StatusType>
-		{
-			myState.store(std::move(state), order);
-		}
-
-		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed) volatile
-			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
-			requires copyable<StatusType>
-		{
-			myState.store(state, order);
-		}
-
-		void SetState(StatusType&& state, std::memory_order order = std::memory_order_relaxed) volatile
-			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
-			requires movable<StatusType>
-		{
-			myState.store(std::move(state), order);
-		}
-
-		StatusType GetState(std::memory_order order = std::memory_order_relaxed) const
-			noexcept(noexcept(std::declval<AtomicType>().load(std::declval<std::memory_order>())))
-		{
-			return myState.load(order);
-		}
-
-		StatusType GetState(std::memory_order order = std::memory_order_relaxed) const volatile
-			noexcept(noexcept(std::declval<AtomicType>().load(std::declval<std::memory_order>())))
-		{
-			return myState.load(order);
-		}
-
-		StatusType AcquireState() const
-			noexcept(noexcept(GetState(std::declval<std::memory_order>())))
-		{
-			return GetState(std::memory_order_acquire);
-			//return GetState(std::memory_order_consume);
-		}
-
-		StatusType AcquireState() const volatile
-			noexcept(noexcept(GetState(std::declval<std::memory_order>())))
-		{
-			return GetState(std::memory_order_acquire);
-			//return GetState(std::memory_order_consume);
-		}
-
-		void ReleaseState(const StatusType& state)
-			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
-			requires copyable<StatusType>
-		{
-			SetState(state, std::memory_order_release);
-		}
-
-		void ReleaseState(StatusType&& state)
-			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
-			requires movable<StatusType>
-		{
-			SetState(std::move(state), std::memory_order_release);
-		}
-
-		void ReleaseState(const StatusType& state) volatile
-			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
-			requires copyable<StatusType>
-		{
-			SetState(state, std::memory_order_release);
-		}
-
-		void ReleaseState(StatusType&& state) volatile
-			noexcept(noexcept(SetState(std::declval<StatusType>(), std::declval<std::memory_order>())))
-			requires movable<StatusType>
-		{
-			SetState(std::move(state), std::memory_order_release);
-		}
-
-		[[nodiscard]]
-		bool TryChangeState(StatusType from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
-			requires copyable<StatusType>
-		{
-			return myState.compare_exchange_strong(from_state, to_state, order);
-		}
-
-		[[nodiscard]]
-		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
-			requires movable<StatusType>
-		{
-			return myState.compare_exchange_strong(from_state, std::move(to_state), order);
-		}
-
-		[[nodiscard]]
-		bool TryChangeState(StatusType from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
-			requires copyable<StatusType>
-		{
-			return myState.compare_exchange_strong(from_state, to_state, order);
-		}
-
-		[[nodiscard]]
-		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
-			requires movable<StatusType>
-		{
-			return myState.compare_exchange_strong(from_state, std::move(to_state), order);
-		}
-
-		constexpr void SetOperation(const Operations& op) noexcept
-		{
-			lastOperation = op;
-		}
-
-		constexpr void SetOperation(Operations&& op) noexcept
-		{
-			lastOperation = std::move(op);
+			lastOperation = std::move(ops);
 		}
 
 		constexpr void SetOperation(const Operations& op) volatile noexcept
@@ -212,31 +73,33 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
-		constexpr Operations GetOperation() const noexcept
+		constexpr const Operations& GetOperation() const& noexcept
 		{
 			return lastOperation;
 		}
 
 		[[nodiscard]]
-		constexpr Operations GetOperation() const volatile noexcept
+		constexpr Operations&& GetOperation() && noexcept
+		{
+			return std::move(lastOperation);
+		}
+
+		[[nodiscard]]
+		constexpr const volatile Operations& GetOperation() const volatile& noexcept
 		{
 			return lastOperation;
 		}
 
-		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
-			noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
+		[[nodiscard]]
+		constexpr volatile Operations&& GetOperation() volatile&& noexcept
 		{
-			return iconer::util::AtomicSwitcher{ myState };
+			return std::move(lastOperation);
 		}
 
-		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
-			volatile noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
-		{
-			return iconer::util::AtomicSwitcher{ myState };
-		}
+		IContext(IContext&&) noexcept = default;
+		IContext& operator=(IContext&&) noexcept = default;
 
-		volatile AtomicType myState;
-		volatile Operations lastOperation;
+		Operations lastOperation;
 
 	private:
 		IContext(const IContext&) = delete;
