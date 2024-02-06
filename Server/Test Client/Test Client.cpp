@@ -16,11 +16,11 @@ net::Socket app_socket{};
 net::IpAddress server_address{};
 net::EndPoint server_ep{};
 
-static std::byte recv_space[512]{};
-static std::span<std::byte, 512> recv_buffer{ recv_space };
+static inline constexpr size_t recvMaxSize = 512;
+static std::byte recv_space[recvMaxSize]{};
+static std::span<std::byte, recvMaxSize> recv_buffer{ recv_space };
 unsigned long received_bytes = 0;
 
-net::IoContext recv_ctx{};
 net::IoContext send_ctx{};
 
 using IdType = int;
@@ -40,7 +40,7 @@ struct FSagaPlayerCharacter
 
 coroutine::Coroutine Receiver();
 coroutine::Coroutine Sender();
-void PullReceiveBuffer(const unsigned long size);
+void PullReceiveBuffer(const std::byte* last_offset);
 
 int main()
 {
@@ -53,9 +53,10 @@ int main()
 		return 5;
 	}
 
-	app_socket = net::Socket::CreateTcpSocket(net::IoCategory::Asynchronous);
+	app_socket = net::Socket::CreateTcpSocket(net::IoCategory::Synchronous);
 
 	std::cout << "Binding...\n";
+
 	auto bind_r = app_socket.BindHost(40001);
 	if (bind_r.has_value())
 	{
@@ -87,7 +88,7 @@ int main()
 
 	constexpr app::packets::CS_SignInPacket sign_packet{ L"Iconer" };
 
-	std::byte signin_buffer[512]{};
+	std::byte signin_buffer[recvMaxSize]{};
 	sign_packet.Write(signin_buffer);
 	auto it = pk.Read(signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
 
@@ -96,6 +97,8 @@ int main()
 	{
 		return 2;
 	}
+
+	send_ctx.Clear();
 
 	while (true)
 	{
@@ -118,11 +121,11 @@ int main()
 
 coroutine::Coroutine Receiver()
 {
-	std::byte temp_buffer[512]{};
+	std::byte temp_buffer[recvMaxSize]{};
 
 	while (true)
 	{
-		auto recv = co_await app_socket.MakeReceiveTask(recv_ctx, recv_buffer.subspan(received_bytes));
+		auto recv = app_socket.Receive(recv_buffer.subspan(received_bytes));
 
 		if (not recv.has_value())
 		{
@@ -135,14 +138,15 @@ coroutine::Coroutine Receiver()
 
 			received_bytes += bytes;
 
-			if (received_bytes <= app::BasicPacket::MinSize())
+			if (app::BasicPacket::MinSize() <= received_bytes)
 			{
 				app::BasicPacket basic_pk{};
 				const auto seek = basic_pk.Read(recv_space);
 
 				if (basic_pk.mySize <= 0)
 				{
-					throw "error!";
+					//throw "error!";
+					std::cout << "Packet's size is zero!\n";
 				}
 				else if (const auto sz = static_cast<unsigned long>(basic_pk.mySize); received_bytes <= sz)
 				{
@@ -150,17 +154,26 @@ coroutine::Coroutine Receiver()
 					{
 						case app::PacketProtocol::SC_SIGNIN_SUCCESS:
 						{
-							util::Deserialize(seek, clientId);
+							app::packets::SC_SucceedSignInPacket pk{};
+							//util::Deserialize(seek, clientId);
+							auto offset = pk.Read(recv_space);
 
-							std::cout << "Local player's id is " << clientId << '\n';
+							std::cout << "Local player's id is " << pk.clientId << '\n';
+							clientId = pk.clientId;
 
-							const unsigned long wanna_size = sz + sizeof(clientId);
-							PullReceiveBuffer(wanna_size);
+							PullReceiveBuffer(offset);
 						}
 						break;
 
 						case app::PacketProtocol::SC_SIGNIN_FAILURE:
 						{
+							app::packets::SC_FailedSignInPacket pk{};
+							//util::Deserialize(seek, clientId);
+							auto offset = pk.Read(recv_space);
+
+							std::cout << "Local player can't get an id from server due to {}" << pk.errCause << '\n';
+
+							PullReceiveBuffer(offset);
 						}
 						break;
 
@@ -182,8 +195,6 @@ coroutine::Coroutine Receiver()
 				}
 			}
 		}
-
-		recv_ctx.Clear();
 	}
 
 	co_return;
@@ -212,6 +223,17 @@ coroutine::Coroutine Sender()
 }
 
 void
-PullReceiveBuffer(const unsigned long size)
+PullReceiveBuffer(const std::byte* last_offset)
 {
+	const auto offset = (last_offset - recv_space);
+
+	std::memcpy(recv_space, last_offset, recvMaxSize - static_cast<size_t>(offset));
+
+	//unsigned long decrement = 0;
+	//for (std::byte* it = recv_space; it != recv_space + offset; ++it)
+	{
+		//*(it++) = *(last_offset++);
+		//++decrement;
+	}
+	received_bytes -= static_cast<unsigned long>(offset);
 }
