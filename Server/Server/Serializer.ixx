@@ -519,7 +519,7 @@ export namespace iconer::util
 	{
 		if constexpr (0 < sizeof...(Args))
 		{
-			return iconer::util::detail::Serialize(dest, tuple, std::index_sequence_for<Args...>);
+			return iconer::util::detail::Serialize(dest, tuple, std::index_sequence_for<Args...>{});
 		}
 		else
 		{
@@ -545,7 +545,7 @@ export namespace iconer::util
 	{
 		if constexpr (0 < sizeof...(Args))
 		{
-			return iconer::util::detail::Serialize(dest, std::move(tuple), std::index_sequence_for<Args...>);
+			return iconer::util::detail::Serialize(dest, std::move(tuple), std::index_sequence_for<Args...>{});
 		}
 		else
 		{
