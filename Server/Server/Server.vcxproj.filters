@@ -246,6 +246,9 @@
     <ClCompile Include="HashComparator.ixx">
       <Filter>Collection</Filter>
     </ClCompile>
+    <ClCompile Include="BorrowedSendContext.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
