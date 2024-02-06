@@ -21,7 +21,7 @@ export namespace iconer::util
 		{
 		}
 
-		constexpr BorrowedPointer(T* ptr) noexcept
+		explicit constexpr BorrowedPointer(T* ptr) noexcept
 			: myData(ptr)
 		{
 		}
@@ -63,6 +63,96 @@ export namespace iconer::util
 
 	private:
 		T* myData;
+	};
+
+	template<notvoids T>
+	class [[nodiscard]] BorrowedPointer<T[]>
+	{
+	public:
+		constexpr BorrowedPointer() noexcept = default;
+
+		constexpr BorrowedPointer(nullptr_t) noexcept
+			: myData(), mySize(0)
+		{
+		}
+
+		constexpr BorrowedPointer(nullptr_t, const size_t&) noexcept
+			: myData(), mySize(0)
+		{
+		}
+
+		explicit constexpr BorrowedPointer(T* ptr, const size_t size) noexcept
+			: myData(ptr), mySize(size)
+		{
+		}
+
+		template<size_t Length>
+		explicit constexpr BorrowedPointer(const T(&ptr)[Length]) noexcept
+			: myData(ptr), mySize(Length)
+		{
+		}
+
+		template<size_t Length>
+		explicit constexpr BorrowedPointer(T(&& ptr)[Length]) noexcept
+			: myData(std::move(ptr)), mySize(Length)
+		{
+		}
+
+		template<typename U>
+		explicit constexpr BorrowedPointer(U* ptr, const size_t size) noexcept
+			: myData(ptr), mySize(size)
+		{
+		}
+
+		[[nodiscard]]
+		constexpr T*& Get() & noexcept
+		{
+			return myData;
+		}
+
+		[[nodiscard]]
+		constexpr T* const& Get() const& noexcept
+		{
+			return myData;
+		}
+
+		[[nodiscard]]
+		constexpr T*&& Get() && noexcept
+		{
+			return std::move(myData);
+		}
+
+		[[nodiscard]]
+		constexpr T* const&& Get() const&& noexcept
+		{
+			return std::move(myData);
+		}
+
+		[[nodiscard]]
+		constexpr const size_t& GetSize() const& noexcept
+		{
+			return mySize;
+		}
+
+		[[nodiscard]]
+		constexpr size_t&& GetSize() && noexcept
+		{
+			return std::move(mySize);
+		}
+
+		constexpr operator T* () const noexcept
+		{
+			return myData;
+		}
+
+		BorrowedPointer(const BorrowedPointer&) noexcept = default;
+		BorrowedPointer& operator=(const BorrowedPointer&) noexcept = default;
+		BorrowedPointer(BorrowedPointer&&) noexcept = default;
+		BorrowedPointer& operator=(BorrowedPointer&&) noexcept = default;
+
+	private:
+		T* myData;
+		size_t mySize;
 	};
 
 	template<notvoids T>
