@@ -93,6 +93,7 @@ export namespace iconer::app
 		bool Destroy() noexcept
 		{
 			SetOperation(Operations::OpDisconnect);
+			SetState(UserStates::Dead);
 			return mySocket.CloseAsync(this);
 		}
 
