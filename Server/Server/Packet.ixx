@@ -111,6 +111,12 @@ export namespace iconer::app::packets
 		{
 		}
 
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, clientId);
+		}
+
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
 			return iconer::util::Serialize(Super::Write(buffer), clientId);
