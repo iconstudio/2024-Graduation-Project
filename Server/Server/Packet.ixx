@@ -26,26 +26,26 @@ export namespace iconer::app::packets
 		}
 
 		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSizeSize() noexcept
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
 		{
 			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(userName));
 		}
 
 		constexpr CS_SignInPacket() noexcept
-			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSizeSize())
+			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSize())
 			, userName()
 		{
 		}
 
 		explicit constexpr CS_SignInPacket(const wchar_t* begin, const wchar_t* end)
-			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSizeSize())
+			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSize())
 			, userName()
 		{
 			std::copy(begin, end, userName);
 		}
 
 		explicit constexpr CS_SignInPacket(const wchar_t* nts, const size_t length)
-			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSizeSize())
+			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSize())
 			, userName()
 		{
 			std::copy_n(nts, std::min(length, nickNameLength), userName);
@@ -53,7 +53,7 @@ export namespace iconer::app::packets
 
 		template<size_t Length>
 		explicit constexpr CS_SignInPacket(const wchar_t(&str)[Length])
-			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSizeSize())
+			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSize())
 			, userName()
 		{
 			std::copy_n(str, std::min(Length, nickNameLength), userName);
@@ -61,7 +61,7 @@ export namespace iconer::app::packets
 
 		template<size_t Length>
 		explicit constexpr CS_SignInPacket(wchar_t(&& str)[Length])
-			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSizeSize())
+			: Super(PacketProtocol::CS_SIGNIN, CS_SignInPacket::SignedWannabeSize())
 			, userName()
 		{
 			std::move(str, str + std::min(Length, nickNameLength), userName);
@@ -95,7 +95,7 @@ export namespace iconer::app::packets
 		}
 
 		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSizeSize() noexcept
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
 		{
 			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(clientId));
 		}
@@ -106,7 +106,7 @@ export namespace iconer::app::packets
 		}
 
 		constexpr SC_SucceedSignInPacket(int id) noexcept
-			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, CS_SignInPacket::SignedWannabeSizeSize())
+			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, CS_SignInPacket::SignedWannabeSize())
 			, clientId(id)
 		{
 		}
@@ -139,13 +139,13 @@ export namespace iconer::app::packets
 		}
 
 		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSizeSize() noexcept
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
 		{
 			return static_cast<ptrdiff_t>(Super::MinSize());
 		}
 
 		constexpr SC_FailedSignInPacket() noexcept
-			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, CS_SignInPacket::SignedWannabeSizeSize())
+			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, CS_SignInPacket::SignedWannabeSize())
 		{
 		}
 
