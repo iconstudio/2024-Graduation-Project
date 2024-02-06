@@ -9,6 +9,7 @@ export namespace iconer::app
 	enum class [[nodiscard]] Operations : std::uint8_t
 	{
 		None,
+
 		/// <summary>Phase 0</summary>
 		OpReserveSession = 10,
 
@@ -32,6 +33,9 @@ export namespace iconer::app
 
 		/// <summary>Phase 10 - Sign out (Quit)</summary>
 		OpDisconnect,
+
+		/// <summary>Extras</summary>
+		OpEndWorkers
 	};
 
 	class IContext : public iconer::net::IoContext
