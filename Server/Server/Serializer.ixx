@@ -501,6 +501,8 @@ namespace iconer::util::detail
 
 export namespace iconer::util
 {
+	/// <summary>Transfer a copied tuple to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	template<typename... Args>
 	constexpr std::byte* Serialize(std::byte* dest, const std::tuple<Args...>& tuple)
 	{
@@ -514,6 +516,8 @@ export namespace iconer::util
 		}
 	}
 
+	/// <summary>Transfer a moved tuple to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	template<typename... Args>
 	constexpr std::byte* Serialize(std::byte* dest, std::tuple<Args...>&& tuple)
 	{
@@ -527,6 +531,8 @@ export namespace iconer::util
 		}
 	}
 
+	/// <summary>Transfer arguments to the byte buffer</summary>
+	/// <returns>last buffer pointer foregoing from dest</returns>
 	template<typename... Args> requires (1 < sizeof...(Args))
 		constexpr std::byte* Serialize(std::byte* dest, Args&&... args)
 	{
