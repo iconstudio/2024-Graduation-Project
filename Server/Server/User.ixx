@@ -25,13 +25,12 @@ export namespace iconer::app
 		, Dead
 	};
 
-	class [[nodiscard]] User : protected ISession<std::int32_t>, public IContext<UserStates>
+	class [[nodiscard]] User : public ISession<std::int32_t, UserStates>, public IContext
 	{
 	public:
-		using Super = ISession<std::int32_t>;
+		using Super = ISession<std::int32_t, UserStates>;
 		using Super::IdType;
-		using Super::GetID;
-		using ContextType = IContext<UserStates>;
+		using ContextType = IContext;
 		using IoResult = iconer::net::Socket::AsyncResult;
 
 		static inline constexpr size_t nicknameLength = 16;
