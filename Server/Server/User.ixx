@@ -44,7 +44,7 @@ export namespace iconer::app
 			: Super(id), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, myName(), recvOffset(0)
-			, preSignInPacket()
+			, preSignInContext(nullptr), preSignInPacket()
 		{
 		}
 
@@ -54,7 +54,7 @@ export namespace iconer::app
 			: Super(std::move(id)), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, myName(), recvOffset(0)
-			, preSignInPacket()
+			, preSignInContext(nullptr), preSignInPacket()
 		{
 		}
 
@@ -106,20 +106,6 @@ export namespace iconer::app
 
 		template<size_t Size>
 		[[nodiscard]]
-		IoResult Send(std::span<std::byte, Size> buffer)
-		{
-			if constexpr (Size == std::dynamic_extent)
-			{
-				return mySocket.Receive(*this, buffer.subspan(recvOffset), buffer.size() - recvOffset);
-			}
-			else
-			{
-				return mySocket.Receive(*this, buffer.subspan(recvOffset), Size - recvOffset);
-			}
-		}
-
-		template<size_t Size>
-		[[nodiscard]]
 		IoResult Receive(std::span<std::byte, Size> buffer)
 		{
 			if constexpr (Size == std::dynamic_extent)
@@ -132,7 +118,7 @@ export namespace iconer::app
 			}
 		}
 
-		IoResult SendSignInPacket();
+		IoResult SendSignInPacket() const;
 
 		constexpr User& PositionX(const float& v) noexcept
 		{
@@ -393,7 +379,9 @@ export namespace iconer::app
 		iconer::net::Socket mySocket;
 		volatile ptrdiff_t recvOffset;
 
+		iconer::net::IoContext* preSignInContext;
 		std::unique_ptr<std::byte[]> preSignInPacket;
+
 		glm::mat4 myTransform;
 
 	private:
