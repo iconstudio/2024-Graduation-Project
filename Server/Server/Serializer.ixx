@@ -501,6 +501,17 @@ namespace iconer::util::detail
 
 export namespace iconer::util
 {
+	/// <summary>Allocate a byte buffer for a copied tuple</summary>
+	/// <exception cref="std::bad_alloc"/>
+	template<typename... Args>
+	ICONER_SERIALIZER_NODISCARD
+		constexpr std::unique_ptr<std::byte[]> Serialize(const std::tuple<Args...>& tuple)
+	{
+		auto buffer = std::make_unique<std::byte[]>(byte_size_v<Args...>);
+		Serialize(buffer.get(), tuple);
+		return buffer;
+	}
+
 	/// <summary>Transfer a copied tuple to the byte buffer</summary>
 	/// <returns>last buffer pointer foregoing from dest</returns>
 	template<typename... Args>
@@ -514,6 +525,17 @@ export namespace iconer::util
 		{
 			return dest;
 		}
+	}
+
+	/// <summary>Allocate a byte buffer for a moved tuple</summary>
+	/// <exception cref="std::bad_alloc"/>
+	template<typename... Args>
+	ICONER_SERIALIZER_NODISCARD
+		constexpr std::unique_ptr<std::byte[]> Serialize(std::tuple<Args...>&& tuple)
+	{
+		auto buffer = std::make_unique<std::byte[]>(byte_size_v<Args...>);
+		Serialize(buffer.get(), std::move(tuple));
+		return buffer;
 	}
 
 	/// <summary>Transfer a moved tuple to the byte buffer</summary>
@@ -531,10 +553,19 @@ export namespace iconer::util
 		}
 	}
 
+	/// <summary>Allocate a byte buffer of multiple values</summary>
+	/// <exception cref="std::bad_alloc"/>
+	template<typename... Args> requires (1 < sizeof...(Args))
+	ICONER_SERIALIZER_NODISCARD
+		constexpr std::unique_ptr<std::byte[]> Serializes(Args&&... args)
+	{
+		return Serialize(std::forward_as_tuple(std::forward<Args>(args)...));
+	}
+
 	/// <summary>Transfer arguments to the byte buffer</summary>
 	/// <returns>last buffer pointer foregoing from dest</returns>
 	template<typename... Args> requires (1 < sizeof...(Args))
-		constexpr std::byte* Serialize(std::byte* dest, Args&&... args)
+		constexpr std::byte* Serializes(std::byte* dest, Args&&... args)
 	{
 		return iconer::util::detail::Serialize(dest, std::forward_as_tuple(std::forward<Args>(args)...));
 	}
