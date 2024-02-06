@@ -86,7 +86,7 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 	}
 	else
 	{
-		// Restart receive
+		// Restart remain packet bytes
 		// Still at OpSignIn
 		return user.Receive(GetBuffer(user.GetID()));
 	}
