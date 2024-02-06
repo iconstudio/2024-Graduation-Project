@@ -1,21 +1,20 @@
 module;
+#include <string>
+#include <string_view>
+
 module Demo.Framework;
 import Iconer.Net;
-import <string>;
-import <string_view>;
 
 void
 demo::Framework::Destroy()
 {
 	LockPhase();
 
-	auto task = new FrameworkTaskContext;
-	task->myCategory = FrameworkTaskCategory::EndTask;
-
-	if (not Schedule(task, serverID, 0))
+	if (not Schedule(new FrameworkTaskContext, serverID))
 	{
 		myLogger.LogError(L"An error is occured when closing tasks");
 	}
+
 	UnlockPhase();
 }
 
