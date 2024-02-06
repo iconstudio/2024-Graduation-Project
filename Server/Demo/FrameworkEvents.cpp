@@ -76,6 +76,8 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 		// Don't necessary to pull back buffer of the receive buffer
 		user_recv_offset -= iconer::app::packets::CS_SignInPacket::SignedWannabeSize();
 
+		user.myName = pk.userName;
+
 		while (not user.TryChangeState(iconer::app::UserStates::Connected, iconer::app::UserStates::PendingID));
 
 		user.SetOperation(iconer::app::Operations::OpAssignID);
