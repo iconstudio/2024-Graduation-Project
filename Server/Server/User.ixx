@@ -44,6 +44,7 @@ export namespace iconer::app
 			: Super(id), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, myName(), recvOffset(0)
+			, preSignInPacket()
 		{
 		}
 
@@ -53,6 +54,7 @@ export namespace iconer::app
 			: Super(std::move(id)), ContextType()
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, myName(), recvOffset(0)
+			, preSignInPacket()
 		{
 		}
 
