@@ -4,6 +4,7 @@ module;
 
 module Demo.Framework;
 import Iconer.Application.ISession;
+import Iconer.Application.BorrowedSendContext;
 import <atomic>;
 
 bool
@@ -89,27 +90,29 @@ demo::Framework::StartAccepts()
 	return true;
 }
 
-void
+bool
 demo::Framework::RouteOperation(bool is_succeed
-	, const ptrdiff_t& io_bytes, iconer::app::Operations operation
-	, iconer::app::User& user)
+	, const std::uint64_t& io_id
+	, const ptrdiff_t& io_bytes
+	, iconer::app::IContext* ctx)
 {
-	const IdType& id = user.GetID();
-
-	switch (operation)
+	switch (ctx->GetOperation())
 	{
 		// Phase 0
 		case iconer::app::Operations::OpReserveSession:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tReserving an acceptance has failed on user {}\n", id);
-				OnFailedReservingAccept(user);
+				OnFailedReservingAccept(*user);
 			}
-			else if (auto error = OnReserveAccept(user); error.has_value())
+			else if (auto error = OnReserveAccept(*user); error.has_value())
 			{
 				myLogger.LogError(L"\tReserving an acceptance has failed on user {} due to {}\n", id, error.value());
-				OnFailedReservingAccept(user);
+				OnFailedReservingAccept(*user);
 			}
 			else
 			{
@@ -117,20 +120,23 @@ demo::Framework::RouteOperation(bool is_succeed
 			}
 		}
 		break;
-		
+
 		// Phase 1
 		// an user is connected
 		case iconer::app::Operations::OpAccept:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\ttConnection has failed on user {}\n", id);
-				OnFailedUserConnect(user);
+				OnFailedUserConnect(*user);
 			}
-			else if (auto error = OnUserConnected(user); not error.has_value())
+			else if (auto result = OnUserConnected(*user); not result.has_value())
 			{
-				myLogger.LogError(L"\tUser {} is connected, but acceptance has failed due to {}\n", id, error.error());
-				OnFailedUserConnect(user);
+				myLogger.LogError(L"\tUser {} is connected, but acceptance has failed due to {}\n", id, result.error());
+				OnFailedUserConnect(*user);
 			}
 			else
 			{
@@ -143,15 +149,22 @@ demo::Framework::RouteOperation(bool is_succeed
 		// received a nickname, and send an id of user
 		case iconer::app::Operations::OpSignIn:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tSigning In has failed on user {}\n", id);
-				OnFailedUserSignIn(user);
+				OnFailedUserSignIn(*user);
 			}
-			else if (auto error = OnUserSignedIn(user, io_bytes); not error.has_value())
+			else if (auto result = OnUserSignedIn(*user, io_bytes); not result.has_value())
 			{
-				myLogger.LogError(L"\tSigning In has failed on user {} due to {}\n", id, error.error());
-				OnFailedUserSignIn(user);
+				myLogger.LogError(L"\tSigning In has failed on user {} due to {}\n", id, result.error());
+				OnFailedUserSignIn(*user);
+			}
+			else if (result.value() < 35)
+			{
+				myLogger.Log(L"\tUser {} doesn't have enough packet bytes\n", id);
 			}
 			else
 			{
@@ -164,19 +177,23 @@ demo::Framework::RouteOperation(bool is_succeed
 		// sent an id of user
 		case iconer::app::Operations::OpAssignID:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tNotifying the id to user {} has failed\n", id);
-				OnFailedNotifyId(user);
+				OnFailedNotifyId(*user);
 			}
-			else if (auto error = OnNotifyUserId(user); not error.has_value())
+			else if (auto result = OnNotifyUserId(*user); not result.has_value())
 			{
-				myLogger.LogError(L"\tUser {} cannot start receving due to {}\n", id, error.error());
-				OnFailedNotifyId(user);
+				myLogger.Log(L"\tThe Id is notified to user {}", id);
+				myLogger.LogError(L"\t, but cannot start receiving due to {}\n", result.error());
+				OnFailedNotifyId(*user);
 			}
 			else
 			{
-				myLogger.Log(L"\tThe Id is notified to user {}\n", id);
+				myLogger.Log(L"\tUser {} has been notified id, now start receiving\n", id);
 			}
 		}
 		break;
@@ -184,15 +201,18 @@ demo::Framework::RouteOperation(bool is_succeed
 		// Phase 4~
 		case iconer::app::Operations::OpRecv:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tReceving has failed on user {}\n", id);
-				OnFailedReceive(user);
+				OnFailedReceive(*user);
 			}
-			else if (auto error = OnReceived(user, io_bytes); not error.has_value())
+			else if (auto error = OnReceived(*user, io_bytes); not error.has_value())
 			{
 				myLogger.LogError(L"\tReceving has failed on user {} due to {}\n", id, error.error());
-				OnFailedReceive(user);
+				OnFailedReceive(*user);
 			}
 			else
 			{
@@ -203,11 +223,14 @@ demo::Framework::RouteOperation(bool is_succeed
 
 		case iconer::app::Operations::OpDisconnect:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tUser {} has failed to disconnect\n", id);
 			}
-			else if (auto error = OnUserDisconnected(user); error.has_value())
+			else if (auto error = OnUserDisconnected(*user); error.has_value())
 			{
 				myLogger.LogError(L"\tUser {} would not be disconnected due to {}\n", id, error.value());
 			}
@@ -220,6 +243,9 @@ demo::Framework::RouteOperation(bool is_succeed
 
 		case iconer::app::Operations::OpCreateRoom:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tUser {} could not create a room\n", id);
@@ -233,6 +259,9 @@ demo::Framework::RouteOperation(bool is_succeed
 
 		case iconer::app::Operations::OpEnterRoom:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tUser {} could not enter to room {}\n", id, 0);
@@ -246,47 +275,69 @@ demo::Framework::RouteOperation(bool is_succeed
 
 		case iconer::app::Operations::OpLeaveRoom:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 
 		}
 		break;
 
 		case iconer::app::Operations::OpReadyGame:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 
 		}
 		break;
 
 		case iconer::app::Operations::OpEnterGame:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 
 		}
 		break;
 
 		case iconer::app::Operations::OpStartGame:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 
 		}
 		break;
 
 		case iconer::app::Operations::OpLeaveGame:
 		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
 
 		}
 		break;
+
+		case iconer::app::Operations::OpEndWorkers:
+		{
+			return false;
+		}
 
 		default:
 		{
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tUnknown operation '{}' has failed on user {}\n", static_cast<int>(operation), id);
+				myLogger.LogError(L"\tUnknown operation '{}' has failed on {}\n", static_cast<int>(ctx->GetOperation()), reinterpret_cast<std::uintptr_t>(ctx));
 			}
 			else
 			{
-				myLogger.Log(L"\tAn unknown operation '{}' has been executed on user {}\n", static_cast<int>(operation), id);
+				myLogger.Log(L"\tAn unknown operation '{}' has been executed on {}\n", static_cast<int>(ctx->GetOperation()), reinterpret_cast<std::uintptr_t>(ctx));
 			}
 		}
 		break;
 	}
+
+	return true;
 }
 void
 demo::Framework::LockPhase()

@@ -82,7 +82,8 @@ export namespace demo
 		[[nodiscard]]
 		bool StartAccepts();
 
-		void RouteOperation(bool is_succeed, const ptrdiff_t& io_bytes, iconer::app::Operations operation, iconer::app::User& user);
+		[[nodiscard]]
+		bool RouteOperation(bool is_succeed, const std::uint64_t& io_id, const ptrdiff_t& io_bytes, iconer::app::IContext* ctx);
 
 		[[nodiscard]]
 		AcceptResult OnReserveAccept(iconer::app::User& user);

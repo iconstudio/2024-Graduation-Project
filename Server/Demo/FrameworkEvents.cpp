@@ -73,22 +73,28 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 			return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
 		}
 
-		// Don't necessary to pull back buffer of the receive buffer
-		user_recv_offset -= iconer::app::packets::CS_SignInPacket::SignedWannabeSize();
+		if (true) [[likely]] { // The signing in is succeed
+			// Don't necessary to pull back buffer of the receive buffer
+			user_recv_offset -= iconer::app::packets::CS_SignInPacket::SignedWannabeSize();
 
-		user.myName = pk.userName;
+			user.myName = pk.userName;
 
-		while (not user.TryChangeState(iconer::app::UserStates::Connected, iconer::app::UserStates::PendingID));
+			while (not user.TryChangeState(iconer::app::UserStates::Connected, iconer::app::UserStates::PendingID));
 
-		user.SetOperation(iconer::app::Operations::OpAssignID);
+			user.SetOperation(iconer::app::Operations::OpAssignID);
 
-		return user.SendSignInPacket();
+			return user.SendSignInPacket();
+		}
+		else [[unlikely]] {
+			// TODO: send sign in failed packet
+			return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
+		};
 	}
 	else
 	{
 		// Restart remain packet bytes
 		// Still at OpSignIn
-		return user.Receive(GetBuffer(user.GetID()));
+		return user.Receive(user_buffer);
 	}
 }
 
@@ -104,7 +110,7 @@ demo::Framework::OnNotifyUserId(iconer::app::User& user)
 {
 	if (user.TryChangeState(iconer::app::UserStates::PendingID, iconer::app::UserStates::Idle))
 	{
-		user.SetOperation(iconer::app::Operations::OpSignIn);
+		user.SetOperation(iconer::app::Operations::OpRecv);
 
 		return user.Receive(GetBuffer(user.GetID()));
 	}
