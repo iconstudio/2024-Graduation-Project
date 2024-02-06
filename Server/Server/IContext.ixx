@@ -82,18 +82,6 @@ export namespace iconer::app
 			return *this;
 		}
 
-		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
-			noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
-		{
-			return iconer::util::AtomicSwitcher{ myState };
-		}
-
-		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
-			volatile noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
-		{
-			return iconer::util::AtomicSwitcher{ myState };
-		}
-
 		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed)
 			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
 			requires copyable<StatusType>
@@ -206,6 +194,18 @@ export namespace iconer::app
 		constexpr Operations GetOperation() const volatile noexcept
 		{
 			return lastOperation;
+		}
+
+		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
+			noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
+		{
+			return iconer::util::AtomicSwitcher{ myState };
+		}
+
+		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
+			volatile noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
+		{
+			return iconer::util::AtomicSwitcher{ myState };
 		}
 
 		volatile AtomicType myState;
