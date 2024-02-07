@@ -179,8 +179,14 @@ demo::Framework::AcceptResult
 demo::Framework::OnUserDisconnected(iconer::app::User& user)
 {
 	// Reserve the user again
-	user.SetOperation(iconer::app::Operations::OpReserveSession);
-	Schedule(user, user.GetID());
+	if (user.TryChangeState(iconer::app::UserStates::Dead, iconer::app::UserStates::None))
+	{
+		if (Schedule(user, user.GetID()))
+		{
+			user.SetOperation(iconer::app::Operations::OpReserveSession);
+			return std::nullopt;
+		}
+	}
 
-	return std::nullopt;
+	return iconer::net::ErrorCode::OPERATION_ABORTED;
 }
