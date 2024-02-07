@@ -228,18 +228,8 @@
 				<DisplayString>{&quot;$T1&quot;} 속성 대리자 인터페이스</DisplayString>
 			</Synthetic>
 			<Item Name="[값]">myValue</Item>
-			<Item Name="[대리 함수]" Condition="static_cast&lt;bool&gt;($T3) == true">mySetter</Item>
-
-			<Synthetic Name="[대리자 대상]" Condition="static_cast&lt;bool&gt;($T3) == true" Optional="true">
-				<DisplayString>{*myContext}</DisplayString>
-				<Expand>
-					<Item Name="[핸들]">myContext</Item>
-				</Expand>
-			</Synthetic>
-			<Item Name="[커스텀]">static_cast&lt;bool&gt;($T3)</Item>
-			<Item Name="[복사 가능 여부]">static_cast&lt;bool&gt;($T4)</Item>
-			<Item Name="[읽기 전용 여부]">static_cast&lt;bool&gt;($T5)</Item>
-			<Item Name="[예외 던지는지 여부]">static_cast&lt;bool&gt;($T6)</Item>
+			<Item Name="[대리 함수]">myDelegate</Item>
+			<Item Name="[예외 던지는지 여부]">IsActualNothrow</Item>
 		</Expand>
 	</Type>
 
