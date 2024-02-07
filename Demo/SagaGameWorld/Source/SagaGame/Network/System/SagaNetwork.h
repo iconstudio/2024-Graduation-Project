@@ -2,7 +2,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 
-#include "SagaNetworkView.h"
+#include "Network/SagaNetworkView.h"
 #include "SagaNetwork.generated.h"
 
 UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga/Network")
@@ -17,6 +17,7 @@ public:
 
 	/* Network Methods */
 
+	
 	void SendKeyToServer(FKey Key);
 
 	/* Methods */

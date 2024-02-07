@@ -1,4 +1,4 @@
-#include "Network/SagaNetworkSettings.h"
+#include "Network/System/SagaNetworkSettings.h"
 #include "Network/SagaNetworkUtility.h"
 
 TSharedRef<FInternetAddr>

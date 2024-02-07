@@ -1,7 +1,7 @@
-#include "Network/SagaNetwork.h"
+#include "Network/System/SagaNetwork.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 #include "Sockets.h"
-#include "Network/SagaNetworkSettings.h"
+#include "Network/System/SagaNetworkSettings.h"
 #include "Network/SagaNetworkUtility.h"
 
 void
