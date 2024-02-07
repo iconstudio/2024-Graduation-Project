@@ -2,13 +2,16 @@
 #include "Interfaces/IPv4/IPv4Address.h"
 #include "Sockets.h"
 #include "Network/System/SagaNetworkSettings.h"
-#include "Network/SagaNetworkUtility.h"
 #include "Network/Packets/SagaPredefinedPackets.h"
+#include "Network/SagaNetworkUtility.h"
+#include "Network/SagaLocalPlayer.h"
 
 void
 USagaNetwork::Init()
 {
 	Super::Init();
+
+	EveryClients.Reserve(100);
 
 	LocalSocket = USagaNetworkUtility::CreateTcpSocket();
 	if (nullptr == LocalSocket)
@@ -38,6 +41,9 @@ USagaNetwork::Init()
 		throw "error!";
 	}
 
+	// #1
+	// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
+
 	constexpr FSagaPacket_CS_SignIn packet{ L"Nickname" };
 	auto ptr = packet.Serialize();
 	
@@ -47,6 +53,37 @@ USagaNetwork::Init()
 		throw "error!";
 	}
 
+	// #2
+	// 서버가 닉네임 패킷을 받으면 서버는 ID 부여 패킷을 보낸다.
+	// 클라는 ID 부여 패킷을 받아서 갱신하고, 게임 or 메뉴 레벨로 넘어가야 한다.
+	uint8 recv_buffer[512]{};
+
+	int32 recv_bytes{};
+	if (not LocalSocket->Recv(recv_buffer, sizeof(recv_buffer), recv_bytes))
+	{
+		throw "error!";
+	}
+
+	// 패킷 검증 필요
+
+	FSagaPacket_SC_SucceedSignIn id_packet{};
+	id_packet.Read(recv_buffer);
+
+	if (id_packet.myProtocol != EPacketProtocol::SC_SIGNIN_SUCCESS or id_packet.mySize <= 0)
+	{
+		throw "error!";
+	}
+
+	if (id_packet.mySize != static_cast<int32>(FSagaPacket_SC_SucceedSignIn::SignedWannabeSize()))
+	{
+		throw "error!";
+	}
+
+	// 플레이어 ID 읽기
+	auto local_client = new FSagaLocalPlayer{};
+	local_client->MyID = id_packet.clientId;
+
+	EveryClients.Add(local_client);
 }
 
 void
