@@ -1,4 +1,6 @@
 #include "Network/SagaNetworkUtility.h"
+
+#include "Sockets.h"
 #include "SocketSubsystem.h"
 
 FSocket*
@@ -33,4 +35,25 @@ USagaNetworkUtility::MakeIpAddress(const FString String)
 	FIPv4Address::Parse(String, Result);
 
 	return Result;
+}
+
+bool
+USagaNetworkUtility::SendBuffer(FSocket& socket, const TSharedRef<uint8*>& buffer, int32 size)
+{
+	int32 _;
+	return socket.Send(*buffer, size, _);
+}
+
+bool
+USagaNetworkUtility::SendBufferFrom(FSocket& socket, const TSharedPtr<uint8>& buffer, int32 size)
+{
+	if (buffer.IsValid())
+	{
+		int32 _;
+		return socket.Send(buffer.Get(), size, _);
+	}
+	else
+	{
+		return false;
+	}
 }
