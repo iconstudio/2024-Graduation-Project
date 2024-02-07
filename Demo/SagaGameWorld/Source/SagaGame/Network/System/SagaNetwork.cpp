@@ -29,61 +29,73 @@ USagaNetwork::Init()
 	{
 		throw "error!";
 	}
+	// 연결 부분
 
-	auto remote_endpoint = USagaNetworkSettings::CreateRemoteEndPoint();
-	if (LocalSocket->Connect(*remote_endpoint))
+#if true
 	{
-		// 연결 성공
-	}
-	else
-	{
-		// 연결 실패 처리
-		throw "error!";
-	}
+		auto remote_endpoint = USagaNetworkSettings::CreateRemoteEndPoint();
+		if (LocalSocket->Connect(*remote_endpoint))
+		{
+			// 연결 성공
+		}
+		else
+		{
+			// 연결 실패 처리
+			throw "error!";
+		}
 
-	// #1
-	// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
+		// #1
+		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
 
-	constexpr FSagaPacket_CS_SignIn packet{ L"Nickname" };
-	auto ptr = packet.Serialize();
+		constexpr FSagaPacket_CS_SignIn packet{ L"Nickname" };
+		auto ptr = packet.Serialize();
 	
-	int32 sent_bytes = USagaNetworkUtility::SendUniqueBuffer(*LocalSocket, ptr, packet.WannabeSize());
-	if (sent_bytes <= 0)
-	{
-		throw "error!";
+		int32 sent_bytes = USagaNetworkUtility::SendUniqueBuffer(*LocalSocket, ptr, packet.WannabeSize());
+		if (sent_bytes <= 0)
+		{
+			throw "error!";
+		}
+
+		// #2
+		// 서버가 닉네임 패킷을 받으면 서버는 ID 부여 패킷을 보낸다.
+		// 클라는 ID 부여 패킷을 받아서 갱신하고, 게임 or 메뉴 레벨로 넘어가야 한다.
+		uint8 recv_buffer[512]{};
+
+		int32 recv_bytes{};
+		if (not LocalSocket->Recv(recv_buffer, sizeof(recv_buffer), recv_bytes))
+		{
+			throw "error!";
+		}
+
+		// 패킷 검증 필요
+
+		FSagaPacket_SC_SucceedSignIn id_packet{};
+		id_packet.Read(recv_buffer);
+
+		if (id_packet.myProtocol != EPacketProtocol::SC_SIGNIN_SUCCESS or id_packet.mySize <= 0)
+		{
+			throw "error!";
+		}
+
+		if (id_packet.mySize != static_cast<int32>(FSagaPacket_SC_SucceedSignIn::SignedWannabeSize()))
+		{
+			throw "error!";
+		}
+
+		// 플레이어 ID 읽기
+		auto local_client = new FSagaLocalPlayer{};
+		local_client->MyID = id_packet.clientId;
+
+		EveryClients.Add(local_client);
+
+		// #3 좌표 송수신 
+	
+		FSagaPacket_CS_ClientPosition pk_position{};
+		auto position_buffer = pk_position.Serialize();
+
+		USagaNetworkUtility::SendUniqueBuffer(*LocalSocket, position_buffer, FSagaPacket_CS_ClientPosition::WannabeSize());
 	}
-
-	// #2
-	// 서버가 닉네임 패킷을 받으면 서버는 ID 부여 패킷을 보낸다.
-	// 클라는 ID 부여 패킷을 받아서 갱신하고, 게임 or 메뉴 레벨로 넘어가야 한다.
-	uint8 recv_buffer[512]{};
-
-	int32 recv_bytes{};
-	if (not LocalSocket->Recv(recv_buffer, sizeof(recv_buffer), recv_bytes))
-	{
-		throw "error!";
-	}
-
-	// 패킷 검증 필요
-
-	FSagaPacket_SC_SucceedSignIn id_packet{};
-	id_packet.Read(recv_buffer);
-
-	if (id_packet.myProtocol != EPacketProtocol::SC_SIGNIN_SUCCESS or id_packet.mySize <= 0)
-	{
-		throw "error!";
-	}
-
-	if (id_packet.mySize != static_cast<int32>(FSagaPacket_SC_SucceedSignIn::SignedWannabeSize()))
-	{
-		throw "error!";
-	}
-
-	// 플레이어 ID 읽기
-	auto local_client = new FSagaLocalPlayer{};
-	local_client->MyID = id_packet.clientId;
-
-	EveryClients.Add(local_client);
+#endif
 }
 
 void
