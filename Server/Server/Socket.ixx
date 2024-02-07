@@ -36,6 +36,21 @@ export namespace iconer::net
 		explicit Socket() noexcept;
 		~Socket() noexcept = default;
 
+		constexpr Socket(Socket&& other) noexcept
+			: myProtocol(std::exchange(other.myProtocol, InternetProtocol::Unknown))
+			, myFamily(std::exchange(other.myFamily, IpAddressFamily::Unknown))
+			, IsAddressReusable(std::move(other.IsAddressReusable))
+		{
+		}
+
+		constexpr Socket& operator=(Socket&& other) noexcept
+		{
+			myProtocol = std::exchange(other.myProtocol, InternetProtocol::Unknown);
+			myFamily = std::exchange(other.myFamily, IpAddressFamily::Unknown);
+			IsAddressReusable = std::move(other.IsAddressReusable);
+			return *this;
+		}
+
 		// Opt-in Interfaces
 
 		ActionResult Bind(const IpAddress& address, std::uint16_t port) const noexcept;
@@ -193,8 +208,6 @@ export namespace iconer::net
 
 		// Default methods
 
-		constexpr Socket(Socket&&) noexcept = default;
-		constexpr Socket& operator=(Socket&&) noexcept = default;
 		[[nodiscard]] constexpr bool operator==(const Socket&) const noexcept = default;
 
 		// Fields
