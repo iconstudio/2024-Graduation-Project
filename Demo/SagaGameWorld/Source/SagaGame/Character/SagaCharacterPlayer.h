@@ -11,15 +11,19 @@ class SAGAGAME_API ASagaCharacterPlayer : public ASagaCharacterBase
 	
 public:
 	ASagaCharacterPlayer();
+	void InteractWithNPC();
+
 
 private:
 	int16 PlayerHP;
+	int8 bIsRiding;
 
 protected:
 	virtual void BeginPlay() override;
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
 
 	//캐릭터 컨트롤 부분
 protected:
@@ -55,6 +59,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> AttackAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> SprintAction;
+
+	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> SprintReleaseAction;*/
+
 	void ShoulderMove(const FInputActionValue& Value);
 	void ShoulderLook(const FInputActionValue& Value);
 
@@ -63,4 +73,7 @@ protected:
 	ECharacterControlType CurrentCharacterControlType;
 
 	void Attack();
+
+	void OnStartSprinting();
+	void OnStopSprinting();
 };

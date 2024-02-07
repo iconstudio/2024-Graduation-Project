@@ -16,6 +16,7 @@ class SAGAGAME_API USagaAnimInstance : public UAnimInstance
 	
 public:
 	USagaAnimInstance();
+	
 
 protected:
 	//이벤트 함수

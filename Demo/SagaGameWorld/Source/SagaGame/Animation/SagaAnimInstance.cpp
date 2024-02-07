@@ -4,6 +4,7 @@
 #include "Animation/SagaAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Character/SagaCharacterPlayer.h"
 
 USagaAnimInstance::USagaAnimInstance()
 {
@@ -39,4 +40,22 @@ void USagaAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsFalling = Movement->IsFalling();
 		bIsJumping = bIsFalling & (Velocity.Z > JumpingThreshould);
 	}
+
+	// 이 코드에서 탑승한 캐릭터를 가져온다
+	APawn* OwningPawn = TryGetPawnOwner();
+	if (!OwningPawn)
+	{
+		return;
+	}
+
+	// 탑승 상태에 따라 다른 애니메이션 로직을 구현
+	ASagaCharacterPlayer* CurrentCharacter = Cast<ASagaCharacterPlayer>(OwningPawn);
+	//if (CurrentCharacter && CurrentCharacter->IsRiding())
+	//{
+	//	// 탑승 애니메이션 로직
+	//}
+	//else
+	//{
+	//	// 기본 애니메이션 로직
+	//}
 }

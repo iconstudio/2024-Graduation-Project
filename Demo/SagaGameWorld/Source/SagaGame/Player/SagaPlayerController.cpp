@@ -2,8 +2,7 @@
 //#include "Network/SagaNetwork.h"
 //#include "Network/SagaPlayerInputSettings.h"
 
-void
-ASagaPlayerController::BeginPlay()
+void ASagaPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -11,8 +10,7 @@ ASagaPlayerController::BeginPlay()
 	SetInputMode(GameOnlyInputMode);
 }
 
-void
-ASagaPlayerController::SetupInputComponent()
+void ASagaPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
     //MoveForwardKey = USagaPlayerInputSettings::GetMoveForwardKey();
@@ -25,30 +23,26 @@ ASagaPlayerController::SetupInputComponent()
 	//InputComponent->BindAction("Jump", IE_Pressed, this, &ASagaPlayerController::Jump);
 }
 
-void
-ASagaPlayerController::StartMoveForward()
+
+void ASagaPlayerController::StartMoveForward()
 {
 
 }
 
-void
-ASagaPlayerController::EndMoveForward()
+void ASagaPlayerController::EndMoveForward()
 {
 
 }
 
-void
-ASagaPlayerController::StartMoveBackward()
+void ASagaPlayerController::StartMoveBackward()
 {
 }
 
-void
-ASagaPlayerController::EndMoveBackward()
+void ASagaPlayerController::EndMoveBackward()
 {
 }
 
-void
-ASagaPlayerController::StartJump()
+void ASagaPlayerController::StartJump()
 {
 	// 서버로 키 입력 전송
 	//auto internal_network = Cast<USagaNetwork>(GetGameInstance());
