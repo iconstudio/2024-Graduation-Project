@@ -326,15 +326,6 @@ export namespace iconer::util
 		constexpr ~IProperty()
 			noexcept(nothrow_destructibles<T>) = default;
 
-		template<typename V, invocables<Context&, T> Fn>
-		constexpr IProperty(Context* const& context, V&& trans_value, Fn&& setter)
-			noexcept(nothrow_constructible<T, V&&> and nothrow_constructible<functor_t, Fn&&>)
-			: myContext(context)
-			, myValue(std::forward<V>(trans_value))
-			, mySetter(std::forward<Fn>(setter))
-		{
-		}
-
 		template<bool S2, bool C2, bool R2, bool E2>
 			requires C2
 		constexpr IProperty(const IProperty<T, Context, true, C2, R2, E2>& other)
@@ -346,7 +337,7 @@ export namespace iconer::util
 		}
 
 		template<bool S2, bool C2, bool R2, bool E2>
-		constexpr IProperty(IProperty<T, Context, true, C2, R2, E2>&& other)
+		explicit constexpr IProperty(IProperty<T, Context, true, C2, R2, E2>&& other)
 			noexcept(nothrow_move_constructibles<T> and nothrow_constructible<functor_t, IProperty<T, Context, true, C2, R2, E2>::functor_t>)
 			: myContext(std::exchange(other.myContext, nullptr))
 			, myValue(std::move(other.myValue))
@@ -354,21 +345,11 @@ export namespace iconer::util
 		{
 		}
 
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2, invocables<Context&, T&> Fn>
-			requires C2
-		constexpr IProperty(Context* context, const IProperty<U, X2, S2, C2, R2, E2>& other, Fn&& setter)
-			noexcept(nothrow_constructible<T, const U&> and nothrow_constructible<functor_t, Fn&&>)
+		template<typename V, invocables<Context&, T> Fn>
+		explicit constexpr IProperty(Context* const& context, V&& trans_value, Fn&& setter)
+			noexcept(nothrow_constructible<T, V&&> and nothrow_constructible<functor_t, Fn&&>)
 			: myContext(context)
-			, myValue(other.myValue)
-			, mySetter(std::forward<Fn>(setter))
-		{
-		}
-
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2, invocables<Context&, T&> Fn>
-		constexpr IProperty(Context* context, IProperty<U, X2, S2, C2, R2, E2>&& other, Fn&& setter)
-			noexcept(nothrow_constructible<T, U&&> and nothrow_constructible<functor_t, Fn&&>)
-			: myContext(context)
-			, myValue(std::move(other.myValue))
+			, myValue(std::forward<V>(trans_value))
 			, mySetter(std::forward<Fn>(setter))
 		{
 		}
