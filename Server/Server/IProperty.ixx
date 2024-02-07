@@ -1,63 +1,280 @@
 export module Iconer.Utility.Property:IProperty;
 import Iconer.Utility.Constraints;
+import <concepts>;
 import <utility>;
-#if 1939 <= _MSC_VER
-import <functional>;
-namespace
-{
-	template<typename R, typename... Ts>
-	using prp_functor_t = std::copyable_function<R(Ts...)>;
-	template<typename R, typename... Ts>
-	using prp_nothrow_functor_t = std::copyable_function<R(Ts...) noexcept>;
-}
-#else // 1939 <= _MSC_VER
-namespace
-{
-	template<typename R, typename... Ts>
-	using prp_functor_t = R(*)(Ts...);
-	template<typename R, typename... Ts>
-	using prp_nothrow_functor_t = prp_functor_t<R, Ts...>;
-}
-#endif // 1939 <= _MSC_VER
 
 export namespace iconer::util
 {
-	template<typename T, typename Context, bool Custom, bool Copyable, bool Readonly, bool Nothrow>
+	template<notvoids T, typename Predicate>
 	class IProperty;
+}
 
-	template<typename T, typename Context, bool Copyable, bool Readonly, bool Nothrow>
-	class IProperty<T, Context, false, Copyable, Readonly, Nothrow> final
+export namespace std
+{
+	template<typename LT, typename RT, typename P>
+	constexpr void swap(iconer::util::IProperty<LT, P>& lhs, iconer::util::IProperty<RT, P>& rhs) noexcept(iconer::nothrow_swappables<LT, RT, P> and is_nothrow_swappable_with_v<LT, RT>);
+}
+
+export namespace iconer::util
+{
+	template<notvoids T, typename Predicate>
+	class IProperty final
 	{
 	public:
-		using const_pointer = conditional_t<std::is_pointer_v<T>, add_pointer_t<const remove_pointer_t<T>>, const T*>;
-		using pointer = conditional_t<Readonly, const_pointer, conditional_t<std::is_pointer_v<T>, T, T*>>;
+		static_assert(not is_specialization_v<T, IProperty>);
+
+		using self_type = IProperty<T, Predicate>;
+		using value_type = T;
+		using functor_type = Predicate;
+		using reference = add_lvalue_reference_t<T>;
+		using const_reference = add_lvalue_reference_t<add_const_t<T>>;
+		using pointer = add_pointer_t<T>;
+		using const_pointer = add_pointer_t<add_const_t<T>>;
+
+		template<typename U>
+		using rebind_t = IProperty<U, functor_type>;
+
+		static inline constexpr bool IsActualNothrow = nothrow_invocables<functor_type, T>;
+		static inline constexpr bool IsCopyable = copyable<T> and copyable<functor_type>;
+		static inline constexpr bool IsMovable = movable<T> and movable<functor_type>;
+
+		constexpr IProperty()
+			noexcept(nothrow_default_constructibles<T, functor_type>)
+			requires default_initializables<T, functor_type> = default;
+		constexpr ~IProperty()
+			noexcept(nothrow_destructibles<T, functor_type>) = default;
+
+		explicit constexpr IProperty(const self_type& other)
+			noexcept(nothrow_copy_constructibles<T, functor_type>) requires IsCopyable
+			: myValue(other.myValue)
+			, myDelegate(other.myDelegate)
+		{
+		}
+
+		explicit constexpr IProperty(self_type&& other)
+			noexcept(nothrow_move_constructibles<T, functor_type>) requires IsMovable
+			: myValue(std::move(other.myValue))
+			, myDelegate(std::move(other.myDelegate))
+		{
+		}
+
+		template<typename U, invocables<T> Fn>
+		explicit constexpr IProperty(U&& init_value, Fn&& delegate)
+			noexcept(nothrow_constructible<T, U&&> and nothrow_constructible<functor_type, Fn&&>)
+			: myValue(std::forward<U>(init_value))
+			, myDelegate(std::forward<Fn>(delegate))
+		{
+		}
+
+		template<typename U>
+		constexpr IProperty& operator=(const rebind_t<U>& other)
+			noexcept(nothrow_assignable<T, const U&> and IsActualNothrow)
+		{
+			myValue = other.myValue;
+			myDelegate(myValue);
+
+			return *this;
+		}
+
+		template<typename U>
+		constexpr IProperty& operator=(rebind_t<U>&& other)
+			noexcept(nothrow_assignable<T, U&&> and IsActualNothrow)
+		{
+			myValue = std::move(other.myValue);
+			myDelegate(myValue);
+
+			return *this;
+		}
+
+		template<typename U>
+		constexpr IProperty& operator=(U&& value)
+			noexcept(nothrow_assignable<T, U&&> and IsActualNothrow)
+		{
+			myValue = std::forward<U>(value);
+			myDelegate(myValue);
+
+			return *this;
+		}
+
+		constexpr pointer operator->() noexcept
+		{
+			if constexpr (std::is_pointer_v<T>)
+			{
+				return myValue;
+			}
+			else
+			{
+				return std::addressof(myValue);
+			}
+		}
+
+		constexpr const_pointer operator->() const noexcept
+		{
+			if constexpr (std::is_pointer_v<T>)
+			{
+				return myValue;
+			}
+			else
+			{
+				return std::addressof(myValue);
+			}
+		}
+
+		[[nodiscard]]
+		constexpr operator T& () & noexcept
+		{
+			return myValue;
+		}
+
+		[[nodiscard]]
+		constexpr operator const T& () const& noexcept
+		{
+			return myValue;
+		}
+
+		[[nodiscard]]
+		constexpr operator T && () && noexcept
+		{
+			return std::move(myValue);
+		}
+
+		[[nodiscard]]
+		constexpr operator const T && () const&& noexcept
+		{
+			return std::move(myValue);
+		}
+
+		template<typename U, typename V>
+		[[nodiscard]]
+		friend constexpr bool operator==(const rebind_t<U>& lhs, const rebind_t<U>& rhs) noexcept
+		{
+			return lhs.myValue == rhs.myValue;
+		}
+
+		template<typename U, typename V>
+		[[nodiscard]]
+		friend constexpr std::strong_ordering operator<=>(const rebind_t<U>& lhs, const rebind_t<U>& rhs) noexcept
+		{
+			return lhs.myValue <=> rhs.myValue;
+		}
+
+		template<typename U>
+			requires (not is_specialization_v<U, IProperty>)
+		[[nodiscard]]
+		friend constexpr std::strong_ordering operator<=>(const IProperty& lhs, U&& value) noexcept
+		{
+			return lhs.myValue <=> value;
+		}
+
+		template<typename LT, typename RT, typename P>
+		friend void std::swap(iconer::util::IProperty<LT, P>& lhs, iconer::util::IProperty<RT, P>& rhs);
+
+		constexpr IProperty(const IProperty&) noexcept(nothrow_copy_constructibles<value_type, functor_type>) = default;
+		constexpr IProperty& operator=(const IProperty&) noexcept(nothrow_copy_assignables<value_type, functor_type>) = default;
+		constexpr IProperty(IProperty&&) noexcept(nothrow_copy_constructibles<value_type, functor_type>) = default;
+		constexpr IProperty& operator=(IProperty&&) noexcept(nothrow_move_assignables<value_type, functor_type>) = default;
+
+	protected:
+		value_type myValue;
+		functor_type myDelegate;
+	};
+
+	template<notvoids T>
+	class IProperty<T, void> final
+	{
+	public:
+		static_assert(not is_specialization_v<T, IProperty>);
+
+		using self_type = IProperty<T, void>;
+		using value_type = T;
+		using functor_type = void;
+		using reference = add_lvalue_reference_t<T>;
+		using const_reference = add_lvalue_reference_t<add_const_t<T>>;
+		using pointer = add_pointer_t<T>;
+		using const_pointer = add_pointer_t<add_const_t<T>>;
+
+		template<typename U>
+		using rebind_t = IProperty<U, void>;
+
+		static inline constexpr bool IsCopyable = copyable<T>;
+		static inline constexpr bool IsMovable = movable<T>;
 
 		constexpr IProperty()
 			noexcept(nothrow_default_constructibles<T>)
-			requires default_initializable<T> = default;
+			requires default_initializables<T> = default;
 		constexpr ~IProperty()
 			noexcept(nothrow_destructibles<T>) = default;
 
-		template<typename V>
-		constexpr IProperty(V&& trans_value)
-			noexcept(nothrow_constructible<T, V&&>)
-			: myValue(std::forward<V>(trans_value))
+		template<typename Visitor = CopyToForward, typename ValueProjection = CopyToForward>
+		explicit constexpr IProperty(const self_type& other, Visitor&& visitor = {}, ValueProjection&& proj = {})
+			noexcept(nothrow_copy_constructibles<T>) requires IsCopyable
+			: myValue(std::invoke(proj, other.myValue))
 		{
 		}
 
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
-			requires C2
-		constexpr IProperty(const IProperty<U, X2, S2, C2, R2, E2>& other)
-			noexcept(nothrow_constructible<T, const U&>)
-			: myValue(other.myValue)
+		template<typename Visitor = MoveToForward, typename ValueProjection = MoveToForward>
+		explicit constexpr IProperty(self_type&& other, Visitor&& visitor = {}, ValueProjection&& proj = {})
+			noexcept(nothrow_move_constructibles<T>) requires IsMovable
+			: myValue(std::invoke(proj, other.myValue))
 		{
 		}
 
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
-		constexpr IProperty(IProperty<U, X2, S2, C2, R2, E2>&& other)
+		template<typename U>
+		explicit constexpr IProperty(U&& init_value)
 			noexcept(nothrow_constructible<T, U&&>)
-			: myValue(static_cast<U&&>(other.myValue))
+			: myValue(std::forward<U>(init_value))
 		{
+		}
+
+		template<typename U>
+		constexpr IProperty& operator=(const rebind_t<U>& other)
+			noexcept(nothrow_assignable<T, const U&>)
+		{
+			myValue = other.myValue;
+
+			return *this;
+		}
+
+		template<typename U>
+		constexpr IProperty& operator=(rebind_t<U>&& other)
+			noexcept(nothrow_assignable<T, U&&>)
+		{
+			myValue = std::move(other.myValue);
+
+			return *this;
+		}
+
+		template<typename U>
+		constexpr IProperty& operator=(U&& value)
+			noexcept(nothrow_assignable<T, U&&>)
+		{
+			myValue = std::forward<U>(value);
+
+			return *this;
+		}
+
+		constexpr pointer operator->() noexcept
+		{
+			if constexpr (std::is_pointer_v<T>)
+			{
+				return myValue;
+			}
+			else
+			{
+				return std::addressof(myValue);
+			}
+		}
+
+		constexpr const_pointer operator->() const noexcept
+		{
+			if constexpr (std::is_pointer_v<T>)
+			{
+				return myValue;
+			}
+			else
+			{
+				return std::addressof(myValue);
+			}
 		}
 
 		[[nodiscard]]
@@ -75,388 +292,70 @@ export namespace iconer::util
 		[[nodiscard]]
 		constexpr operator T && () && noexcept
 		{
-			return static_cast<T&&>(myValue);
+			return std::move(myValue);
 		}
 
 		[[nodiscard]]
 		constexpr operator const T && () const&& noexcept
 		{
-			return static_cast<const T&&>(myValue);
+			return std::move(myValue);
 		}
 
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
-			requires not Readonly and Copyable and C2
-		constexpr IProperty& operator=(const IProperty<U, X2, S2, C2, R2, E2>& other)
-			noexcept(nothrow_assignable<const U&, T>)
-		{
-			myValue = other.myValue;
-			return *this;
-		}
-
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
-			requires not Readonly
-		constexpr IProperty& operator=(IProperty<U, X2, S2, C2, R2, E2>&& other)
-			noexcept(nothrow_assignable<U&&, T>)
-		{
-			myValue = std::move(other.myValue);
-			return *this;
-		}
-
+		template<typename U, typename V>
 		[[nodiscard]]
-		constexpr pointer operator->() noexcept
-			requires not Readonly
+		friend constexpr bool operator==(const rebind_t<U>& lhs, const rebind_t<U>& rhs) noexcept
 		{
-			if constexpr (std::is_pointer_v<T>)
-			{
-				return myValue;
-			}
-			else
-			{
-				return std::addressof(myValue);
-			}
+			return lhs.myValue == rhs.myValue;
 		}
 
-			[[nodiscard]]
-		constexpr const_pointer operator->() const noexcept
-		{
-			if constexpr (std::is_pointer_v<T>)
-			{
-				return myValue;
-			}
-			else
-			{
-				return std::addressof(myValue);
-			}
-		}
-
+		template<typename U, typename V>
 		[[nodiscard]]
-		friend constexpr std::strong_ordering operator<=>(const IProperty& lhs, const IProperty& rhs) noexcept
+		friend constexpr std::strong_ordering operator<=>(const rebind_t<U>& lhs, const rebind_t<U>& rhs) noexcept
 		{
 			return lhs.myValue <=> rhs.myValue;
 		}
 
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
+		template<typename U>
+			requires (not is_specialization_v<U, IProperty>)
 		[[nodiscard]]
-		friend constexpr std::strong_ordering operator<=>(const IProperty& lhs, const IProperty<U, X2, S2, C2, R2, E2>& rhs) noexcept
+		friend constexpr std::strong_ordering operator<=>(const IProperty& lhs, U&& value) noexcept
 		{
-			return lhs.myValue <=> rhs.myValue;
+			return lhs.myValue <=> value;
 		}
 
-		constexpr IProperty(IProperty&&) noexcept = default;
-		constexpr IProperty& operator=(IProperty&&) = default;
+		template<typename LT, typename RT, typename P>
+		friend void std::swap(iconer::util::IProperty<LT, P>& lhs, iconer::util::IProperty<RT, P>& rhs);
+
+		constexpr IProperty(const IProperty&) noexcept(nothrow_copy_constructibles<value_type>) = default;
+		constexpr IProperty& operator=(const IProperty&) noexcept(nothrow_copy_assignables<value_type>) = default;
+		constexpr IProperty(IProperty&&) noexcept(nothrow_copy_constructibles<value_type>) = default;
+		constexpr IProperty& operator=(IProperty&&) noexcept(nothrow_move_assignables<value_type>) = default;
 
 	protected:
-		T myValue;
+		value_type myValue;
 	};
+}
 
-	template<typename T, bool Copyable, bool Readonly, bool Nothrow>
-	class IProperty<T, void, true, Copyable, Readonly, Nothrow> final
+export namespace std
+{
+	template<typename LT, typename RT, typename P>
+	constexpr
+		void
+		swap(iconer::util::IProperty<LT, P>& lhs, iconer::util::IProperty<RT, P>& rhs)
+		noexcept(iconer::nothrow_swappables<LT, RT, P> and is_nothrow_swappable_with_v<LT, RT>)
 	{
-	public:
-		using const_pointer = conditional_t<std::is_pointer_v<T>, add_pointer_t<const remove_pointer_t<T>>, const T*>;
-		using pointer = conditional_t<Readonly, const_pointer, conditional_t<std::is_pointer_v<T>, T, T*>>;
+		static_assert(swappable<LT>);
+		static_assert(swappable<RT>);
+		static_assert(swappable_with<LT, RT>);
+		static_assert(swappable<P>);
 
-		using functor_t = std::conditional_t<Nothrow, ::prp_nothrow_functor_t<void, T&>, ::prp_functor_t<void, T&>>;
+		using ::std::swap;
 
-		constexpr IProperty()
-			noexcept(nothrow_default_constructibles<T, functor_t>)
-			requires default_initializables<T, functor_t> = default;
-		constexpr ~IProperty()
-			noexcept(nothrow_destructibles<T, functor_t>) = default;
+		swap(lhs.myValue, rhs.myValue);
 
-		template<typename V, typename Fn>
-		constexpr IProperty(V&& trans_value, Fn&& setter)
-			noexcept(nothrow_constructible<T, V&&> and nothrow_default_constructibles<T> and nothrow_constructible<functor_t, Fn&&>)
-			: myValue(std::forward<V>(trans_value))
-			, mySetter(std::forward<Fn>(setter))
+		if constexpr (iconer::notvoids<P>)
 		{
+			swap(lhs.myDelegate, rhs.myDelegate);
 		}
-
-		template<bool C2, bool R2, bool E2>
-			requires C2
-		constexpr IProperty(const IProperty<T, void, true, C2, R2, E2>& other)
-			noexcept(nothrow_copy_constructibles<T, functor_t>)
-			: myValue(other.myValue)
-			, mySetter(other.mySetter)
-		{
-		}
-
-		template<bool C2, bool R2, bool E2>
-		constexpr IProperty(IProperty<T, void, true, C2, R2, E2>&& other)
-			noexcept(nothrow_move_constructibles<T, functor_t>)
-			: myValue(std::move(other.myValue))
-			, mySetter(std::exchange(other.mySetter, functor_t{}))
-		{
-		}
-
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2, typename Fn>
-			requires C2
-		constexpr IProperty(const IProperty<U, X2, S2, C2, R2, E2>& other, Fn&& setter)
-			noexcept(nothrow_constructible<T, const U&> and nothrow_constructible<functor_t, Fn&&>)
-			: myValue(other.myValue)
-			, mySetter(std::forward<Fn>(setter))
-		{
-		}
-
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2, typename Fn>
-		constexpr IProperty(IProperty<U, X2, S2, C2, R2, E2>&& other, Fn&& setter)
-			noexcept(nothrow_constructible<T, U&&> and nothrow_constructible<functor_t, Fn&&>)
-			: myValue(std::move(other.myValue))
-			, mySetter(std::forward<Fn>(setter))
-		{
-		}
-
-		[[nodiscard]]
-		constexpr operator T& () & noexcept
-		{
-			return myValue;
-		}
-
-		[[nodiscard]]
-		constexpr operator const T& () const& noexcept
-		{
-			return myValue;
-		}
-
-		[[nodiscard]]
-		constexpr operator T && () && noexcept
-		{
-			return static_cast<T&&>(myValue);
-		}
-
-		[[nodiscard]]
-		constexpr operator const T && () const&& noexcept
-		{
-			return static_cast<const T&&>(myValue);
-		}
-
-		template<typename V>
-			requires not Readonly and assignable_from<T, V&&>
-		constexpr IProperty& operator=(V&& value)
-			noexcept(nothrow_assignable<V&&, T> and noexcept(mySetter(myValue)))
-		{
-			myValue = std::forward<V>(value);
-			mySetter(myValue);
-
-			return *this;
-		}
-
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
-			requires not Readonly and C2
-		constexpr IProperty& operator=(const IProperty<U, X2, S2, C2, R2, E2>& other)
-			noexcept(nothrow_assignable<const U&, T> and noexcept(mySetter(myValue)))
-		{
-			myValue = other.myValue;
-			mySetter(myValue);
-
-			return *this;
-		}
-
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
-			requires not Readonly
-		constexpr IProperty& operator=(IProperty<U, X2, S2, C2, R2, E2>&& other)
-			noexcept(nothrow_assignable<U&&, T> and noexcept(mySetter(myValue)))
-		{
-			myValue = std::move(other.myValue);
-			mySetter(myValue);
-
-			return *this;
-		}
-
-		[[nodiscard]]
-		constexpr pointer operator->() noexcept
-			requires not Readonly
-		{
-			if constexpr (std::is_pointer_v<T>)
-			{
-				return myValue;
-			}
-			else
-			{
-				return std::addressof(myValue);
-			}
-		}
-
-			[[nodiscard]]
-		constexpr const_pointer operator->() const noexcept
-		{
-			if constexpr (std::is_pointer_v<T>)
-			{
-				return myValue;
-			}
-			else
-			{
-				return std::addressof(myValue);
-			}
-		}
-
-		[[nodiscard]]
-		friend constexpr std::strong_ordering operator<=>(const IProperty& lhs, const IProperty& rhs) noexcept
-		{
-			return lhs.myValue <=> rhs.myValue;
-		}
-
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
-		[[nodiscard]]
-		friend constexpr std::strong_ordering operator<=>(const IProperty& lhs, const IProperty<U, X2, S2, C2, R2, E2>& rhs) noexcept
-		{
-			return lhs.myValue <=> rhs.myValue;
-		}
-
-		constexpr IProperty(IProperty&&) noexcept = default;
-		constexpr IProperty& operator=(IProperty&&) = default;
-
-	protected:
-		T myValue;
-		functor_t mySetter;
-	};
-
-	template<typename T, typename Context, bool Copyable, bool Readonly, bool Nothrow>
-	class IProperty<T, Context, true, Copyable, Readonly, Nothrow> final
-	{
-	public:
-		using const_pointer = conditional_t<std::is_pointer_v<T>, add_pointer_t<const remove_pointer_t<T>>, const T*>;
-		using pointer = conditional_t<Readonly, const_pointer, conditional_t<std::is_pointer_v<T>, T, T*>>;
-
-		using functor_t = std::conditional_t<Nothrow, ::prp_nothrow_functor_t<void, Context&, T>, ::prp_functor_t<void, Context&, T>>;
-
-		constexpr IProperty()
-			noexcept(nothrow_default_constructibles<T, functor_t>)
-			requires default_initializable<T, functor_t> = default;
-		constexpr ~IProperty()
-			noexcept(nothrow_destructibles<T>) = default;
-
-		template<bool S2, bool C2, bool R2, bool E2>
-			requires C2
-		constexpr IProperty(const IProperty<T, Context, true, C2, R2, E2>& other)
-			noexcept(nothrow_copy_constructibles<T> and nothrow_constructible<functor_t, IProperty<T, Context, true, C2, R2, E2>::functor_t>)
-			: myContext(other.myContext)
-			, myValue(other.myValue)
-			, mySetter(other.mySetter)
-		{
-		}
-
-		template<bool S2, bool C2, bool R2, bool E2>
-		explicit constexpr IProperty(IProperty<T, Context, true, C2, R2, E2>&& other)
-			noexcept(nothrow_move_constructibles<T> and nothrow_constructible<functor_t, IProperty<T, Context, true, C2, R2, E2>::functor_t>)
-			: myContext(std::exchange(other.myContext, nullptr))
-			, myValue(std::move(other.myValue))
-			, mySetter(std::exchange(other.mySetter, typename IProperty<T, Context, true, C2, R2, E2>::functor_t{}))
-		{
-		}
-
-		template<typename V, invocables<Context&, T> Fn>
-		explicit constexpr IProperty(Context* const& context, V&& trans_value, Fn&& setter)
-			noexcept(nothrow_constructible<T, V&&> and nothrow_constructible<functor_t, Fn&&>)
-			: myContext(context)
-			, myValue(std::forward<V>(trans_value))
-			, mySetter(std::forward<Fn>(setter))
-		{
-		}
-
-		[[nodiscard]]
-		constexpr operator T& () & noexcept
-		{
-			return myValue;
-		}
-
-		[[nodiscard]]
-		constexpr operator const T& () const& noexcept
-		{
-			return myValue;
-		}
-
-		[[nodiscard]]
-		constexpr operator T && () && noexcept
-		{
-			return static_cast<T&&>(myValue);
-		}
-
-		[[nodiscard]]
-		constexpr operator const T && () const&& noexcept
-		{
-			return static_cast<const T&&>(myValue);
-		}
-
-		template<typename V>
-			requires not Readonly
-		constexpr IProperty& operator=(V&& value)
-			noexcept(nothrow_assignable<V&&, T> and noexcept(mySetter(*myContext, myValue)))
-		{
-			myValue = std::forward<V>(value);
-			mySetter(*myContext, myValue);
-
-			return *this;
-		}
-
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
-			requires not Readonly and C2
-		constexpr IProperty& operator=(const IProperty<U, X2, S2, C2, R2, E2>& other)
-			noexcept(nothrow_assignable<const U&, T> and noexcept(mySetter(*myContext, myValue)))
-		{
-			myValue = other.myValue;
-			mySetter(*myContext, myValue);
-
-			return *this;
-		}
-
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
-			requires not Readonly
-		constexpr IProperty& operator=(IProperty<U, X2, S2, C2, R2, E2>&& other)
-			noexcept(nothrow_assignable<U&&, T> and noexcept(mySetter(*myContext, myValue)))
-		{
-			myValue = std::move(other.myValue);
-			mySetter(*myContext, myValue);
-
-			return *this;
-		}
-
-		[[nodiscard]]
-		constexpr pointer operator->() noexcept
-			requires not Readonly
-		{
-			if constexpr (std::is_pointer_v<T>)
-			{
-				return myValue;
-			}
-			else
-			{
-				return std::addressof(myValue);
-			}
-		}
-
-			[[nodiscard]]
-		constexpr const_pointer operator->() const noexcept
-		{
-			if constexpr (std::is_pointer_v<T>)
-			{
-				return myValue;
-			}
-			else
-			{
-				return std::addressof(myValue);
-			}
-		}
-
-		[[nodiscard]]
-		friend constexpr std::strong_ordering operator<=>(const IProperty& lhs, const IProperty& rhs) noexcept
-		{
-			return lhs.myValue <=> rhs.myValue;
-		}
-
-		template<typename U, typename X2, bool S2, bool C2, bool R2, bool E2>
-		[[nodiscard]]
-		friend constexpr std::strong_ordering operator<=>(const IProperty& lhs, const IProperty<U, X2, S2, C2, R2, E2>& rhs) noexcept
-		{
-			return lhs.myValue <=> rhs.myValue;
-		}
-
-		constexpr IProperty(IProperty&& other) noexcept = default;
-		constexpr IProperty& operator=(IProperty&&) = default;
-
-	protected:
-		Context* myContext;
-		T myValue;
-		functor_t mySetter;
-	};
+	}
 }
