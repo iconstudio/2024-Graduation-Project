@@ -88,12 +88,21 @@ USagaNetwork::Init()
 
 		EveryClients.Add(local_client);
 
-		// #3 좌표 송수신 
+		// #3
+		// 좌표 송수신 
 	
 		FSagaPacket_CS_ClientPosition pk_position{};
-		auto position_buffer = pk_position.Serialize();
 
-		USagaNetworkUtility::SendUniqueBuffer(*LocalSocket, position_buffer, FSagaPacket_CS_ClientPosition::WannabeSize());
+		// #3-a
+		// 로우 버퍼 사용
+		uint8 position_raw_buffer[256]{};
+		pk_position.Write(position_raw_buffer);
+		USagaNetworkUtility::RawSend(LocalSocket, position_raw_buffer, FSagaPacket_CS_ClientPosition::WannabeSize());
+
+		// #3-b
+		// 공유 포인터 사용
+		//auto position_buffer = pk_position.Serialize();
+		//USagaNetworkUtility::Send(MakeShareable(LocalSocket), position_buffer, FSagaPacket_CS_ClientPosition::WannabeSize());
 	}
 #endif
 }
