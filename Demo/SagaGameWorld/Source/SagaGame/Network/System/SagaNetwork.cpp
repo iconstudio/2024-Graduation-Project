@@ -3,6 +3,7 @@
 #include "Sockets.h"
 #include "Network/System/SagaNetworkSettings.h"
 #include "Network/SagaNetworkUtility.h"
+#include "Network/Packets/SagaPredefinedPackets.h"
 
 void
 USagaNetwork::Init()
@@ -36,6 +37,16 @@ USagaNetwork::Init()
 		// 연결 실패 처리
 		throw "error!";
 	}
+
+	constexpr FSagaPacket_CS_SignIn packet{ L"Nickname" };
+	auto ptr = packet.Serialize();
+	
+	int32 sent_bytes = USagaNetworkUtility::SendUniqueBuffer(*LocalSocket, ptr, packet.WannabeSize());
+	if (sent_bytes <= 0)
+	{
+		throw "error!";
+	}
+
 }
 
 void
