@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Item/SagaItemBox.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -9,7 +6,6 @@
 
 ASagaItemBox::ASagaItemBox()
 {
- 	
     Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
     Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
     Effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Effect"));
@@ -19,8 +15,8 @@ ASagaItemBox::ASagaItemBox()
     Effect->SetupAttachment(Trigger);
 
     Trigger->SetCollisionProfileName(CPROFILE_SAGATRIGGER);
-    Trigger->SetBoxExtent(FVector(40.0f, 42.0f, 30.0f));//Å©±â ¼³Á¤ (¾ÆÀÌÅÛº°·Î ¸Â°Ô º¯°æÇÊ¿ä)
-    Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASagaItemBox::OnOverlapBegin); //ºí·çÇÁ¸°Æ®¿¡¼­µµ ÆíÁı °¡´ÉÇÏ±â¶§¹®¿¡ ¿©±â¿¡ µé¾î°¡´Â ÇÔ¼ö´Â UFUNCTION ¼³Á¤ÇÊ¿ä.
+    Trigger->SetBoxExtent(FVector(40.0f, 42.0f, 30.0f));//í¬ê¸° ì„¤ì • (ì•„ì´í…œë³„ë¡œ ë§ê²Œ ë³€ê²½í•„ìš”)
+    Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASagaItemBox::OnOverlapBegin); //ë¸”ë£¨í”„ë¦°íŠ¸ì—ì„œë„ í¸ì§‘ ê°€ëŠ¥í•˜ê¸°ë•Œë¬¸ì— ì—¬ê¸°ì— ë“¤ì–´ê°€ëŠ” í•¨ìˆ˜ëŠ” UFUNCTION ì„¤ì •í•„ìš”.
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> BoxMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Map/Item/Cube.Cube'"));
     if (BoxMeshRef.Object)
@@ -34,7 +30,7 @@ ASagaItemBox::ASagaItemBox()
     if (EffectRef.Object)
     {
         Effect->SetTemplate(EffectRef.Object);
-        Effect->bAutoActivate = false; //¹Ù·Î ¹ßµ¿ÇÏÁö ¾Êµµ·Ï
+        Effect->bAutoActivate = false; //ë°”ë¡œ ë°œë™í•˜ì§€ ì•Šë„ë¡
     }
 }
 
@@ -42,8 +38,8 @@ void ASagaItemBox::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 {
     Effect->Activate(true);
     Mesh->SetHiddenInGame(true);
-    SetActorEnableCollision(false); //¶Ç Ãæµ¹ÇÏ¸é ¾ÈµÇ´Ï±î ºñÈ°¼ºÈ­
-    Effect->OnSystemFinished.AddDynamic(this, &ASagaItemBox::OnEffectFinished); //ÀÌÆåÆ® Á¾·áÈÄ ¹ßµ¿ delegate
+    SetActorEnableCollision(false); //ë˜ ì¶©ëŒí•˜ë©´ ì•ˆë˜ë‹ˆê¹Œ ë¹„í™œì„±í™”
+    Effect->OnSystemFinished.AddDynamic(this, &ASagaItemBox::OnEffectFinished); //ì´í™íŠ¸ ì¢…ë£Œí›„ ë°œë™ delegate
 }
 
 void ASagaItemBox::OnEffectFinished(UParticleSystemComponent* ParticleSystem)
