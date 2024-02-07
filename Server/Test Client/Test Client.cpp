@@ -58,20 +58,22 @@ int main()
 
 	std::cout << "Binding...\n";
 
-	auto bind_r = app_socket.BindHost(40001);
+	auto client_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
+	auto client_ep = net::EndPoint{ server_address, 40001 };
+	
+	auto bind_r = app_socket.Bind(client_ep);
+	//auto bind_r = app_socket.BindAny(40001);
 	if (bind_r.has_value())
 	{
 		return 4;
 	}
 
-	app_socket.IsAddressReusable = true;
-
 	std::cout << "Connecting to host...\n";
-	//server_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
-	//server_ep = net::EndPoint{ server_address, 40000 };
-	//auto connect_r = app_socket.Connect(server_ep);
+	server_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
+	server_ep = net::EndPoint{ server_address, 40000 };
 
-	auto connect_r = app_socket.ConnectToHost(40000U);
+	auto connect_r = app_socket.Connect(server_ep);
+	//auto connect_r = app_socket.ConnectToHost(40000U);
 	if (connect_r.has_value())
 	{
 		return 3;
@@ -130,7 +132,7 @@ coroutine::Coroutine Receiver()
 
 		if (not recv.has_value())
 		{
-			std::cout << "Receive error: \n" << std::to_string(recv.error());
+			std::cout << "Receive error: " << std::to_string(recv.error()) << '\n';
 			break;
 		}
 		else
