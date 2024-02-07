@@ -70,4 +70,7 @@ protected:
 
 	float DeadEventDelayTime = 5.0f;
 
+protected:
+	float WalkSpeed = 500.f;
+	float SprintSpeed = 1000.0f;
 };

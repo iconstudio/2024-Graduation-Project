@@ -8,10 +8,16 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "SagaCharacterControlData.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 
 ASagaCharacterPlayer::ASagaCharacterPlayer()
 {
 	PlayerHP = 150;
+	bIsRiding = false;
+
+	WalkSpeed = 500.0f; // 기본 걷기 속도
+	SprintSpeed = 1000.0f; // 달리기 속도
 
 	//카메라
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -61,6 +67,12 @@ ASagaCharacterPlayer::ASagaCharacterPlayer()
 		AttackAction = InputActionAttackRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> SprintActionAttackRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Sprint.IA_Sprint'"));
+	if (nullptr != SprintActionAttackRef.Object)
+	{
+		SprintAction = SprintActionAttackRef.Object;
+	}
+
 	CurrentCharacterControlType = ECharacterControlType::Quater;
 }
 
@@ -84,6 +96,9 @@ void ASagaCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Play
 	EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::ShoulderLook);
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::QuaterMove);
 	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::Attack);
+
+	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ASagaCharacterPlayer::OnStartSprinting);
+	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASagaCharacterPlayer::OnStopSprinting);
 }
 
 void ASagaCharacterPlayer::ChangeCharacterControl()
@@ -183,4 +198,35 @@ void ASagaCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 void ASagaCharacterPlayer::Attack()
 {
 	ProcessComboCommand();
+}
+
+
+void ASagaCharacterPlayer::InteractWithNPC()
+{
+	// NPC와의 상호작용 로직
+	if (bIsRiding)
+	{
+		// 하차 로직
+		bIsRiding = false;
+		// 플레이어 컨트롤 복원 코드 작성할것
+	}
+	else
+	{
+		// 탑승 로직
+		bIsRiding = true;
+		// NPC 컨트롤 로직 / NPC를 플레이어의 자식 컴포넌트로 설정
+		
+	}
+}
+
+void ASagaCharacterPlayer::OnStartSprinting()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Started Sprinting"));
+	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+}
+
+void ASagaCharacterPlayer::OnStopSprinting()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Stopped Sprinting"));
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
