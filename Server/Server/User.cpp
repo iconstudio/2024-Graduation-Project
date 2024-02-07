@@ -6,6 +6,8 @@ import Iconer.Application.BorrowedSendContext;
 void
 iconer::app::User::Awake()
 {
+	mySocket.IsAddressReusable = true;
+
 	ContextType::Clear();
 	recvOffset = 0;
 	myName.reserve(nicknameLength);
