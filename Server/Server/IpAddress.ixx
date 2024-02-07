@@ -1,4 +1,5 @@
 export module Iconer.Net.IpAddress;
+import Iconer.Utility.Constraints;
 export import Iconer.Net.IpAddressFamily;
 import <string>;
 import <string_view>;
@@ -9,8 +10,13 @@ export namespace iconer::net
 {
 	struct [[nodiscard]] IpAddress
 	{
-		explicit constexpr IpAddress() = default;
-		~IpAddress() = default;
+		explicit constexpr IpAddress() noexcept(nothrow_default_constructibles<std::string>) = default;
+		~IpAddress() noexcept(nothrow_destructibles<std::string>) = default;
+		
+		constexpr IpAddress(const IpAddress&) noexcept(nothrow_copy_constructibles<std::string>) = default;
+		constexpr IpAddress& operator=(const IpAddress&) noexcept(nothrow_copy_assignables<std::string>) = default;
+		constexpr IpAddress(IpAddress&&) noexcept(nothrow_move_constructibles<std::string>) = default;
+		constexpr IpAddress& operator=(IpAddress&&) noexcept(nothrow_move_assignables<std::string>) = default;
 
 		explicit constexpr IpAddress(IpAddressFamily family, std::string_view address)
 			: addressFamily(family), addressString(address)
