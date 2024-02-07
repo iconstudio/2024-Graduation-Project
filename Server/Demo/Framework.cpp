@@ -162,10 +162,6 @@ demo::Framework::RouteOperation(bool is_succeed
 				myLogger.LogError(L"\tSigning In has failed on user {} due to {}\n", id, result.error());
 				OnFailedUserSignIn(*user);
 			}
-			else if (result.value() < 35)
-			{
-				myLogger.Log(L"\tUser {} doesn't have enough packet bytes\n", id);
-			}
 			else
 			{
 				myLogger.Log(L"\tUser {} is signed in\n", id);
