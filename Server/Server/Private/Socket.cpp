@@ -383,6 +383,8 @@ const
 		, static_cast<::LPWSAOVERLAPPED>(context))
 		)
 	{
+		::setsockopt(Super::GetHandle(), SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, reinterpret_cast<const char*>(std::addressof(client.GetHandle())), sizeof(HandleType));
+
 		return std::nullopt;
 	}
 	else
@@ -393,6 +395,8 @@ const
 		}
 		else
 		{
+			::setsockopt(Super::GetHandle(), SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, reinterpret_cast<const char*>(std::addressof(client.GetHandle())), sizeof(HandleType));
+
 			return std::nullopt;
 		}
 	}
