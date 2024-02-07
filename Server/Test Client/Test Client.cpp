@@ -54,6 +54,7 @@ int main()
 	}
 
 	app_socket = net::Socket::CreateTcpSocket(net::IoCategory::Synchronous);
+	app_socket.IsAddressReusable = true;
 
 	std::cout << "Binding...\n";
 
