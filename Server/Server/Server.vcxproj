@@ -230,6 +230,7 @@
     <ClCompile Include="Handler.ixx" />
     <ClCompile Include="HashComparator.ixx" />
     <ClCompile Include="IContext.ixx" />
+    <ClCompile Include="Identity.ixx" />
     <ClCompile Include="InternetProtocol.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
