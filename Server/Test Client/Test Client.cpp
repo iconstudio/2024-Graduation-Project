@@ -54,7 +54,6 @@ int main()
 	}
 
 	app_socket = net::Socket::CreateTcpSocket(net::IoCategory::Synchronous);
-	app_socket.IsAddressReusable = true;
 
 	std::cout << "Binding...\n";
 
@@ -67,6 +66,8 @@ int main()
 	{
 		return 4;
 	}
+
+	app_socket.IsAddressReusable = true;
 
 	std::cout << "Connecting to host...\n";
 	server_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
