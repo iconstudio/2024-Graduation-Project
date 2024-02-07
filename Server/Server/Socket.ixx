@@ -48,7 +48,7 @@ export namespace iconer::net
 		ActionResult BindAny(std::uint16_t port) const noexcept;
 		ActionResult BindHost(std::uint16_t port) const noexcept;
 
-		ActionResult SetOption(SocketOptions option, const void* opt_buffer, const size_t opt_size);
+		ActionResult SetOption(SocketOptions option, const void* opt_buffer, const size_t opt_size) const;
 
 		bool ReusableAddress() const noexcept;
 		void ReusableAddress(bool flag) noexcept;

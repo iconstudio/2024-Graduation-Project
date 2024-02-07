@@ -255,7 +255,7 @@ RawSetOption(iconer::net::Socket::HandleType handle, const iconer::net::SocketOp
 }
 
 iconer::net::Socket::ActionResult
-iconer::net::Socket::SetOption(SocketOptions option, const void* opt_buffer, const size_t opt_size)
+iconer::net::Socket::SetOption(SocketOptions option, const void* opt_buffer, const size_t opt_size) const
 {
 	return RawSetOption(Super::GetHandle(), option, opt_buffer, opt_size);
 }
