@@ -242,6 +242,7 @@ const noexcept
 
 iconer::net::Socket::ActionResult
 RawSetOption(iconer::net::Socket::HandleType handle, const iconer::net::SocketOptions& option, const void* const& opt_buffer, const size_t& opt_size)
+noexcept
 {
 	if (0 == ::setsockopt(handle
 		, SOL_SOCKET
@@ -255,7 +256,8 @@ RawSetOption(iconer::net::Socket::HandleType handle, const iconer::net::SocketOp
 }
 
 iconer::net::Socket::ActionResult
-iconer::net::Socket::SetOption(SocketOptions option, const void* opt_buffer, const size_t opt_size) const
+iconer::net::Socket::SetOption(SocketOptions option, const void* opt_buffer, const size_t opt_size)
+const noexcept
 {
 	return RawSetOption(Super::GetHandle(), option, opt_buffer, opt_size);
 }
