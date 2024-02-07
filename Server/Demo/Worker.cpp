@@ -11,7 +11,6 @@ demo::Worker(demo::Framework& framework, size_t nth)
 	logger.Log(L"\tWorker {} is started.\n", nth);
 	framework.workerAwakens.arrive_and_wait();
 
-	volatile bool is_done = false;
 	while (true)
 	{
 		auto io_event = framework.WaitForIoResult();
@@ -20,7 +19,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 		const auto& io_bytes = io_event.ioBytes;
 		const auto& io_id = io_event.eventId;
 
-		if (is_done or framework.IsWorkerCancelled()) [[unlikely]] {
+		if (framework.IsWorkerCancelled()) [[unlikely]] {
 			break;
 		};
 
