@@ -40,18 +40,27 @@ public:
 	virtual constexpr ~FSagaBasicPacket() noexcept = default;
 
 	/// <summary>패킷을 직렬화합니다</summary>
+	/// <returns>할당된 포인터</returns>
+	/// <exception cref="bad_alloc">메모리 할당 실패</exception>
+	[[nodiscard]]
+	virtual TUniquePtr<uint8[]> Serialize() const
+	{
+		return FSerializer::Serializes(static_cast<uint8>(myProtocol), mySize);
+	}
+
+	/// <summary>패킷을 직렬화하고 버퍼에 씁니다</summary>
 	/// <returns>마지막으로 쓴 포인터 위치</returns>
 	/// <exception cref="bad_alloc">메모리 할당 실패</exception>
 	/// <exception cref="out_of_range">메모리 접근 위반</exception>
-	virtual constexpr uint8* Write(uint8* buffer) const
+	virtual uint8* Write(uint8* buffer) const
 	{
 		return FSerializer::Serialize(FSerializer::Serialize(buffer, static_cast<uint8>(myProtocol)), mySize);
 	}
 
-	/// <summary>패킷을 역직렬화합니다</summary>
+	/// <summary>버퍼를 읽어서 패킷을 역직렬화합니다</summary>
 	/// <returns>마지막으로 읽은 포인터 위치</returns>
 	/// <exception cref="out_of_range">메모리 접근 위반</exception>
-	virtual constexpr const uint8* Read(const uint8* buffer)
+	virtual const uint8* Read(const uint8* buffer)
 	{
 		return FDeserializer::Deserialize(FDeserializer::Deserialize(buffer, myProtocol), mySize);
 	}
