@@ -1,13 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
-
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "SagaItemData.generated.h"
 
-
-//¾ÆÀÌÅÛ Á¾·ù
+//ì•„ì´í…œ ì¢…ë¥˜
 UENUM(BlueprintType)
 enum class EItemType : uint8
 {
@@ -16,8 +12,6 @@ enum class EItemType : uint8
 	Gumball,
 	SmokeBomb
 };
-
-
 
 /**
  * 
