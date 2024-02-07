@@ -86,10 +86,50 @@ export namespace iconer::net
 
 		// Asynchronous Accept
 
-		ActionResult ReserveAccept(IoContext& context, Socket& client) const;
-		ActionResult ReserveAccept(IoContext& context, Socket& client, std::span<std::byte> accept_buffer) const;
-		ActionResult ReserveAccept(IoContext* const context, Socket& client) const;
-		ActionResult ReserveAccept(IoContext* const context, Socket& client, std::span<std::byte> accept_buffer) const;
+		/// <summary>
+		/// Reserve an acceptance of <paramref name="client"/>
+		/// <para>-------------------------------------------------------------------------------</para>
+		/// <para>throws <see cref="std::system_error"/> when <paramref name="context"/> is <value>nullptr</value></para>
+		/// </summary>
+		/// <param name="context"/>
+		/// <param name="client">- The client socket</param>
+		/// <exception cref="std::system_error"/>
+		ActionResult BeginAccept(IoContext& context, Socket& client) const;
+		/// <summary>
+		/// Reserve an acceptance of <paramref name="client"/>
+		/// <para>-------------------------------------------------------------------------------</para>
+		/// <para>throws <see cref="std::system_error"/> when <paramref name="context"/> is <value>nullptr</value></para>
+		/// </summary>
+		/// <param name="context"/>
+		/// <param name="client">- The client socket</param>
+		/// <param name="accept_buffer">- Received datas from beginning would be written here</param>
+		/// <exception cref="std::system_error"/>
+		ActionResult BeginAccept(IoContext& context, Socket& client, std::span<std::byte> accept_buffer) const;
+		/// <summary>
+		/// Reserve an acceptance of <paramref name="client"/>
+		/// <para>-------------------------------------------------------------------------------</para>
+		/// <para>throws <see cref="std::system_error"/> when <paramref name="context"/> is <value>nullptr</value></para>
+		/// </summary>
+		/// <param name="context"/>
+		/// <param name="client">- The client socket</param>
+		/// <exception cref="std::system_error"/>
+		ActionResult BeginAccept(IoContext* context, Socket& client) const;
+		/// <summary>
+		/// Reserve an acceptance of <paramref name="client"/>
+		/// <para>-------------------------------------------------------------------------------</para>
+		/// <para>throws <see cref="std::system_error"/> when <paramref name="context"/> is <value>nullptr</value></para>
+		/// </summary>
+		/// <param name="context"/>
+		/// <param name="client">- The client socket</param>
+		/// <param name="accept_buffer">- Received datas from beginning would be written here</param>
+		/// <exception cref="std::system_error"/>
+		ActionResult BeginAccept(IoContext* context, Socket& client, std::span<std::byte> accept_buffer) const;
+		/// <summary>
+		/// Finish the acceptance of <paramref name="client"/>
+		/// <para>-------------------------------------------------------------------------------</para>
+		/// </summary>
+		/// <param name="client">- The client socket</param>
+		ActionResult EndAccept(Socket& client) const noexcept;
 
 		// Synchronous Send
 

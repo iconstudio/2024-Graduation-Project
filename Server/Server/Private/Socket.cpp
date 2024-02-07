@@ -315,21 +315,21 @@ const noexcept
 }
 
 iconer::net::Socket::ActionResult
-iconer::net::Socket::ReserveAccept(iconer::net::IoContext& context, iconer::net::Socket& client)
+iconer::net::Socket::BeginAccept(iconer::net::IoContext& context, iconer::net::Socket& client)
 const
 {
-	return ReserveAccept(std::addressof(context), client);
+	return BeginAccept(std::addressof(context), client);
 }
 
 iconer::net::Socket::ActionResult
-iconer::net::Socket::ReserveAccept(iconer::net::IoContext& context, Socket& client, std::span<std::byte> accept_buffer)
+iconer::net::Socket::BeginAccept(iconer::net::IoContext& context, Socket& client, std::span<std::byte> accept_buffer)
 const
 {
-	return ReserveAccept(std::addressof(context), client, std::move(accept_buffer));
+	return BeginAccept(std::addressof(context), client, std::move(accept_buffer));
 }
 
 iconer::net::Socket::ActionResult
-iconer::net::Socket::ReserveAccept(iconer::net::IoContext* const context, iconer::net::Socket& client)
+iconer::net::Socket::BeginAccept(iconer::net::IoContext* context, iconer::net::Socket& client)
 const
 {
 	char temp_buffer[::DEFAULT_ACCEPT_SIZE * 2]{};
@@ -364,7 +364,7 @@ const
 }
 
 iconer::net::Socket::ActionResult
-iconer::net::Socket::ReserveAccept(iconer::net::IoContext* const context, iconer::net::Socket& client, std::span<std::byte> accept_buffer)
+iconer::net::Socket::BeginAccept(iconer::net::IoContext* context, iconer::net::Socket& client, std::span<std::byte> accept_buffer)
 const
 {
 	if (not IsAvailable())
@@ -382,8 +382,6 @@ const
 		, static_cast<::LPWSAOVERLAPPED>(context))
 		)
 	{
-		::setsockopt(Super::GetHandle(), SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, reinterpret_cast<const char*>(std::addressof(client.GetHandle())), sizeof(HandleType));
-
 		return std::nullopt;
 	}
 	else
@@ -394,11 +392,19 @@ const
 		}
 		else
 		{
-			::setsockopt(Super::GetHandle(), SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, reinterpret_cast<const char*>(std::addressof(client.GetHandle())), sizeof(HandleType));
 
 			return std::nullopt;
 		}
 	}
+}
+
+iconer::net::Socket::ActionResult
+iconer::net::Socket::EndAccept(Socket& client)
+const noexcept
+{
+	//::setsockopt(Super::GetHandle(), SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, reinterpret_cast<const char*>(), sizeof(HandleType));
+
+	return SetOption(SocketOptions::UpdateContext, std::addressof(client.GetHandle()), sizeof(HandleType));
 }
 
 iconer::net::Socket
