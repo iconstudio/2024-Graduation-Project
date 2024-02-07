@@ -227,6 +227,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="Forwarding.ixx" />
     <ClCompile Include="Handler.ixx" />
     <ClCompile Include="HashComparator.ixx" />
     <ClCompile Include="IContext.ixx" />
