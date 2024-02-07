@@ -26,15 +26,10 @@ public:
 	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga/Network")
 	static FIPv4Address MakeIpAddress(const FString String);
 
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga/Network")
-	static int32 SendUniqueBuffer(UPARAM(ref) FSocket& socket, const TUniquePtr<uint8[]>& buffer, int32 size);
-	
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga/Network")
-	static int32 SendMovedUniqueBuffer(UPARAM(ref) FSocket& socket,  UPARAM(ref) TUniquePtr<uint8[]>&& buffer, int32 size);
-	
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga/Network")
-	static int32 SendSharedBuffer(UPARAM(ref) FSocket& socket, const TSharedPtr<uint8[]>& buffer, int32 size);
-	
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga/Network")
-	static int32 SendBufferFromSharedHandle(UPARAM(ref) FSocket& socket, const TSharedRef<uint8[]>& buffer, int32 size);
+	static int32 RawSend(FSocket* socket, const uint8* buffer, int32 size);
+	static int32 RawSend(FSocket& socket, const uint8* buffer, int32 size);
+	static int32 Send(const TSharedRef<FSocket>& socket, const TUniquePtr<uint8[]>& buffer, int32 size);
+	static int32 Send(const TSharedRef<FSocket>& socket, TUniquePtr<uint8[]>&& buffer, int32 size);
+	static int32 Send(const TSharedRef<FSocket>& socket, const TSharedPtr<uint8[]>& buffer, int32 size);
+	static int32 Send(const TSharedRef<FSocket>& socket, const TSharedRef<uint8[]>& buffer, int32 size);
 };

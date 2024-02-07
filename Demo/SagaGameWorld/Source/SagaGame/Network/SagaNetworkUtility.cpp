@@ -38,14 +38,29 @@ USagaNetworkUtility::MakeIpAddress(const FString String)
 }
 
 int32
-USagaNetworkUtility::SendUniqueBuffer(FSocket& socket, const TUniquePtr<uint8[]>& buffer, int32 size)
+USagaNetworkUtility::RawSend(FSocket* socket, const uint8* buffer, int32 size)
+{
+	int32 bytes;
+	socket->Send(buffer, size, bytes);
+
+	return bytes;
+}
+
+int32
+USagaNetworkUtility::RawSend(FSocket& socket, const uint8* buffer, int32 size)
+{
+	int32 bytes;
+	socket.Send(buffer, size, bytes);
+
+	return bytes;
+}
+
+int32
+USagaNetworkUtility::Send(const TSharedRef<FSocket>& socket, const TUniquePtr<uint8[]>& buffer, int32 size)
 {
 	if (buffer.IsValid())
 	{
-		int32 bytes;
-		socket.Send(buffer.Get(), size, bytes);
-
-		return bytes;
+		return RawSend(*socket, buffer.Get(), size);
 	}
 	else
 	{
@@ -54,15 +69,12 @@ USagaNetworkUtility::SendUniqueBuffer(FSocket& socket, const TUniquePtr<uint8[]>
 }
 
 int32
-USagaNetworkUtility::SendMovedUniqueBuffer(FSocket& socket, TUniquePtr<uint8[]>&& buffer, int32 size)
+USagaNetworkUtility::Send(const TSharedRef<FSocket>& socket, TUniquePtr<uint8[]>&& buffer, int32 size)
 {
 	auto bf = MoveTempIfPossible(buffer);
 	if (bf.IsValid())
 	{
-		int32 bytes;
-		socket.Send(bf.Get(), size, bytes);
-
-		return bytes;
+		return RawSend(*socket, buffer.Get(), size);
 	}
 	else
 	{
@@ -71,14 +83,11 @@ USagaNetworkUtility::SendMovedUniqueBuffer(FSocket& socket, TUniquePtr<uint8[]>&
 }
 
 int32
-USagaNetworkUtility::SendSharedBuffer(FSocket& socket, const TSharedPtr<uint8[]>& buffer, int32 size)
+USagaNetworkUtility::Send(const TSharedRef<FSocket>& socket, const TSharedPtr<uint8[]>& buffer, int32 size)
 {
 	if (buffer.IsValid())
 	{
-		int32 bytes;
-		socket.Send(*buffer, size, bytes);
-
-		return bytes;
+		return RawSend(*socket, *buffer, size);
 	}
 	else
 	{
@@ -87,7 +96,7 @@ USagaNetworkUtility::SendSharedBuffer(FSocket& socket, const TSharedPtr<uint8[]>
 }
 
 int32
-USagaNetworkUtility::SendBufferFromSharedHandle(FSocket& socket, const TSharedRef<uint8[]>& buffer, int32 size)
+USagaNetworkUtility::Send(const TSharedRef<FSocket>& socket, const TSharedRef<uint8[]>& buffer, int32 size)
 {
-	return SendSharedBuffer(socket, buffer.ToSharedPtr(), size);
+	return Send(socket, buffer.ToSharedPtr(), size);
 }
