@@ -481,7 +481,7 @@ private:
 	{};
 	
 	template<typename Tuple, size_t... Indices>
-	uint8* _SerializeTuple(uint8* dest, Tuple&& tuple, std::index_sequence<Indices...>)
+	static uint8* _SerializeTuple(uint8* dest, Tuple&& tuple, std::index_sequence<Indices...>)
 	{
 		uint8* it = dest;
 
@@ -494,17 +494,17 @@ public:
 	/// <summary>Allocate a byte buffer for a copied tuple</summary>
 	/// <exception cref="std::bad_alloc"/>
 	template<typename... Args>
-	TUniquePtr<std::byte[]> Serialize(const std::tuple<Args...>& tuple)
+	static TUniquePtr<uint8[]> Serialize(const std::tuple<Args...>& tuple)
 	{
-		auto buffer = MakeUnique<std::byte[]>(byte_size_v<Args...>);
-		Serialize(buffer.get(), tuple);
+		auto buffer = MakeUnique<uint8[]>(byte_size_v<Args...>);
+		Serialize(buffer.Get(), tuple);
 		return buffer;
 	}
 
 	/// <summary>Transfer a copied tuple to the byte buffer</summary>
 	/// <returns>last buffer pointer foregoing from dest</returns>
 	template<typename... Args>
-	std::byte* Serialize(std::byte* dest, const std::tuple<Args...>& tuple)
+	static uint8* Serialize(uint8* dest, const std::tuple<Args...>& tuple)
 	{
 		if constexpr (0 < sizeof...(Args))
 		{
@@ -519,17 +519,17 @@ public:
 	/// <summary>Allocate a byte buffer for a moved tuple</summary>
 	/// <exception cref="std::bad_alloc"/>
 	template<typename... Args>
-	TUniquePtr<uint8[]> Serialize(std::tuple<Args...>&& tuple)
+	static TUniquePtr<uint8[]> Serialize(std::tuple<Args...>&& tuple)
 	{
 		auto buffer = MakeUnique<uint8[]>(byte_size_v<Args...>);
-		Serialize(buffer.get(), MoveTempIfPossible(tuple));
+		Serialize(buffer.Get(), MoveTempIfPossible(tuple));
 		return buffer;
 	}
 
 	/// <summary>Transfer a moved tuple to the byte buffer</summary>
 	/// <returns>last buffer pointer foregoing from dest</returns>
 	template<typename... Args>
-	uint8* Serialize(uint8* dest, std::tuple<Args...>&& tuple)
+	static uint8* Serialize(uint8* dest, std::tuple<Args...>&& tuple)
 	{
 		if constexpr (0 < sizeof...(Args))
 		{
@@ -544,7 +544,7 @@ public:
 	/// <summary>Allocate a byte buffer of multiple values</summary>
 	/// <exception cref="std::bad_alloc"/>
 	template<typename... Args> requires (1 < sizeof...(Args))
-	TUniquePtr<uint8[]> Serializes(Args&&... args)
+	static TUniquePtr<uint8[]> Serializes(Args&&... args)
 	{
 		return Serialize(std::forward_as_tuple(Forward<Args>(args)...));
 	}
@@ -552,7 +552,7 @@ public:
 	/// <summary>Transfer arguments to the byte buffer</summary>
 	/// <returns>last buffer pointer foregoing from dest</returns>
 	template<typename... Args> requires (1 < sizeof...(Args))
-	uint8* Serializes(uint8* dest, Args&&... args)
+	static uint8* Serializes(uint8* dest, Args&&... args)
 	{
 		return _SerializeTuple(dest, std::forward_as_tuple(Forward<Args>(args)...));
 	}

@@ -50,7 +50,7 @@ USagaNetwork::Init()
 		constexpr FSagaPacket_CS_SignIn packet{ L"Nickname" };
 		auto ptr = packet.Serialize();
 	
-		int32 sent_bytes = USagaNetworkUtility::SendUniqueBuffer(*LocalSocket, ptr, packet.WannabeSize());
+		int32 sent_bytes = USagaNetworkUtility::Send(MakeShareable(LocalSocket), ptr, packet.WannabeSize());
 		if (sent_bytes <= 0)
 		{
 			throw "error!";
