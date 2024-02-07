@@ -3,6 +3,8 @@ module;
 #include <string_view>
 
 module Demo.Framework;
+import Iconer.Net.IpAddress;
+import Iconer.Net.EndPoint;
 import Iconer.Application.ISession;
 import Iconer.Application.BorrowedSendContext;
 import <atomic>;
@@ -18,7 +20,12 @@ bool
 demo::Framework::InitializeListener()
 noexcept
 {
-	if (serverListener.BindHost(serverPort).has_value())
+	auto server_address = iconer::net::IpAddress{ iconer::net::IpAddressFamily::IPv4, "127.0.0.1" };
+	auto server_ep = iconer::net::EndPoint{ server_address, serverPort };
+
+	if (serverListener.Bind(server_ep).has_value())
+	//if (serverListener.BindHost(serverPort).has_value())
+	//if (serverListener.BindAny(serverPort).has_value())
 	{
 		return false;
 	}
