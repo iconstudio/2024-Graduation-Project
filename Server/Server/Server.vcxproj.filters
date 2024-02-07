@@ -249,6 +249,9 @@
     <ClCompile Include="BorrowedSendContext.ixx">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="Identity.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
