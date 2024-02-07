@@ -44,5 +44,5 @@ protected:
 	FSocket* LocalSocket;
 
 	/// <remarks>로컬 플레이어도 포함</remarks>
-	TArray<USagaNetworkView*> EveryClients;
+	TArray<ISagaNetworkView*> EveryClients;
 };
