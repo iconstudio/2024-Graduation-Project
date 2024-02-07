@@ -461,7 +461,7 @@ iconer::net::Socket::TryCreate(iconer::net::IoCategory type
 {
 	if (Socket result = Create(type, protocol, family); result.IsAvailable())
 	{
-		out = std::move(result);
+		out = std::exchange(result, Socket{});
 
 		return true;
 	}
@@ -481,7 +481,7 @@ iconer::net::Socket::TryCreate(iconer::net::IoCategory type
 {
 	if (Socket result = Create(type, protocol, family); result.IsAvailable())
 	{
-		out = std::move(result);
+		out = std::exchange(result, Socket{});
 
 		return true;
 	}
@@ -500,7 +500,7 @@ iconer::net::Socket::TryCreate(iconer::net::IoCategory type
 {
 	if (Socket result = Create(type, protocol, family); result.IsAvailable())
 	{
-		return std::move(result);
+		return std::exchange(result, Socket{});
 	}
 	else
 	{
@@ -528,7 +528,10 @@ noexcept
 {
 	::BOOL iflag = static_cast<::BOOL>(flag);
 
-	RawSetOption(target.Super::GetHandle(), SO_REUSEADDR, std::addressof(iflag), sizeof(iflag));
+#ifdef _DEBUG
+	auto result = 
+#endif
+		RawSetOption(target.Super::GetHandle(), SO_REUSEADDR, std::addressof(iflag), sizeof(iflag));
 }
 
 void
