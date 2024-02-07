@@ -29,7 +29,6 @@ void SocketFunctionInitializer(const iconer::net::Socket::HandleType& sock);
 
 ::SOCKADDR_STORAGE SerializeEndpoint(const iconer::net::EndPoint& endpoint) noexcept;
 ::SOCKADDR_STORAGE SerializeEndpoint(iconer::net::EndPoint&& endpoint) noexcept;
-iconer::net::Socket::ActionResult RawSetOption(const iconer::net::Socket::HandleType& sock, int option, const void* buffer, int buff_size) noexcept;
 iconer::net::Socket::ActionResult RawGetOption(const iconer::net::Socket::HandleType& sock, int option) noexcept;
 
 struct [[nodiscard]] SerializedIpAddress
@@ -89,7 +88,7 @@ iconer::net::Socket::Socket()
 noexcept
 	: Handler(INVALID_SOCKET)
 	, myProtocol(InternetProtocol::Unknown), myFamily(IpAddressFamily::Unknown)
-	, IsAddressReusable(this, false, SetAddressReusable)
+	, IsAddressReusable(false, DelegateAddressReusable{ INVALID_SOCKET })
 {
 }
 
@@ -97,7 +96,7 @@ iconer::net::Socket::Socket(iconer::net::Socket::HandleType sock, iconer::net::I
 noexcept
 	: Handler(sock)
 	, myProtocol(protocol), myFamily(family)
-	, IsAddressReusable(this, false, SetAddressReusable)
+	, IsAddressReusable(false, DelegateAddressReusable{ sock })
 {
 	std::call_once(internalInitFlag, ::SocketFunctionInitializer, sock);
 }
@@ -523,18 +522,6 @@ noexcept
 }
 
 void
-iconer::net::Socket::SetAddressReusable(iconer::net::Socket& target, bool flag)
-noexcept
-{
-	::BOOL iflag = static_cast<::BOOL>(flag);
-
-#ifdef _DEBUG
-	auto result = 
-#endif
-		RawSetOption(target.Super::GetHandle(), SO_REUSEADDR, std::addressof(iflag), sizeof(iflag));
-}
-
-void
 SocketFunctionInitializer(const iconer::net::Socket::HandleType& sock)
 {
 	::GUID fntable_id = WSAID_MULTIPLE_RIO;
@@ -690,21 +677,6 @@ noexcept
 	}
 
 	return result;
-}
-
-iconer::net::Socket::ActionResult
-RawSetOption(const iconer::net::Socket::HandleType& sock, int option, const void* buffer, int buff_size)
-noexcept
-{
-	if (0 == ::setsockopt(sock
-		, SOL_SOCKET
-		, option
-		, reinterpret_cast<const char*>(buffer), buff_size))
-	{
-		return std::nullopt;
-	}
-
-	return iconer::net::AcquireNetworkError();
 }
 
 iconer::net::Socket::ActionResult

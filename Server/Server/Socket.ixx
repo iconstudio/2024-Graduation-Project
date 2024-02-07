@@ -36,20 +36,8 @@ export namespace iconer::net
 		explicit Socket() noexcept;
 		~Socket() noexcept = default;
 
-		constexpr Socket(Socket&& other) noexcept
-			: myProtocol(std::exchange(other.myProtocol, InternetProtocol::Unknown))
-			, myFamily(std::exchange(other.myFamily, IpAddressFamily::Unknown))
-			, IsAddressReusable(std::move(other.IsAddressReusable))
-		{
-		}
-
-		constexpr Socket& operator=(Socket&& other) noexcept
-		{
-			myProtocol = std::exchange(other.myProtocol, InternetProtocol::Unknown);
-			myFamily = std::exchange(other.myFamily, IpAddressFamily::Unknown);
-			IsAddressReusable = std::move(other.IsAddressReusable);
-			return *this;
-		}
+		constexpr Socket(Socket&&) noexcept = default;
+		constexpr Socket& operator=(Socket&&) noexcept = default;
 
 		// Opt-in Interfaces
 
@@ -59,6 +47,8 @@ export namespace iconer::net
 		ActionResult Bind(EndPoint&& endpoint) const noexcept;
 		ActionResult BindAny(std::uint16_t port) const noexcept;
 		ActionResult BindHost(std::uint16_t port) const noexcept;
+
+		ActionResult SetOption(SocketOptions option, const void* opt_buffer, const size_t opt_size);
 
 		bool ReusableAddress() const noexcept;
 		void ReusableAddress(bool flag) noexcept;
@@ -198,13 +188,22 @@ export namespace iconer::net
 		static bool TryCreate(IoCategory type, const InternetProtocol& protocol, const IpAddressFamily& family, Socket& out, ErrorCode& error_code) noexcept;
 		[[nodiscard]]
 		static FactoryResult TryCreate(IoCategory type, const InternetProtocol& protocol, const IpAddressFamily& family) noexcept;
-
 		[[nodiscard]]
 		static Socket CreateTcpSocket(IoCategory type, const IpAddressFamily& family = IpAddressFamily::IPv4) noexcept;
 		[[nodiscard]]
 		static Socket CreateUdpSocket(IoCategory type, const IpAddressFamily& family = IpAddressFamily::IPv4) noexcept;
 
-		static void SetAddressReusable(Socket& target, bool flag) noexcept;
+		struct DelegateAddressReusable
+		{
+			explicit constexpr DelegateAddressReusable(HandleType inst) noexcept : handle(inst) {}
+
+			//constexpr DelegateAddressReusable(DelegateAddressReusable&&) noexcept {}
+			//constexpr DelegateAddressReusable& operator=(DelegateAddressReusable&&) noexcept { return *this; }
+
+			ActionResult operator()(const bool& flag) noexcept;
+
+			HandleType handle;
+		};
 
 		// Default methods
 
@@ -214,7 +213,7 @@ export namespace iconer::net
 
 		InternetProtocol myProtocol;
 		IpAddressFamily myFamily;
-		iconer::util::CustomProperty<bool, Socket> IsAddressReusable;
+		iconer::util::CustomProperty<bool, DelegateAddressReusable> IsAddressReusable;
 
 	private:
 		struct ErrorTransfer

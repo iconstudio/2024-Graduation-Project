@@ -240,6 +240,26 @@ const noexcept
 	return std::nullopt;
 }
 
+iconer::net::Socket::ActionResult
+RawSetOption(iconer::net::Socket::HandleType handle, const iconer::net::SocketOptions& option, const void* const& opt_buffer, const size_t& opt_size)
+{
+	if (0 == ::setsockopt(handle
+		, SOL_SOCKET
+		, std::to_underlying(option)
+		, reinterpret_cast<const char*>(opt_buffer), static_cast<int>(opt_size)))
+	{
+		return std::nullopt;
+	}
+
+	return iconer::net::AcquireNetworkError();
+}
+
+iconer::net::Socket::ActionResult
+iconer::net::Socket::SetOption(SocketOptions option, const void* opt_buffer, const size_t opt_size)
+{
+	return RawSetOption(Super::GetHandle(), option, opt_buffer, opt_size);
+}
+
 bool
 net::Socket::ReusableAddress()
 const noexcept
@@ -252,4 +272,13 @@ net::Socket::ReusableAddress(bool flag)
 noexcept
 {
 	IsAddressReusable = flag;
+}
+
+iconer::net::Socket::ActionResult
+iconer::net::Socket::DelegateAddressReusable::operator()(const bool& flag)
+noexcept
+{
+	::BOOL iflag = static_cast<::BOOL>(flag);
+
+	return RawSetOption(handle, SocketOptions::Recyclable, std::addressof(iflag), sizeof(iflag));
 }
