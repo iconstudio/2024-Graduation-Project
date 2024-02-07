@@ -12,7 +12,7 @@ iconer::app::User::Awake()
 
 	preSignInPacket = std::make_unique<std::byte[]>(packets::SC_SucceedSignInPacket::WannabeSize());
 
-	packets::SC_SucceedSignInPacket signin_pk{};
+	const packets::SC_SucceedSignInPacket signin_pk{ myHandle };
 	signin_pk.Write(preSignInPacket.get());
 }
 
