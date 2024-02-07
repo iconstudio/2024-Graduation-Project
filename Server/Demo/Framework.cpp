@@ -125,6 +125,8 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.Log(L"\tAcceptance is reserved on user {}\n", id);
 			}
+
+			user->Clear();
 		}
 		break;
 
@@ -149,6 +151,8 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.Log(L"\tUser {} is connected\n", id);
 			}
+
+			user->Clear();
 		}
 		break;
 
@@ -173,6 +177,8 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.Log(L"\tUser {} is signed in\n", id);
 			}
+
+			user->Clear();
 		}
 		break;
 
@@ -198,6 +204,8 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.Log(L"\tUser {} has been notified id, now start receiving\n", id);
 			}
+
+			user->Clear();
 		}
 		break;
 
@@ -221,6 +229,8 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.Log(L"\tReceving is proceed on user {}\n", id);
 			}
+
+			user->Clear();
 		}
 		break;
 
@@ -241,6 +251,8 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.Log(L"\tUser {} has been disconnected\n", id);
 			}
+
+			user->Clear();
 		}
 		break;
 
@@ -257,6 +269,8 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.Log(L"\tUser {} created a room {}\n", id, 0);
 			}
+
+			user->Clear();
 		}
 		break;
 
@@ -273,6 +287,8 @@ demo::Framework::RouteOperation(bool is_succeed
 			{
 				myLogger.Log(L"\tUser {} entered to room {}\n", id, 0);
 			}
+
+			user->Clear();
 		}
 		break;
 
@@ -282,6 +298,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			const IdType& id = user->GetID();
 
 
+			user->Clear();
 		}
 		break;
 
@@ -290,7 +307,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
 
-
+			user->Clear();
 		}
 		break;
 
@@ -300,6 +317,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			const IdType& id = user->GetID();
 
 
+			user->Clear();
 		}
 		break;
 
@@ -309,6 +327,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			const IdType& id = user->GetID();
 
 
+			user->Clear();
 		}
 		break;
 
@@ -318,6 +337,7 @@ demo::Framework::RouteOperation(bool is_succeed
 			const IdType& id = user->GetID();
 
 
+			user->Clear();
 		}
 		break;
 
