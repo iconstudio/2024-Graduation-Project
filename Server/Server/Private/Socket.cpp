@@ -399,12 +399,12 @@ const
 }
 
 iconer::net::Socket::ActionResult
-iconer::net::Socket::EndAccept(Socket& client)
+iconer::net::Socket::EndAccept(Socket& listener)
 const noexcept
 {
 	//::setsockopt(Super::GetHandle(), SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT, reinterpret_cast<const char*>(), sizeof(HandleType));
 
-	return SetOption(SocketOptions::UpdateContext, std::addressof(client.GetHandle()), sizeof(HandleType));
+	return SetOption(SocketOptions::UpdateContext, std::addressof(listener.GetHandle()), sizeof(HandleType));
 }
 
 iconer::net::Socket
