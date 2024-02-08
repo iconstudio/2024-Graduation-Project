@@ -3,6 +3,7 @@ module;
 #include <string_view>
 
 module Demo.Framework;
+import Iconer.Application.IContext;
 import Iconer.Application.BorrowedSendContext;
 
 bool

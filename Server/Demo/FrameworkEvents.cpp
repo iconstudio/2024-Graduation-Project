@@ -13,7 +13,7 @@ demo::Framework::OnReserveAccept(iconer::app::User& user)
 	if (user.TryChangeState(iconer::app::UserStates::None, iconer::app::UserStates::Reserved))
 	{
 		user.SetOperation(iconer::app::Operations::OpAccept);
-		return serverListener.ReserveAccept(user, user.mySocket);
+		return serverListener.BeginAccept(user, user.mySocket);
 	}
 	else
 	{
@@ -30,7 +30,11 @@ demo::Framework::OnFailedReservingAccept(iconer::app::User& user)
 demo::Framework::IoResult
 demo::Framework::OnUserConnected(iconer::app::User& user)
 {
-	if (user.TryChangeState(iconer::app::UserStates::Reserved, iconer::app::UserStates::Connected))
+	if (auto fin = user.mySocket.EndAccept(serverListener); fin.has_value())
+	{
+		return std::unexpected{ fin.value() };
+	}
+	else if (user.TryChangeState(iconer::app::UserStates::Reserved, iconer::app::UserStates::Connected))
 	{
 		user.SetOperation(iconer::app::Operations::OpSignIn);
 
