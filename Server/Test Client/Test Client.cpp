@@ -53,12 +53,14 @@ int main()
 		return 5;
 	}
 
-	app_socket = net::Socket::CreateTcpSocket(net::IoCategory::Synchronous);
+	app_socket = net::Socket::CreateTcpSocket(net::IoCategory::Asynchronous);
 
 	std::cout << "Binding...\n";
 
+	app_socket.IsAddressReusable = true;
+
 	auto client_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
-	auto client_ep = net::EndPoint{ server_address, 40001 };
+	auto client_ep = net::EndPoint{ client_address, 40001U };
 	
 	auto bind_r = app_socket.Bind(client_ep);
 	//auto bind_r = app_socket.BindAny(40001);
@@ -67,14 +69,13 @@ int main()
 		return 4;
 	}
 
-	app_socket.IsAddressReusable = true;
-
 	std::cout << "Connecting to host...\n";
 	server_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
-	server_ep = net::EndPoint{ server_address, 40000 };
+	server_ep = net::EndPoint{ server_address, 40000U };
 
-	auto connect_r = app_socket.Connect(server_ep);
+	//auto connect_r = app_socket.Connect(server_ep);
 	//auto connect_r = app_socket.ConnectToHost(40000U);
+	auto connect_r = app_socket.ConnectToHost(40000U);
 	if (connect_r.has_value())
 	{
 		return 3;
