@@ -1,4 +1,7 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interface/SagaAttackAnimationInterface.h"
@@ -21,12 +24,12 @@ public:
 	ASagaCharacterBase();
 
 protected:
-	virtual void SetCharacterControlData(const class USagaCharacterControlData* CharacterControlData); //ìºë¦­í„°ì»¨íŠ¸ë¡¤ë°ì´í„°ì—ì…‹ì„ ì…ë ¥ìœ¼ë¡œ ë°›ìŒ
+	virtual void SetCharacterControlData(const class USagaCharacterControlData* CharacterControlData); //Ä³¸¯ÅÍÄÁÆ®·Ñµ¥ÀÌÅÍ¿¡¼ÂÀ» ÀÔ·ÂÀ¸·Î ¹ŞÀ½
 
 	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
 	TMap<ECharacterControlType, class USagaCharacterControlData*> CharacterControlManager;
 
-//Animation Mantage ê´€ë ¨
+//Animation Mantage °ü·Ã
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
@@ -36,24 +39,24 @@ protected:
 
 	void ProcessComboCommand();
 
-	//ëª½íƒ€ì£¼ ì‹œì‘ë ë•Œ í˜¸ì¶œí•˜ëŠ” í•¨ìˆ˜
+	//¸ùÅ¸ÁÖ ½ÃÀÛµÉ¶§ È£ÃâÇÏ´Â ÇÔ¼ö
 	void ComboActionBegin();
 
-	//ëª½íƒ€ì£¼ ëª¨ë‘ ì¢…ë£Œì‹œ í˜¸ì¶œ
+	//¸ùÅ¸ÁÖ ¸ğµÎ Á¾·á½Ã È£Ãâ
 	void ComboActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
 
-	//íƒ€ì´ë¨¸ ë°œë™
+	//Å¸ÀÌ¸Ó ¹ßµ¿
 	void SetComboCheckTimer();
 
 	void ComboCheck();
 
-	//í˜„ì¬ ì½¤ë³´ê°€ ì–´ë””ê¹Œì§€ ì§„í–‰ë˜ì—ˆëŠ”ì§€ ì €ì¥ì„ ìœ„í•¨
+	//ÇöÀç ÄŞº¸°¡ ¾îµğ±îÁö ÁøÇàµÇ¾ú´ÂÁö ÀúÀåÀ» À§ÇÔ
 	int32 CurrentCombo = 0;
 
 	FTimerHandle ComboTimerHandle;
 	bool HasNextComboCommand = false;
 
-	//ê³µê²© hit ë¶€ë¶„
+	//°ø°İ hit ºÎºĞ
 protected:
 	virtual void AttackHitCheck() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;

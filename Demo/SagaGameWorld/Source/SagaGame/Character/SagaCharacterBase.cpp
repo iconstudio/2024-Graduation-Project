@@ -1,3 +1,6 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
 #include "Character/SagaCharacterBase.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -17,7 +20,7 @@ ASagaCharacterBase::ASagaCharacterBase()
     GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
     GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_SAGACAPSULE);
 
-    //ì›€ì§ì„
+    //¿òÁ÷ÀÓ
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
     GetCharacterMovement()->JumpZVelocity = 700.f;
@@ -26,7 +29,7 @@ ASagaCharacterBase::ASagaCharacterBase()
     GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
     GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
-    //ë©”ì‹œ
+    //¸Ş½Ã
     GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
     GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
     GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
@@ -43,7 +46,7 @@ ASagaCharacterBase::ASagaCharacterBase()
         GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
     }
 
-    //ìƒì„±í•œ ë‘ê°€ì§€ ì»¨íŠ¸ë¡¤ ë°ì´í„°ë“¤ì„ Mapì— ì¶”ê°€
+    //»ı¼ºÇÑ µÎ°¡Áö ÄÁÆ®·Ñ µ¥ÀÌÅÍµéÀ» Map¿¡ Ãß°¡
     static ConstructorHelpers::FObjectFinder<USagaCharacterControlData> SoulderDataRef(TEXT("/Script/SagaGame.SagaCharacterControlData'/Game/CharacterControl/SagaControl_Shoulder.SagaControl_Shoulder'"));
     if (SoulderDataRef.Object)
     {
@@ -86,7 +89,7 @@ void ASagaCharacterBase::SetCharacterControlData(const USagaCharacterControlData
     GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
 }
 
-void ASagaCharacterBase::ProcessComboCommand() //ì´ê²ƒê³¼ SagaCharacterPlayerì˜ Attackí•¨ìˆ˜ê°€ ì—°ë™ë˜ë„ë¡ Attackí•¨ìˆ˜ì— ì‘ì„±
+void ASagaCharacterBase::ProcessComboCommand() //ÀÌ°Í°ú SagaCharacterPlayerÀÇ AttackÇÔ¼ö°¡ ¿¬µ¿µÇµµ·Ï AttackÇÔ¼ö¿¡ ÀÛ¼º
 {
     if (CurrentCombo == 0)
     {
@@ -94,8 +97,8 @@ void ASagaCharacterBase::ProcessComboCommand() //ì´ê²ƒê³¼ SagaCharacterPlayerì
         return;
     }
 
-    //ì…ë ¥ì´ ë“¤ì–´ì˜¬ ë•Œ
-    if (!ComboTimerHandle.IsValid()) //íƒ€ì´ë¨¸ê°€ ì„¤ì • ì•ˆë˜ì–´ìˆì„ï¿½ï¿½ ì…ë ¥ì´ ë“¤ì–´ì˜¬ë•Œì—ëŠ” ì´ë¯¸ íƒ€ì´ë¨¸ê°€ ë°œë™ë˜ì–´ ì‹œê¸°ë¥¼ ë†“ì³¤ê±°ë‚˜ ë”ì´ìƒ ì§„í–‰í•  í•„ìš”ê°€ ì—†ë‹¤ëŠ” ëœ»
+    //ÀÔ·ÂÀÌ µé¾î¿Ã ¶§
+    if (!ComboTimerHandle.IsValid()) //Å¸ÀÌ¸Ó°¡ ¼³Á¤ ¾ÈµÇ¾îÀÖÀ»‹š ÀÔ·ÂÀÌ µé¾î¿Ã¶§¿¡´Â ÀÌ¹Ì Å¸ÀÌ¸Ó°¡ ¹ßµ¿µÇ¾î ½Ã±â¸¦ ³õÃÆ°Å³ª ´õÀÌ»ó ÁøÇàÇÒ ÇÊ¿ä°¡ ¾ø´Ù´Â ¶æ
     {
         HasNextComboCommand = false;
     }
@@ -107,13 +110,13 @@ void ASagaCharacterBase::ProcessComboCommand() //ì´ê²ƒê³¼ SagaCharacterPlayerì
 
 void ASagaCharacterBase::ComboActionBegin()
 {
-    //í˜„ì¬ ì½¤ë³´ ìƒíƒœ
+    //ÇöÀç ÄŞº¸ »óÅÂ
     CurrentCombo = 1;
 
-    //Movement ì„¤ì •
-    //GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None); //Noneìœ¼ë¡œ ì„¤ì • ì‹œ--> ê³µê²©í•˜ëŠ” ë™ì•ˆ ì´ë™ë¶ˆê°€
+    //Movement ¼³Á¤
+    //GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None); //NoneÀ¸·Î ¼³Á¤ ½Ã--> °ø°İÇÏ´Â µ¿¾È ÀÌµ¿ºÒ°¡
 
-    //ì• ë‹ˆë©”ì´ì…˜ ì„¤ì •
+    //¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤
     const float AttackSpeedRate = 1.0f;
     UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
     AnimInstance->Montage_Play(ComboActionMontage, AttackSpeedRate);
@@ -128,7 +131,7 @@ void ASagaCharacterBase::ComboActionBegin()
 
 void ASagaCharacterBase::ComboActionEnd(UAnimMontage* TargetMontage, bool IsProperlyEnded)
 {
-    ensure(CurrentCombo != 0);// current comboê°€ 0ì´ ì•„ë‹Œì§€ë¥¼ ê²€ì‚¬
+    ensure(CurrentCombo != 0);// current combo°¡ 0ÀÌ ¾Æ´ÑÁö¸¦ °Ë»ç
     CurrentCombo = 0;
     GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
@@ -149,11 +152,11 @@ void ASagaCharacterBase::SetComboCheckTimer()
 void ASagaCharacterBase::ComboCheck()
 {
     ComboTimerHandle.Invalidate();
-    if (HasNextComboCommand) //íƒ€ì´ë¨¸ ë°œë™ ì „ ì…ë ¥ì´ ë“¤ì–´ì™€ HasNextComboCommandê°€ trueê°’ì´ ë˜ë©´ ë‹¤ìŒ ì„¹ì…˜ìœ¼ë¡œ ë„˜ì–´ê°€ê¸°
+    if (HasNextComboCommand) //Å¸ÀÌ¸Ó ¹ßµ¿ Àü ÀÔ·ÂÀÌ µé¾î¿Í HasNextComboCommand°¡ true°ªÀÌ µÇ¸é ´ÙÀ½ ¼½¼ÇÀ¸·Î ³Ñ¾î°¡±â
     {
         UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-        CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, ComboActionData->MaxComboCount); //ì§€ì •í•œ ì½¤ë³´ê°’ ë²—ì–´ë‚˜ì§€ ì•Šë„ë¡.
+        CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, ComboActionData->MaxComboCount); //ÁöÁ¤ÇÑ ÄŞº¸°ª ¹ş¾î³ªÁö ¾Êµµ·Ï.
         FName NextSection = *FString::Printf(TEXT("%s%d"), *ComboActionData->MontageSectionNamePrefix, CurrentCombo);
         AnimInstance->Montage_JumpToSection(NextSection, ComboActionMontage);
         SetComboCheckTimer();
@@ -161,10 +164,10 @@ void ASagaCharacterBase::ComboCheck()
     }
 }
 
-void ASagaCharacterBase::AttackHitCheck() //trace í™œìš©í•˜ì—¬ ë¬¼ì²´ê°€ ì„œë¡œ ì¶©ëŒë˜ëŠ”ì§€ ê²€ì‚¬í•˜ëŠ” ë¡œì§ êµ¬í˜„
+void ASagaCharacterBase::AttackHitCheck() //trace È°¿ëÇÏ¿© ¹°Ã¼°¡ ¼­·Î Ãæµ¹µÇ´ÂÁö °Ë»çÇÏ´Â ·ÎÁ÷ ±¸Çö
 {
     FHitResult OutHitResult;
-    FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);//false-> ë³µì¡í•œ ì¶©ëŒì²´í¬ ì‚¬ìš©ì•ˆí•¨, this-> ë¬´ì‹œí•  ì•¡í„°ëŠ” ìê¸° ìì‹ ë¿ì´ë¼ this ì‚¬ìš©
+    FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);//false-> º¹ÀâÇÑ Ãæµ¹Ã¼Å© »ç¿ë¾ÈÇÔ, this-> ¹«½ÃÇÒ ¾×ÅÍ´Â ÀÚ±â ÀÚ½Å»ÓÀÌ¶ó this »ç¿ë
 
     const float AttackRange = 40.0f;
     const float AttackRadius = 50.0f;
