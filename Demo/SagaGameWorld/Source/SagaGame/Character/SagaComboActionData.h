@@ -1,8 +1,14 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
+
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "SagaComboActionData.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
 class SAGAGAME_API USagaComboActionData : public UPrimaryDataAsset
 {
@@ -12,14 +18,14 @@ public:
 	USagaComboActionData();
 
 	UPROPERTY(EditAnywhere, Category = Name)
-	FString MontageSectionNamePrefix; //ëª½íƒ€ì£¼ ì„¹ì…˜ ì´ë¦„ ì €ì¥
+	FString MontageSectionNamePrefix; //¸ùÅ¸ÁÖ ¼½¼Ç ÀÌ¸§ ÀúÀå
 
 	UPROPERTY(EditAnywhere, Category = Name)
-	uint8 MaxComboCount;			  //ì½¤ë³´ì•¡ì…˜ ì´ ê°œìˆ˜
+	uint8 MaxComboCount;			  //ÄŞº¸¾×¼Ç ÃÑ °³¼ö
 
 	UPROPERTY(EditAnywhere, Category = Name)
-	float FrameRate;				//í”„ë ˆì„ ê¸°ì¤€ ì¬ìƒì†ë„. ì •í™•í•œ íƒ€ì´ë°ì— ì²´í¬ë˜ë„ë¡.
+	float FrameRate;				//ÇÁ·¹ÀÓ ±âÁØ Àç»ı¼Óµµ. Á¤È®ÇÑ Å¸ÀÌ¹Ö¿¡ Ã¼Å©µÇµµ·Ï.
 
 	UPROPERTY(EditAnywhere, Category = ComboData)
-	TArray<float> EffectiveFrameCount; //ì…ë ¥ì´ ì‚¬ì „ì— ì…ë ¥ëœê±´ì§€ ê°ì§€í•˜ëŠ” í”„ë ˆì„
+	TArray<float> EffectiveFrameCount; //ÀÔ·ÂÀÌ »çÀü¿¡ ÀÔ·ÂµÈ°ÇÁö °¨ÁöÇÏ´Â ÇÁ·¹ÀÓ
 };

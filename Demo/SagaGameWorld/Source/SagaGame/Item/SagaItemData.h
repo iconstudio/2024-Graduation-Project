@@ -1,17 +1,24 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
+
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "SagaItemData.generated.h"
 
-//ì•„ì´í…œ ì¢…ë¥˜
+
+//¾ÆÀÌÅÛ Á¾·ù
 UENUM(BlueprintType)
 enum class EItemType : uint8
 {
-	Energydrink = 0,
+	EnergyDrink = 0,
 	LegoBlock,
 	Gumball,
-	SmokeBomb
+	SmokeBomb,
+	Weapon1
 };
+
+
 
 /**
  * 

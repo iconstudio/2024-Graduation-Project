@@ -1,7 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
 #include <limits>
-
 #include "NetworkStructs.generated.h"
 
 class SAGAGAME_API NetworkStructs
