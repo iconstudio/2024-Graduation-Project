@@ -15,7 +15,7 @@ class SAGAGAME_API USagaWeaponItemData : public USagaItemData
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, Category = Weapon)
-	TObjectPtr<USkeletalMesh> WeaponMesh;
+	TSoftObjectPtr<USkeletalMesh> WeaponMesh; //메시는 블루프린트에서 지정해준다.
 
 
 };

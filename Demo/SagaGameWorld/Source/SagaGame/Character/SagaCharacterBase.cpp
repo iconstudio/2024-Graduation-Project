@@ -85,6 +85,11 @@ ASagaCharacterBase::ASagaCharacterBase()
     TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::InstallGumball)));
     TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::EquipWeapons)));
 
+    //무기 컴포넌트(Weapon Component)
+    Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
+    Weapon->SetupAttachment(GetMesh(), TEXT("hand_rSocket")); //캐릭터의 특정 본에 항상 부착되어 돌아다닐 수 있도록 소켓이름을 지정해준다.
+    //캐릭터 애셋에 소켓 이름이 지정되어 있어야 한다.
+
 }
 
 void ASagaCharacterBase::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
@@ -239,7 +244,19 @@ void ASagaCharacterBase::DrinkEnergyDrink(USagaItemData* InItemData)
 
 void ASagaCharacterBase::EquipWeapons(USagaItemData* InItemData)
 {
-    UE_LOG(LogSagaCharacter, Log, TEXT("Equip Weapons"));
+    USagaWeaponItemData* WeaponItemData = Cast<USagaWeaponItemData>(InItemData);
+    if (WeaponItemData)
+    {
+        if (WeaponItemData->WeaponMesh.IsPending()) //아직 로드되지 않았다면
+        {
+            WeaponItemData->WeaponMesh.LoadSynchronous();
+        }
+        Weapon->SetSkeletalMesh(WeaponItemData->WeaponMesh.Get());
+    }
+    /*if (InItemData)
+    {
+        Weapon->SetSkeletalMesh(WeaponItemData->WeaponMesh);
+    }*/
 }
 
 void ASagaCharacterBase::InstallGumball(USagaItemData* InItemData)
