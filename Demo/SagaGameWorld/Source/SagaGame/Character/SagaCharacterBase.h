@@ -92,6 +92,8 @@ protected:
 
 	//아이템관련
 protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Equipment, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USkeletalMeshComponent> Weapon; //생성자에서도 생성해준다.
 
 	UPROPERTY()
 	TArray<FTakeItemDelegateWrapper> TakeItemActions; //함수들이 바인딩 된다.
