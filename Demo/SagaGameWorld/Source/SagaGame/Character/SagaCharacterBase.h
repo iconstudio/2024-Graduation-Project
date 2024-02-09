@@ -5,7 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interface/SagaAttackAnimationInterface.h"
+#include "Interface/SagaCharacterItemInterface.h"
 #include "SagaCharacterBase.generated.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogSagaCharacter, Log, All);
+
 
 UENUM()
 enum class ECharacterControlType : uint8
@@ -14,8 +18,20 @@ enum class ECharacterControlType : uint8
 	Quater
 };
 
+DECLARE_DELEGATE_OneParam(FOnTakeItemDelegate, class USagaItemData*);
+USTRUCT(BlueprintType)
+struct FTakeItemDelegateWrapper
+{
+	GENERATED_BODY()
+
+	FTakeItemDelegateWrapper() {};
+	FTakeItemDelegateWrapper(const FOnTakeItemDelegate& InItemDelegate) : ItemDelegate(InItemDelegate) {};
+	FOnTakeItemDelegate ItemDelegate;
+};
+
+
 UCLASS()
-class SAGAGAME_API ASagaCharacterBase : public ACharacter, public ISagaAttackAnimationInterface
+class SAGAGAME_API ASagaCharacterBase : public ACharacter, public ISagaAttackAnimationInterface, public ISagaCharacterItemInterface
 {
 	GENERATED_BODY()
 
@@ -73,4 +89,16 @@ protected:
 protected:
 	float WalkSpeed = 500.f;
 	float SprintSpeed = 1000.0f;
+
+	//아이템관련
+protected:
+
+	UPROPERTY()
+	TArray<FTakeItemDelegateWrapper> TakeItemActions; //함수들이 바인딩 된다.
+
+	virtual void TakeItem(class USagaItemData* InItemData) override;
+	virtual void DrinkEnergyDrink(class USagaItemData* InItemData);
+	virtual void EquipWeapons(class USagaItemData* InItemData);
+	virtual void InstallGumball(class USagaItemData* InItemData);
+
 };

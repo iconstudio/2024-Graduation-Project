@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Physics/SagaCollision.h"
+#include "Interface/SagaCharacterItemInterface.h"
 
 ASagaItemBox::ASagaItemBox()
 {
@@ -40,6 +41,20 @@ ASagaItemBox::ASagaItemBox()
 
 void ASagaItemBox::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
+    //아이템 획득 했을 때 획득한 Actor에게 TakeItem()함수를 호출하도록 한다.
+
+    if (nullptr == Item) //아이템이 꽝
+    {
+        Destroy();
+        return;
+    }
+
+    ISagaCharacterItemInterface* OverlappingPawn = Cast<ISagaCharacterItemInterface>(OtherActor);
+    if (OverlappingPawn)
+    {
+        OverlappingPawn->TakeItem(Item);
+    }
+
     Effect->Activate(true);
     Mesh->SetHiddenInGame(true);
     SetActorEnableCollision(false); //또 충돌하면 안되니까 비활성화

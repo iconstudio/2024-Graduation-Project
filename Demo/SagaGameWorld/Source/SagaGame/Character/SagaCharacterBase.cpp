@@ -9,6 +9,9 @@
 #include "SagaComboActionData.h"
 #include "Physics/SagaCollision.h"
 #include "Engine/DamageEvents.h"
+#include "Item/SagaWeaponItemData.h"
+
+DEFINE_LOG_CATEGORY(LogSagaCharacter);
 
 // Sets default values
 ASagaCharacterBase::ASagaCharacterBase()
@@ -74,8 +77,14 @@ ASagaCharacterBase::ASagaCharacterBase()
     static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMontageRef(TEXT(""));
     if (DeadMontageRef.Object)
     {
-        //DeadMontage = DeadMontageRef.Object;
+        DeadMontage = DeadMontageRef.Object; //
     }
+
+    //아이템 액션
+    TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::DrinkEnergyDrink)));
+    TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::InstallGumball)));
+    TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::EquipWeapons)));
+
 }
 
 void ASagaCharacterBase::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
@@ -213,4 +222,27 @@ void ASagaCharacterBase::PlayDeadAnimation()
     UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
     AnimInstance->StopAllMontages(0.0f);
     AnimInstance->Montage_Play(DeadMontage, 1.0f);
+}
+
+void ASagaCharacterBase::TakeItem(USagaItemData* InItemData)
+{
+    if (InItemData)
+    {
+        TakeItemActions[(uint8)InItemData->Type].ItemDelegate.ExecuteIfBound(InItemData); //ExecuteIfBound함수로 InItemData를 넘겨준다.
+    }
+}
+
+void ASagaCharacterBase::DrinkEnergyDrink(USagaItemData* InItemData)
+{
+    UE_LOG(LogSagaCharacter, Log, TEXT("Drink EnergyDrink"));
+}
+
+void ASagaCharacterBase::EquipWeapons(USagaItemData* InItemData)
+{
+    UE_LOG(LogSagaCharacter, Log, TEXT("Equip Weapons"));
+}
+
+void ASagaCharacterBase::InstallGumball(USagaItemData* InItemData)
+{
+    UE_LOG(LogSagaCharacter, Log, TEXT("Install Gumball"));
 }
