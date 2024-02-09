@@ -73,9 +73,9 @@ int main()
 	server_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
 	server_ep = net::EndPoint{ server_address, 40000U };
 
-	//auto connect_r = app_socket.Connect(server_ep);
+	auto connect_r = app_socket.Connect(server_ep);
+	//auto connect_r = app_socket.ConnectToAny(40000U);
 	//auto connect_r = app_socket.ConnectToHost(40000U);
-	auto connect_r = app_socket.ConnectToHost(40000U);
 	if (connect_r.has_value())
 	{
 		return 3;
