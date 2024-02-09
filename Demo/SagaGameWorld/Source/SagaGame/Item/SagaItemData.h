@@ -12,9 +12,7 @@ UENUM(BlueprintType)
 enum class EItemType : uint8
 {
 	EnergyDrink = 0,
-	LegoBlock,
 	Gumball,
-	SmokeBomb,
 	Weapon1
 };
 
