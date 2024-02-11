@@ -146,7 +146,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 	{
 		auto transit_state = user.AcquireState();
 
-		auto proceed_bytes = PacketProcessor(*this, user, id, transit_state, user_buffer, bytes);
+		auto proceed_bytes = PacketProcessor(*this, user, user_buffer, user_recv_offset);
 		if (proceed_bytes < 0) [[unlikely]] {
 			constexpr auto& msg = iconer::app::StaticWideString<7>;
 			myLogger.LogWarning(msg);

@@ -10,14 +10,14 @@ using namespace iconer;
 
 ptrdiff_t
 demo::PacketProcessor(Framework& framework
-	, const app::User& user, const Framework::IdType& user_id
-	, app::UserStates& transit_state
+	, const app::User& user
 	, std::span<std::byte, Framework::userRecvSize> packet_data
-	, ptrdiff_t last_offset)
+	, const ptrdiff_t& last_offset)
 {
 	if (nullptr == packet_data.data())
 	{
-		throw app::StaticString<3>;
+		constexpr auto& msg = app::StaticString<3>;
+		throw msg;
 	}
 
 	app::PacketProtocol protocol;
@@ -26,8 +26,11 @@ demo::PacketProcessor(Framework& framework
 
 	if (0 <= size)
 	{
-		throw app::StaticString<4>.data();
+		constexpr auto& msg = app::StaticString<4>;
+		throw msg.data();
 	}
+
+	const auto& user_id = user.GetID();
 
 	if (size <= last_offset)
 	{
