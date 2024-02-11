@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Interface/SagaAttackAnimationInterface.h"
 #include "Interface/SagaCharacterItemInterface.h"
+#include "Interface/SagaCharacterWidgetInterface.h"
 #include "SagaCharacterBase.generated.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogSagaCharacter, Log, All);
@@ -31,13 +32,15 @@ struct FTakeItemDelegateWrapper
 
 
 UCLASS()
-class SAGAGAME_API ASagaCharacterBase : public ACharacter, public ISagaAttackAnimationInterface, public ISagaCharacterItemInterface
+class SAGAGAME_API ASagaCharacterBase : public ACharacter, public ISagaAttackAnimationInterface, public ISagaCharacterItemInterface, public ISagaCharacterWidgetInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
 	ASagaCharacterBase();
+
+	virtual void PostInitializeComponents() override;
 
 protected:
 	virtual void SetCharacterControlData(const class USagaCharacterControlData* CharacterControlData); //캐릭터컨트롤데이터에셋을 입력으로 받음
@@ -112,4 +115,6 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UWidgetComponent> HpBar;
+
+	virtual void SetupCharacterWidget(class USagaUserWidget* InUserWidget) override;
 };
