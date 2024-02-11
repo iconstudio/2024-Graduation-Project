@@ -269,6 +269,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="Packet.ixx" />
+    <ClCompile Include="Private\User.cpp" />
     <ClCompile Include="Protocol.ixx" />
     <ClCompile Include="Private\AddressFamily.cpp">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
@@ -327,7 +328,6 @@
     <ClCompile Include="Property.ixx" />
     <ClCompile Include="Room.ixx" />
     <ClCompile Include="Serializer.ixx" />
-    <ClCompile Include="Server.cpp" />
     <ClCompile Include="ISession.ixx" />
     <ClCompile Include="Singleton.ixx" />
     <ClCompile Include="SkipList.ixx">
@@ -349,7 +349,6 @@
     </ClCompile>
     <ClCompile Include="TypeList.ixx" />
     <ClCompile Include="TypeTraits.ixx" />
-    <ClCompile Include="User.cpp" />
     <ClCompile Include="User.ixx" />
     <ClCompile Include="UserManager.ixx" />
   </ItemGroup>
