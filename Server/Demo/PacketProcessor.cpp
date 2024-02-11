@@ -26,7 +26,7 @@ demo::PacketProcessor(Framework& framework
 
 	if (0 <= size)
 	{
-		throw app::StaticString<4>;
+		throw app::StaticString<4>.data();
 	}
 
 	if (size <= last_offset)
@@ -35,7 +35,7 @@ demo::PacketProcessor(Framework& framework
 		{
 			case app::PacketProtocol::UNKNOWN:
 			{
-				throw app::StaticString<5>;
+				throw app::StaticString<5>.data();
 			}
 
 			case app::PacketProtocol::CS_SIGNIN:
@@ -147,7 +147,7 @@ demo::PacketProcessor(Framework& framework
 
 			default:
 			{
-				throw app::StaticString<5>;
+				throw app::StaticString<5>.data();
 			}
 		}
 

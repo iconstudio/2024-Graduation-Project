@@ -25,7 +25,7 @@ demo::Framework::OnReserveAccept(iconer::app::User& user)
 void
 demo::Framework::OnFailedReservingAccept(iconer::app::User& user)
 {
-	throw std::runtime_error{ (iconer::app::StaticString<6>).data() };
+	throw iconer::app::StaticString<6>.data();
 }
 
 demo::Framework::IoResult
