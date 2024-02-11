@@ -12,7 +12,7 @@ ptrdiff_t
 demo::PacketProcessor(Framework& framework
 	, const app::User& user
 	, std::span<std::byte, Framework::userRecvSize> packet_data
-	, const ptrdiff_t& last_offset)
+	, ptrdiff_t last_offset)
 {
 	if (nullptr == packet_data.data())
 	{
