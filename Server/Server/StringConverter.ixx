@@ -11,7 +11,7 @@ import <algorithm>;
 export namespace iconer::util
 {
 	[[nodiscard]]
-	constexpr std::string ToString(std::u8string_view string)
+	constexpr std::string ConvertToString(std::u8string_view string)
 	{
 		std::string result{};
 		result.reserve(string.length());
@@ -27,7 +27,7 @@ export namespace iconer::util
 	}
 
 	[[nodiscard]]
-	constexpr std::string ToString(std::wstring_view string)
+	constexpr std::string ConvertToString(std::wstring_view string)
 	{
 		std::string result{};
 		result.reserve(string.length() * 2);
@@ -45,7 +45,7 @@ export namespace iconer::util
 	}
 
 	[[nodiscard]]
-	constexpr std::string ToString(std::u16string_view string)
+	constexpr std::string ConvertToString(std::u16string_view string)
 	{
 		std::string result{};
 		result.reserve(string.length());
@@ -63,7 +63,7 @@ export namespace iconer::util
 	}
 
 	[[nodiscard]]
-	constexpr std::string ToString(std::u32string_view string)
+	constexpr std::string ConvertToString(std::u32string_view string)
 	{
 		std::string result{};
 		result.reserve(string.length());
@@ -83,7 +83,7 @@ export namespace iconer::util
 	}
 
 	[[nodiscard]]
-	constexpr std::wstring ToWideString(std::string_view string)
+	constexpr std::wstring ConvertToWideString(std::string_view string)
 	{
 		std::wstring result{};
 		result.reserve(string.length() / 3 * 2); // factor is 0.75
