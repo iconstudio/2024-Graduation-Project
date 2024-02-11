@@ -401,7 +401,7 @@ export namespace iconer::util
 	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::wstring_view str)
 	{
-		std::ranges::for_each(str, [&dest](const wchar_t& ch) noexcept {
+		std::ranges::for_each(str, [&dest](const wchar_t& ch) {
 			dest = Serialize(dest, ch);
 		});
 
@@ -423,7 +423,7 @@ export namespace iconer::util
 	constexpr std::byte* Serialize(std::byte* dest, const std::u8string_view str)
 	{
 		return std::ranges::transform(str.cbegin(), str.cend(), dest
-			, [](const char8_t& ch) noexcept {
+			, [](const char8_t& ch) {
 			return std::bit_cast<std::byte>(ch);
 		}).out;
 	}
@@ -442,7 +442,7 @@ export namespace iconer::util
 	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::u16string_view str)
 	{
-		std::ranges::for_each(str, [&dest](const char16_t& ch) noexcept {
+		std::ranges::for_each(str, [&dest](const char16_t& ch) {
 			dest = Serialize(dest, ch);
 		});
 
@@ -463,7 +463,7 @@ export namespace iconer::util
 	/// <returns>last buffer pointer foregoing from dest</returns>
 	constexpr std::byte* Serialize(std::byte* dest, const std::u32string_view str)
 	{
-		std::ranges::for_each(str, [&dest](const char32_t& ch) noexcept {
+		std::ranges::for_each(str, [&dest](const char32_t& ch) {
 			dest = Serialize(dest, ch);
 		});
 
