@@ -3,6 +3,7 @@ module;
 #include <ws2ipdef.h>
 
 module Iconer.Net.Socket;
+import Iconer.Utility.Byte;
 import Iconer.Net.IpAddress;
 import Iconer.Net.EndPoint;
 import <type_traits>;
@@ -35,7 +36,7 @@ const noexcept
 			::SOCKADDR_IN ipv4_sockaddr
 			{
 				.sin_family = AF_INET,
-				.sin_port = ::htons(port),
+				.sin_port = iconer::os::ToNetworkByteOrder(port),
 				.sin_addr = ::in4addr_any,
 				.sin_zero{}
 			};
@@ -52,7 +53,7 @@ const noexcept
 			::SOCKADDR_IN6 ipv6_sockaddr
 			{
 				.sin6_family = AF_INET6,
-				.sin6_port = ::htons(port),
+				.sin6_port = iconer::os::ToNetworkByteOrder(port),
 				.sin6_flowinfo = 0,
 				.sin6_addr = ::in6addr_any
 			};
@@ -79,7 +80,7 @@ const noexcept
 			::SOCKADDR_IN ipv4_sockaddr
 			{
 				.sin_family = AF_INET,
-				.sin_port = ::htons(port),
+				.sin_port = iconer::os::ToNetworkByteOrder(port),
 				.sin_addr = ::in4addr_loopback,
 				.sin_zero{}
 			};
@@ -96,7 +97,7 @@ const noexcept
 			::SOCKADDR_IN6 ipv6_sockaddr
 			{
 				.sin6_family = AF_INET6,
-				.sin6_port = ::htons(port),
+				.sin6_port = iconer::os::ToNetworkByteOrder(port),
 				.sin6_flowinfo = 0,
 				.sin6_addr = ::in6addr_loopback
 			};
@@ -123,7 +124,7 @@ const noexcept
 			::SOCKADDR_IN ipv4_sockaddr
 			{
 				.sin_family = AF_INET,
-				.sin_port = ::htons(port),
+				.sin_port = iconer::os::ToNetworkByteOrder(port),
 				.sin_addr = ::in4addr_any,
 				.sin_zero{}
 			};
@@ -150,7 +151,7 @@ const noexcept
 			::SOCKADDR_IN6 ipv6_sockaddr
 			{
 				.sin6_family = AF_INET6,
-				.sin6_port = ::htons(port),
+				.sin6_port = iconer::os::ToNetworkByteOrder(port),
 				.sin6_flowinfo = 0,
 				.sin6_addr = ::in6addr_any
 			};
@@ -187,7 +188,7 @@ const noexcept
 			::SOCKADDR_IN sockaddr
 			{
 				.sin_family = AF_INET,
-				.sin_port = ::htons(port),
+				.sin_port = iconer::os::ToNetworkByteOrder(port),
 				.sin_addr = ::in4addr_loopback,
 				.sin_zero{}
 			};
@@ -214,7 +215,7 @@ const noexcept
 			::SOCKADDR_IN6 sockaddr
 			{
 				.sin6_family = AF_INET6,
-				.sin6_port = ::htons(port),
+				.sin6_port = iconer::os::ToNetworkByteOrder(port),
 				.sin6_flowinfo = 0,
 				.sin6_addr = ::in6addr_loopback
 			};
