@@ -27,19 +27,39 @@ export namespace iconer::util
 	inline constexpr std::basic_string_view<Char> BasicStaticString = BasicStaticStringPool<Char, Index>::template value;
 	
 	template<size_t Index>
-	inline constexpr std::string_view StaticString = BasicStaticString<char, Index>;
+	[[nodiscard]]
+	consteval const std::string_view& StaticString() noexcept
+	{
+		return BasicStaticString<char, Index>;
+	}
 
 	template<size_t Index>
-	inline constexpr std::u8string_view StaticUtf8String = BasicStaticString<char8_t, Index>;
+	[[nodiscard]]
+	consteval const std::u8string_view& StaticUtf8String() noexcept
+	{
+		return BasicStaticString<char8_t, Index>;
+	}
 
 	template<size_t Index>
-	inline constexpr std::wstring_view StaticWideString = BasicStaticString<wchar_t, Index>;
+	[[nodiscard]]
+	consteval const std::wstring_view& StaticWideString() noexcept
+	{
+		return BasicStaticString<wchar_t, Index>;
+	}
 
 	template<size_t Index>
-	inline constexpr std::u16string_view StaticUtf16String = BasicStaticString<char16_t, Index>;
+	[[nodiscard]]
+	consteval const std::u16string_view& StaticUtf16String() noexcept
+	{
+		return BasicStaticString<char16_t, Index>;
+	}
 
 	template<size_t Index>
-	inline constexpr std::u32string_view StaticUtf32String = BasicStaticString<char32_t, Index>;
+	[[nodiscard]]
+	consteval const std::u32string_view& StaticUtf32String() noexcept
+	{
+		return BasicStaticString<char32_t, Index>;
+	}
 
 	template<>
 	struct BasicStaticStringPool<char, -1> {};
