@@ -63,16 +63,13 @@ int main()
 	auto client_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
 	auto client_ep = net::EndPoint{ client_address, 40001U };
 	
-	auto bind_r = app_socket.Bind(client_ep);
-	//auto bind_r = app_socket.BindAny(40001);
-	if (bind_r.has_value())
-	{
-		return 4;
-	}
+	// NOTICE: 클라이언트는 바인드 금지
+	//auto bind_r = app_socket.Bind(client_ep);
+	////auto bind_r = app_socket.BindAny(40001);
 
 	std::cout << "Connecting to host...\n";
 	server_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
-	server_ep = net::EndPoint{ server_address, 40000U };
+	server_ep = net::EndPoint{ server_address, server_port };
 
 	//auto connect_r = app_socket.Connect(server_ep);
 	//auto connect_r = app_socket.ConnectToAny(server_port);
