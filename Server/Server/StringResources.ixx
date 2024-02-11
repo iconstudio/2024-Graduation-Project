@@ -1,4 +1,5 @@
 module;
+#include <type_traits>
 #include "StaticStringPoolHelper.hpp"
 
 export module Iconer.Application.Resources.String;
