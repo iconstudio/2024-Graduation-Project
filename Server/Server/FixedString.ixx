@@ -236,14 +236,12 @@ struct std::formatter<iconer::collection::basic_fixed_string<Char, Length>, char
 
 	static format_context::iterator
 		format(const iconer::collection::basic_fixed_string<Char, Length>& str, format_context& context)
-		noexcept
 	{
 		return format_to(context.out(), "{}", reinterpret_cast<const char*>(str.data()));
 	}
 
 	static format_context::iterator
 		format(iconer::collection::basic_fixed_string<Char, Length>&& str, format_context& context)
-		noexcept
 	{
 		return format_to(context.out(), "{}", reinterpret_cast<const char*>(str.data()));
 	}
@@ -274,14 +272,12 @@ struct std::formatter<iconer::collection::basic_fixed_string<Char, Length>, wcha
 
 	static wformat_context::iterator
 		format(const iconer::collection::basic_fixed_string<Char, Length>& str, wformat_context& context)
-		noexcept
 	{
 		return format_to(context.out(), L"{}", reinterpret_cast<const wchar_t*>(str.data()));
 	}
 
 	static wformat_context::iterator
 		format(iconer::collection::basic_fixed_string<Char, Length>&& str, wformat_context& context)
-		noexcept
 	{
 		return format_to(context.out(), L"{}", reinterpret_cast<const wchar_t*>(str.data()));
 	}
