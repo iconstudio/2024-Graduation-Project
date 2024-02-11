@@ -11,7 +11,7 @@ export namespace iconer::collection
 	{
 		static_assert(std::is_trivially_copyable_v<Char>, "Char must be trivially copyable.");
 		static_assert(std::is_standard_layout_v<Char>, "Char must be standard layout.");
-		static_assert(0 < Length, "Fixed string must have at least one element.");
+		static_assert(0 < L, "Fixed string must have at least one element.");
 
 		using value_type = Char;
 		using size_type = size_t;
