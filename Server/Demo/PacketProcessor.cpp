@@ -1,6 +1,7 @@
 module Demo.Framework.PacketProcessor;
 import Iconer.Utility.Serializer;
 import Iconer.Application.Packet;
+import Iconer.Application.Resources.String;
 import <memory>;
 import <string>;
 import <string_view>;
@@ -9,14 +10,14 @@ using namespace iconer;
 
 ptrdiff_t
 demo::PacketProcessor(Framework& framework
-	, const iconer::app::User& user, const Framework::IdType& user_id
-	, iconer::app::UserStates& transit_state
+	, const app::User& user, const Framework::IdType& user_id
+	, app::UserStates& transit_state
 	, std::span<std::byte, Framework::userRecvSize> packet_data
 	, ptrdiff_t last_offset)
 {
 	if (nullptr == packet_data.data())
 	{
-		throw "Null packet error.";
+		throw iconer::app::StaticString<3>;
 	}
 
 	app::PacketProtocol protocol;
@@ -25,7 +26,7 @@ demo::PacketProcessor(Framework& framework
 
 	if (0 <= size)
 	{
-		throw "Packet size error.";
+		throw iconer::app::StaticString<4>;
 	}
 
 	if (size <= last_offset)
@@ -34,7 +35,7 @@ demo::PacketProcessor(Framework& framework
 		{
 			case app::PacketProtocol::UNKNOWN:
 			{
-				throw "Unknown packet.";
+				throw iconer::app::StaticString<5>;
 			}
 
 			case app::PacketProtocol::CS_SIGNIN:
@@ -146,7 +147,7 @@ demo::PacketProcessor(Framework& framework
 
 			default:
 			{
-				throw "Unknown packet.";
+				throw iconer::app::StaticString<5>;
 			}
 		}
 
