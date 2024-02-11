@@ -255,6 +255,9 @@
     <ClCompile Include="Forwarding.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Byte.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
