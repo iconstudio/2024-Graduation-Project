@@ -103,4 +103,13 @@ protected:
 	virtual void EquipWeapons(class USagaItemData* InItemData);
 	virtual void InstallGumball(class USagaItemData* InItemData);
 
+	//Ω∫≈»∫Œ∫–
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USagaCharacterStatComponent> Stat;
+
+	//UI¿ß¡¨∫Œ∫–
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UWidgetComponent> HpBar;
 };

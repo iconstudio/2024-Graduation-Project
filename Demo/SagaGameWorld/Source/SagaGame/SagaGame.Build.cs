@@ -10,7 +10,7 @@ public class SagaGame : ModuleRules
 
 		PublicIncludePaths.AddRange(new string[] { "SagaGame" });
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Networking", "Sockets", "OnlineSubsystem" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Networking", "Sockets", "OnlineSubsystem", "UMG" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
