@@ -15,9 +15,6 @@ import Iconer.Application.Packet;
 
 using namespace iconer;
 
-StoreStaticString(0, L"fsd");
-constexpr auto test = LoadStaticString(0, wchar_t);
-
 net::Socket app_socket{};
 net::IpAddress server_address{};
 net::EndPoint server_ep{};
