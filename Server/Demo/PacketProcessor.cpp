@@ -17,7 +17,7 @@ demo::PacketProcessor(Framework& framework
 {
 	if (nullptr == packet_data.data())
 	{
-		throw iconer::app::StaticString<3>;
+		throw app::StaticString<3>;
 	}
 
 	app::PacketProtocol protocol;
@@ -26,7 +26,7 @@ demo::PacketProcessor(Framework& framework
 
 	if (0 <= size)
 	{
-		throw iconer::app::StaticString<4>;
+		throw app::StaticString<4>;
 	}
 
 	if (size <= last_offset)
@@ -35,7 +35,7 @@ demo::PacketProcessor(Framework& framework
 		{
 			case app::PacketProtocol::UNKNOWN:
 			{
-				throw iconer::app::StaticString<5>;
+				throw app::StaticString<5>;
 			}
 
 			case app::PacketProtocol::CS_SIGNIN:
@@ -147,7 +147,7 @@ demo::PacketProcessor(Framework& framework
 
 			default:
 			{
-				throw iconer::app::StaticString<5>;
+				throw app::StaticString<5>;
 			}
 		}
 
