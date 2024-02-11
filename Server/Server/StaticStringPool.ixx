@@ -27,19 +27,19 @@ export namespace iconer::util
 	inline constexpr std::basic_string_view<Char> BasicStaticString = BasicStaticStringPool<Char, Index>::template value;
 	
 	template<size_t Index>
-	inline constexpr std::string_view StaticString = BasicStaticStringPool<char, Index>;
+	inline constexpr std::string_view StaticString = BasicStaticString<char, Index>;
 
 	template<size_t Index>
-	inline constexpr std::u8string_view StaticUtf8String = BasicStaticStringPool<char8_t, Index>;
+	inline constexpr std::u8string_view StaticUtf8String = BasicStaticString<char8_t, Index>;
 
 	template<size_t Index>
-	inline constexpr std::wstring_view StaticWideString = BasicStaticStringPool<wchar_t, Index>;
+	inline constexpr std::wstring_view StaticWideString = BasicStaticString<wchar_t, Index>;
 
 	template<size_t Index>
-	inline constexpr std::u16string_view StaticUtf16String = BasicStaticStringPool<char16_t, Index>;
+	inline constexpr std::u16string_view StaticUtf16String = BasicStaticString<char16_t, Index>;
 
 	template<size_t Index>
-	inline constexpr std::u32string_view StaticUtf32String = BasicStaticStringPool<char32_t, Index>;
+	inline constexpr std::u32string_view StaticUtf32String = BasicStaticString<char32_t, Index>;
 
 	template<>
 	struct BasicStaticStringPool<char, -1> {};
