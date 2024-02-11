@@ -201,12 +201,6 @@ export namespace iconer::app
 			return std::move(*this).Super::GetHandle();
 		}
 
-		[[nodiscard]]
-		constexpr const IdType& GetID() const noexcept
-		{
-			return Super::GetHandle();
-		}
-
 		template<typename S>
 		friend class SessionFactory;
 		template<typename S>
