@@ -344,6 +344,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="SpinLock.ixx" />
+    <ClCompile Include="StaticStringPool.ixx" />
     <ClCompile Include="StringConverter.ixx" />
     <ClCompile Include="Task.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
