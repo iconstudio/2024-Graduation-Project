@@ -6,12 +6,12 @@ import <format>;
 
 export namespace iconer::collection
 {
-	template <typename Char, size_t Length>
+	template <typename Char, size_t L>
 	struct [[nodiscard]] basic_fixed_string final
 	{
 		static_assert(std::is_trivially_copyable_v<Char>, "Char must be trivially copyable.");
 		static_assert(std::is_standard_layout_v<Char>, "Char must be standard layout.");
-		static_assert(0 < Length, "Fixed string must have at least one element.");
+		static_assert(0 < L, "Fixed string must have at least one element.");
 
 		using value_type = Char;
 		using size_type = size_t;
@@ -25,10 +25,12 @@ export namespace iconer::collection
 		using reverse_iterator = std::reverse_iterator<iterator>;
 		using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
+		static inline constexpr size_t Length = L;
+
 		constexpr basic_fixed_string() noexcept = default;
 		constexpr ~basic_fixed_string() noexcept = default;
 
-		constexpr basic_fixed_string(const Char* const& buffer) noexcept
+		constexpr basic_fixed_string(const Char* const& buffer)
 			: strBuffer()
 		{
 			for (size_t i = 0; i < Length; ++i)
@@ -43,10 +45,20 @@ export namespace iconer::collection
 			}
 		}
 
-		template<typename Traits = std::char_traits<Char>>
-		explicit constexpr operator std::basic_string_view<Char, Traits>() const noexcept
+		template<size_t Size>
+		constexpr basic_fixed_string(const Char(&buffer)[Size]) noexcept(Size <= Length)
+			: strBuffer()
 		{
-			return std::basic_string_view<Char, Traits>(strBuffer, Length);
+			for (size_t i = 0; i < Length; ++i)
+			{
+				const Char& elem = buffer[i];
+				if (0 == elem)
+				{
+					break;
+				}
+
+				strBuffer[i] = elem;
+			}
 		}
 
 		[[nodiscard]]
@@ -153,6 +165,19 @@ export namespace iconer::collection
 			return static_cast<difference_type>(Length);
 		}
 
+		template<typename Traits = std::char_traits<Char>>
+		[[nodiscard]]
+		constexpr std::basic_string_view<Char, Traits> view() const noexcept
+		{
+			return std::basic_string_view<Char, Traits>(strBuffer, Length);
+		}
+
+		template<typename Traits = std::char_traits<Char>>
+		explicit constexpr operator std::basic_string_view<Char, Traits>() const noexcept
+		{
+			return std::basic_string_view<Char, Traits>(strBuffer, Length);
+		}
+
 		[[nodiscard]]
 		constexpr bool operator==(const basic_fixed_string&) const noexcept = default;
 		[[nodiscard]]
@@ -229,14 +254,12 @@ struct std::formatter<iconer::collection::basic_fixed_string<Char, Length>, char
 
 	static format_context::iterator
 		format(const iconer::collection::basic_fixed_string<Char, Length>& str, format_context& context)
-		noexcept
 	{
 		return format_to(context.out(), "{}", reinterpret_cast<const char*>(str.data()));
 	}
 
 	static format_context::iterator
 		format(iconer::collection::basic_fixed_string<Char, Length>&& str, format_context& context)
-		noexcept
 	{
 		return format_to(context.out(), "{}", reinterpret_cast<const char*>(str.data()));
 	}
@@ -267,14 +290,12 @@ struct std::formatter<iconer::collection::basic_fixed_string<Char, Length>, wcha
 
 	static wformat_context::iterator
 		format(const iconer::collection::basic_fixed_string<Char, Length>& str, wformat_context& context)
-		noexcept
 	{
 		return format_to(context.out(), L"{}", reinterpret_cast<const wchar_t*>(str.data()));
 	}
 
 	static wformat_context::iterator
 		format(iconer::collection::basic_fixed_string<Char, Length>&& str, wformat_context& context)
-		noexcept
 	{
 		return format_to(context.out(), L"{}", reinterpret_cast<const wchar_t*>(str.data()));
 	}

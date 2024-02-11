@@ -45,9 +45,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Server.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Annihilator.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
@@ -234,9 +231,6 @@
     <ClCompile Include="Serializer.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="User.cpp">
-      <Filter>Application\Implementain</Filter>
-    </ClCompile>
     <ClCompile Include="ConcurrentSet.ixx">
       <Filter>Collection</Filter>
     </ClCompile>
@@ -255,9 +249,30 @@
     <ClCompile Include="Forwarding.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Byte.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\User.cpp">
+      <Filter>Application\Implementain</Filter>
+    </ClCompile>
+    <ClCompile Include="StringConverter.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterReader.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticStringPool.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="StringResources.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticStringPoolHelper.hpp">
       <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
