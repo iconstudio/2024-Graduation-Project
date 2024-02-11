@@ -32,7 +32,7 @@ const noexcept
 	{
 		case IpAddressFamily::IPv4:
 		{
-			::SOCKADDR_IN sockaddr
+			::SOCKADDR_IN ipv4_sockaddr
 			{
 				.sin_family = AF_INET,
 				.sin_port = ::htons(port),
@@ -40,7 +40,7 @@ const noexcept
 				.sin_zero{}
 			};
 
-			if (0 == ::bind(myHandle, reinterpret_cast<const SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)))
+			if (0 == ::bind(myHandle, reinterpret_cast<const SOCKADDR*>(std::addressof(ipv4_sockaddr)), sizeof(ipv4_sockaddr)))
 			{
 				return std::nullopt;
 			}
@@ -49,7 +49,7 @@ const noexcept
 
 		case IpAddressFamily::IPv6:
 		{
-			::SOCKADDR_IN6 sockaddr
+			::SOCKADDR_IN6 ipv6_sockaddr
 			{
 				.sin6_family = AF_INET,
 				.sin6_port = ::htons(port),
@@ -57,7 +57,7 @@ const noexcept
 				.sin6_addr = ::in6addr_any
 			};
 
-			if (0 == ::bind(myHandle, reinterpret_cast<const ::SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)))
+			if (0 == ::bind(myHandle, reinterpret_cast<const ::SOCKADDR*>(std::addressof(ipv6_sockaddr)), sizeof(ipv6_sockaddr)))
 			{
 				return std::nullopt;
 			}
@@ -76,7 +76,7 @@ const noexcept
 	{
 		case IpAddressFamily::IPv4:
 		{
-			::SOCKADDR_IN sockaddr
+			::SOCKADDR_IN ipv4_sockaddr
 			{
 				.sin_family = AF_INET,
 				.sin_port = ::htons(port),
@@ -84,7 +84,7 @@ const noexcept
 				.sin_zero{}
 			};
 
-			if (0 == ::bind(myHandle, reinterpret_cast<const SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)))
+			if (0 == ::bind(myHandle, reinterpret_cast<const SOCKADDR*>(std::addressof(ipv4_sockaddr)), sizeof(ipv4_sockaddr)))
 			{
 				return std::nullopt;
 			}
@@ -93,7 +93,7 @@ const noexcept
 
 		case IpAddressFamily::IPv6:
 		{
-			::SOCKADDR_IN6 sockaddr
+			::SOCKADDR_IN6 ipv6_sockaddr
 			{
 				.sin6_family = AF_INET,
 				.sin6_port = ::htons(port),
@@ -101,7 +101,7 @@ const noexcept
 				.sin6_addr = ::in6addr_loopback
 			};
 
-			if (0 == ::bind(myHandle, reinterpret_cast<const ::SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)))
+			if (0 == ::bind(myHandle, reinterpret_cast<const ::SOCKADDR*>(std::addressof(ipv6_sockaddr)), sizeof(ipv6_sockaddr)))
 			{
 				return std::nullopt;
 			}
@@ -120,7 +120,7 @@ const noexcept
 	{
 		case IpAddressFamily::IPv4:
 		{
-			::SOCKADDR_IN sockaddr
+			::SOCKADDR_IN ipv4_sockaddr
 			{
 				.sin_family = AF_INET,
 				.sin_port = ::htons(port),
@@ -129,7 +129,7 @@ const noexcept
 			};
 
 			if (0 != ::WSAConnect(myHandle
-				, reinterpret_cast<const SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)
+				, reinterpret_cast<const SOCKADDR*>(std::addressof(ipv4_sockaddr)), sizeof(ipv4_sockaddr)
 				, nullptr, nullptr
 				, nullptr, nullptr))
 			{
@@ -147,7 +147,7 @@ const noexcept
 
 		case IpAddressFamily::IPv6:
 		{
-			::SOCKADDR_IN6 sockaddr
+			::SOCKADDR_IN6 ipv6_sockaddr
 			{
 				.sin6_family = AF_INET,
 				.sin6_port = ::htons(port),
@@ -156,7 +156,7 @@ const noexcept
 			};
 
 			if (0 != ::WSAConnect(myHandle
-				, reinterpret_cast<const SOCKADDR*>(std::addressof(sockaddr)), sizeof(sockaddr)
+				, reinterpret_cast<const SOCKADDR*>(std::addressof(ipv6_sockaddr)), sizeof(ipv6_sockaddr)
 				, nullptr, nullptr
 				, nullptr, nullptr))
 			{
