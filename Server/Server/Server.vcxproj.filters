@@ -264,6 +264,9 @@
     <ClCompile Include="StaticStringPool.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="StringResources.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
