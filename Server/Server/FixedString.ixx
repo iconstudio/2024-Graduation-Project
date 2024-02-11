@@ -6,7 +6,7 @@ import <format>;
 
 export namespace iconer::collection
 {
-	template <typename Char, size_t Length>
+	template <typename Char, size_t L>
 	struct [[nodiscard]] basic_fixed_string final
 	{
 		static_assert(std::is_trivially_copyable_v<Char>, "Char must be trivially copyable.");
@@ -25,10 +25,28 @@ export namespace iconer::collection
 		using reverse_iterator = std::reverse_iterator<iterator>;
 		using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
+		static inline constexpr size_t Length = L;
+
 		constexpr basic_fixed_string() noexcept = default;
 		constexpr ~basic_fixed_string() noexcept = default;
 
-		constexpr basic_fixed_string(const Char* const& buffer) noexcept
+		constexpr basic_fixed_string(const Char* const& buffer)
+			: strBuffer()
+		{
+			for (size_t i = 0; i < Length; ++i)
+			{
+				const Char& elem = buffer[i];
+				if (0 == elem)
+				{
+					break;
+				}
+
+				strBuffer[i] = elem;
+			}
+		}
+
+		template<size_t Size>
+		constexpr basic_fixed_string(const Char(&buffer)[Size]) noexcept(Size <= Length)
 			: strBuffer()
 		{
 			for (size_t i = 0; i < Length; ++i)
