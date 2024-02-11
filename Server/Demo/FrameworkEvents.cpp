@@ -4,6 +4,7 @@ module;
 module Demo.Framework;
 import Iconer.Application.User;
 import Iconer.Application.Packet;
+import Iconer.Application.Resources.String;
 import Demo.Framework.PacketProcessor;
 import <stdexcept>;
 
@@ -24,7 +25,7 @@ demo::Framework::OnReserveAccept(iconer::app::User& user)
 void
 demo::Framework::OnFailedReservingAccept(iconer::app::User& user)
 {
-	throw std::runtime_error{ "Error when reserving acceptance of a socket." };
+	throw std::runtime_error{ (iconer::app::StaticString<6>).data() };
 }
 
 demo::Framework::IoResult
@@ -146,18 +147,18 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 
 		auto proceed_bytes = PacketProcessor(*this, user, id, transit_state, user_buffer, bytes);
 		if (proceed_bytes < 0) [[unlikely]] {
-			myLogger.LogWarning(L"Cannot assembly a packet due to `PacketProcessor`'s failure");
+			myLogger.LogWarning(iconer::app::StaticWideString<7>);
 
 			user.ReleaseState(transit_state);
 			return std::unexpected(iconer::net::ErrorCode::NoBufferStorage);
 		}
 		else if (0 == proceed_bytes)
 		{
-			myLogger.DebugLogWarning(L"Cannot assembly a packet in `PacketProcessor` due to lack of bytes");
+			myLogger.DebugLogWarning(iconer::app::StaticWideString<8>);
 		}
 		else
 		{
-			myLogger.DebugLog(L"A packet is assembled");
+			myLogger.DebugLog(iconer::app::StaticWideString<9>);
 
 			user_recv_offset -= proceed_bytes;
 		};
@@ -166,7 +167,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 	}
 	else
 	{
-		myLogger.DebugLogWarning(L"Cannot assembly a packet due to lack of bytes");
+		myLogger.DebugLogWarning(iconer::app::StaticWideString<10>);
 	}
 
 	return user.Receive(GetBuffer(id));

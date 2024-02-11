@@ -193,6 +193,8 @@
     <ClCompile Include="BehaviourTree.ixx" />
     <ClCompile Include="BorrowedPointer.ixx" />
     <ClCompile Include="BorrowedSendContext.ixx" />
+    <ClCompile Include="Byte.ixx" />
+    <ClCompile Include="CharacterReader.ixx" />
     <ClCompile Include="ConcurrentList.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
@@ -268,6 +270,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="Packet.ixx" />
+    <ClCompile Include="Private\User.cpp" />
     <ClCompile Include="Protocol.ixx" />
     <ClCompile Include="Private\AddressFamily.cpp">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DeploymentContent>
@@ -326,7 +329,6 @@
     <ClCompile Include="Property.ixx" />
     <ClCompile Include="Room.ixx" />
     <ClCompile Include="Serializer.ixx" />
-    <ClCompile Include="Server.cpp" />
     <ClCompile Include="ISession.ixx" />
     <ClCompile Include="Singleton.ixx" />
     <ClCompile Include="SkipList.ixx">
@@ -342,13 +344,15 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="SpinLock.ixx" />
+    <ClCompile Include="StaticStringPool.ixx" />
+    <ClCompile Include="StringConverter.ixx" />
+    <ClCompile Include="StringResources.ixx" />
     <ClCompile Include="Task.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="TypeList.ixx" />
     <ClCompile Include="TypeTraits.ixx" />
-    <ClCompile Include="User.cpp" />
     <ClCompile Include="User.ixx" />
     <ClCompile Include="UserManager.ixx" />
   </ItemGroup>
@@ -359,6 +363,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp" />
+    <ClInclude Include="StaticStringPoolHelper.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\Server.natvis" />
