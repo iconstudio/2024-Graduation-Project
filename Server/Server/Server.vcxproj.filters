@@ -269,6 +269,9 @@
     <ClInclude Include="BehaviourTreeHelper.hpp">
       <Filter>Utility</Filter>
     </ClInclude>
+    <ClInclude Include="StaticStringPoolHelper.hpp">
+      <Filter>Utility</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\Server.natvis" />

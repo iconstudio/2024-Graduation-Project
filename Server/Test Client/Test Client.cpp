@@ -1,8 +1,11 @@
 ﻿#pragma comment(lib, "Server.lib")
 #include <cstdio>
+#include <string_view>
 #include <iostream>
+#include "StaticStringPoolHelper.hpp"
 
 import Iconer.Utility.Serializer;
+import Iconer.Utility.StaticStringPool;
 import Iconer.Net;
 import Iconer.Net.IpAddress;
 import Iconer.Net.EndPoint;
@@ -11,6 +14,9 @@ import Iconer.Coroutine;
 import Iconer.Application.Packet;
 
 using namespace iconer;
+
+StoreStaticString(0, wchar_t, L"fsd");
+constexpr auto test = LoadStaticString(0, wchar_t);
 
 net::Socket app_socket{};
 net::IpAddress server_address{};
