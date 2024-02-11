@@ -1,28 +1,19 @@
 module;
 #define ICONER_SERIALIZER_NODISCARD [[nodiscard("The serialized buffer has been lost!")]]
-#include <cstdint>
 #include <cmath>
-#include <bit>
 #include <tuple>
 #include <algorithm>
 #include <utility>
 
 export module Iconer.Utility.Serializer;
 import Iconer.Utility.Constraints;
+import Iconer.Utility.Byte;
 import Iconer.Utility.File;
-import <memory>;
+import <cstdint>;
 import <stdexcept>;
+import <memory>;
 export import <string>;
 export import <string_view>;
-
-static constexpr unsigned char Byte = 0XFFU;
-
-template <typename T>
-[[nodiscard]]
-constexpr char RShift(const T& value, const size_t& times) noexcept
-{
-	return static_cast<char>(static_cast<unsigned char>(value >> (times * 8ULL)) & Byte);
-}
 
 export namespace iconer::util
 {
