@@ -129,6 +129,7 @@
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -155,6 +156,7 @@
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>
