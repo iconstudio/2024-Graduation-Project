@@ -15,6 +15,7 @@ using namespace iconer;
 net::Socket app_socket{};
 net::IpAddress server_address{};
 net::EndPoint server_ep{};
+constexpr std::uint16_t server_port = 40000;
 
 static inline constexpr size_t recvMaxSize = 512;
 static std::byte recv_space[recvMaxSize]{};
@@ -73,9 +74,9 @@ int main()
 	server_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
 	server_ep = net::EndPoint{ server_address, 40000U };
 
-	auto connect_r = app_socket.Connect(server_ep);
-	//auto connect_r = app_socket.ConnectToAny(40000U);
-	//auto connect_r = app_socket.ConnectToHost(40000U);
+	//auto connect_r = app_socket.Connect(server_ep);
+	//auto connect_r = app_socket.ConnectToAny(server_port);
+	auto connect_r = app_socket.ConnectToHost(server_port);
 	if (connect_r.has_value())
 	{
 		return 3;
