@@ -1,6 +1,7 @@
 export module Demo.Framework;
 import Iconer.Utility.Logger;
 import Iconer.Utility.ColourfulConsole;
+import Iconer.Collection.FixedString;
 import Iconer.Net.ErrorCode;
 import Iconer.Net.IoContext;
 import Iconer.Net.Socket;
