@@ -26,7 +26,7 @@ export namespace iconer::os
 	}
 
 	[[nodiscard]]
-	auto&& ToNetworkByteOrder(const std::integral auto& value) noexcept
+	constexpr decltype(auto) ToNetworkByteOrder(const std::integral auto& value [[msvc::lifetime_bound]]) noexcept
 	{
 		if constexpr (IsLittleEndian())
 		{
@@ -39,7 +39,7 @@ export namespace iconer::os
 	}
 
 	[[nodiscard]]
-	auto&& ToNetworkByteOrder(std::integral auto&& value) noexcept
+	constexpr decltype(auto) ToNetworkByteOrder(std::integral auto&& value) noexcept
 	{
 		if constexpr (IsLittleEndian())
 		{
@@ -52,7 +52,7 @@ export namespace iconer::os
 	}
 
 	[[nodiscard]]
-	auto&& ToSystemByteOrder(const std::integral auto& value) noexcept
+	constexpr decltype(auto) ToSystemByteOrder(const std::integral auto& value [[msvc::lifetime_bound]]) noexcept
 	{
 		if constexpr (IsLittleEndian())
 		{
@@ -65,7 +65,7 @@ export namespace iconer::os
 	}
 
 	[[nodiscard]]
-	auto&& ToSystemByteOrder(std::integral auto&& value) noexcept
+	constexpr decltype(auto) ToSystemByteOrder(std::integral auto&& value) noexcept
 	{
 		if constexpr (IsLittleEndian())
 		{
