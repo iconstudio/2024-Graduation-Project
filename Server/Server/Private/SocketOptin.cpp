@@ -51,7 +51,7 @@ const noexcept
 		{
 			::SOCKADDR_IN6 ipv6_sockaddr
 			{
-				.sin6_family = AF_INET,
+				.sin6_family = AF_INET6,
 				.sin6_port = ::htons(port),
 				.sin6_flowinfo = 0,
 				.sin6_addr = ::in6addr_any
@@ -95,7 +95,7 @@ const noexcept
 		{
 			::SOCKADDR_IN6 ipv6_sockaddr
 			{
-				.sin6_family = AF_INET,
+				.sin6_family = AF_INET6,
 				.sin6_port = ::htons(port),
 				.sin6_flowinfo = 0,
 				.sin6_addr = ::in6addr_loopback
@@ -149,7 +149,7 @@ const noexcept
 		{
 			::SOCKADDR_IN6 ipv6_sockaddr
 			{
-				.sin6_family = AF_INET,
+				.sin6_family = AF_INET6,
 				.sin6_port = ::htons(port),
 				.sin6_flowinfo = 0,
 				.sin6_addr = ::in6addr_any
@@ -213,7 +213,7 @@ const noexcept
 		{
 			::SOCKADDR_IN6 sockaddr
 			{
-				.sin6_family = AF_INET,
+				.sin6_family = AF_INET6,
 				.sin6_port = ::htons(port),
 				.sin6_flowinfo = 0,
 				.sin6_addr = ::in6addr_loopback
