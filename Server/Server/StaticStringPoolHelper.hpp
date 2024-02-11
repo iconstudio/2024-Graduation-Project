@@ -1,7 +1,7 @@
 #pragma once
 
-#define StoreStaticString(index, character, string) template<>\
-struct iconer::util::BasicStaticStringPool<character, 0>\
+#define StoreStaticString(index, string) template<>\
+struct iconer::util::BasicStaticStringPool<std::remove_cvref_t<decltype(string[0])>, 0>\
 {\
 	static inline constexpr auto value = std::basic_string_view{ string };\
 }
