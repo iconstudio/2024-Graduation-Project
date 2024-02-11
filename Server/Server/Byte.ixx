@@ -3,6 +3,18 @@ import <type_traits>;
 import <concepts>;
 export import <bit>;
 
+static constexpr unsigned char Byte = 0XFFU;
+
+export namespace iconer::util
+{
+	template <std::integral T>
+	[[nodiscard]]
+	constexpr char RShift(const T& value, const size_t& times) noexcept
+	{
+		return static_cast<char>(static_cast<unsigned char>(value >> (times * 8ULL)) & Byte);
+	}
+}
+
 export namespace iconer::os
 {
 	using std::endian;
