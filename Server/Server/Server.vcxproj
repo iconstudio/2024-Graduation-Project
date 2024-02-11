@@ -265,6 +265,7 @@
     <ClCompile Include="Logger.ixx" />
     <ClCompile Include="LooseMonad.ixx" />
     <ClCompile Include="Monad.ixx" />
+    <ClCompile Include="NamedObject.ixx" />
     <ClCompile Include="Network.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
