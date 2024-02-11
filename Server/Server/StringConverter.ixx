@@ -11,6 +11,22 @@ import <algorithm>;
 export namespace iconer::util
 {
 	[[nodiscard]]
+	constexpr std::string ToString(std::u8string_view string)
+	{
+		std::string result{};
+		result.reserve(string.length());
+
+		auto it = std::back_inserter(result);
+
+		for (const char8_t& uch : string)
+		{
+			*(it++) = static_cast<std::uint32_t>(uch);
+		}
+
+		return result;
+	}
+
+	[[nodiscard]]
 	constexpr std::string ToString(std::wstring_view string)
 	{
 		std::string result{};
@@ -23,6 +39,44 @@ export namespace iconer::util
 			const auto longer = static_cast<std::uint32_t>(wch);
 			*(it++) = static_cast<char>(RShift(longer, 0));
 			*(it++) = static_cast<char>(RShift(longer, 1));
+		}
+
+		return result;
+	}
+
+	[[nodiscard]]
+	constexpr std::string ToString(std::u16string_view string)
+	{
+		std::string result{};
+		result.reserve(string.length());
+
+		auto it = std::back_inserter(result);
+
+		for (const char16_t& uch : string)
+		{
+			const auto longer = static_cast<std::uint32_t>(uch);
+			*(it++) = static_cast<char>(RShift(longer, 0));
+			*(it++) = static_cast<char>(RShift(longer, 1));
+		}
+
+		return result;
+	}
+
+	[[nodiscard]]
+	constexpr std::string ToString(std::u32string_view string)
+	{
+		std::string result{};
+		result.reserve(string.length());
+
+		auto it = std::back_inserter(result);
+
+		for (const char32_t& uch : string)
+		{
+			const auto longer = static_cast<std::uint64_t>(uch);
+			*(it++) = static_cast<char>(RShift(longer, 0));
+			*(it++) = static_cast<char>(RShift(longer, 1));
+			*(it++) = static_cast<char>(RShift(longer, 2));
+			*(it++) = static_cast<char>(RShift(longer, 3));
 		}
 
 		return result;
