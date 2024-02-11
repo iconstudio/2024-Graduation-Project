@@ -258,6 +258,9 @@
     <ClCompile Include="StringConverter.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="CharacterReader.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
