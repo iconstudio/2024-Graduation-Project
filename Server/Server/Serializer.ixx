@@ -573,7 +573,9 @@ export namespace iconer::util
 
 export namespace iconer::util
 {
-	// Read a boolean value from the byte buffer
+	/// <summary>Read a boolean value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, bool& output)
 	{
 		output = std::bit_cast<char>(buffer[0]);
@@ -581,7 +583,9 @@ export namespace iconer::util
 		return buffer + 1;
 	}
 
-	// Read a character from the byte buffer
+	/// <summary>Read a character from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, char& output)
 	{
 		output = std::bit_cast<char>(buffer[0]);
@@ -589,7 +593,9 @@ export namespace iconer::util
 		return buffer + 1;
 	}
 
-	// Read an unsigned character from the byte buffer
+	/// <summary>Read an unsigned character from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, unsigned char& output)
 	{
 		output = std::bit_cast<unsigned char>(buffer[0]);
@@ -597,7 +603,9 @@ export namespace iconer::util
 		return buffer + 1;
 	}
 
-	// Read an utf-8 character from the byte buffer
+	/// <summary>Read an utf-8 character from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, char8_t& output)
 	{
 		output = std::bit_cast<char8_t>(buffer[0]);
@@ -605,7 +613,9 @@ export namespace iconer::util
 		return buffer + 1;
 	}
 
-	// Read a 16-bit integer value from the byte buffer
+	/// <summary>Read a 16-bit integer value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, std::int16_t& output)
 	{
 		const std::uint32_t mid = (static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
@@ -616,7 +626,9 @@ export namespace iconer::util
 		return buffer + 2;
 	}
 
-	// Read an unsigned 16-bit integer value from the byte buffer
+	/// <summary>Read an unsigned 16-bit integer value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, std::uint16_t& output)
 	{
 		const std::uint32_t mid = (static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
@@ -627,7 +639,9 @@ export namespace iconer::util
 		return buffer + 2;
 	}
 
-	// Read a wide character from the byte buffer
+	/// <summary>Read a wide character from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, wchar_t& output)
 	{
 		const std::uint32_t mid = (static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
@@ -638,7 +652,9 @@ export namespace iconer::util
 		return buffer + 2;
 	}
 
-	// Read an utf-16 character from the byte buffer
+	/// <summary>Read an utf-16 character from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, char16_t& output)
 	{
 		const std::uint32_t mid = (static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
@@ -649,7 +665,9 @@ export namespace iconer::util
 		return buffer + 2;
 	}
 
-	// Read a 32-bit integer value from the byte buffer
+	/// <summary>Read a 32-bit integer value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, std::int32_t& output)
 	{
 		const std::uint64_t mid = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
@@ -662,7 +680,9 @@ export namespace iconer::util
 		return buffer + 4;
 	}
 
-	// Read an unsigned 32-bit integer value from the byte buffer
+	/// <summary>Read an unsigned 32-bit integer value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, std::uint32_t& output)
 	{
 		const std::uint64_t mid = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
@@ -675,7 +695,9 @@ export namespace iconer::util
 		return buffer + 4;
 	}
 
-	// Read a 32-bit integer value from the byte buffer
+	/// <summary>Read a 32-bit integer value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, long& output)
 	{
 		const std::uint64_t mid = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
@@ -688,7 +710,9 @@ export namespace iconer::util
 		return buffer + 4;
 	}
 
-	// Read an unsigned 32-bit integer value from the byte buffer
+	/// <summary>Read an unsigned 32-bit integer value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, unsigned long& output)
 	{
 		const std::uint64_t mid = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
@@ -701,7 +725,9 @@ export namespace iconer::util
 		return buffer + 4;
 	}
 
-	// Read an utf-32 character from the byte buffer
+	/// <summary>Read an utf-32 character from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, char32_t& output)
 	{
 		const std::uint64_t mid = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
@@ -714,7 +740,9 @@ export namespace iconer::util
 		return buffer + 4;
 	}
 
-	// Read a 64-bit integer value from the byte buffer
+	/// <summary>Read a 64-bit integer value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, std::int64_t& output)
 	{
 		output = static_cast<std::int64_t>((static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[7])) << 56U)
@@ -729,7 +757,9 @@ export namespace iconer::util
 		return buffer + 8;
 	}
 
-	// Read an unsigned 64-bit integer value from the byte buffer
+	/// <summary>Read an unsigned 64-bit integer value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, std::uint64_t& output)
 	{
 		output = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[7])) << 56U)
@@ -744,7 +774,9 @@ export namespace iconer::util
 		return buffer + 8;
 	}
 
-	// Read a 32-bit floating point value from the byte buffer
+	/// <summary>Read a 32-bit floating point value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, std::float_t& output)
 	{
 		std::int32_t mid{};
@@ -755,7 +787,9 @@ export namespace iconer::util
 		return it;
 	}
 
-	// Read a 64-bit floating point value from the byte buffer
+	/// <summary>Read a 64-bit floating point value from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, std::double_t& output)
 	{
 		std::int64_t mid{};
@@ -766,7 +800,9 @@ export namespace iconer::util
 		return it;
 	}
 
-	// Read a string from the byte buffer
+	/// <summary>Read a string from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, std::string& output)
 	{
 		output.reserve(length);
@@ -779,7 +815,9 @@ export namespace iconer::util
 		return buffer + length;
 	}
 
-	// Read a utf-8 string from the byte buffer
+	/// <summary>Read a utf-8 string from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, std::u8string& output)
 	{
 		output.reserve(length);
@@ -794,7 +832,9 @@ export namespace iconer::util
 		return it;
 	}
 
-	// Read a wide string from the byte buffer
+	/// <summary>Read a wide string from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, std::wstring& output)
 	{
 		output.reserve(length);
@@ -812,7 +852,9 @@ export namespace iconer::util
 		return it;
 	}
 
-	// Read a utf-16 string from the byte buffer
+	/// <summary>Read a utf-16 string from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, std::u16string& output)
 	{
 		output.reserve(length);
@@ -830,7 +872,9 @@ export namespace iconer::util
 		return it;
 	}
 
-	// Read a utf-32 string from the byte buffer
+	/// <summary>Read a utf-32 string from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, std::u32string& output)
 	{
 		output.reserve(length);
@@ -849,6 +893,7 @@ export namespace iconer::util
 	}
 
 	/// <summary>Read a array from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
 	/// <exception cref="std::out_of_range"/>
 	template<size_t Length>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, char(&output)[Length])
@@ -867,6 +912,7 @@ export namespace iconer::util
 	}
 
 	/// <summary>Read a array from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
 	/// <exception cref="std::out_of_range"/>
 	template<size_t Length>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, char8_t(&output)[Length])
@@ -885,6 +931,7 @@ export namespace iconer::util
 	}
 
 	/// <summary>Read a array from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
 	/// <exception cref="std::out_of_range"/>
 	template<size_t Length>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, wchar_t(&output)[Length])
@@ -903,6 +950,7 @@ export namespace iconer::util
 	}
 
 	/// <summary>Read a array from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
 	/// <exception cref="std::out_of_range"/>
 	template<size_t Length>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, char16_t(&output)[Length])
@@ -921,6 +969,7 @@ export namespace iconer::util
 	}
 
 	/// <summary>Read a array from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
 	/// <exception cref="std::out_of_range"/>
 	template<size_t Length>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, size_t length, char32_t(&output)[Length])
@@ -938,9 +987,10 @@ export namespace iconer::util
 		return it;
 	}
 
-	template<hard_enumerations T>
 	/// <summary>Read a enumeration from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
 	/// <exception cref="std::out_of_range"/>
+	template<hard_enumerations T>
 	constexpr const std::byte* Deserialize(const std::byte* buffer, T& output)
 	{
 		std::underlying_type_t<T> result{};
