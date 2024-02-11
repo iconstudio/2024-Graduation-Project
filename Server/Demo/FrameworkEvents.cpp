@@ -25,7 +25,8 @@ demo::Framework::OnReserveAccept(iconer::app::User& user)
 void
 demo::Framework::OnFailedReservingAccept(iconer::app::User& user)
 {
-	throw iconer::app::StaticString<6>.data();
+	constexpr auto& msg = iconer::app::StaticString<6>;
+	throw msg.data();
 }
 
 demo::Framework::IoResult
@@ -147,14 +148,16 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 
 		auto proceed_bytes = PacketProcessor(*this, user, id, transit_state, user_buffer, bytes);
 		if (proceed_bytes < 0) [[unlikely]] {
-			myLogger.LogWarning(iconer::app::StaticWideString<7>);
+			constexpr auto& msg = iconer::app::StaticWideString<7>;
+			myLogger.LogWarning(msg);
 
 			user.ReleaseState(transit_state);
 			return std::unexpected(iconer::net::ErrorCode::NoBufferStorage);
 		}
 		else if (0 == proceed_bytes)
 		{
-			myLogger.DebugLogWarning(iconer::app::StaticWideString<8>);
+			constexpr auto& msg = iconer::app::StaticWideString<8>;
+			myLogger.DebugLogWarning(msg);
 		}
 		else
 		{
