@@ -1,6 +1,7 @@
 export module Iconer.Application.ISession;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.Handler;
+import Iconer.Utility.NamedObject;
 import Iconer.Utility.Property;
 import Iconer.Utility.AtomicSwitcher;
 import <concepts>;
@@ -15,7 +16,7 @@ export namespace iconer::app
 	class ISession;
 
 	template<typename I, typename S>
-	class [[nodiscard]] ISession : protected iconer::util::Handler<I>
+	class [[nodiscard]] ISession : protected iconer::util::Handler<I>, public iconer::util::NamedObject
 	{
 	public:
 		using Super = iconer::util::Handler<I>;
@@ -32,22 +33,22 @@ export namespace iconer::app
 
 		explicit constexpr ISession(const IdType& handle)
 			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<AtomicType>)
-			: Super(handle)
-			, myState(), Name("Session")
+			: Super(handle), NamedObject("Session")
+			, myState()
 		{
 		}
 
 		explicit constexpr ISession(IdType&& handle)
 			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<AtomicType>)
-			: Super(std::move(handle))
-			, myState(), Name("Session")
+			: Super(std::move(handle)), NamedObject("Session")
+			, myState()
 		{
 		}
 
 		ISession(ISession&& other)
 			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_constructibles<Super, StatusType, std::wstring>)
-			: Super(std::move(other))
-			, myState(), Name(std::move(other.Name))
+			: Super(std::move(other)), NamedObject(std::move(other))
+			, myState()
 		{
 			iconer::util::AtomicSwitcher switcher{ other.myState };
 			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
@@ -60,6 +61,7 @@ export namespace iconer::app
 			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
 
 			Super::operator=(std::move(other));
+			NamedObject::operator=(std::move(other));
 			return *this;
 		}
 
@@ -187,33 +189,16 @@ export namespace iconer::app
 			return iconer::util::AtomicSwitcher{ myState };
 		}
 
-		template<size_t Length>
-		constexpr void SetName(const char(&name)[Length])
-		{
-			this->Name = std::string{ name };
-		}
-
-		template<size_t Length>
-		constexpr void SetName(char(&& name)[Length])
-		{
-			this->Name = std::string{ std::move(name) };
-		}
-
-		constexpr void SetName(std::string_view name)
-		{
-			this->Name = name;
-		}
-
 		[[nodiscard]]
-		constexpr const std::string& GetName() const& noexcept
+		constexpr const IdType& GetID() const& noexcept
 		{
-			return Name;
+			return Super::GetHandle();
 		}
-
+		
 		[[nodiscard]]
-		constexpr std::string&& GetName() && noexcept
+		constexpr IdType&& GetID() && noexcept
 		{
-			return std::move(Name);
+			return std::move(*this).Super::GetHandle();
 		}
 
 		[[nodiscard]]
@@ -226,8 +211,6 @@ export namespace iconer::app
 		friend class SessionFactory;
 		template<typename S>
 		friend class ISessionManager;
-
-		std::string Name;
 
 	protected:
 		volatile AtomicType myState;
