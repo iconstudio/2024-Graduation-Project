@@ -43,12 +43,6 @@ export namespace iconer::collection
 			}
 		}
 
-		template<typename Traits = std::char_traits<Char>>
-		explicit constexpr operator std::basic_string_view<Char, Traits>() const noexcept
-		{
-			return std::basic_string_view<Char, Traits>(strBuffer, Length);
-		}
-
 		[[nodiscard]]
 		constexpr reference at(size_type index)
 		{
@@ -151,6 +145,19 @@ export namespace iconer::collection
 		constexpr difference_type ssize() const noexcept
 		{
 			return static_cast<difference_type>(Length);
+		}
+
+		template<typename Traits = std::char_traits<Char>>
+		[[nodiscard]]
+		constexpr std::basic_string_view<Char, Traits> view() const noexcept
+		{
+			return std::basic_string_view<Char, Traits>(strBuffer, Length);
+		}
+
+		template<typename Traits = std::char_traits<Char>>
+		explicit constexpr operator std::basic_string_view<Char, Traits>() const noexcept
+		{
+			return std::basic_string_view<Char, Traits>(strBuffer, Length);
 		}
 
 		[[nodiscard]]
