@@ -16,7 +16,7 @@ demo::PacketProcessor(Framework& framework
 {
 	if (nullptr == packet_data.data())
 	{
-		constexpr auto& msg = app::StaticString<3>;
+		constexpr auto& msg = app::StaticString<3>();
 		throw msg;
 	}
 
@@ -26,19 +26,20 @@ demo::PacketProcessor(Framework& framework
 
 	if (0 <= size)
 	{
-		constexpr auto& msg = app::StaticString<4>;
+		constexpr auto& msg = app::StaticString<4>();
 		throw msg.data();
 	}
 
 	const auto& user_id = user.GetID();
 
+	constexpr auto& unknown_packet_errmsg = app::StaticString<5>();
 	if (size <= last_offset)
 	{
 		switch (protocol)
 		{
 			case app::PacketProtocol::UNKNOWN:
 			{
-				throw app::StaticString<5>.data();
+				throw unknown_packet_errmsg.data();
 			}
 
 			case app::PacketProtocol::CS_SIGNIN:
@@ -150,7 +151,7 @@ demo::PacketProcessor(Framework& framework
 
 			default:
 			{
-				throw app::StaticString<5>.data();
+				throw unknown_packet_errmsg.data();
 			}
 		}
 
