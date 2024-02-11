@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
+#include "SagaUserWidget.h"
 #include "SagaHpBarWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SAGAGAME_API USagaHpBarWidget : public UUserWidget
+class SAGAGAME_API USagaHpBarWidget : public USagaUserWidget
 {
 	GENERATED_BODY()
 	

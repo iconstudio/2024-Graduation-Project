@@ -11,7 +11,8 @@
 #include "Engine/DamageEvents.h"
 #include "Item/SagaWeaponItemData.h"
 #include "CharacterStat/SagaCharacterStatComponent.h"
-#include "Components/WidgetComponent.h"
+#include "UI/SagaWidgetComponent.h"
+#include "UI/SagaHpBarWidget.h"
 
 DEFINE_LOG_CATEGORY(LogSagaCharacter);
 
@@ -97,7 +98,7 @@ ASagaCharacterBase::ASagaCharacterBase()
     Stat = CreateDefaultSubobject<USagaCharacterStatComponent>(TEXT("Stat"));
 
     //À§Á¬ ÄÄÆ÷³ÍÆ®
-    HpBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget"));
+    HpBar = CreateDefaultSubobject<USagaWidgetComponent>(TEXT("Widget"));
     HpBar->SetupAttachment(GetMesh());
     HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
     static ConstructorHelpers::FClassFinder<UUserWidget>HpBarWidgetRef(TEXT("/Game/UI/WBP_HpBar.WBP_HpBar_C"));
@@ -108,6 +109,13 @@ ASagaCharacterBase::ASagaCharacterBase()
         HpBar->SetDrawSize(FVector2D(150.f, 15.0f));
         HpBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     }
+}
+
+void ASagaCharacterBase::PostInitializeComponents()
+{
+    Super::PostInitializeComponents();
+    
+    Stat->OnHpZero.AddUObject(this, &ASagaCharacterBase::SetDead);
 }
 
 void ASagaCharacterBase::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
@@ -228,7 +236,7 @@ float ASagaCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& Dam
 {
     Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-    SetDead();
+    Stat->ApplyDamage(DamageAmount);
 
     return DamageAmount;
 }
@@ -238,6 +246,7 @@ void ASagaCharacterBase::SetDead()
     GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
     PlayDeadAnimation();
     SetActorEnableCollision(false);
+    HpBar->SetHiddenInGame(true);
 }
 
 void ASagaCharacterBase::PlayDeadAnimation()
@@ -280,4 +289,15 @@ void ASagaCharacterBase::EquipWeapons(USagaItemData* InItemData)
 void ASagaCharacterBase::InstallGumball(USagaItemData* InItemData)
 {
     UE_LOG(LogSagaCharacter, Log, TEXT("Install Gumball"));
+}
+
+void ASagaCharacterBase::SetupCharacterWidget(USagaUserWidget* InUserWidget)
+{
+    USagaHpBarWidget* HpBarWidget = Cast<USagaHpBarWidget>(InUserWidget);
+    if (HpBarWidget)
+    {
+        HpBarWidget->SetMaxHp(Stat->GetMaxHp());
+        HpBarWidget->UpdateHpBar(Stat->GetCurrentHp());
+        Stat->OnHpChanged.AddUObject(HpBarWidget, &USagaHpBarWidget::UpdateHpBar);
+    }
 }
