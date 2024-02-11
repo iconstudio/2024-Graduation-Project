@@ -547,7 +547,7 @@ export namespace iconer::util
 	/// <summary>Allocate a byte buffer of multiple values</summary>
 	/// <exception cref="std::bad_alloc"/>
 	template<typename... Args> requires (1 < sizeof...(Args))
-	ICONER_SERIALIZER_NODISCARD
+		ICONER_SERIALIZER_NODISCARD
 		constexpr std::unique_ptr<std::byte[]> Serializes(Args&&... args)
 	{
 		return Serialize(std::forward_as_tuple(std::forward<Args>(args)...));
