@@ -10,6 +10,8 @@
 #include "Physics/SagaCollision.h"
 #include "Engine/DamageEvents.h"
 #include "Item/SagaWeaponItemData.h"
+#include "CharacterStat/SagaCharacterStatComponent.h"
+#include "Components/WidgetComponent.h"
 
 DEFINE_LOG_CATEGORY(LogSagaCharacter);
 
@@ -90,6 +92,22 @@ ASagaCharacterBase::ASagaCharacterBase()
     Weapon->SetupAttachment(GetMesh(), TEXT("hand_rSocket")); //캐릭터의 특정 본에 항상 부착되어 돌아다닐 수 있도록 소켓이름을 지정해준다.
     //캐릭터 애셋에 소켓 이름이 지정되어 있어야 한다.
 
+
+    //스탯 컴포넌트
+    Stat = CreateDefaultSubobject<USagaCharacterStatComponent>(TEXT("Stat"));
+
+    //위젯 컴포넌트
+    HpBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget"));
+    HpBar->SetupAttachment(GetMesh());
+    HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+    static ConstructorHelpers::FClassFinder<UUserWidget>HpBarWidgetRef(TEXT("/Game/UI/WBP_HpBar.WBP_HpBar_C"));
+    if (HpBarWidgetRef.Class)
+    {
+        HpBar->SetWidgetClass(HpBarWidgetRef.Class);
+        HpBar->SetWidgetSpace(EWidgetSpace::Screen);
+        HpBar->SetDrawSize(FVector2D(150.f, 15.0f));
+        HpBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
 }
 
 void ASagaCharacterBase::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
