@@ -273,6 +273,12 @@
     <ClCompile Include="Transform.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="XYZWrapper.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Quark.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">

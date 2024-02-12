@@ -328,6 +328,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </ClCompile>
     <ClCompile Include="Property.ixx" />
+    <ClCompile Include="Quark.ixx" />
     <ClCompile Include="Room.ixx" />
     <ClCompile Include="Serializer.ixx" />
     <ClCompile Include="ISession.ixx" />
@@ -357,6 +358,7 @@
     <ClCompile Include="TypeTraits.ixx" />
     <ClCompile Include="User.ixx" />
     <ClCompile Include="UserManager.ixx" />
+    <ClCompile Include="XYZWrapper.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colourful-Console\ColourfulConsole\ColourfulConsole.vcxproj">
