@@ -1,6 +1,7 @@
 export module Iconer.Utility.D3D.Transform;
 export import :Quark;
 export import :XYZWrapper;
+import <type_traits>;
 
 export namespace iconer::util::d3d
 {
@@ -10,14 +11,48 @@ export namespace iconer::util::d3d
 		Transform() noexcept = default;
 		~Transform() noexcept = default;
 
-		Transform& SetMatrix(const Matrix& mat) noexcept;
-		Transform& SetMatrix(Matrix&& mat) noexcept;
-		Transform& SetScale(float x, float y, float z) noexcept;
-		Transform& SetPosition(float x, float y, float z) noexcept;
-		Transform& SetPosition(const Position& pos) noexcept;
-		Transform& SetPosition(Position&& pos) noexcept;
-		Transform& SetRotation(const Matrix& tfrm) noexcept;
-		Transform& SetRotation(Matrix&& tfrm) noexcept;
+		constexpr Transform& SetMatrix(const Matrix& mat) noexcept
+		{
+			myMatrix = mat;
+			return *this;
+		}
+
+		Transform& SetMatrix(Matrix&& mat) noexcept
+		{
+			myMatrix = std::move(mat);
+			return *this;
+		}
+
+		Transform& SetScale(float x, float y, float z) noexcept
+		{
+			return *this;
+		}
+
+		constexpr Transform& SetPosition(float x, float y, float z) noexcept
+		{
+			return *this;
+		}
+
+		constexpr Transform& SetPosition(const Position& pos) noexcept
+		{
+			return *this;
+		}
+
+		constexpr Transform& SetPosition(Position&& pos) noexcept
+		{
+			return *this;
+		}
+
+		constexpr Transform& SetRotation(const Matrix& tfrm) noexcept
+		{
+			return *this;
+		}
+
+		constexpr Transform& SetRotation(Matrix&& tfrm) noexcept
+		{
+			return *this;
+		}
+
 
 		Transform& Translate(float x, float y, float z) noexcept;
 		Transform& Translate(const Position& shift) noexcept;
@@ -50,14 +85,15 @@ export namespace iconer::util::d3d
 		[[nodiscard]] const XYZWrapper& GetPosition() const noexcept;
 
 		Matrix myMatrix;
-		XYZWrapper myRight;
-		XYZWrapper myUp;
-		XYZWrapper myLook;
-		XYZWrapper myPosition;
+
+		XYZWrapper myRight{ myMatrix._11, myMatrix._12, myMatrix._13 };
+		XYZWrapper myUp{ myMatrix._21, myMatrix._22, myMatrix._23 };
+		XYZWrapper myLook{ myMatrix._31, myMatrix._32, myMatrix._43 };
+		XYZWrapper myPosition{ myMatrix._41, myMatrix._42, myMatrix._43 };
 
 		static inline constexpr Position Up = Position(0.0f, 1.0f, 0.0f);
-		static constexpr Position Forward = Position(0.0f, 0.0f, 1.0f);
-		static constexpr Position Right = Position(1.0f, 0.0f, 0.0f);
+		static inline constexpr Position Forward = Position(0.0f, 0.0f, 1.0f);
+		static inline constexpr Position Right = Position(1.0f, 0.0f, 0.0f);
 
 	private:
 		bool Updated;
