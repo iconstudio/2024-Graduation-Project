@@ -16,7 +16,7 @@ export StoreStaticString( 7, L"Cannot assembly a packet due to `PacketProcessor`
 export StoreStaticString( 8, L"Cannot assembly a packet in `PacketProcessor` due to lack of bytes");
 export StoreStaticString( 9, L"A packet is assembled");
 export StoreStaticString(10, L"Cannot assembly a packet due to lack of bytes");
-export StoreStaticString(11, L"\tWorker {} is finished\n");
+export StoreStaticString(11, "This packet is not supported by PacketProcessor");
 export StoreStaticString(12, L"\tWorker {} is finished\n");
 
 export namespace iconer::app

@@ -33,6 +33,8 @@ demo::PacketProcessor(Framework& framework
 	const auto& user_id = user.GetID();
 
 	auto& unknown_packet_errmsg = app::StaticString<5>();
+	auto& notsupported_packet_errmsg = app::StaticString<11>();
+
 	if (size <= last_offset)
 	{
 		switch (protocol)
@@ -44,7 +46,7 @@ demo::PacketProcessor(Framework& framework
 
 			case app::PacketProtocol::CS_SIGNIN:
 			{
-
+				throw notsupported_packet_errmsg.data();
 			}
 			break;
 
