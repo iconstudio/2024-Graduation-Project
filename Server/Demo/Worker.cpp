@@ -9,7 +9,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 {
 	auto& logger = framework.myLogger;
 
-	constexpr auto& beg_msg = iconer::app::StaticWideString<0>();
+	auto& beg_msg = iconer::app::StaticWideString<0>();
 	logger.Log(beg_msg, nth);
 	framework.workerAwakens.arrive_and_wait();
 
@@ -25,7 +25,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 			break;
 		};
 
-		constexpr auto& msg = iconer::app::StaticWideString<1>();
+		auto& msg = iconer::app::StaticWideString<1>();
 		logger.DebugLog(msg, nth, io_id);
 
 		auto ctx = static_cast<iconer::app::IContext*>(io_context);
@@ -37,6 +37,6 @@ demo::Worker(demo::Framework& framework, size_t nth)
 		};
 	}
 
-	constexpr auto& end_msg = iconer::app::StaticWideString<2>();
+	auto& end_msg = iconer::app::StaticWideString<2>();
 	logger.DebugLog(end_msg, nth);
 }

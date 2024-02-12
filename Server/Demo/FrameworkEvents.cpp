@@ -25,7 +25,7 @@ demo::Framework::OnReserveAccept(iconer::app::User& user)
 void
 demo::Framework::OnFailedReservingAccept(iconer::app::User& user)
 {
-	constexpr auto& msg = iconer::app::StaticString<6>();
+	auto& msg = iconer::app::StaticString<6>();
 	throw msg.data();
 }
 
@@ -148,7 +148,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 
 		auto proceed_bytes = PacketProcessor(*this, user, user_buffer, user_recv_offset);
 		if (proceed_bytes < 0) [[unlikely]] {
-			constexpr auto& msg = iconer::app::StaticWideString<7>();
+			auto& msg = iconer::app::StaticWideString<7>();
 			myLogger.LogWarning(msg);
 
 			user.ReleaseState(transit_state);
@@ -156,12 +156,12 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 		}
 		else if (0 == proceed_bytes)
 		{
-			constexpr auto& msg = iconer::app::StaticWideString<8>();
+			auto& msg = iconer::app::StaticWideString<8>();
 			myLogger.DebugLogWarning(msg);
 		}
 		else
 		{
-			constexpr auto& msg = iconer::app::StaticWideString<9>();
+			auto& msg = iconer::app::StaticWideString<9>();
 			myLogger.DebugLog(msg);
 
 			user_recv_offset -= proceed_bytes;
@@ -171,7 +171,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 	}
 	else
 	{
-		constexpr auto& msg = iconer::app::StaticWideString<10>();
+		auto& msg = iconer::app::StaticWideString<10>();
 		myLogger.DebugLogWarning(msg);
 	}
 
