@@ -10,7 +10,7 @@ using namespace iconer;
 
 ptrdiff_t
 demo::PacketProcessor(Framework& framework
-	, const app::User& user
+	, app::User& user
 	, std::span<std::byte, Framework::userRecvSize> packet_data
 	, ptrdiff_t last_offset)
 {
@@ -118,6 +118,7 @@ demo::PacketProcessor(Framework& framework
 
 			case app::PacketProtocol::CS_MY_POSITION:
 			{
+				//user.set
 			}
 			break;
 
