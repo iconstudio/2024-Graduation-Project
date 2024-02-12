@@ -125,6 +125,12 @@ export namespace iconer::app
 			return *this;
 		}
 
+		constexpr User& PositionX(float&& v) noexcept
+		{
+			myTransform[3][0] = std::move(v);
+			return *this;
+		}
+
 		[[nodiscard]]
 		constexpr float& PositionX() noexcept
 		{
@@ -140,6 +146,12 @@ export namespace iconer::app
 		constexpr User& PositionY(const float& v) noexcept
 		{
 			myTransform[3][1] = v;
+			return *this;
+		}
+
+		constexpr User& PositionY(float&& v) noexcept
+		{
+			myTransform[3][1] = std::move(v);
 			return *this;
 		}
 
@@ -161,6 +173,12 @@ export namespace iconer::app
 			return *this;
 		}
 
+		constexpr User& PositionZ(float&& v) noexcept
+		{
+			myTransform[3][2] = std::move(v);
+			return *this;
+		}
+
 		[[nodiscard]]
 		constexpr float& PositionZ() noexcept
 		{
@@ -171,6 +189,15 @@ export namespace iconer::app
 		constexpr const float& PositionZ() const noexcept
 		{
 			return myTransform[3][2];
+		}
+
+		[[nodiscard]]
+		constexpr User& Positions(const float& x, const float& y, const float& z) noexcept
+		{
+			myTransform[3][0] = x;
+			myTransform[3][1] = y;
+			myTransform[3][2] = z;
+			return *this;
 		}
 
 		[[nodiscard]]
