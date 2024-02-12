@@ -9,8 +9,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 {
 	auto& logger = framework.myLogger;
 
-	auto& beg_msg = iconer::app::StaticWideString<0>();
-	logger.Log(beg_msg, nth);
+	logger.Log(iconer::app::StaticWideString<0>(), nth);
 	framework.workerAwakens.arrive_and_wait();
 
 	while (true)
@@ -25,8 +24,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 			break;
 		};
 
-		auto& msg = iconer::app::StaticWideString<1>();
-		logger.DebugLog(msg, nth, io_id);
+		logger.DebugLog(iconer::app::StaticWideString<1>(), nth, io_id);
 
 		auto ctx = static_cast<iconer::app::IContext*>(io_context);
 		if (framework.RouteOperation(io_event.isSucceed, io_id, io_bytes, ctx)) [[likely]] {
@@ -37,6 +35,5 @@ demo::Worker(demo::Framework& framework, size_t nth)
 		};
 	}
 
-	auto& end_msg = iconer::app::StaticWideString<2>();
-	logger.DebugLog(end_msg, nth);
+	logger.DebugLog(iconer::app::StaticWideString<2>(), nth);
 }

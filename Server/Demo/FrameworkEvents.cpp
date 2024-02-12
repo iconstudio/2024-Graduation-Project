@@ -148,21 +148,18 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 
 		auto proceed_bytes = PacketProcessor(*this, user, user_buffer, user_recv_offset);
 		if (proceed_bytes < 0) [[unlikely]] {
-			auto& msg = iconer::app::StaticWideString<7>();
-			myLogger.LogWarning(msg);
+			myLogger.LogWarning(iconer::app::StaticWideString<7>());
 
 			user.ReleaseState(transit_state);
 			return std::unexpected(iconer::net::ErrorCode::NoBufferStorage);
 		}
 		else if (0 == proceed_bytes)
 		{
-			auto& msg = iconer::app::StaticWideString<8>();
-			myLogger.DebugLogWarning(msg);
+			myLogger.DebugLogWarning(iconer::app::StaticWideString<8>());
 		}
 		else
 		{
-			auto& msg = iconer::app::StaticWideString<9>();
-			myLogger.DebugLog(msg);
+			myLogger.DebugLog(iconer::app::StaticWideString<9>());
 
 			user_recv_offset -= proceed_bytes;
 		};
@@ -171,8 +168,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 	}
 	else
 	{
-		auto& msg = iconer::app::StaticWideString<10>();
-		myLogger.DebugLogWarning(msg);
+		myLogger.DebugLogWarning(iconer::app::StaticWideString<10>());
 	}
 
 	return user.Receive(user_buffer);
