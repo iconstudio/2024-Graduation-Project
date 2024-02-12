@@ -175,7 +175,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 		myLogger.DebugLogWarning(msg);
 	}
 
-	return user.Receive(GetBuffer(id));
+	return user.Receive(user_buffer);
 }
 
 void
