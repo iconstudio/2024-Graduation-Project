@@ -118,12 +118,23 @@ demo::PacketProcessor(Framework& framework
 
 			case app::PacketProtocol::CS_MY_POSITION:
 			{
-				//user.set
+				float px{}, py{}, pz{};
+				util::Deserialize(util::Deserialize(util::Deserialize(last_buf, px),  py), pz);
+
+				user.PositionX(px);
+				user.PositionY(py);
+				user.PositionZ(pz);
 			}
 			break;
 
 			case app::PacketProtocol::CS_MY_TRANSFORM:
 			{
+				float pl{}, pr{}, pu{};
+				util::Deserialize(util::Deserialize(util::Deserialize(last_buf, pl), pr), pu);
+
+				user.RotationLook({ pl, 0, 0 });
+				user.RotationRight({ 0, pr, 0 });
+				user.RotationUp({ 0, 0, pu });
 			}
 			break;
 
