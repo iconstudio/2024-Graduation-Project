@@ -28,35 +28,35 @@ export namespace iconer::util
 	
 	template<size_t Index>
 	[[nodiscard]]
-	consteval const std::string_view& StaticString() noexcept
+	constexpr const std::string_view& StaticString() noexcept
 	{
 		return BasicStaticString<char, Index>;
 	}
 
 	template<size_t Index>
 	[[nodiscard]]
-	consteval const std::u8string_view& StaticUtf8String() noexcept
+	constexpr const std::u8string_view& StaticUtf8String() noexcept
 	{
 		return BasicStaticString<char8_t, Index>;
 	}
 
 	template<size_t Index>
 	[[nodiscard]]
-	consteval const std::wstring_view& StaticWideString() noexcept
+	constexpr const std::wstring_view& StaticWideString() noexcept
 	{
 		return BasicStaticString<wchar_t, Index>;
 	}
 
 	template<size_t Index>
 	[[nodiscard]]
-	consteval const std::u16string_view& StaticUtf16String() noexcept
+	constexpr const std::u16string_view& StaticUtf16String() noexcept
 	{
 		return BasicStaticString<char16_t, Index>;
 	}
 
 	template<size_t Index>
 	[[nodiscard]]
-	consteval const std::u32string_view& StaticUtf32String() noexcept
+	constexpr const std::u32string_view& StaticUtf32String() noexcept
 	{
 		return BasicStaticString<char32_t, Index>;
 	}

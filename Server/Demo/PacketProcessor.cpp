@@ -16,8 +16,8 @@ demo::PacketProcessor(Framework& framework
 {
 	if (nullptr == packet_data.data())
 	{
-		constexpr auto& msg = app::StaticString<3>();
-		throw msg;
+		auto& msg = app::StaticString<3>();
+		throw msg.data();
 	}
 
 	app::PacketProtocol protocol;
@@ -26,13 +26,13 @@ demo::PacketProcessor(Framework& framework
 
 	if (0 <= size)
 	{
-		constexpr auto& msg = app::StaticString<4>();
+		auto& msg = app::StaticString<4>();
 		throw msg.data();
 	}
 
 	const auto& user_id = user.GetID();
 
-	constexpr auto& unknown_packet_errmsg = app::StaticString<5>();
+	auto& unknown_packet_errmsg = app::StaticString<5>();
 	if (size <= last_offset)
 	{
 		switch (protocol)
