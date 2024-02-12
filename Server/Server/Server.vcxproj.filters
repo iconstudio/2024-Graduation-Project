@@ -270,6 +270,9 @@
     <ClCompile Include="NamedObject.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Transform.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">

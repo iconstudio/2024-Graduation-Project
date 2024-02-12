@@ -352,6 +352,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="Transform.ixx" />
     <ClCompile Include="TypeList.ixx" />
     <ClCompile Include="TypeTraits.ixx" />
     <ClCompile Include="User.ixx" />
