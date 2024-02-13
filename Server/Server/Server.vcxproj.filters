@@ -276,8 +276,11 @@
     <ClCompile Include="XYZWrapper.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="Quark.ixx">
+    <ClCompile Include="Matrix.ixx">
       <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\Matrix.cpp">
+      <Filter>Utility\Implementaition</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

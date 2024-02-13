@@ -1,5 +1,5 @@
 export module Iconer.Utility.D3D.Transform;
-export import :Quark;
+export import Iconer.Utility.D3D.Matrix;
 export import :XYZWrapper;
 import <type_traits>;
 
@@ -10,6 +10,14 @@ export namespace iconer::util::d3d
 	public:
 		Transform() noexcept = default;
 		~Transform() noexcept = default;
+
+		explicit constexpr Transform(const Transform& other) noexcept
+			: myMatrix(other.myMatrix), hasUpdated(other.hasUpdated)
+		{}
+		
+		explicit constexpr Transform(Transform&& other) noexcept
+			: myMatrix(std::move(other.myMatrix)), hasUpdated(std::move(other.hasUpdated))
+		{}
 
 		constexpr Transform& SetMatrix(const Matrix& mat) noexcept
 		{
@@ -25,6 +33,7 @@ export namespace iconer::util::d3d
 
 		Transform& SetScale(float x, float y, float z) noexcept
 		{
+			myMatrix *= x;
 			return *this;
 		}
 
@@ -52,7 +61,6 @@ export namespace iconer::util::d3d
 		{
 			return *this;
 		}
-
 
 		Transform& Translate(float x, float y, float z) noexcept;
 		Transform& Translate(const Position& shift) noexcept;
@@ -96,6 +104,6 @@ export namespace iconer::util::d3d
 		static inline constexpr Position Right = Position(1.0f, 0.0f, 0.0f);
 
 	private:
-		bool Updated;
+		bool hasUpdated;
 	};
 }
