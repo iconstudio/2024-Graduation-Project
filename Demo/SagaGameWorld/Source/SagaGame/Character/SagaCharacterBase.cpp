@@ -90,6 +90,7 @@ ASagaCharacterBase::ASagaCharacterBase()
 
     //무기 컴포넌트(Weapon Component)
     Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
+    //무기부착
     Weapon->SetupAttachment(GetMesh(), TEXT("hand_rSocket")); //캐릭터의 특정 본에 항상 부착되어 돌아다닐 수 있도록 소켓이름을 지정해준다.
     //캐릭터 애셋에 소켓 이름이 지정되어 있어야 한다.
 

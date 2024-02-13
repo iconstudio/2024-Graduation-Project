@@ -15,7 +15,6 @@ public:
 
 
 private:
-	int16 PlayerHP;
 	int8 bIsRiding;
 
 protected:
@@ -23,6 +22,14 @@ protected:
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Health)
+	float PlayerHP;
+
+	UFUNCTION(BlueprintCallable, Category = Item)
+	void UseItem(class UItems* Item);
 	
 
 	//캐릭터 컨트롤 부분
@@ -37,6 +44,10 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UCameraComponent> FollowCamera;
+
+	//인벤토리
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Camera, Meta = (AllowPrivateAccess = "true"))
+	class UInventoryComponent* Inventory;
 
 //input
 protected:
