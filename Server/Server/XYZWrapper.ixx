@@ -16,7 +16,7 @@ export namespace iconer::util::d3d
 		{
 		}
 
-		explicit constexpr XYZWrapper(Position& position) noexcept
+		explicit constexpr XYZWrapper(Vector3& position) noexcept
 			: XYZWrapper(position.x, position.y, position.z)
 		{
 		}
@@ -50,7 +50,7 @@ export namespace iconer::util::d3d
 			return *this;
 		}
 
-		XYZWrapper& operator=(const Position& vector) noexcept
+		XYZWrapper& operator=(const Vector3& vector) noexcept
 		{
 			x = vector.x;
 			y = vector.y;
@@ -58,7 +58,7 @@ export namespace iconer::util::d3d
 			return *this;
 		}
 
-		XYZWrapper& operator=(Position&& vector) noexcept
+		XYZWrapper& operator=(Vector3&& vector) noexcept
 		{
 			x = std::move(vector.x);
 			y = std::move(vector.y);
@@ -82,9 +82,9 @@ export namespace iconer::util::d3d
 			return *this;
 		}
 
-		explicit constexpr operator Position() const noexcept
+		explicit constexpr operator Vector3() const noexcept
 		{
-			return Position{ x, y, z };
+			return Vector3{ x, y, z };
 		}
 
 		float& x;
@@ -94,6 +94,6 @@ export namespace iconer::util::d3d
 	private:
 		XYZWrapper(const XYZWrapper&) = delete;
 		XYZWrapper(XYZWrapper&&) = delete;
-		XYZWrapper(Position&& position) = delete;
+		XYZWrapper(Vector3&& position) = delete;
 	};
 }
