@@ -1,14 +1,14 @@
+module;
+#include <stdexcept>
+#include <type_traits>
+#include <concepts>
+#include <memory>
+#include <initializer_list>
+#include <span>
+#include <utility>
 export module Iconer.Utility.D3D.Matrix;
 import Iconer.Utility.Constraints;
 export import Iconer.Utility.Matrix3x3;
-import <stdexcept>;
-import <type_traits>;
-import <concepts>;
-import <memory>;
-import <initializer_list>;
-import <span>;
-import <utility>;
-import <ranges>;
 
 #define MAKE_SCALAR_REFERENCES(vars_prefix, mat) auto& vars_prefix##_11 = (mat).scalar[0], & vars_prefix##_12 = (mat).scalar[1], & vars_prefix##_13 = (mat).scalar[2], & vars_prefix##_14 = (mat).scalar[3]; \
 auto& vars_prefix##_21 = (mat).scalar[4], & vars_prefix##_22 = (mat).scalar[5], & vars_prefix##_23 = (mat).scalar[6], & vars_prefix##_24 = (mat).scalar[7]; \
@@ -29,6 +29,29 @@ export namespace iconer::util::d3d
 		float x, y, z, w;
 	};
 
+	struct [[nodiscard]] MAT3X3 final
+	{
+		[[nodiscard]]
+		constexpr float Determinant() const noexcept
+		{
+			return scalar[0] * scalar[4] * scalar[8] + scalar[1] * scalar[5] * scalar[6] + scalar[2] * scalar[3] * scalar[7] - scalar[0] * scalar[5] * scalar[7] - scalar[1] * scalar[3] * scalar[8] - scalar[2] * scalar[4] * scalar[6];
+		}
+
+		[[nodiscard]]
+		constexpr std::span<float, 9> AsSpan() noexcept
+		{
+			return std::span<float, 9>{ scalar, 9 };
+		}
+
+		[[nodiscard]]
+		constexpr std::span<const float, 9> AsSpan() const noexcept
+		{
+			return std::span<const float, 9>{ scalar, 9 };
+		}
+
+		float scalar[9];
+	};
+
 	class [[nodiscard]] MatrixDeterminantError : public std::domain_error
 	{
 	public:
@@ -40,14 +63,36 @@ export namespace iconer::util::d3d
 	class [[nodiscard]] Matrix final
 	{
 	public:
-		constexpr void Invert() noexcept
+		constexpr Matrix GetInverse() const noexcept
 		{
-			*this = !(*this);
+			return !(*this);
 		}
 
-		constexpr void Transpose() noexcept
+		constexpr Matrix& Inverse() & noexcept
 		{
-			*this = ~(*this);
+			return *this = !(*this);
+		}
+
+		constexpr Matrix Inverse() && noexcept
+		{
+			return std::move(*this = !(*this));
+		}
+
+		constexpr Matrix& Transpose() & noexcept
+		{
+			return *this = ~(*this);
+		}
+		
+		[[nodiscard]]
+		constexpr Matrix Transpose() && noexcept
+		{
+			return std::move(*this = ~(*this));
+		}
+
+		[[nodiscard]]
+		constexpr Matrix GetTranspose() const noexcept
+		{
+			return ~(*this);
 		}
 
 		[[nodiscard]]
@@ -55,8 +100,9 @@ export namespace iconer::util::d3d
 		{
 			MAKE_SCALAR_REFERENCES(my, *this);
 
+			//MAT3X3 result{};
 			Matrix3x3 result{};
-			auto result_input = result.AsSpan();
+			auto& result_input = result.scalar;
 			size_t result_index = 0;
 
 			for (size_t r = 0; r < 4; ++r)
@@ -75,6 +121,36 @@ export namespace iconer::util::d3d
 					++result_index;
 				}
 			}
+
+			return result;
+		}
+
+		[[nodiscard]]
+		constexpr Matrix Cofactor() const noexcept
+		{
+			Matrix result{};
+			MAKE_SCALAR_REFERENCES(res, result);
+			MAKE_SCALAR_REFERENCES(my, *this);
+
+			res_11 = my_11 * Minor(0, 0).Determinant();
+			res_12 = -my_12 * Minor(0, 1).Determinant();
+			res_13 = my_13 * Minor(0, 2).Determinant();
+			res_14 = -my_14 * Minor(0, 3).Determinant();
+
+			res_21 = -my_21 * Minor(1, 0).Determinant();
+			res_22 = my_22 * Minor(1, 1).Determinant();
+			res_23 = -my_23 * Minor(1, 2).Determinant();
+			res_24 = my_24 * Minor(1, 3).Determinant();
+
+			res_31 = my_31 * Minor(2, 0).Determinant();
+			res_32 = -my_32 * Minor(2, 1).Determinant();
+			res_33 = my_33 * Minor(2, 2).Determinant();
+			res_34 = -my_34 * Minor(2, 3).Determinant();
+
+			res_41 = -my_41 * Minor(3, 0).Determinant();
+			res_42 = my_42 * Minor(3, 1).Determinant();
+			res_43 = -my_43 * Minor(3, 2).Determinant();
+			res_44 = my_44 * Minor(3, 3).Determinant();
 
 			return result;
 		}
@@ -447,13 +523,9 @@ export namespace iconer::util::d3d
 			}
 		}
 
-		template<typename T>
-			requires (not same_as<clean_t<T>, Matrix>)
 		[[nodiscard]]
-		inline friend constexpr Matrix operator*(const Matrix& lhs, T&& rhs) noexcept
+		inline friend constexpr Matrix operator*(const Matrix& lhs, const float& rhs) noexcept
 		{
-			using multiplier_t = std::remove_cvref_t<T>;
-
 			if (std::is_constant_evaluated())
 			{
 				MAKE_REFERENCES(lhs);
@@ -468,20 +540,11 @@ export namespace iconer::util::d3d
 			}
 			else
 			{
-				if constexpr (std::floating_point<multiplier_t>)
-				{
-					return iconer::util::d3d::Matrix::MultiplyImplementation(lhs, std::forward<T>(rhs));
-				}
-				else
-				{
-					return iconer::util::d3d::Matrix::MultiplyImplementation(lhs, static_cast<float>(rhs));
-				}
+				return iconer::util::d3d::Matrix::MultiplyImplementation(lhs, rhs);
 			}
 		}
 
-		template<typename T>
-			requires (not same_as<clean_t<T>, Matrix>)
-		inline friend constexpr Matrix& operator/=(Matrix& lhs, T&& rhs) noexcept
+		inline friend constexpr Matrix& operator/=(Matrix& lhs, const float& rhs) noexcept
 		{
 			if (std::is_constant_evaluated())
 			{
@@ -509,15 +572,14 @@ export namespace iconer::util::d3d
 			}
 			else
 			{
-				return lhs.DivideImplementation(std::forward<T>(rhs));
+				lhs.LocalDivideImplementation(rhs);
 			}
 
 			return lhs;
 		}
 
-		template<typename T>
 		[[nodiscard]]
-		inline friend constexpr Matrix operator/(const Matrix& lhs, T&& rhs) noexcept
+		inline friend constexpr Matrix operator/(const Matrix& lhs, const float& rhs) noexcept
 		{
 			if (std::is_constant_evaluated())
 			{
@@ -533,14 +595,7 @@ export namespace iconer::util::d3d
 			}
 			else
 			{
-				if constexpr (std::floating_point<T>)
-				{
-					return iconer::util::d3d::Matrix::DivideImplementation(lhs, std::forward<T>(rhs));
-				}
-				else
-				{
-					return iconer::util::d3d::Matrix::DivideImplementation(lhs, static_cast<float>(rhs));
-				}
+				return iconer::util::d3d::Matrix::DivideImplementation(lhs, rhs);
 			}
 		}
 
@@ -556,6 +611,10 @@ export namespace iconer::util::d3d
 				{
 					throw MatrixDeterminantError{ "Has no inverted matrix." };
 				}
+
+				auto adjoint = lhs.Cofactor().Transpose();
+				
+				return adjoint / det;
 			}
 			else
 			{
@@ -575,15 +634,15 @@ export namespace iconer::util::d3d
 				std::swap(result.At(1, 0), result.At(0, 1));
 				std::swap(result.At(2, 0), result.At(0, 2));
 				std::swap(result.At(3, 0), result.At(0, 3));
-				
+
 				std::swap(result.At(0, 1), result.At(1, 0));
 				std::swap(result.At(2, 1), result.At(1, 2));
 				std::swap(result.At(3, 1), result.At(1, 3));
-				
+
 				std::swap(result.At(0, 2), result.At(2, 0));
 				std::swap(result.At(1, 2), result.At(2, 1));
 				std::swap(result.At(3, 2), result.At(2, 3));
-				
+
 				std::swap(result.At(0, 3), result.At(3, 0));
 				std::swap(result.At(1, 3), result.At(3, 1));
 				std::swap(result.At(2, 3), result.At(3, 2));
@@ -1182,7 +1241,16 @@ namespace iconer::util::d3d::test
 		constexpr auto mat_res22 = (IdentityMatrix * 2).Determinant();
 		constexpr auto mat_res23 = ~IdentityMatrix;
 		constexpr auto mat_res24 = IdentityMatrix.Determinant();
-		constexpr auto mat_res25 = IdentityMatrix.Minor(0, 2);
+		constexpr auto mat_res25 = IdentityMatrix.Cofactor();
+		constexpr auto mat_res26 = IdentityMatrix.Minor(0, 2);
 
+		constexpr auto mat_res27 = Matrix{ 12, 0, 0, 1, 4, -6, 0, 31, 10, 7, 3, 0, 0, 25, 2, 7 }.Cofactor();
+		constexpr auto mat_res28 = Matrix{ 12, 0, 0, 1, 4, -6, 0, 31, 10, 7, 3, 0, 0, 25, 2, 7 }.Determinant();
+		constexpr auto mat_res29 = !Matrix{ 12, 0, 0, 1, 4, -6, 0, 31, 10, 7, 3, 0, 0, 25, 2, 7 };
+		constexpr auto mat_res30 = (Matrix{ 12, 0, 0, 1, 4, -6, 0, 31, 10, 7, 3, 0, 0, 25, 2, 7 }) * (!Matrix{ 12, 0, 0, 1, 4, -6, 0, 31, 10, 7, 3, 0, 0, 25, 2, 7 });
+		constexpr auto mat_res31 = (!Matrix{ 12, 0, 0, 1, 4, -6, 0, 31, 10, 7, 3, 0, 0, 25, 2, 7 }) * (Matrix{ 12, 0, 0, 1, 4, -6, 0, 31, 10, 7, 3, 0, 0, 25, 2, 7 });
+
+		constexpr auto mat_res32 = IdentityMatrix.GetInverse();
+		constexpr auto mat_res33 = !IdentityMatrix;
 	}
 }
