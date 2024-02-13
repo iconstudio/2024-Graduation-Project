@@ -558,7 +558,7 @@ export namespace iconer::util
 	template<typename... Args> requires (1 < sizeof...(Args))
 		constexpr std::byte* Serializes(std::byte* dest, Args&&... args)
 	{
-		return iconer::util::detail::Serialize(dest, std::forward_as_tuple(std::forward<Args>(args)...));
+		return iconer::util::detail::Serialize(dest, std::forward_as_tuple(std::forward<Args>(args)...), std::index_sequence_for<Args...>{});
 	}
 }
 
