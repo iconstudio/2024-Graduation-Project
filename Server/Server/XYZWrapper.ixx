@@ -4,7 +4,7 @@ module;
 #include <span>
 
 export module Iconer.Utility.D3D.Transform:XYZWrapper;
-export import :Quark;
+export import Iconer.Utility.D3D.Matrix;
 
 export namespace iconer::util::d3d
 {

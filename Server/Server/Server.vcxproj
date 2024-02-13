@@ -271,6 +271,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="Packet.ixx" />
+    <ClCompile Include="Private\Matrix.cpp" />
     <ClCompile Include="Private\User.cpp" />
     <ClCompile Include="Protocol.ixx" />
     <ClCompile Include="Private\AddressFamily.cpp">
@@ -328,7 +329,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DeploymentContent>
     </ClCompile>
     <ClCompile Include="Property.ixx" />
-    <ClCompile Include="Quark.ixx" />
+    <ClCompile Include="Matrix.ixx" />
     <ClCompile Include="Room.ixx" />
     <ClCompile Include="Serializer.ixx" />
     <ClCompile Include="ISession.ixx" />
