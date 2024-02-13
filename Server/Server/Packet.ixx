@@ -9,6 +9,43 @@ export namespace iconer::app::packets
 {
 #pragma pack(push, 1)
 	/// <summary>
+	/// Position packet for client
+	/// </summary>
+	/// <param name="userId">- Target player's id</param>
+	/// <param name="x"/>
+	/// <param name="y"/>
+	/// <param name="z"/>
+	/// <remarks>Client would send it to the server</remarks>
+	struct [[nodiscard]] CS_UpdatePositionPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(float) * 3;
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(float) * 3);
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			return iconer::util::Serializes(Super::Write(buffer), userId, x, y, z);
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer)
+		{
+			return iconer::util::Deserialize(iconer::util::Deserialize(iconer::util::Deserialize(iconer::util::Deserialize(Super::Read(buffer), userId), x), y), z);
+		}
+
+		int userId;
+		float x, y, z;
+	};
+	/// <summary>
 	/// Login packet for client
 	/// </summary>
 	/// <param name="userName">Nickname of client</param>
