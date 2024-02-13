@@ -55,23 +55,23 @@ export namespace iconer::util
 		[[nodiscard]]
 		constexpr std::span<float, 9> AsSpan() noexcept
 		{
-			return std::span<float, 9>{ scalar };
+			return std::span<float, 9>{ scalar, 9 };
 		}
 
 		[[nodiscard]]
 		constexpr std::span<const float, 9> AsSpan() const noexcept
 		{
-			return std::span<const float, 9>{ scalar };
+			return std::span<const float, 9>{ scalar, 9 };
 		}
 
 		[[nodiscard]]
-		constexpr auto Row(const size_t nth) noexcept
+		constexpr std::span<float, 3> Row(const size_t nth) noexcept
 		{
 			return std::span<float, 3>{ scalar + nth * 3, 3  };
 		}
 
 		[[nodiscard]]
-		constexpr auto Row(const size_t nth) const noexcept
+		constexpr std::span<const float, 3> Row(const size_t nth) const noexcept
 		{
 			return std::span<const float, 3>{ scalar + nth * 3, 3  };
 		}
