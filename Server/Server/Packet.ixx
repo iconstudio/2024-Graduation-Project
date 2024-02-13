@@ -11,7 +11,6 @@ export namespace iconer::app::packets
 	/// <summary>
 	/// Position packet for client
 	/// </summary>
-	/// <param name="userId">- Target player's id</param>
 	/// <param name="x"/>
 	/// <param name="y"/>
 	/// <param name="z"/>
@@ -32,17 +31,22 @@ export namespace iconer::app::packets
 			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(float) * 3);
 		}
 
+		constexpr CS_UpdatePositionPacket(float px, float py, float pz) noexcept
+			: Super(PacketProtocol::CS_MY_POSITION, SignedWannabeSize())
+			, x(px), y(py), z(pz)
+		{
+		}
+
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
-			return iconer::util::Serializes(Super::Write(buffer), userId, x, y, z);
+			return iconer::util::Serializes(Super::Write(buffer), x, y, z);
 		}
 
 		constexpr const std::byte* Read(const std::byte* buffer)
 		{
-			return iconer::util::Deserialize(iconer::util::Deserialize(iconer::util::Deserialize(iconer::util::Deserialize(Super::Read(buffer), userId), x), y), z);
+			return iconer::util::Deserialize(iconer::util::Deserialize(iconer::util::Deserialize(Super::Read(buffer), x), y), z);
 		}
 
-		int userId;
 		float x, y, z;
 	};
 	/// <summary>
