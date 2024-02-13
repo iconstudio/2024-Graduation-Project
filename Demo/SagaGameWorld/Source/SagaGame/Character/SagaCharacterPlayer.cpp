@@ -9,11 +9,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "SagaCharacterControlData.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Item/Items.h"
+#include "Item/InventoryComponent.h"
 
 
 ASagaCharacterPlayer::ASagaCharacterPlayer()
 {
-	PlayerHP = 150;
+	PlayerHP = 150.0f;
 	bIsRiding = false;
 
 	WalkSpeed = 500.0f; // 기본 걷기 속도
@@ -28,6 +30,10 @@ ASagaCharacterPlayer::ASagaCharacterPlayer()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
+
+	//인벤토리
+	Inventory = CreateDefaultSubobject<UInventoryComponent>("Inventory");
+	//Inventory->Capacity = 20;
 
 
 	//입력
@@ -99,6 +105,7 @@ void ASagaCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Play
 
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ASagaCharacterPlayer::OnStartSprinting);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASagaCharacterPlayer::OnStopSprinting);
+	
 }
 
 void ASagaCharacterPlayer::ChangeCharacterControl()
@@ -132,6 +139,15 @@ void ASagaCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacte
 	}
 
 	CurrentCharacterControlType = NewCharacterControlType;
+}
+
+void ASagaCharacterPlayer::UseItem(UItems* Item)
+{
+	if (Item)
+	{
+		Item->Use(this);
+		Item->OnUse(this); //블루프린트 이벤트
+	}
 }
 
 void ASagaCharacterPlayer::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
