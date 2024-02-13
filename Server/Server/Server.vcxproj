@@ -236,6 +236,7 @@
     <ClCompile Include="HashComparator.ixx" />
     <ClCompile Include="IContext.ixx" />
     <ClCompile Include="Identity.ixx" />
+    <ClCompile Include="InternalObject.ixx" />
     <ClCompile Include="InternetProtocol.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
