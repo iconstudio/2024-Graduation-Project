@@ -94,10 +94,10 @@ export namespace iconer::util::d3d
 
 		Matrix myMatrix;
 
-		XYZWrapper myRight{ myMatrix._11, myMatrix._12, myMatrix._13 };
-		XYZWrapper myUp{ myMatrix._21, myMatrix._22, myMatrix._23 };
-		XYZWrapper myLook{ myMatrix._31, myMatrix._32, myMatrix._43 };
-		XYZWrapper myPosition{ myMatrix._41, myMatrix._42, myMatrix._43 };
+		XYZWrapper myRight{ myMatrix.At(0, 0), myMatrix.At(0, 1), myMatrix.At(0, 2) };
+		XYZWrapper myUp{ myMatrix.At(1, 0), myMatrix.At(1, 1), myMatrix.At(1, 2) };
+		XYZWrapper myLook{ myMatrix.At(2, 0), myMatrix.At(2, 1), myMatrix.At(2, 2) };
+		XYZWrapper myPosition{ myMatrix.At(3, 0), myMatrix.At(3, 1), myMatrix.At(3, 2) };
 
 		static inline constexpr Position Up = Position(0.0f, 1.0f, 0.0f);
 		static inline constexpr Position Forward = Position(0.0f, 0.0f, 1.0f);
