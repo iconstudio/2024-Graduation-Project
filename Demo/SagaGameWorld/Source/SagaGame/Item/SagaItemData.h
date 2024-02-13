@@ -17,6 +17,19 @@ enum class EItemType : uint8
 };
 
 
+USTRUCT(BlueprintType)
+struct FSagaInventoryItem //아이템 및 수량 저장할 수 있는 구조체 정의
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USagaItemData* Item;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Quantity;
+};
+
+
 
 /**
  * 
