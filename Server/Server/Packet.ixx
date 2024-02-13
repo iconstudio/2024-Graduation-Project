@@ -173,7 +173,7 @@ export namespace iconer::app::packets
 	/// <summary>
 	/// Assigning ID to client packet for server
 	/// </summary>
-	/// <param name="userName">An id of client</param>
+	/// <param name="errCause">Cause of the failure</param>
 	/// <remarks>Server would send it to the client</remarks>
 	struct [[nodiscard]] SC_FailedSignInPacket : public BasicPacket
 	{
@@ -194,6 +194,12 @@ export namespace iconer::app::packets
 		constexpr SC_FailedSignInPacket() noexcept
 			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, CS_SignInPacket::SignedWannabeSize())
 		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, errCause);
 		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
@@ -236,6 +242,12 @@ export namespace iconer::app::packets
 			: Super(PacketProtocol::SC_MOVE_CHARACTER, SignedWannabeSize())
 			, clientId(id), x(px), y(py), z(pz)
 		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, clientId, x, y, z);
 		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
