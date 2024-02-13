@@ -279,11 +279,28 @@ void
 iconer::util::d3d::Matrix::TransposeImplementation()
 noexcept
 {
+	auto concurrent_lhs = DirectX::XMLoadFloat4x4(reinterpret_cast<const DirectX::XMFLOAT4X4*>(this));
+
+	DirectX::XMStoreFloat4x4(reinterpret_cast<DirectX::XMFLOAT4X4*>(this), DirectX::XMMatrixTranspose(concurrent_lhs));
 }
 
-iconer::util::d3d::Matrix
+void
 iconer::util::d3d::Matrix::InverseImplementation()
+{
+	auto concurrent_lhs = DirectX::XMLoadFloat4x4(reinterpret_cast<const DirectX::XMFLOAT4X4*>(this));
+	auto det = DirectX::XMMatrixDeterminant(concurrent_lhs);
+
+	DirectX::XMStoreFloat4x4(reinterpret_cast<DirectX::XMFLOAT4X4*>(this), DirectX::XMMatrixInverse(std::addressof(det), concurrent_lhs));
+}
+
+float
+iconer::util::d3d::Matrix::GetDeterminantImplementation()
 const
 {
-	return Matrix();
+	auto concurrent_lhs = DirectX::XMLoadFloat4x4(reinterpret_cast<const DirectX::XMFLOAT4X4*>(this));
+
+	DirectX::XMFLOAT3 result{};
+	DirectX::XMStoreFloat3(std::addressof(result), DirectX::XMMatrixDeterminant(concurrent_lhs));
+
+	return result.x;
 }

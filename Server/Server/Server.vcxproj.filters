@@ -285,6 +285,15 @@
     <ClCompile Include="InternalObject.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Matrix3x3.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\Matrix3x3.cpp">
+      <Filter>Utility\Implementaition</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix2x2.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">

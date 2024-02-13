@@ -8,17 +8,6 @@ export namespace iconer::util::d3d
 	class Transform
 	{
 	public:
-		Transform() noexcept = default;
-		~Transform() noexcept = default;
-
-		explicit constexpr Transform(const Transform& other) noexcept
-			: myMatrix(other.myMatrix), hasUpdated(other.hasUpdated)
-		{}
-		
-		explicit constexpr Transform(Transform&& other) noexcept
-			: myMatrix(std::move(other.myMatrix)), hasUpdated(std::move(other.hasUpdated))
-		{}
-
 		constexpr Transform& SetMatrix(const Matrix& mat) noexcept
 		{
 			myMatrix = mat;
@@ -42,12 +31,12 @@ export namespace iconer::util::d3d
 			return *this;
 		}
 
-		constexpr Transform& SetPosition(const Position& pos) noexcept
+		constexpr Transform& SetPosition(const Vector3& pos) noexcept
 		{
 			return *this;
 		}
 
-		constexpr Transform& SetPosition(Position&& pos) noexcept
+		constexpr Transform& SetPosition(Vector3&& pos) noexcept
 		{
 			return *this;
 		}
@@ -63,10 +52,10 @@ export namespace iconer::util::d3d
 		}
 
 		Transform& Translate(float x, float y, float z) noexcept;
-		Transform& Translate(const Position& shift) noexcept;
-		Transform& Translate(Position&& shift) noexcept;
-		Transform& Move(const Position& dir, float distance) noexcept;
-		Transform& Move(Position&& dir, float distance) noexcept;
+		Transform& Translate(const Vector3& shift) noexcept;
+		Transform& Translate(Vector3&& shift) noexcept;
+		Transform& Move(const Vector3& dir, float distance) noexcept;
+		Transform& Move(Vector3&& dir, float distance) noexcept;
 		Transform& MoveStrafe(float distance) noexcept;
 		Transform& MoveForward(float distance) noexcept;
 		Transform& MoveUp(float distance) noexcept;
@@ -74,12 +63,12 @@ export namespace iconer::util::d3d
 		Transform& Rotate(const Matrix& tfrm) noexcept;
 		Transform& Rotate(Matrix&& tfrm) noexcept;
 		Transform& Rotate(float pitch, float yaw, float roll) noexcept;
-		Transform& Rotate(const Position& axis, float angle) noexcept;
+		Transform& Rotate(const Vector3& axis, float angle) noexcept;
 		Transform& Rotate(const Quaternion& quaternion) noexcept;
 		Transform& Rotate(Quaternion&& quaternion) noexcept;
 
-		Transform& LookTo(const Position& look, const Position& up) noexcept;
-		Transform& LookAt(const Position& look, const Position& up) noexcept;
+		Transform& LookTo(const Vector3& look, const Vector3& up) noexcept;
+		Transform& LookAt(const Vector3& look, const Vector3& up) noexcept;
 
 		[[nodiscard]] Matrix& GetMatrix() noexcept;
 		[[nodiscard]] const Matrix& GetMatrix() const;
@@ -99,9 +88,9 @@ export namespace iconer::util::d3d
 		XYZWrapper myLook{ myMatrix.At(2, 0), myMatrix.At(2, 1), myMatrix.At(2, 2) };
 		XYZWrapper myPosition{ myMatrix.At(3, 0), myMatrix.At(3, 1), myMatrix.At(3, 2) };
 
-		static inline constexpr Position Up = Position(0.0f, 1.0f, 0.0f);
-		static inline constexpr Position Forward = Position(0.0f, 0.0f, 1.0f);
-		static inline constexpr Position Right = Position(1.0f, 0.0f, 0.0f);
+		static inline constexpr Vector3 Up = Vector3(0.0f, 1.0f, 0.0f);
+		static inline constexpr Vector3 Forward = Vector3(0.0f, 0.0f, 1.0f);
+		static inline constexpr Vector3 Right = Vector3(1.0f, 0.0f, 0.0f);
 
 	private:
 		bool hasUpdated;

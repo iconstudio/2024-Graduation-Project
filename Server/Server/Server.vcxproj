@@ -265,6 +265,8 @@
     <ClCompile Include="ISessionManager.ixx" />
     <ClCompile Include="Logger.ixx" />
     <ClCompile Include="LooseMonad.ixx" />
+    <ClCompile Include="Matrix2x2.ixx" />
+    <ClCompile Include="Matrix3x3.ixx" />
     <ClCompile Include="Monad.ixx" />
     <ClCompile Include="NamedObject.ixx" />
     <ClCompile Include="Network.ixx">
@@ -273,6 +275,7 @@
     </ClCompile>
     <ClCompile Include="Packet.ixx" />
     <ClCompile Include="Private\Matrix.cpp" />
+    <ClCompile Include="Private\Matrix3x3.cpp" />
     <ClCompile Include="Private\User.cpp" />
     <ClCompile Include="Protocol.ixx" />
     <ClCompile Include="Private\AddressFamily.cpp">
