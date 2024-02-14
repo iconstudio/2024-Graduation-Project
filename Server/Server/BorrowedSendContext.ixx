@@ -16,13 +16,13 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
-		const size_t& GetSize() const& noexcept
+		constexpr const size_t& GetSize() const& noexcept
 		{
 			return mySize;
 		}
 
 		[[nodiscard]]
-		size_t&& GetSize() && noexcept
+		constexpr size_t&& GetSize() && noexcept
 		{
 			return std::move(mySize);
 		}
