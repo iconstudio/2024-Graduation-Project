@@ -1,29 +1,57 @@
-module;
-#include <type_traits>
-#include "StaticStringPoolHelper.hpp"
-
 export module Iconer.Application.Resources.String;
-export import Iconer.Utility.StaticStringPool;
+import <string>;
+import <string_view>;
 
-export StoreStaticString( 0, L"\tWorker {} is started.\n");
-export StoreStaticString( 1, L"\tWorker {}: Event by id {}.\n");
-export StoreStaticString( 2, L"\tWorker {} is finished\n");
-export StoreStaticString( 3, "Null packet error.");
-export StoreStaticString( 4, "Packet size error.");
-export StoreStaticString( 5, "Unknown packet.");
-export StoreStaticString( 6, "Error when reserving acceptance of a socket.");
-export StoreStaticString( 7, L"Cannot assembly a packet due to `PacketProcessor`'s failure");
-export StoreStaticString( 8, L"Cannot assembly a packet in `PacketProcessor` due to lack of bytes");
-export StoreStaticString( 9, L"A packet is assembled");
-export StoreStaticString(10, L"Cannot assembly a packet due to lack of bytes");
-export StoreStaticString(11, "This packet is not supported by PacketProcessor");
-export StoreStaticString(12, L"\tWorker {} is finished\n");
+export namespace iconer::app::resources::string
+{
+	template<size_t Index>
+	struct Table
+	{
+		static inline constexpr bool IsWideString = false;
+	};
+
+#define StoreString(index, text) template<>\
+struct iconer::app::resources::string::Table<(index)>\
+{\
+	static inline constexpr bool IsWideString = false; \
+	static inline constexpr auto value = std::basic_string_view{ (text) };\
+};
+
+#define StoreWideString(index, text) template<>\
+struct iconer::app::resources::string::Table<(index)>\
+{\
+	static inline constexpr bool IsWideString = true; \
+	static inline constexpr auto value = std::basic_string_view{ (L##text) };\
+};
+}
+
+export StoreWideString(0, "\tWorker {} is started.\n");
+export StoreWideString(1, "\tWorker {}: Event by id {}.\n");
+export StoreWideString(2, "\tWorker {} is finished\n");
+export StoreString(3, "Null packet error.");
+export StoreString(4, "Packet size error.");
+export StoreString(5, "Unknown packet.");
+export StoreString(6, "Error when reserving acceptance of a socket.");
+export StoreWideString(7, "Cannot assembly a packet due to `PacketProcessor`'s failure");
+export StoreWideString(8, "Cannot assembly a packet in `PacketProcessor` due to lack of bytes");
+export StoreWideString(9, "A packet is assembled");
+export StoreWideString(10, "Cannot assembly a packet due to lack of bytes");
+export StoreString(11, "This packet is not supported by PacketProcessor");
+export StoreWideString(12, "\tWorker {} is finished\n");
 
 export namespace iconer::app
 {
-	using iconer::util::StaticString;
-	using iconer::util::StaticUtf8String;
-	using iconer::util::StaticWideString;
-	using iconer::util::StaticUtf16String;
-	using iconer::util::StaticUtf32String;
+	inline constexpr size_t StringReourcesCount = 12;
+
+	template<size_t Index>
+	[[nodiscard]]
+	consteval auto&& GetResourceString() noexcept
+	{
+		static_assert(Index < StringReourcesCount);
+
+		using StringTable = resources::string::template Table<Index>;
+		constexpr auto&& result = StringTable::value;
+
+		return result;
+	}
 }
