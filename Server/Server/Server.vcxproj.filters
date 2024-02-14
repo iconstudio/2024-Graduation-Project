@@ -261,9 +261,6 @@
     <ClCompile Include="CharacterReader.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="StaticStringPool.ixx">
-      <Filter>Utility</Filter>
-    </ClCompile>
     <ClCompile Include="StringResources.ixx">
       <Filter>Application</Filter>
     </ClCompile>
@@ -297,9 +294,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
-      <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticStringPoolHelper.hpp">
       <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>

@@ -351,7 +351,6 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="SpinLock.ixx" />
-    <ClCompile Include="StaticStringPool.ixx" />
     <ClCompile Include="StringConverter.ixx" />
     <ClCompile Include="StringResources.ixx" />
     <ClCompile Include="Task.ixx">
@@ -372,7 +371,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp" />
-    <ClInclude Include="StaticStringPoolHelper.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\Server.natvis" />
