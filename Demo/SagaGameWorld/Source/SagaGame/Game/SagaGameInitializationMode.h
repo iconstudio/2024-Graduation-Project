@@ -9,5 +9,15 @@ class SAGAGAME_API ASagaGameInitializationMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+	static inline const FString TransferLevelName = "MainMenuLevel";
+	
 	ASagaGameInitializationMode();
+	
+	virtual void BeginPlay() override;
+	virtual void BeginDestroy() override;
+
+private:
+	void GotoNextLevel();
+	
+	FTimerHandle initTimer;
 };

@@ -1,4 +1,7 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "SagaItemBox.generated.h"
@@ -20,6 +23,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 	TObjectPtr<class UParticleSystemComponent> Effect;
+
+	UPROPERTY(EditAnywhere, Category = Item)
+	TObjectPtr<class USagaItemData> Item;
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult);

@@ -1,8 +1,16 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
+
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interface/SagaAttackAnimationInterface.h"
+#include "Interface/SagaCharacterItemInterface.h"
+#include "Interface/SagaCharacterWidgetInterface.h"
 #include "SagaCharacterBase.generated.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogSagaCharacter, Log, All);
+
 
 UENUM()
 enum class ECharacterControlType : uint8
@@ -11,8 +19,20 @@ enum class ECharacterControlType : uint8
 	Quater
 };
 
+DECLARE_DELEGATE_OneParam(FOnTakeItemDelegate, class USagaItemData*);
+USTRUCT(BlueprintType)
+struct FTakeItemDelegateWrapper
+{
+	GENERATED_BODY()
+
+	FTakeItemDelegateWrapper() {};
+	FTakeItemDelegateWrapper(const FOnTakeItemDelegate& InItemDelegate) : ItemDelegate(InItemDelegate) {};
+	FOnTakeItemDelegate ItemDelegate;
+};
+
+
 UCLASS()
-class SAGAGAME_API ASagaCharacterBase : public ACharacter, public ISagaAttackAnimationInterface
+class SAGAGAME_API ASagaCharacterBase : public ACharacter, public ISagaAttackAnimationInterface, public ISagaCharacterItemInterface, public ISagaCharacterWidgetInterface
 {
 	GENERATED_BODY()
 
@@ -20,13 +40,15 @@ public:
 	// Sets default values for this character's properties
 	ASagaCharacterBase();
 
+	virtual void PostInitializeComponents() override;
+
 protected:
-	virtual void SetCharacterControlData(const class USagaCharacterControlData* CharacterControlData); //ìºë¦­í„°ì»¨íŠ¸ë¡¤ë°ì´í„°ì—ì…‹ì„ ì…ë ¥ìœ¼ë¡œ ë°›ìŒ
+	virtual void SetCharacterControlData(const class USagaCharacterControlData* CharacterControlData); //Ä³¸¯ÅÍÄÁÆ®·Ñµ¥ÀÌÅÍ¿¡¼ÂÀ» ÀÔ·ÂÀ¸·Î ¹ŞÀ½
 
 	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
 	TMap<ECharacterControlType, class USagaCharacterControlData*> CharacterControlManager;
 
-//Animation Mantage ê´€ë ¨
+//Animation Mantage °ü·Ã
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
@@ -36,24 +58,24 @@ protected:
 
 	void ProcessComboCommand();
 
-	//ëª½íƒ€ì£¼ ì‹œì‘ë ë•Œ í˜¸ì¶œí•˜ëŠ” í•¨ìˆ˜
+	//¸ùÅ¸ÁÖ ½ÃÀÛµÉ¶§ È£ÃâÇÏ´Â ÇÔ¼ö
 	void ComboActionBegin();
 
-	//ëª½íƒ€ì£¼ ëª¨ë‘ ì¢…ë£Œì‹œ í˜¸ì¶œ
+	//¸ùÅ¸ÁÖ ¸ğµÎ Á¾·á½Ã È£Ãâ
 	void ComboActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
 
-	//íƒ€ì´ë¨¸ ë°œë™
+	//Å¸ÀÌ¸Ó ¹ßµ¿
 	void SetComboCheckTimer();
 
 	void ComboCheck();
 
-	//í˜„ì¬ ì½¤ë³´ê°€ ì–´ë””ê¹Œì§€ ì§„í–‰ë˜ì—ˆëŠ”ì§€ ì €ì¥ì„ ìœ„í•¨
+	//ÇöÀç ÄŞº¸°¡ ¾îµğ±îÁö ÁøÇàµÇ¾ú´ÂÁö ÀúÀåÀ» À§ÇÔ
 	int32 CurrentCombo = 0;
 
 	FTimerHandle ComboTimerHandle;
 	bool HasNextComboCommand = false;
 
-	//ê³µê²© hit ë¶€ë¶„
+	//°ø°İ hit ºÎºĞ
 protected:
 	virtual void AttackHitCheck() override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -70,4 +92,29 @@ protected:
 protected:
 	float WalkSpeed = 500.f;
 	float SprintSpeed = 1000.0f;
+
+	//¾ÆÀÌÅÛ°ü·Ã
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Equipment, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USkeletalMeshComponent> Weapon; //»ı¼ºÀÚ¿¡¼­µµ »ı¼ºÇØÁØ´Ù.
+
+	UPROPERTY()
+	TArray<FTakeItemDelegateWrapper> TakeItemActions; //ÇÔ¼öµéÀÌ ¹ÙÀÎµù µÈ´Ù.
+
+	virtual void TakeItem(class USagaItemData* InItemData) override;
+	virtual void DrinkEnergyDrink(class USagaItemData* InItemData);
+	virtual void EquipWeapons(class USagaItemData* InItemData);
+	virtual void InstallGumball(class USagaItemData* InItemData);
+
+	//½ºÅÈºÎºĞ
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class USagaCharacterStatComponent> Stat;
+
+	//UIÀ§Á¬ºÎºĞ
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UWidgetComponent> HpBar;
+
+	virtual void SetupCharacterWidget(class USagaUserWidget* InUserWidget) override;
 };
