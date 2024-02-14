@@ -8,8 +8,8 @@ import <coroutine>;
 
 using namespace iconer;
 
-net::Socket::AsyncResult RawSend(const net::Socket::HandleType& sock, ::WSABUF& buffer) noexcept;
-net::Socket::AsyncResult RawSendEx(const net::Socket::HandleType& sock, ::WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;
+inline net::Socket::AsyncResult RawSend(const net::Socket::HandleType& sock, ::WSABUF& buffer) noexcept;
+inline net::Socket::AsyncResult RawSendEx(const net::Socket::HandleType& sock, ::WSABUF& buffer, void* context, ::LPWSAOVERLAPPED_COMPLETION_ROUTINE routine) noexcept;
 
 net::Socket::IoResult
 net::Socket::Send(std::span<const std::byte> memory)
@@ -146,14 +146,14 @@ const noexcept
 	::DWORD transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(myHandle
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
 
 	if (FALSE == result)
 	{
-		co_return std::unexpected(net::AcquireNetworkError());
+		co_return std::unexpected{ net::AcquireNetworkError() };
 	}
 	else
 	{
@@ -174,14 +174,14 @@ const noexcept
 	::DWORD transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(myHandle
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
 
 	if (FALSE == result)
 	{
-		co_return std::unexpected(net::AcquireNetworkError());
+		co_return std::unexpected{ net::AcquireNetworkError() };
 	}
 	else
 	{
@@ -202,14 +202,14 @@ const noexcept
 	::DWORD transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(myHandle
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
 
 	if (FALSE == result)
 	{
-		co_return std::unexpected(net::AcquireNetworkError());
+		co_return std::unexpected{ net::AcquireNetworkError() };
 	}
 	else
 	{
@@ -283,7 +283,7 @@ RawSend(const net::Socket::HandleType& sock
 	}
 	else
 	{
-		return std::unexpected(net::AcquireNetworkError());
+		return std::unexpected{ net::AcquireNetworkError() };
 	}
 }
 
@@ -307,7 +307,7 @@ RawSendEx(const net::Socket::HandleType& sock
 	{
 		if (net::ErrorCode error = net::AcquireNetworkError(); error != net::ErrorCode::PendedIoOperation)
 		{
-			return std::unexpected(std::move(error));
+			return std::unexpected{ std::move(error) };
 		}
 		else
 		{
