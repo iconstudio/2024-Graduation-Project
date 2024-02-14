@@ -1,5 +1,6 @@
 export module Iconer.Net.Socket;
 export import :SocketOption;
+import Iconer.Utility.Constraints;
 import Iconer.Utility.Handler;
 import Iconer.Utility.Property;
 export import Iconer.Net.ErrorCode;
@@ -11,6 +12,7 @@ import Iconer.Coroutine.Task;
 import <cstdint>;
 import <expected>;
 import <optional>;
+import <utility>;
 import <span>;
 
 export namespace iconer::net
@@ -149,6 +151,11 @@ export namespace iconer::net
 		bool Send(IoContext& context, std::span<const std::byte> memory, ErrorCode& error_code) const noexcept;
 		bool Send(IoContext& context, std::span<const std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
 		bool Send(IoContext& context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
+
+		AsyncResult BeginSend(_Maybenull_ IoContext* context, std::span<const std::byte> memory, _Notnull_ function_t<void> routine) const noexcept;
+		AsyncResult BeginSend(_Maybenull_ IoContext* context, std::span<const std::byte> memory, size_t size, _Notnull_ function_t<void> routine) const noexcept;
+		AsyncResult BeginSend(_Maybenull_ IoContext* context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size, _Notnull_ function_t<void> routine) const noexcept;
+		AsyncResult EndSend();
 
 		// Synchronous Receive
 

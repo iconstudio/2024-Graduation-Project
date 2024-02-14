@@ -3,8 +3,10 @@ module;
 
 module Iconer.Net.Socket;
 import <cstddef>;
+import <memory>;
 import <utility>;
 import <coroutine>;
+import <atomic>;
 
 using namespace iconer;
 
@@ -266,6 +268,192 @@ const noexcept
 	task.StartAsync();
 
 	return task;
+}
+iconer::net::Socket::AsyncResult
+iconer::net::Socket::BeginSend(IoContext* context
+	, std::span<const std::byte> memory
+	, iconer::function_t<void> routine)
+	const noexcept
+{
+	::WSABUF buffer
+	{
+		.len = static_cast<::ULONG>(memory.size_bytes()),
+		.buf = reinterpret_cast<char*>(const_cast<std::byte*>(memory.data()))
+	};
+
+	// [](DWORD, DWORD, LPWSAOVERLAPPED, DWORD) {}
+	struct Delegate
+	{
+		constexpr Delegate(const function_t<void>& r) noexcept
+			: fn(r)
+		{
+		}
+
+		void operator()(::DWORD err, ::DWORD bytes, ::LPWSAOVERLAPPED ctx, ::DWORD flags) const
+		{
+			std::atomic_signal_fence(std::memory_order_acquire);
+			(fn)();
+			std::atomic_signal_fence(std::memory_order_release);
+
+			delete this;
+		}
+
+		function_t<void> fn;
+	};
+
+	std::allocator<Delegate> alloc{};
+	auto delegate = alloc.allocate(1);
+
+	std::construct_at(delegate, std::cref(routine));
+
+	if (::DWORD bytes = 0; 0 == ::WSASend(Super::GetHandle()
+		, std::addressof(buffer), 1
+		, std::addressof(bytes)
+		, 0
+		, static_cast<::LPWSAOVERLAPPED>(context)
+		, reinterpret_cast<::LPWSAOVERLAPPED_COMPLETION_ROUTINE>(delegate)))
+	{
+		return bytes;
+	}
+	else
+	{
+		if (net::ErrorCode error = net::AcquireNetworkError(); error != net::ErrorCode::PendedIoOperation)
+		{
+			std::destroy_at(delegate);
+			alloc.deallocate(delegate, 1);
+			return std::unexpected{ std::move(error) };
+		}
+		else
+		{
+			std::destroy_at(delegate);
+			alloc.deallocate(delegate, 1);
+			return 0UL;
+		}
+	}
+}
+
+iconer::net::Socket::AsyncResult
+iconer::net::Socket::BeginSend(iconer::net::IoContext* context
+	, std::span<const std::byte> memory, size_t size
+	, function_t<void> routine)
+const noexcept
+{
+	::WSABUF buffer
+	{
+		.len = static_cast<::ULONG>(size),
+		.buf = reinterpret_cast<char*>(const_cast<std::byte*>(memory.data()))
+	};
+
+	struct Delegate
+	{
+		constexpr Delegate(const function_t<void>& r) noexcept
+			: fn(r)
+		{
+		}
+
+		void operator()(::DWORD err, ::DWORD bytes, ::LPWSAOVERLAPPED ctx, ::DWORD flags) const
+		{
+			std::atomic_signal_fence(std::memory_order_acquire);
+			(fn)();
+			std::atomic_signal_fence(std::memory_order_release);
+
+			delete this;
+		}
+
+		function_t<void> fn;
+	};
+
+	std::allocator<Delegate> alloc{};
+	auto delegate = alloc.allocate(1);
+
+	std::construct_at(delegate, std::cref(routine));
+
+	if (::DWORD bytes = 0; 0 == ::WSASend(Super::GetHandle()
+		, std::addressof(buffer), 1
+		, std::addressof(bytes)
+		, 0
+		, static_cast<::LPWSAOVERLAPPED>(context)
+		, reinterpret_cast<::LPWSAOVERLAPPED_COMPLETION_ROUTINE>(delegate)))
+	{
+		return bytes;
+	}
+	else
+	{
+		if (net::ErrorCode error = net::AcquireNetworkError(); error != net::ErrorCode::PendedIoOperation)
+		{
+			std::destroy_at(delegate);
+			alloc.deallocate(delegate, 1);
+			return std::unexpected{ std::move(error) };
+		}
+		else
+		{
+			std::destroy_at(delegate);
+			alloc.deallocate(delegate, 1);
+			return 0UL;
+		}
+	}
+}
+
+iconer::net::Socket::AsyncResult
+iconer::net::Socket::BeginSend(iconer::net::IoContext* context
+	, const std::byte* const& memory, size_t size
+	, function_t<void> routine)
+const noexcept
+{
+	::WSABUF buffer
+	{
+		.len = static_cast<::ULONG>(size),
+		.buf = reinterpret_cast<char*>(const_cast<std::byte*>(memory))
+	};
+
+	struct Delegate
+	{
+		constexpr Delegate(const function_t<void>& r) noexcept
+			: fn(r)
+		{
+		}
+
+		void operator()(::DWORD err, ::DWORD bytes, ::LPWSAOVERLAPPED ctx, ::DWORD flags) const
+		{
+			std::atomic_signal_fence(std::memory_order_acquire);
+			(fn)();
+			std::atomic_signal_fence(std::memory_order_release);
+
+			delete this;
+		}
+
+		function_t<void> fn;
+	};
+
+	std::allocator<Delegate> alloc{};
+	auto delegate = alloc.allocate(1);
+
+	std::construct_at(delegate, std::cref(routine));
+
+	if (::DWORD bytes = 0; 0 == ::WSASend(Super::GetHandle()
+		, std::addressof(buffer), 1
+		, std::addressof(bytes)
+		, 0
+		, static_cast<::LPWSAOVERLAPPED>(context)
+		, reinterpret_cast<::LPWSAOVERLAPPED_COMPLETION_ROUTINE>(delegate)))
+	{
+		return bytes;
+	}
+	else
+	{
+		if (net::ErrorCode error = net::AcquireNetworkError(); error != net::ErrorCode::PendedIoOperation)
+		{
+			std::destroy_at(delegate);
+			alloc.deallocate(delegate, 1);
+			return std::unexpected{ std::move(error) };
+		}
+		else
+		{
+			std::destroy_at(delegate);
+			alloc.deallocate(delegate, 1);
+			return 0UL;
+		}
+	}
 }
 
 net::Socket::AsyncResult
