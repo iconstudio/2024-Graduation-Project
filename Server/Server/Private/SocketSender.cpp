@@ -247,7 +247,7 @@ const noexcept
 	auto task = MakeSendTask(context, memory);
 	task.StartAsync();
 
-	return task;
+	return std::move(task);
 }
 
 net::Socket::IoTask
@@ -257,7 +257,7 @@ const noexcept
 	auto task = MakeSendTask(context, memory, size);
 	task.StartAsync();
 
-	return task;
+	return std::move(task);
 }
 
 net::Socket::IoTask
@@ -267,7 +267,7 @@ const noexcept
 	auto task = MakeSendTask(context, memory, size);
 	task.StartAsync();
 
-	return task;
+	return std::move(task);
 }
 iconer::net::Socket::AsyncResult
 iconer::net::Socket::BeginSend(IoContext* context

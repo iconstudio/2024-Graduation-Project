@@ -311,7 +311,7 @@ const noexcept
 	auto task = MakeReceiveTask(context, memory);
 	task.StartAsync();
 
-	return task;
+	return std::move(task);
 }
 
 net::Socket::IoTask
@@ -321,7 +321,7 @@ const noexcept
 	auto task = MakeReceiveTask(context, memory, std::move(size));
 	task.StartAsync();
 
-	return task;
+	return std::move(task);
 }
 
 net::Socket::IoTask
@@ -331,5 +331,5 @@ const noexcept
 	auto task = MakeReceiveTask(context, memory, std::move(size));
 	task.StartAsync();
 
-	return task;
+	return std::move(task);
 }
