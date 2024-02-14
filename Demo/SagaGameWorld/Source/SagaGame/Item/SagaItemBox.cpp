@@ -1,11 +1,16 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+
 #include "Item/SagaItemBox.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Physics/SagaCollision.h"
+#include "Interface/SagaCharacterItemInterface.h"
 
 ASagaItemBox::ASagaItemBox()
 {
+ 	
     Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TriggerBox"));
     Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
     Effect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Effect"));
@@ -15,8 +20,8 @@ ASagaItemBox::ASagaItemBox()
     Effect->SetupAttachment(Trigger);
 
     Trigger->SetCollisionProfileName(CPROFILE_SAGATRIGGER);
-    Trigger->SetBoxExtent(FVector(40.0f, 42.0f, 30.0f));//ÌÅ¨Í∏∞ ÏÑ§Ï†ï (ÏïÑÏù¥ÌÖúÎ≥ÑÎ°ú ÎßûÍ≤å Î≥ÄÍ≤ΩÌïÑÏöî)
-    Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASagaItemBox::OnOverlapBegin); //Î∏îÎ£®ÌîÑÎ¶∞Ìä∏ÏóêÏÑúÎèÑ Ìé∏Ïßë Í∞ÄÎä•ÌïòÍ∏∞ÎïåÎ¨∏Ïóê Ïó¨Í∏∞Ïóê Îì§Ïñ¥Í∞ÄÎäî Ìï®ÏàòÎäî UFUNCTION ÏÑ§Ï†ïÌïÑÏöî.
+    Trigger->SetBoxExtent(FVector(40.0f, 42.0f, 30.0f));//≈©±‚ º≥¡§ (æ∆¿Ã≈€∫∞∑Œ ∏¬∞‘ ∫Ø∞Ê« ø‰)
+    Trigger->OnComponentBeginOverlap.AddDynamic(this, &ASagaItemBox::OnOverlapBegin); //∫Ì∑Á«¡∏∞∆Æø°º≠µµ ∆Ì¡˝ ∞°¥…«œ±‚∂ßπÆø° ø©±‚ø° µÈæÓ∞°¥¬ «‘ºˆ¥¬ UFUNCTION º≥¡§« ø‰.
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> BoxMeshRef(TEXT("/Script/Engine.StaticMesh'/Game/Map/Item/Cube.Cube'"));
     if (BoxMeshRef.Object)
@@ -30,16 +35,30 @@ ASagaItemBox::ASagaItemBox()
     if (EffectRef.Object)
     {
         Effect->SetTemplate(EffectRef.Object);
-        Effect->bAutoActivate = false; //Î∞îÎ°ú Î∞úÎèôÌïòÏßÄ ÏïäÎèÑÎ°ù
+        Effect->bAutoActivate = false; //πŸ∑Œ πﬂµø«œ¡ˆ æ µµ∑œ
     }
 }
 
 void ASagaItemBox::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepHitResult)
 {
+    //æ∆¿Ã≈€ »πµÊ «ﬂ¿ª ∂ß »πµÊ«— Actorø°∞‘ TakeItem()«‘ºˆ∏¶ »£√‚«œµµ∑œ «—¥Ÿ.
+
+    if (nullptr == Item) //æ∆¿Ã≈€¿Ã ≤Œ
+    {
+        Destroy();
+        return;
+    }
+
+    ISagaCharacterItemInterface* OverlappingPawn = Cast<ISagaCharacterItemInterface>(OtherActor);
+    if (OverlappingPawn)
+    {
+        OverlappingPawn->TakeItem(Item);
+    }
+
     Effect->Activate(true);
     Mesh->SetHiddenInGame(true);
-    SetActorEnableCollision(false); //Îòê Ï∂©ÎèåÌïòÎ©¥ ÏïàÎêòÎãàÍπå ÎπÑÌôúÏÑ±Ìôî
-    Effect->OnSystemFinished.AddDynamic(this, &ASagaItemBox::OnEffectFinished); //Ïù¥ÌéôÌä∏ Ï¢ÖÎ£åÌõÑ Î∞úÎèô delegate
+    SetActorEnableCollision(false); //∂« √Êµπ«œ∏È æ»µ«¥œ±Ó ∫Ò»∞º∫»≠
+    Effect->OnSystemFinished.AddDynamic(this, &ASagaItemBox::OnEffectFinished); //¿Ã∆Â∆Æ ¡æ∑·»ƒ πﬂµø delegate
 }
 
 void ASagaItemBox::OnEffectFinished(UParticleSystemComponent* ParticleSystem)
