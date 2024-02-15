@@ -2,10 +2,9 @@
 #include <cstdio>
 #include <string_view>
 #include <iostream>
-#include "StaticStringPoolHelper.hpp"
+#include <algorithm>
 
 import Iconer.Utility.Serializer;
-import Iconer.Utility.StaticStringPool;
 import Iconer.Net;
 import Iconer.Net.IpAddress;
 import Iconer.Net.EndPoint;
@@ -25,14 +24,11 @@ static std::byte recv_space[recvMaxSize]{};
 static std::span<std::byte, recvMaxSize> recv_buffer{ recv_space };
 unsigned long received_bytes = 0;
 
-net::IoContext send_ctx{};
-
 using IdType = int;
-IdType clientId = -1;
+IdType my_id = -1;
 
-volatile bool cmd_assigned = false;
-char command[256]{};
-constexpr unsigned cmd_size = sizeof(command);
+char commands[256]{};
+constexpr unsigned cmd_size = sizeof(commands);
 
 struct FSagaPlayerCharacter
 {
@@ -43,7 +39,6 @@ struct FSagaPlayerCharacter
 };
 
 coroutine::Coroutine Receiver();
-coroutine::Coroutine Sender();
 void PullReceiveBuffer(const std::byte* last_offset);
 
 int main()
@@ -65,7 +60,7 @@ int main()
 
 	auto client_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
 	auto client_ep = net::EndPoint{ client_address, 40001U };
-	
+
 	// NOTICE: 클라이언트는 바인드 금지
 	//auto bind_r = app_socket.Bind(client_ep);
 	////auto bind_r = app_socket.BindAny(40001);
@@ -88,7 +83,7 @@ int main()
 
 	auto receiver = Receiver();
 	//auto sender = Sender();
-	
+
 	receiver.StartAsync();
 	//sender.StartAsync();
 
@@ -98,6 +93,7 @@ int main()
 	sign_packet.Write(signin_buffer);
 	auto it = pk.Read(signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
 
+	net::IoContext send_ctx{};
 	auto sent_signin_r = app_socket.Send(send_ctx, signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
 	if (not sent_signin_r.has_value())
 	{
@@ -106,16 +102,78 @@ int main()
 
 	send_ctx.Clear();
 
+	FSagaPlayerCharacter player{};
+	app::packets::CS_UpdatePositionPacket position_pk{ player.x, player.y, player.z };
+
 	while (true)
 	{
-		auto input = ::scanf_s("%s", command, cmd_size);
-		if (EOF != input)
+		const auto inputs = ::scanf_s("%s", commands, cmd_size);
+		if (EOF != inputs)
 		{
-			if (command[0] == 'q')
+			if (1 == inputs)
 			{
-				cmd_assigned = true;
+				const auto& cmd = commands[0];
+				if (cmd == 'q')
+				{
+					break;
+				}
+				else if (cmd == 'w')
+				{
+					position_pk.y = ++player.y;
+				}
+				else if (cmd == 'a')
+				{
+					position_pk.x = --player.x;
+				}
+				else if (cmd == 's')
+				{
+					position_pk.y = --player.y;
+				}
+				else if (cmd == 'd')
+				{
+					position_pk.x = ++player.x;
+				}
+				else if (cmd == 'q')
+				{
+					position_pk.z = ++player.z;
+				}
+				else if (cmd == 'e')
+				{
+					position_pk.z = --player.z;
+				}
+			}
+
+			auto cmd = std::string_view{ commands, static_cast<size_t>(inputs) };
+			if ("move up" == cmd)
+			{
+				position_pk.z = ++player.z;
+			}
+			else if ("move dw" == cmd)
+			{
+				position_pk.z = --player.z;
+			}
+			else if ("move fw" == cmd)
+			{
+				position_pk.y = ++player.y;
+			}
+			else if ("move bw" == cmd)
+			{
+				position_pk.y = --player.y;
+			}
+			else if ("move lt" == cmd)
+			{
+				position_pk.x = --player.x;
+			}
+			else if ("move rt" == cmd)
+			{
+				position_pk.x = ++player.x;
+			}
+			else if ("quit" == cmd)
+			{
 				break;
 			}
+
+			std::ranges::fill(commands, 0);
 		}
 	}
 
@@ -161,11 +219,11 @@ coroutine::Coroutine Receiver()
 						case app::PacketProtocol::SC_SIGNIN_SUCCESS:
 						{
 							app::packets::SC_SucceedSignInPacket pk{};
-							//util::Deserialize(seek, clientId);
+							//util::Deserialize(seek, my_id);
 							auto offset = pk.Read(recv_space);
 
 							std::cout << "Local player's id is " << pk.clientId << '\n';
-							clientId = pk.clientId;
+							my_id = pk.clientId;
 
 							PullReceiveBuffer(offset);
 						}
@@ -174,7 +232,7 @@ coroutine::Coroutine Receiver()
 						case app::PacketProtocol::SC_SIGNIN_FAILURE:
 						{
 							app::packets::SC_FailedSignInPacket pk{};
-							//util::Deserialize(seek, clientId);
+							//util::Deserialize(seek, my_id);
 							auto offset = pk.Read(recv_space);
 
 							std::cout << "Local player can't get an id from server due to {}" << pk.errCause << '\n';
@@ -201,28 +259,6 @@ coroutine::Coroutine Receiver()
 				}
 			}
 		}
-	}
-
-	co_return;
-}
-
-coroutine::Coroutine Sender()
-{
-	while (true)
-	{
-		if (cmd_assigned)
-		{
-			break;
-		}
-		//auto recv = co_await app_socket.MakeSendTask(send_ctx, recv_buffer);
-
-		//if (not recv.has_value())
-		{
-			//std::cout << "Receive error: \n" << std::to_string(recv.error());
-			//break;
-		}
-
-		//send_ctx.Clear();
 	}
 
 	co_return;
