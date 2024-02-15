@@ -152,11 +152,6 @@ export namespace iconer::net
 		bool Send(IoContext& context, std::span<const std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
 		bool Send(IoContext& context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
 
-		AsyncResult BeginSend(_Maybenull_ IoContext* context, std::span<const std::byte> memory, _Notnull_ function_t<void> routine) const noexcept;
-		AsyncResult BeginSend(_Maybenull_ IoContext* context, std::span<const std::byte> memory, size_t size, _Notnull_ function_t<void> routine) const noexcept;
-		AsyncResult BeginSend(_Maybenull_ IoContext* context, _In_reads_bytes_(size)const std::byte* const& memory, size_t size, _Notnull_ function_t<void> routine) const noexcept;
-		AsyncResult EndSend();
-
 		// Synchronous Receive
 
 		IoResult Receive(std::span<std::byte> memory) const noexcept;
@@ -244,10 +239,6 @@ export namespace iconer::net
 		struct DelegateAddressReusable
 		{
 			explicit constexpr DelegateAddressReusable(HandleType inst) noexcept : handle(inst) {}
-
-			//constexpr DelegateAddressReusable(DelegateAddressReusable&&) noexcept {}
-			//constexpr DelegateAddressReusable& operator=(DelegateAddressReusable&&) noexcept { return *this; }
-
 			ActionResult operator()(const bool& flag) noexcept;
 
 			HandleType handle;
