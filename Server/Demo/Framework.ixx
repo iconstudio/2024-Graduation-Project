@@ -49,6 +49,7 @@ export namespace demo
 
 		static inline constexpr std::string_view serverAddress{ "127.0.0.1" };
 		static inline constexpr std::uint16_t lobbySidePort{ 40000 };
+		static inline constexpr std::uint16_t gameSidePort{ 40001 };
 		static inline constexpr size_t maxUsersNumber = 20;
 		static inline constexpr size_t maxRoomsNumber = 500;
 		static inline constexpr IdType serverID = 0;
