@@ -27,7 +27,7 @@ demo::Worker(demo::Framework& framework, size_t nth)
 		logger.DebugLog(iconer::app::GetResourceString<1>(), nth, io_id);
 
 		auto ctx = static_cast<iconer::app::IContext*>(io_context);
-		if (framework.RouteOperation(io_event.isSucceed, io_id, io_bytes, ctx)) [[likely]] {
+		if (framework.RouteEvent(io_event.isSucceed, io_id, io_bytes, ctx)) [[likely]] {
 			ctx->Clear();
 		}
 		else [[unlikely]] {

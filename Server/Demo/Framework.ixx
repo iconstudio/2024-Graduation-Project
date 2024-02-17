@@ -67,44 +67,6 @@ export namespace demo
 		void Destroy();
 		void Cleanup();
 
-		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool CreateListenerSocket() noexcept;
-		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool InitializeListener() noexcept;
-		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool InitializeCompletionPort(iconer::net::ErrorCode& error_code) noexcept;
-		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool InitializeUsers();
-		/// <summary>On Start()</summary>
-		[[nodiscard]]
-		bool StartAccepts();
-
-		[[nodiscard]]
-		bool RouteOperation(bool is_succeed, const std::uint64_t& io_id, const ptrdiff_t& io_bytes, iconer::app::IContext* ctx);
-
-		[[nodiscard]]
-		AcceptResult OnReserveAccept(iconer::app::User& user);
-		[[noreturn]]
-		void OnFailedReservingAccept(iconer::app::User& user);
-		[[nodiscard]]
-		IoResult OnUserConnected(iconer::app::User& user);
-		void OnFailedUserConnect(iconer::app::User& user);
-		[[nodiscard]]
-		IoResult OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes);
-		void OnFailedUserSignIn(iconer::app::User& user);
-		[[nodiscard]]
-		IoResult OnNotifyUserId(iconer::app::User& user);
-		void OnFailedNotifyId(iconer::app::User& user);
-		[[nodiscard]]
-		IoResult OnReceived(iconer::app::User& user, const ptrdiff_t& bytes);
-		void OnFailedReceive(iconer::app::User& user);
-		[[nodiscard]]
-		AcceptResult OnUserDisconnected(iconer::app::User& user);
-
 		[[nodiscard]]
 		bool Schedule(iconer::net::IoContext& context, const IdType id, unsigned long info_bytes = 0) noexcept
 		{
@@ -170,7 +132,45 @@ export namespace demo
 		static void UnlockPhase() noexcept;
 
 	private:
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
+		bool CreateListenerSocket() noexcept;
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
+		bool InitializeListener() noexcept;
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
+		bool InitializeCompletionPort(iconer::net::ErrorCode& error_code) noexcept;
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
+		bool InitializeUsers();
+		/// <summary>On Start()</summary>
+		[[nodiscard]]
+		bool StartAccepts();
+
+		[[nodiscard]]
+		bool RouteEvent(bool is_succeed, const std::uint64_t& io_id, const ptrdiff_t& io_bytes, iconer::app::IContext* ctx);
+		[[nodiscard]]
+		AcceptResult OnReserveAccept(iconer::app::User& user);
+		[[noreturn]]
+		void OnFailedReservingAccept(iconer::app::User& user);
+		[[nodiscard]]
+		IoResult OnUserConnected(iconer::app::User& user);
+		void OnFailedUserConnect(iconer::app::User& user);
+		[[nodiscard]]
+		IoResult OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes);
+		void OnFailedUserSignIn(iconer::app::User& user);
+		[[nodiscard]]
+		IoResult OnNotifyUserId(iconer::app::User& user);
+		void OnFailedNotifyId(iconer::app::User& user);
+		[[nodiscard]]
+		IoResult OnReceived(iconer::app::User& user, const ptrdiff_t& bytes);
+		void OnFailedReceive(iconer::app::User& user);
+		[[nodiscard]]
+		AcceptResult OnUserDisconnected(iconer::app::User& user);
+
 		iconer::net::Socket serverListener;
+		iconer::net::Socket gameListener;
 		iconer::net::IoCompletionPort ioCompletionPort;
 
 		// import Iconer.Application.UserManager;
