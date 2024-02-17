@@ -140,6 +140,9 @@ export namespace demo
 		bool InitializeLobbyListener() noexcept;
 		/// <summary>On Awake()</summary>
 		[[nodiscard]]
+		bool InitializeGameListener() noexcept;
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
 		bool InitializeCompletionPort(iconer::net::ErrorCode& error_code) noexcept;
 		/// <summary>On Awake()</summary>
 		[[nodiscard]]

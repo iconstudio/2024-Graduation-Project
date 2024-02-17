@@ -11,7 +11,11 @@ bool
 demo::Framework::CreateListenerSockets()
 noexcept
 {
-	return iconer::net::Socket::TryCreate(iconer::net::IoCategory::Asynchronous, iconer::net::InternetProtocol::TCP, iconer::net::IpAddressFamily::IPv4, serverListener);
+	const bool lobby_sk_created = iconer::net::Socket::TryCreate(iconer::net::IoCategory::Asynchronous, iconer::net::InternetProtocol::TCP, iconer::net::IpAddressFamily::IPv4, serverListener);
+
+	const bool game_sk_created = iconer::net::Socket::TryCreate(iconer::net::IoCategory::Asynchronous, iconer::net::InternetProtocol::UDP, iconer::net::IpAddressFamily::IPv4, gameListener);
+
+	return lobby_sk_created and game_sk_created;
 }
 
 bool
@@ -31,6 +35,13 @@ noexcept
 	serverListener.IsAddressReusable = true;
 
 	return true;
+}
+
+bool
+demo::Framework::InitializeGameListener()
+noexcept
+{
+	return false;
 }
 
 bool
