@@ -47,7 +47,6 @@ export namespace demo
 		using AcceptResult = iconer::net::Socket::ActionResult;
 		using IoResult = iconer::net::Socket::AsyncResult;
 
-		static inline constexpr std::string_view serverAddress{ "127.0.0.1" };
 		static inline constexpr std::uint16_t lobbySidePort{ 40000 };
 		static inline constexpr std::uint16_t gameSidePort{ 40001 };
 		static inline constexpr size_t maxUsersNumber = 20;
