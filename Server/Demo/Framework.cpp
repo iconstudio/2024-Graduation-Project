@@ -19,11 +19,11 @@ demo::Framework::InitializeListener()
 noexcept
 {
 	auto server_address = iconer::net::IpAddress{ iconer::net::IpAddressFamily::IPv4, "127.0.0.1" };
-	auto server_ep = iconer::net::EndPoint{ server_address, serverPort };
+	auto server_ep = iconer::net::EndPoint{ server_address, lobbySidePort };
 
 	//if (serverListener.Bind(server_ep).has_value())
-	//if (serverListener.BindHost(serverPort).has_value())
-	if (serverListener.BindAny(serverPort).has_value())
+	//if (serverListener.BindHost(lobbySidePort).has_value())
+	if (serverListener.BindAny(lobbySidePort).has_value())
 	{
 		return false;
 	}

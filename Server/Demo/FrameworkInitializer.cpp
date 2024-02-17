@@ -42,7 +42,7 @@ demo::Framework::Awake()
 		throw listener_create_error;
 	}
 
-	myLogger.Log(L"\tbinding the listener to port {}...\n", serverPort);
+	myLogger.Log(L"\tbinding the listener to port {}...\n", lobbySidePort);
 
 	if (not InitializeListener())
 	{
