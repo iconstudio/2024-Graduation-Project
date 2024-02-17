@@ -32,11 +32,11 @@ export StoreString(3, "Null packet error.");
 export StoreString(4, "Packet size error.");
 export StoreString(5, "Unknown packet.");
 export StoreString(6, "Error when reserving acceptance of a socket.");
-export StoreWideString(7, "Cannot assembly a packet due to `PacketProcessor`'s failure");
-export StoreWideString(8, "Cannot assembly a packet in `PacketProcessor` due to lack of bytes");
-export StoreWideString(9, "A packet is assembled");
-export StoreWideString(10, "Cannot assembly a packet due to lack of bytes");
-export StoreString(11, "This packet is not supported by PacketProcessor");
+export StoreWideString(7, "Cannot assembly a packet due to `PacketProcessor`'s failure\n");
+export StoreWideString(8, "Cannot assembly a packet in `PacketProcessor` due to lack of bytes\n");
+export StoreWideString(9, "A packet is assembled\n");
+export StoreWideString(10, "Cannot assembly a packet due to lack of bytes\n");
+export StoreString(11, "This packet is not supported by PacketProcessor\n");
 export StoreWideString(12, "\tWorker {} is finished\n");
 
 export namespace iconer::app
