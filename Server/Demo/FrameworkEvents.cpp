@@ -51,8 +51,10 @@ demo::Framework::OnUserConnected(iconer::app::User& user)
 void
 demo::Framework::OnFailedUserConnect(iconer::app::User& user)
 {
-	user.Cleanup();
-	user.Destroy();
+	if (not user.BeginClose(iconer::app::UserStates::Reserved))
+	{
+		user.Cleanup();
+	}
 }
 
 demo::Framework::IoResult
@@ -107,8 +109,10 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 void
 demo::Framework::OnFailedUserSignIn(iconer::app::User& user)
 {
-	user.Cleanup();
-	user.Destroy();
+	if (not user.BeginClose(iconer::app::UserStates::Connected))
+	{
+		user.Cleanup();
+	}
 }
 
 demo::Framework::IoResult
@@ -129,8 +133,10 @@ demo::Framework::OnNotifyUserId(iconer::app::User& user)
 void
 demo::Framework::OnFailedNotifyId(iconer::app::User& user)
 {
-	user.Cleanup();
-	user.Destroy();
+	if (not user.BeginClose(iconer::app::UserStates::PendingID))
+	{
+		user.Cleanup();
+	}
 }
 
 demo::Framework::IoResult
@@ -175,15 +181,17 @@ void
 demo::Framework::OnFailedReceive(iconer::app::User& user)
 {
 	user.Cleanup();
-	user.Destroy();
+	user.BeginClose();
 }
 
 demo::Framework::AcceptResult
 demo::Framework::OnUserDisconnected(iconer::app::User& user)
 {
 	// Reserve the user again
-	if (user.TryChangeState(iconer::app::UserStates::Dead, iconer::app::UserStates::None))
+	if (user.EndClose())
 	{
+		user.Cleanup();
+
 		if (Schedule(user, user.GetID()))
 		{
 			user.SetOperation(iconer::app::Operations::OpReserveSession);
