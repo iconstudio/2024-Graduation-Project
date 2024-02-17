@@ -36,19 +36,21 @@ demo::Framework::Awake()
 		throw network_init_error;
 	}
 
-	myLogger.Log(L"\tcreating the listener...\n");
+	myLogger.Log(L"\tcreating listener sockets...\n");
 
 	if (not CreateListenerSockets())
 	{
 		throw listener_create_error;
 	}
 
-	myLogger.Log(L"\tbinding the listener to port {}...\n", lobbySidePort);
+	myLogger.Log(L"\tbinding the lobby listener to port {}...\n", lobbySidePort);
 
 	if (not InitializeLobbyListener())
 	{
 		throw listener_bind_error;
 	}
+
+	myLogger.Log(L"\tbinding the game listener to port {}...\n", gameSidePort);
 
 	if (not InitializeGameListener())
 	{
@@ -61,7 +63,7 @@ demo::Framework::Awake()
 		throw completion_port_init_error;
 	}
 
-	myLogger.Log(L"\tregistering the listener with id {}...\n", lobbyServerID);
+	myLogger.Log(L"\tregistering the lobby listener with id {}...\n", lobbyServerID);
 	if (ioCompletionPort.Register(serverListener, lobbyServerID))
 	{
 		throw listener_register_error;
