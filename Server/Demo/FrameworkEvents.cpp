@@ -142,7 +142,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 
 	if (bytes <= 0)
 	{
-		return std::unexpected(iconer::net::ErrorCode::ConnectionAborted);
+		return std::unexpected{ iconer::net::ErrorCode::ConnectionAborted };
 	}
 
 	user_recv_offset += bytes;
@@ -156,7 +156,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 			myLogger.LogWarning(iconer::app::GetResourceString<7>());
 
 			user.ReleaseState(transit_state);
-			return std::unexpected(iconer::net::ErrorCode::NoBufferStorage);
+			return std::unexpected{ iconer::net::ErrorCode::NoBufferStorage };
 		}
 		else if (0 == proceed_bytes)
 		{
