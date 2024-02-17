@@ -8,7 +8,7 @@ import Iconer.Application.ISession;
 import <atomic>;
 
 bool
-demo::Framework::CreateListenerSocket()
+demo::Framework::CreateListenerSockets()
 noexcept
 {
 	return iconer::net::Socket::TryCreate(iconer::net::IoCategory::Asynchronous, iconer::net::InternetProtocol::TCP, iconer::net::IpAddressFamily::IPv4, serverListener);
