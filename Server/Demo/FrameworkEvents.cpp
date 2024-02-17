@@ -23,7 +23,7 @@ demo::Framework::OnReserveAccept(iconer::app::User& user)
 }
 
 void
-demo::Framework::OnFailedReservingAccept(iconer::app::User& user)
+demo::Framework::OnFailedReservingAccept()
 {
 	auto& msg = iconer::app::GetResourceString<6>();
 	throw msg.data();
