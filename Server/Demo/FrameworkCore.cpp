@@ -77,6 +77,11 @@ demo::Framework::RouteEvent(bool is_succeed
 				myLogger.LogError(L"\tSigning In has failed on user {}\n", id);
 				OnFailedUserSignIn(*user);
 			}
+			else if (0 == io_bytes)
+			{
+				myLogger.LogWarning(L"\tUser {} is just disconnected when they are signing in\n", id);
+				OnFailedUserSignIn(*user);
+			}
 			else if (auto result = OnUserSignedIn(*user, io_bytes); not result.has_value())
 			{
 				myLogger.LogError(L"\tSigning In has failed on user {} due to {}\n", id, result.error());
