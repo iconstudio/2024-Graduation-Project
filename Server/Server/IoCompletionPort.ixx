@@ -6,6 +6,7 @@ export import Iconer.Net.IoEvent;
 export import Iconer.Net.Socket;
 import <cstdint>;
 import <expected>;
+import <span>;
 
 export namespace iconer::net
 {
@@ -25,6 +26,7 @@ export namespace iconer::net
 		bool Schedule(IoContext& context, std::uintptr_t id, unsigned long&& infobytes) noexcept;
 		bool Schedule(IoContext* const context, std::uintptr_t id, unsigned long&& infobytes) noexcept;
 		[[nodiscard]] IoEvent WaitForIoResult() noexcept;
+		[[nodiscard]] net::Socket::AsyncResult WaitForMultipleIoResults(std::span<IoEvent> dest, const unsigned long& max_count) noexcept;
 
 		[[nodiscard]]
 		bool IsAvailable() const noexcept;
