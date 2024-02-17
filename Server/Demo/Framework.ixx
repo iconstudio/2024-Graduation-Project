@@ -137,7 +137,7 @@ export namespace demo
 		bool CreateListenerSockets() noexcept;
 		/// <summary>On Awake()</summary>
 		[[nodiscard]]
-		bool InitializeListener() noexcept;
+		bool InitializeLobbyListener() noexcept;
 		/// <summary>On Awake()</summary>
 		[[nodiscard]]
 		bool InitializeCompletionPort(iconer::net::ErrorCode& error_code) noexcept;

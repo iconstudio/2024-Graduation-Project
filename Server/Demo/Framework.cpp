@@ -15,7 +15,7 @@ noexcept
 }
 
 bool
-demo::Framework::InitializeListener()
+demo::Framework::InitializeLobbyListener()
 noexcept
 {
 	auto server_address = iconer::net::IpAddress{ iconer::net::IpAddressFamily::IPv4, "127.0.0.1" };
