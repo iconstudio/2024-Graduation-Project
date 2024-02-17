@@ -140,27 +140,25 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 	auto user_buffer = GetBuffer(id);
 	auto& user_recv_offset = user.recvOffset;
 
-	if (bytes <= 0)
-	{
-		return std::unexpected{ iconer::net::ErrorCode::ConnectionAborted };
-	}
-
 	user_recv_offset += bytes;
 
-	if (iconer::app::BasicPacket::MinSize() <= user_recv_offset)
+	if (user_recv_offset < iconer::app::BasicPacket::SignedMinSize())
 	{
-		auto transit_state = user.AcquireState();
+		myLogger.DebugLogWarning(iconer::app::GetResourceString<10>());
+	}
 
+	while (iconer::app::BasicPacket::SignedMinSize() <= user_recv_offset)
+	{
 		auto proceed_bytes = PacketProcessor(*this, user, user_buffer, user_recv_offset);
 		if (proceed_bytes < 0) [[unlikely]] {
 			myLogger.LogWarning(iconer::app::GetResourceString<7>());
 
-			user.ReleaseState(transit_state);
 			return std::unexpected{ iconer::net::ErrorCode::NoBufferStorage };
 		}
 		else if (0 == proceed_bytes)
 		{
 			myLogger.DebugLogWarning(iconer::app::GetResourceString<8>());
+			break;
 		}
 		else
 		{
@@ -168,12 +166,6 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 
 			user_recv_offset -= proceed_bytes;
 		};
-
-		user.ReleaseState(transit_state);
-	}
-	else
-	{
-		myLogger.DebugLogWarning(iconer::app::GetResourceString<10>());
 	}
 
 	return user.Receive(user_buffer);
