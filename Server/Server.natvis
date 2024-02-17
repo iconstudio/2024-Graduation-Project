@@ -26,7 +26,7 @@
 	</Type>
 
 	<Type Name="iconer::app::User" Priority="High">
-		<Intrinsic Category="Property" Name="__GetName" Expression="Name"/>
+		<Intrinsic Category="Property" Name="__GetName" Expression="myName"/>
 		
 		<DisplayString>사용자 세션 객체 ({myHandle})</DisplayString>
 		
@@ -43,14 +43,14 @@
 	</Type>
 
 	<Type Name="iconer::app::ISession&lt;*&gt;" Priority="MediumHigh">
-		<Intrinsic Category="Property" Name="__GetName" Expression="Name"/>
+		<Intrinsic Category="Property" Name="__GetName" Expression="myName"/>
 		
 		<DisplayString>세션 객체 ({myHandle}) &lt;{&quot;$T1&quot;}&gt;</DisplayString>
 
 		<Expand HideRawView="false">
 			<Item Name="[핸들]">myHandle</Item>
 			<Synthetic Name="[이름]">
-				<DisplayString>{Name}</DisplayString>
+				<DisplayString>{__GetName()}</DisplayString>
 			</Synthetic>
 		</Expand>
 	</Type>
