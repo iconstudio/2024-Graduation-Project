@@ -87,11 +87,32 @@ export namespace iconer::app
 
 		void Awake();
 
-		bool Destroy() noexcept
+		bool BeginClose() noexcept
 		{
+			ContextType::Clear();
+
 			SetOperation(Operations::OpDisconnect);
 			SetState(UserStates::Dead);
 			return mySocket.CloseAsync(this);
+		}
+
+		bool BeginClose(UserStates prev_state) noexcept
+		{
+			if (TryChangeState(prev_state, UserStates::Dead, std::memory_order_acq_rel))
+			{
+				ContextType::Clear();
+				SetOperation(Operations::OpDisconnect);
+				return mySocket.CloseAsync(this);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		bool EndClose() noexcept
+		{
+			return TryChangeState(UserStates::Dead, UserStates::None, std::memory_order_acq_rel);
 		}
 
 		void Cleanup() noexcept
