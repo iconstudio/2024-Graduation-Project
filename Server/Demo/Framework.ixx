@@ -134,7 +134,7 @@ export namespace demo
 	private:
 		/// <summary>On Awake()</summary>
 		[[nodiscard]]
-		bool CreateListenerSocket() noexcept;
+		bool CreateListenerSockets() noexcept;
 		/// <summary>On Awake()</summary>
 		[[nodiscard]]
 		bool InitializeListener() noexcept;

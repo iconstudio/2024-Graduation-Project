@@ -37,7 +37,7 @@ demo::Framework::Awake()
 
 	myLogger.Log(L"\tcreating the listener...\n");
 
-	if (not CreateListenerSocket())
+	if (not CreateListenerSockets())
 	{
 		throw listener_create_error;
 	}
