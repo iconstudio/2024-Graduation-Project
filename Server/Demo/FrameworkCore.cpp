@@ -129,6 +129,11 @@ demo::Framework::RouteEvent(bool is_succeed
 				myLogger.LogError(L"\tReceving has failed on user {}\n", id);
 				OnFailedReceive(*user);
 			}
+			else if (0 == io_bytes)
+			{
+				myLogger.LogWarning(L"\tUser {} is just disconnected\n", id);
+				OnFailedReceive(*user);
+			}
 			else if (auto error = OnReceived(*user, io_bytes); not error.has_value())
 			{
 				myLogger.LogError(L"\tReceving has failed on user {} due to {}\n", id, error.error());

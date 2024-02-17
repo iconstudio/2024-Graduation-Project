@@ -140,6 +140,11 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 	auto user_buffer = GetBuffer(id);
 	auto& user_recv_offset = user.recvOffset;
 
+	if (bytes <= 0)
+	{
+		return std::unexpected(iconer::net::ErrorCode::ConnectionAborted);
+	}
+
 	user_recv_offset += bytes;
 
 	if (iconer::app::BasicPacket::MinSize() <= user_recv_offset)
