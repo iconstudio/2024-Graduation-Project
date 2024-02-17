@@ -143,6 +143,19 @@ export namespace iconer::net
 		bool Send(std::span<const std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
 		bool Send(_In_reads_bytes_(size)const std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
 
+		/// <remarks>UDP</remarks>
+		IoResult SendTo(const EndPoint& ep, std::span<const std::byte> memory) const noexcept;
+		/// <remarks>UDP</remarks>
+		IoResult SendTo(const EndPoint& ep, std::span<const std::byte> memory, size_t size) const noexcept;
+		/// <remarks>UDP</remarks>
+		IoResult SendTo(const EndPoint& ep, _In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
+		/// <remarks>UDP</remarks>
+		bool SendTo(const EndPoint& ep, std::span<const std::byte> memory, ErrorCode& error_code) const noexcept;
+		/// <remarks>UDP</remarks>
+		bool SendTo(const EndPoint& ep, std::span<const std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
+		/// <remarks>UDP</remarks>
+		bool SendTo(const EndPoint& ep, _In_reads_bytes_(size)const std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
+
 		// Maybe asynchronous Send
 
 		AsyncResult Send(IoContext& context, std::span<const std::byte> memory) const noexcept;
