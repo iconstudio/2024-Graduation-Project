@@ -111,7 +111,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			else if (auto result = OnNotifyUserId(*user); not result.has_value())
 			{
 				myLogger.Log(L"\tThe Id is notified to user {}", id);
-				myLogger.LogError(L"\t, but cannot start receiving due to {}\n", result.error());
+				myLogger.LogError(L", but cannot start receiving due to {}\n", result.error());
 				OnFailedNotifyId(*user);
 			}
 			else
