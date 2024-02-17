@@ -157,7 +157,7 @@ export namespace demo
 		[[nodiscard]]
 		AcceptResult OnReserveAccept(iconer::app::User& user);
 		[[noreturn]]
-		void OnFailedReservingAccept(iconer::app::User& user);
+		void OnFailedReservingAccept();
 		[[nodiscard]]
 		IoResult OnUserConnected(iconer::app::User& user);
 		void OnFailedUserConnect(iconer::app::User& user);

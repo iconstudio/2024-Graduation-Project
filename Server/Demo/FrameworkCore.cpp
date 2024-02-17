@@ -23,12 +23,12 @@ demo::Framework::RouteEvent(bool is_succeed
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tReserving an acceptance has failed on user {}\n", id);
-				OnFailedReservingAccept(*user);
+				OnFailedReservingAccept();
 			}
 			else if (auto error = OnReserveAccept(*user); error.has_value())
 			{
 				myLogger.LogError(L"\tReserving an acceptance has failed on user {} due to {}\n", id, error.value());
-				OnFailedReservingAccept(*user);
+				OnFailedReservingAccept();
 			}
 			else
 			{
