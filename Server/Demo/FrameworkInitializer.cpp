@@ -67,6 +67,12 @@ demo::Framework::Awake()
 		throw listener_register_error;
 	}
 
+	myLogger.Log(L"\tregistering the game listener with id {}...\n", gameServerID);
+	if (ioCompletionPort.Register(gameListener, gameServerID))
+	{
+		throw listener_register_error;
+	}
+
 	myLogger.Log(L"\tcreating session managers..\n");
 	userManager = new iconer::app::UserManager{};
 
