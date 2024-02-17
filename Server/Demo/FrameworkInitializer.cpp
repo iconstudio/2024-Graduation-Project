@@ -61,8 +61,8 @@ demo::Framework::Awake()
 		throw completion_port_init_error;
 	}
 
-	myLogger.Log(L"\tregistering the listener with id {}...\n", serverID);
-	if (ioCompletionPort.Register(serverListener, serverID))
+	myLogger.Log(L"\tregistering the listener with id {}...\n", lobbyServerID);
+	if (ioCompletionPort.Register(serverListener, lobbyServerID))
 	{
 		throw listener_register_error;
 	}

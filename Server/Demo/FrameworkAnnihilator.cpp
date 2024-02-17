@@ -10,7 +10,7 @@ demo::Framework::Destroy()
 {
 	LockPhase();
 
-	if (not Schedule(new FrameworkTaskContext, serverID))
+	if (not Schedule(new FrameworkTaskContext, lobbyServerID))
 	{
 		myLogger.LogError(L"An error is occured when closing tasks");
 	}
