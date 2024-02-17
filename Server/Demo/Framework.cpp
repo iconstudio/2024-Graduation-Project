@@ -41,7 +41,14 @@ bool
 demo::Framework::InitializeGameListener()
 noexcept
 {
-	return false;
+	if (gameListener.BindAny(gameSidePort).has_value())
+	{
+		return false;
+	}
+
+	gameListener.IsAddressReusable = true;
+
+	return true;
 }
 
 bool
