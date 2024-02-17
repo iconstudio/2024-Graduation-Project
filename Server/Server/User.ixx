@@ -221,7 +221,7 @@ export namespace iconer::app
 			myTransform[2][2] = *(it++);
 			return *this;
 		}
-		
+
 		constexpr User& RotationLook(const float(&v)[3]) noexcept
 		{
 			myTransform[2][0] = v[0];
@@ -229,8 +229,8 @@ export namespace iconer::app
 			myTransform[2][2] = v[2];
 			return *this;
 		}
-		
-		constexpr User& RotationLook(float(&&v)[3]) noexcept
+
+		constexpr User& RotationLook(float(&& v)[3]) noexcept
 		{
 			myTransform[2][0] = std::move(v[0]);
 			myTransform[2][1] = std::move(v[1]);
@@ -274,7 +274,7 @@ export namespace iconer::app
 		{
 			return myTransform[2];
 		}
-		
+
 		constexpr User& RotationUp(const std::initializer_list<float> list)
 		{
 			assert(list.size() == 3);
@@ -284,7 +284,7 @@ export namespace iconer::app
 			myTransform[1][2] = *(it++);
 			return *this;
 		}
-		
+
 		constexpr User& RotationUp(const float(&v)[3]) noexcept
 		{
 			myTransform[1][0] = v[0];
@@ -292,8 +292,8 @@ export namespace iconer::app
 			myTransform[1][2] = v[2];
 			return *this;
 		}
-		
-		constexpr User& RotationUp(float(&&v)[3]) noexcept
+
+		constexpr User& RotationUp(float(&& v)[3]) noexcept
 		{
 			myTransform[1][0] = std::move(v[0]);
 			myTransform[1][1] = std::move(v[1]);
@@ -337,7 +337,7 @@ export namespace iconer::app
 		{
 			return myTransform[1];
 		}
-		
+
 		constexpr User& RotationRight(const std::initializer_list<float> list)
 		{
 			assert(list.size() == 3);
@@ -347,7 +347,7 @@ export namespace iconer::app
 			myTransform[0][2] = *(it++);
 			return *this;
 		}
-		
+
 		constexpr User& RotationRight(const float(&v)[3]) noexcept
 		{
 			myTransform[0][0] = v[0];
@@ -355,8 +355,8 @@ export namespace iconer::app
 			myTransform[0][2] = v[2];
 			return *this;
 		}
-		
-		constexpr User& RotationRight(float(&&v)[3]) noexcept
+
+		constexpr User& RotationRight(float(&& v)[3]) noexcept
 		{
 			myTransform[0][0] = std::move(v[0]);
 			myTransform[0][1] = std::move(v[1]);
