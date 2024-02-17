@@ -11,8 +11,9 @@ using namespace iconer;
 namespace
 {
 	const demo::DemoInitializerError network_init_error{ "Error when starting network system." };
-	const demo::DemoInitializerError listener_create_error{ "Error when creating the listener socket." };
-	const demo::DemoInitializerError listener_bind_error{ "Error when binding a address to the listener socket." };
+	const demo::DemoInitializerError listener_create_error{ "Error when creating listener sockets." };
+	const demo::DemoInitializerError listener_bind_error{ "Error when binding a address to the lobby socket." };
+	const demo::DemoInitializerError game_listener_bind_error{ "Error when binding a address to the game socket." };
 	const demo::DemoInitializerError completion_port_init_error{ "Error when creating the io completion port." };
 	const demo::DemoInitializerError listener_register_error{ "Error when registering the listener." };
 	const demo::DemoInitializerError socket_register_error{ "Error when registering a socket." };
@@ -47,6 +48,11 @@ demo::Framework::Awake()
 	if (not InitializeLobbyListener())
 	{
 		throw listener_bind_error;
+	}
+
+	if (not InitializeGameListener())
+	{
+		throw game_listener_bind_error;
 	}
 
 	net::ErrorCode completion_port_error;
