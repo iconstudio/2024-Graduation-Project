@@ -52,7 +52,8 @@ export namespace demo
 		static inline constexpr size_t maxUsersNumber = 20;
 		static inline constexpr size_t maxRoomsNumber = 500;
 		static inline constexpr IdType lobbyServerID = 0;
-		static inline constexpr IdType beginUserID = 1;
+		static inline constexpr IdType gameServerID = 1;
+		static inline constexpr IdType beginUserID = 2;
 		static inline constexpr IdType beginRoomID = beginUserID + static_cast<IdType>(maxUsersNumber);
 		static inline constexpr size_t userRecvSize = 512;
 		static inline constexpr size_t workersCount = 6;
