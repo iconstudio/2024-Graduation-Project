@@ -44,7 +44,7 @@ demo::Framework::Awake()
 
 	myLogger.Log(L"\tbinding the listener to port {}...\n", lobbySidePort);
 
-	if (not InitializeListener())
+	if (not InitializeLobbyListener())
 	{
 		throw listener_bind_error;
 	}
