@@ -63,6 +63,9 @@ export namespace iconer::app
 			{
 				std::exchange(mySocket, iconer::net::Socket{}).Close();
 			}
+
+			Super::~Super();
+			ContextType::~ContextType();
 		}
 
 		User(User&& other)
