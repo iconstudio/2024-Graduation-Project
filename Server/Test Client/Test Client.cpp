@@ -1,8 +1,12 @@
 ﻿#pragma comment(lib, "Server.lib")
-#include <cstdio>
-#include <string_view>
-#include <algorithm>
-#include <print>
+import <cstdio>;
+import <string_view>;
+import <utility>;
+import <memory>;
+import <type_traits>;
+import <expected>;
+import <algorithm>;
+import <print>;
 
 import Iconer.Utility.Serializer;
 import Iconer.Net;
@@ -24,12 +28,6 @@ static std::byte recv_space[recvMaxSize]{};
 static std::span<std::byte, recvMaxSize> recv_buffer{ recv_space };
 unsigned long received_bytes = 0;
 
-using IdType = int;
-IdType my_id = -1;
-
-char commands[256]{};
-constexpr unsigned cmd_size = sizeof(commands);
-
 struct FSagaPlayerCharacter
 {
 	// position
@@ -38,8 +36,32 @@ struct FSagaPlayerCharacter
 	float look, up, right;
 };
 
+using IdType = int;
+IdType my_id = -1;
+net::IoContext send_ctx{};
+FSagaPlayerCharacter player{};
+
+char commands[256]{};
+constexpr unsigned cmd_size = sizeof(commands);
+
 coroutine::Coroutine Receiver();
 void PullReceiveBuffer(const std::byte* last_offset);
+bool SendPositionPacket()
+{
+	app::packets::CS_UpdatePositionPacket position_pk{ player.x, player.y, player.z };
+
+	auto serialized = position_pk.Serialize();
+
+	auto sent_signin_r = app_socket.Send(send_ctx, serialized.get(), app::packets::CS_UpdatePositionPacket::WannabeSize());
+	if (not sent_signin_r.has_value())
+	{
+		return false;
+	}
+
+	send_ctx.Clear();
+
+	return true;
+}
 
 int main()
 {
@@ -93,17 +115,11 @@ int main()
 	sign_packet.Write(signin_buffer);
 	auto it = pk.Read(signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
 
-	net::IoContext send_ctx{};
 	auto sent_signin_r = app_socket.Send(send_ctx, signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
 	if (not sent_signin_r.has_value())
 	{
 		return 2;
 	}
-
-	send_ctx.Clear();
-
-	FSagaPlayerCharacter player{};
-	app::packets::CS_UpdatePositionPacket position_pk{ player.x, player.y, player.z };
 
 	while (true)
 	{
@@ -119,62 +135,66 @@ int main()
 				}
 				else if (cmd == 'w')
 				{
-					position_pk.y = ++player.y;
+					player.y = ++player.y;
+					SendPositionPacket();
 				}
 				else if (cmd == 'a')
 				{
-					position_pk.x = --player.x;
+					player.x = --player.x;
+					SendPositionPacket();
 				}
 				else if (cmd == 's')
 				{
-					position_pk.y = --player.y;
+					player.y = --player.y;
+					SendPositionPacket();
 				}
 				else if (cmd == 'd')
 				{
-					position_pk.x = ++player.x;
+					player.x = ++player.x;
+					SendPositionPacket();
 				}
 				else if (cmd == 'q')
 				{
-					position_pk.z = ++player.z;
+					player.z = ++player.z;
+					SendPositionPacket();
 				}
 				else if (cmd == 'e')
 				{
-					position_pk.z = --player.z;
+					player.z = --player.z;
+					SendPositionPacket();
 				}
 			}
 
 			auto cmd = std::string_view{ commands, static_cast<size_t>(inputs) };
 			if ("move up" == cmd)
 			{
-				position_pk.z = ++player.z;
-
-				auto sent_signin_r = app_socket.Send(send_ctx, signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
-				if (not sent_signin_r.has_value())
-				{
-					return 2;
-				}
-
-				send_ctx.Clear();
+				player.z = ++player.z;
+				SendPositionPacket();
 			}
 			else if ("move dw" == cmd)
 			{
-				position_pk.z = --player.z;
+				player.z = --player.z;
+				SendPositionPacket();
 			}
 			else if ("move fw" == cmd)
 			{
-				position_pk.y = ++player.y;
+				player.y = ++player.y;
+				SendPositionPacket();
 			}
 			else if ("move bw" == cmd)
 			{
-				position_pk.y = --player.y;
+				player.y = --player.y;
+				SendPositionPacket();
 			}
 			else if ("move lt" == cmd)
 			{
-				position_pk.x = --player.x;
+				player.x = --player.x;
+				SendPositionPacket();
 			}
 			else if ("move rt" == cmd)
 			{
-				position_pk.x = ++player.x;
+				player.x = ++player.x;
+				SendPositionPacket();
 			}
 			else if ("quit" == cmd)
 			{
