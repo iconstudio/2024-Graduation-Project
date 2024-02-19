@@ -487,6 +487,8 @@ namespace iconer::util::detail
 		std::byte* it = dest;
 
 		((it = iconer::util::Serialize(it, std::get<Indices>(std::forward<Tuple>(tuple)))), ...);
+
+		return it;
 	}
 }
 
