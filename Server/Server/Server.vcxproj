@@ -193,6 +193,7 @@
     <ClCompile Include="AtomicSwitcher.ixx" />
     <ClCompile Include="BasicPacket.ixx" />
     <ClCompile Include="BehaviourTree.ixx" />
+    <ClCompile Include="BlobSendContext.ixx" />
     <ClCompile Include="BorrowedPointer.ixx" />
     <ClCompile Include="BorrowedSendContext.ixx" />
     <ClCompile Include="Byte.ixx" />
