@@ -977,29 +977,6 @@ export namespace iconer::util::d3d
 			return 4;
 		}
 
-		template<typename... Args>
-		static constexpr Matrix* Construct(Matrix* ptr, Args&&... args)
-			noexcept(noexcept(std::construct_at(std::declval<Matrix*>(), std::forward<Args>(args)...)))
-		{
-			return std::construct_at(ptr, std::forward<Args>(args)...);
-		}
-
-		template<typename Allocator = std::allocator<Matrix>>
-		[[nodiscard]]
-		static constexpr Matrix* Allocate(const size_t count = 1)
-		{
-			Allocator allocator{};
-			return allocator.allocate(count);
-		}
-
-		template<typename Allocator = std::allocator<Matrix>>
-		[[nodiscard]]
-		static constexpr auto AllocateAtLeast(const size_t count = 1)
-		{
-			Allocator allocator{};
-			return std::allocate_at_least(allocator, count);
-		}
-
 		[[nodiscard]]
 		static consteval size_t MaxSize() noexcept
 		{
