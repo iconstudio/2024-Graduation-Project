@@ -142,6 +142,7 @@ export namespace iconer::app
 		}
 
 		IoResult SendSignInPacket();
+		IoResult SendPositionPacket(IdType id, float x, float y, float z);
 
 		constexpr User& PositionX(const float& v) noexcept
 		{
