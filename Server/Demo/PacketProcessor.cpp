@@ -21,10 +21,10 @@ demo::PacketProcessor(Framework& framework
 	}
 
 	app::PacketProtocol protocol;
-	std::int16_t size = 0;
-	const std::byte* last_buf = util::Deserialize(util::Deserialize(packet_data.data(), protocol), size);
+	std::int16_t pk_size = 0;
+	const std::byte* last_buf = util::Deserialize(util::Deserialize(packet_data.data(), protocol), pk_size);
 
-	if (0 <= size)
+	if (pk_size <= 0)
 	{
 		constexpr auto& msg = app::GetResourceString<4>();
 		throw msg.data();
@@ -35,7 +35,7 @@ demo::PacketProcessor(Framework& framework
 	constexpr auto& unknown_packet_errmsg = app::GetResourceString<5>();
 	constexpr auto& notsupported_packet_errmsg = app::GetResourceString<11>();
 
-	if (size <= last_offset)
+	if (pk_size <= last_offset)
 	{
 		switch (protocol)
 		{
@@ -169,7 +169,7 @@ demo::PacketProcessor(Framework& framework
 			}
 		}
 
-		return size;
+		return pk_size;
 	}
 	else
 	{
