@@ -1,8 +1,8 @@
 ﻿#pragma comment(lib, "Server.lib")
 #include <cstdio>
 #include <string_view>
-#include <iostream>
 #include <algorithm>
+#include <print>
 
 import Iconer.Utility.Serializer;
 import Iconer.Net;
@@ -43,9 +43,9 @@ void PullReceiveBuffer(const std::byte* last_offset);
 
 int main()
 {
-	std::cout << "Client initiated\n";
+	std::println("Client initiated");
 
-	std::cout << "Creating a socket...\n";
+	std::println("Creating a socket...");
 	auto startup_r = net::Startup();
 	if (startup_r.has_value())
 	{
@@ -54,7 +54,7 @@ int main()
 
 	app_socket = net::Socket::CreateTcpSocket(net::IoCategory::Asynchronous);
 
-	std::cout << "Binding...\n";
+	std::println("Binding...");
 
 	app_socket.IsAddressReusable = true;
 
@@ -65,7 +65,7 @@ int main()
 	//auto bind_r = app_socket.Bind(client_ep);
 	////auto bind_r = app_socket.BindAny(40001);
 
-	std::cout << "Connecting to host...\n";
+	std::println("Connecting to host...");
 	server_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
 	server_ep = net::EndPoint{ server_address, server_port };
 
@@ -77,7 +77,7 @@ int main()
 		return 3;
 	}
 
-	std::cout << "Starting receiving...\n";
+	std::println("Starting receiving...");
 
 	app::packets::CS_SignInPacket pk{};
 
@@ -147,6 +147,14 @@ int main()
 			if ("move up" == cmd)
 			{
 				position_pk.z = ++player.z;
+
+				auto sent_signin_r = app_socket.Send(send_ctx, signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
+				if (not sent_signin_r.has_value())
+				{
+					return 2;
+				}
+
+				send_ctx.Clear();
 			}
 			else if ("move dw" == cmd)
 			{
@@ -193,7 +201,7 @@ coroutine::Coroutine Receiver()
 
 		if (not recv.has_value())
 		{
-			std::cout << "Receive error: " << std::to_string(recv.error()) << '\n';
+			std::println("Receive error: {}", recv.error());
 			break;
 		}
 		else
@@ -210,7 +218,7 @@ coroutine::Coroutine Receiver()
 				if (basic_pk.mySize <= 0)
 				{
 					//throw "error!";
-					std::cout << "Packet's size is zero!\n";
+					std::println("Packet's size is zero!");
 				}
 				else if (const auto sz = static_cast<unsigned long>(basic_pk.mySize); received_bytes <= sz)
 				{
@@ -222,7 +230,7 @@ coroutine::Coroutine Receiver()
 							//util::Deserialize(seek, my_id);
 							auto offset = pk.Read(recv_space);
 
-							std::cout << "Local player's id is " << pk.clientId << '\n';
+							std::println("Local player's id is {}", pk.clientId);
 							my_id = pk.clientId;
 
 							PullReceiveBuffer(offset);
@@ -235,7 +243,7 @@ coroutine::Coroutine Receiver()
 							//util::Deserialize(seek, my_id);
 							auto offset = pk.Read(recv_space);
 
-							std::cout << "Local player can't get an id from server due to {}" << pk.errCause << '\n';
+							std::println("Local player can't get an id from server due to {}", pk.errCause);
 
 							PullReceiveBuffer(offset);
 						}
