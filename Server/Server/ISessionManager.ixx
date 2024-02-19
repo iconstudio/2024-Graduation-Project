@@ -1,15 +1,12 @@
-module;
-#include <exception>
-#include <atomic>
-#include <utility>
-#include <vector>
-#include <algorithm>
-#include <ranges>
-#include <shared_mutex>
-
 export module Iconer.Application.ISessionManager;
 import Iconer.Utility.Constraints;
 import Iconer.Application.ISession;
+import <exception>;
+import <atomic>;
+import <utility>;
+import <vector>;
+import <algorithm>;
+import <shared_mutex>;
 
 export namespace iconer::app
 {
