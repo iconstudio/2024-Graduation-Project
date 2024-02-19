@@ -153,6 +153,25 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
+		case iconer::app::Operations::OpSend:
+		{
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\Sending has failed on user {}\n", io_id);
+			}
+			else if (0 == io_bytes)
+			{
+				myLogger.LogError(L"\Sending has failed on user {} due to 0 bytes\n", io_id);
+			}
+			else
+			{
+				myLogger.Log(L"\User {} has sent {} bytes\n", io_id, io_bytes);
+			}
+
+			delete ctx;
+		}
+		break;
+
 		case iconer::app::Operations::OpDisconnect:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
