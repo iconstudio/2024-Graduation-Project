@@ -37,6 +37,12 @@ export namespace iconer::app::packets
 		{
 		}
 
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, x, y, z);
+		}
+
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
 			return iconer::util::Serializes(Super::Write(buffer), x, y, z);
@@ -106,6 +112,12 @@ export namespace iconer::app::packets
 			, userName()
 		{
 			std::move(str, str + std::min(Length, nickNameLength), userName);
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, userName);
 		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
