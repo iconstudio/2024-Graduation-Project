@@ -291,6 +291,9 @@
     <ClCompile Include="Matrix2x2.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="BlobSendContext.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
