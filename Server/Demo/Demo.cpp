@@ -1,27 +1,25 @@
 ﻿#pragma comment(lib, "Server.lib")
-#include <string>
-#include <iostream>
-
 import Demo.Framework;
+import <print>;
 
 demo::Framework serverFramework{};
 
 int main()
 {
-	std::cout << ("=========$ Server $=========\n");
+	std::println("=========$ Server $=========");
 
-	std::cout << ("=========== Init ===========\n");
+	std::println("=========== Init ===========");
 	serverFramework.Awake();
 
-	std::cout << ("=========== Start ===========\n");
+	std::println("=========== Start ===========");
 	serverFramework.Start();
 
-	std::cout << ("=========== Update ===========\n");
+	std::println("=========== Update ===========");
 	serverFramework.Update();
 
-	std::cout << ("========== Destroy ===========\n");
+	std::println("========== Destroy ===========");
 	serverFramework.Destroy();
 
-	std::cout << ("========== Clean up ==========\n");
+	std::println("========== Clean up ==========");
 	serverFramework.Cleanup();
 }
