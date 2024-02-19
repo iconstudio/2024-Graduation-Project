@@ -77,6 +77,7 @@
     <IntDir>Compile\$(Platform)\$(Configuration)\</IntDir>
     <UseStructuredOutput>true</UseStructuredOutput>
     <IncludePath>$(SolutionDir)Colourful-Console\ColourfulConsole\Public;$(SolutionDir)Server;$(SolutionDir)Demo;$(IncludePath)</IncludePath>
+    <PublicIncludeDirectories>$(SolutionDir)vcpkg_installed\x64-windows\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
@@ -85,6 +86,7 @@
     <IntDir>Compile\$(Platform)\$(Configuration)\</IntDir>
     <UseStructuredOutput>true</UseStructuredOutput>
     <IncludePath>$(SolutionDir)Colourful-Console\ColourfulConsole\Public;$(SolutionDir)Server;$(SolutionDir)Demo;$(IncludePath)</IncludePath>
+    <PublicIncludeDirectories>$(SolutionDir)vcpkg_installed\x64-windows\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
