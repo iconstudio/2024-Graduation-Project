@@ -124,6 +124,8 @@ demo::PacketProcessor(Framework& framework
 				user.PositionX(px);
 				user.PositionY(py);
 				user.PositionZ(pz);
+
+				user.SendPositionPacket(user_id, px, py, pz);
 			}
 			break;
 
