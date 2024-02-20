@@ -1,7 +1,6 @@
 module;
 module Iconer.Application.User;
 import Iconer.Application.Packet;
-import Iconer.Application.BorrowedSendContext;
 import Iconer.Application.BlobSendContext;
 
 void

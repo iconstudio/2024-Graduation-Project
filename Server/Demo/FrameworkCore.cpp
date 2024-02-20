@@ -4,7 +4,7 @@ module;
 
 module Demo.Framework;
 import Iconer.Application.IContext;
-import Iconer.Application.BorrowedSendContext;
+import Iconer.Application.BlobSendContext;
 
 bool
 demo::Framework::RouteEvent(bool is_succeed
@@ -168,7 +168,9 @@ demo::Framework::RouteEvent(bool is_succeed
 				myLogger.Log(L"\User {} has sent {} bytes\n", io_id, io_bytes);
 			}
 
-			delete ctx;
+			auto sender = static_cast<iconer::app::BlobSendContext*>(ctx);
+			
+			delete sender;
 		}
 		break;
 
