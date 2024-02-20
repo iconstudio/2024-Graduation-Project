@@ -10,7 +10,7 @@ export namespace iconer::app
 		using Super = IContext;
 
 		explicit constexpr BorrowedSendContext(const size_t size) noexcept
-			: Super(Operations::OpSend)
+			: Super(AsyncOperations::OpSend)
 			, mySize(size)
 		{
 		}

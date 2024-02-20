@@ -12,7 +12,7 @@ export namespace iconer::app
 		using Super = IContext;
 
 		explicit constexpr BlobSendContext(std::unique_ptr<std::byte[]>&& ptr, const size_t& size) noexcept
-			: Super(Operations::OpSend)
+			: Super(AsyncOperations::OpSend)
 			, myBlob(std::exchange(ptr, nullptr)), mySize(size)
 		{
 		}
