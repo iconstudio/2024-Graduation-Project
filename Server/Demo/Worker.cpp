@@ -1,7 +1,6 @@
 module;
 module Demo.Framework;
 import Iconer.Application.User;
-import Iconer.Application.BorrowedSendContext;
 import Iconer.Application.Resources.String;
 
 void
