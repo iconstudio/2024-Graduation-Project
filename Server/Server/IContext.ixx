@@ -15,24 +15,24 @@ export namespace iconer::app
 		explicit constexpr IContext() noexcept = default;
 		~IContext() noexcept = default;
 
-		explicit constexpr IContext(const AsyncOperations& ops) noexcept
-			: lastOperation(ops)
+		explicit constexpr IContext(const AsyncOperations& op) noexcept
+			: lastOperation(op)
 		{
 		}
 
-		explicit constexpr IContext(AsyncOperations&& ops) noexcept
-			: lastOperation(std::move(ops))
+		explicit constexpr IContext(AsyncOperations&& op) noexcept
+			: lastOperation(std::move(op))
 		{
 		}
 
-		constexpr void SetOperation(const AsyncOperations& ops) noexcept
+		constexpr void SetOperation(const AsyncOperations& op) noexcept
 		{
-			lastOperation = ops;
+			lastOperation = op;
 		}
 
-		constexpr void SetOperation(AsyncOperations&& ops) noexcept
+		constexpr void SetOperation(AsyncOperations&& op) noexcept
 		{
-			lastOperation = std::move(ops);
+			lastOperation = std::move(op);
 		}
 
 		constexpr void SetOperation(const AsyncOperations& op) volatile noexcept
