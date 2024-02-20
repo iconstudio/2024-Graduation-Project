@@ -15,7 +15,7 @@ demo::Framework::RouteEvent(bool is_succeed
 	switch (ctx->GetOperation())
 	{
 		// Phase 0
-		case iconer::app::Operations::OpReserveSession:
+		case iconer::app::AsyncOperations::OpReserveSession:
 		{
 			auto&& user = *std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user.GetID();
@@ -41,7 +41,7 @@ demo::Framework::RouteEvent(bool is_succeed
 
 		// Phase 1
 		// an user is connected
-		case iconer::app::Operations::OpAccept:
+		case iconer::app::AsyncOperations::OpAccept:
 		{
 			auto&& user = *std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user.GetID();
@@ -67,7 +67,7 @@ demo::Framework::RouteEvent(bool is_succeed
 
 		// Phase 2
 		// received a nickname, and send an id of user
-		case iconer::app::Operations::OpSignIn:
+		case iconer::app::AsyncOperations::OpSignIn:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
@@ -98,7 +98,7 @@ demo::Framework::RouteEvent(bool is_succeed
 
 		// Phase 3
 		// sent an id of user
-		case iconer::app::Operations::OpAssignID:
+		case iconer::app::AsyncOperations::OpAssignID:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
@@ -124,7 +124,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		break;
 
 		// Phase 4~
-		case iconer::app::Operations::OpRecv:
+		case iconer::app::AsyncOperations::OpRecv:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
@@ -153,7 +153,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::OpSend:
+		case iconer::app::AsyncOperations::OpSend:
 		{
 			if (not is_succeed)
 			{
@@ -172,7 +172,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::OpDisconnect:
+		case iconer::app::AsyncOperations::OpDisconnect:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
@@ -194,7 +194,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::OpCreateRoom:
+		case iconer::app::AsyncOperations::OpCreateRoom:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
@@ -212,7 +212,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::OpEnterRoom:
+		case iconer::app::AsyncOperations::OpEnterRoom:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
@@ -230,7 +230,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::OpLeaveRoom:
+		case iconer::app::AsyncOperations::OpLeaveRoom:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
@@ -240,7 +240,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::OpReadyGame:
+		case iconer::app::AsyncOperations::OpReadyGame:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
@@ -249,17 +249,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::OpEnterGame:
-		{
-			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
-			const IdType& id = user->GetID();
-
-
-			user->Clear();
-		}
-		break;
-
-		case iconer::app::Operations::OpStartGame:
+		case iconer::app::AsyncOperations::OpEnterGame:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
@@ -269,7 +259,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::OpLeaveGame:
+		case iconer::app::AsyncOperations::OpStartGame:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
@@ -279,7 +269,17 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::Operations::OpEndWorkers:
+		case iconer::app::AsyncOperations::OpLeaveGame:
+		{
+			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user->GetID();
+
+
+			user->Clear();
+		}
+		break;
+
+		case iconer::app::AsyncOperations::OpEndWorkers:
 		{
 			return false;
 		}

@@ -100,7 +100,7 @@ demo::Framework::StartAccepts()
 {
 	for (auto& [id, user] : *userManager)
 	{
-		user.SetOperation(iconer::app::Operations::OpReserveSession);
+		user.SetOperation(iconer::app::AsyncOperations::OpReserveSession);
 
 		if (not Schedule(user, id))
 		{

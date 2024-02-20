@@ -190,6 +190,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
+    <ClCompile Include="AsyncOperation.ixx" />
     <ClCompile Include="AtomicSwitcher.ixx" />
     <ClCompile Include="BasicPacket.ixx" />
     <ClCompile Include="BehaviourTree.ixx" />

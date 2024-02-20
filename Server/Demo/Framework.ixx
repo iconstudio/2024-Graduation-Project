@@ -34,7 +34,7 @@ export namespace demo
 		using Super = iconer::app::IContext;
 
 		explicit constexpr FrameworkTaskContext() noexcept
-			: Super(iconer::app::Operations::OpEndWorkers)
+			: Super(iconer::app::AsyncOperations::OpEndWorkers)
 		{
 		}
 

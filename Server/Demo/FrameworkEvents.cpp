@@ -13,7 +13,7 @@ demo::Framework::OnReserveAccept(iconer::app::User& user)
 {
 	if (user.TryChangeState(iconer::app::UserStates::None, iconer::app::UserStates::Reserved))
 	{
-		user.SetOperation(iconer::app::Operations::OpAccept);
+		user.SetOperation(iconer::app::AsyncOperations::OpAccept);
 		return serverListener.BeginAccept(user, user.mySocket);
 	}
 	else
@@ -38,7 +38,7 @@ demo::Framework::OnUserConnected(iconer::app::User& user)
 	}
 	else if (user.TryChangeState(iconer::app::UserStates::Reserved, iconer::app::UserStates::Connected))
 	{
-		user.SetOperation(iconer::app::Operations::OpSignIn);
+		user.SetOperation(iconer::app::AsyncOperations::OpSignIn);
 
 		return user.Receive(GetBuffer(user.GetID()));
 	}
@@ -89,7 +89,7 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 
 			while (not user.TryChangeState(iconer::app::UserStates::Connected, iconer::app::UserStates::PendingID));
 
-			user.SetOperation(iconer::app::Operations::OpAssignID);
+			user.SetOperation(iconer::app::AsyncOperations::OpAssignID);
 
 			return user.SendSignInPacket();
 		}
@@ -120,7 +120,7 @@ demo::Framework::OnNotifyUserId(iconer::app::User& user)
 {
 	if (user.TryChangeState(iconer::app::UserStates::PendingID, iconer::app::UserStates::Idle))
 	{
-		user.SetOperation(iconer::app::Operations::OpRecv);
+		user.SetOperation(iconer::app::AsyncOperations::OpRecv);
 
 		return user.Receive(GetBuffer(user.GetID()));
 	}
@@ -194,7 +194,7 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 
 		if (Schedule(user, user.GetID()))
 		{
-			user.SetOperation(iconer::app::Operations::OpReserveSession);
+			user.SetOperation(iconer::app::AsyncOperations::OpReserveSession);
 			return std::nullopt;
 		}
 	}
