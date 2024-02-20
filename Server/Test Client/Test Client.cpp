@@ -276,6 +276,13 @@ coroutine::Coroutine Receiver()
 
 						case app::PacketProtocol::SC_MOVE_CHARACTER:
 						{
+							app::packets::SC_UpdatePositionPacket pk{ 0, 0, 0, 0 };
+							//util::Deserialize(seek, my_id);
+							auto offset = pk.Read(recv_space);
+
+							std::println("Player id {}: pos({},{},{})", pk.clientId, pk.x, pk.y, pk.z);
+
+							PullReceiveBuffer(offset);
 						}
 						break;
 
