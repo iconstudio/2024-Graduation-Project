@@ -98,7 +98,7 @@ export namespace iconer::app
 		{
 			ContextType::Clear();
 
-			SetOperation(Operations::OpDisconnect);
+			SetOperation(AsyncOperations::OpDisconnect);
 			SetState(UserStates::Dead);
 			return mySocket.CloseAsync(this);
 		}
@@ -108,7 +108,7 @@ export namespace iconer::app
 			if (TryChangeState(prev_state, UserStates::Dead, std::memory_order_acq_rel))
 			{
 				ContextType::Clear();
-				SetOperation(Operations::OpDisconnect);
+				SetOperation(AsyncOperations::OpDisconnect);
 				return mySocket.CloseAsync(this);
 			}
 			else
@@ -124,7 +124,7 @@ export namespace iconer::app
 
 		void Cleanup() noexcept
 		{
-			SetOperation(Operations::None);
+			SetOperation(AsyncOperations::None);
 			SetState(UserStates::None);
 			ContextType::Clear();
 			recvOffset = 0;

@@ -6,7 +6,7 @@ import <utility>;
 
 export namespace iconer::app
 {
-	enum class [[nodiscard]] Operations : std::uint8_t
+	enum class [[nodiscard]] AsyncOperations : std::uint8_t
 	{
 		None,
 
@@ -46,56 +46,56 @@ export namespace iconer::app
 		explicit constexpr IContext() noexcept = default;
 		~IContext() noexcept = default;
 
-		explicit constexpr IContext(const Operations& ops) noexcept
+		explicit constexpr IContext(const AsyncOperations& ops) noexcept
 			: lastOperation(ops)
 		{
 		}
 
-		explicit constexpr IContext(Operations&& ops) noexcept
+		explicit constexpr IContext(AsyncOperations&& ops) noexcept
 			: lastOperation(std::move(ops))
 		{
 		}
 
-		constexpr void SetOperation(const Operations& ops) noexcept
+		constexpr void SetOperation(const AsyncOperations& ops) noexcept
 		{
 			lastOperation = ops;
 		}
 
-		constexpr void SetOperation(Operations&& ops) noexcept
+		constexpr void SetOperation(AsyncOperations&& ops) noexcept
 		{
 			lastOperation = std::move(ops);
 		}
 
-		constexpr void SetOperation(const Operations& op) volatile noexcept
+		constexpr void SetOperation(const AsyncOperations& op) volatile noexcept
 		{
 			lastOperation = op;
 		}
 
-		constexpr void SetOperation(Operations&& op) volatile noexcept
+		constexpr void SetOperation(AsyncOperations&& op) volatile noexcept
 		{
 			lastOperation = std::move(op);
 		}
 
 		[[nodiscard]]
-		constexpr const Operations& GetOperation() const& noexcept
+		constexpr const AsyncOperations& GetOperation() const& noexcept
 		{
 			return lastOperation;
 		}
 
 		[[nodiscard]]
-		constexpr Operations&& GetOperation() && noexcept
+		constexpr AsyncOperations&& GetOperation() && noexcept
 		{
 			return std::move(lastOperation);
 		}
 
 		[[nodiscard]]
-		constexpr const volatile Operations& GetOperation() const volatile& noexcept
+		constexpr const volatile AsyncOperations& GetOperation() const volatile& noexcept
 		{
 			return lastOperation;
 		}
 
 		[[nodiscard]]
-		constexpr volatile Operations&& GetOperation() volatile&& noexcept
+		constexpr volatile AsyncOperations&& GetOperation() volatile&& noexcept
 		{
 			return std::move(lastOperation);
 		}
@@ -103,7 +103,7 @@ export namespace iconer::app
 		IContext(IContext&&) noexcept = default;
 		IContext& operator=(IContext&&) noexcept = default;
 
-		Operations lastOperation;
+		AsyncOperations lastOperation;
 
 	private:
 		IContext(const IContext&) = delete;
