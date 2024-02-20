@@ -157,15 +157,15 @@ demo::Framework::RouteEvent(bool is_succeed
 		{
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\Sending has failed on user {}\n", io_id);
+				myLogger.LogError(L"\tSending has failed on user {}\n", io_id);
 			}
 			else if (0 == io_bytes)
 			{
-				myLogger.LogError(L"\Sending has failed on user {} due to 0 bytes\n", io_id);
+				myLogger.LogError(L"\tSending has failed on user {} due to 0 bytes\n", io_id);
 			}
 			else
 			{
-				myLogger.Log(L"\User {} has sent {} bytes\n", io_id, io_bytes);
+				myLogger.Log(L"\tUser {} has sent {} bytes\n", io_id, io_bytes);
 			}
 
 			auto sender = static_cast<iconer::app::BlobSendContext*>(ctx);
