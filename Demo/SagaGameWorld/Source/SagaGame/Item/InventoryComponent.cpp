@@ -38,5 +38,13 @@ bool UInventoryComponent::AddItem(UItems* Item)
 
 bool UInventoryComponent::RemoveItem(UItems* Item)
 {
+	if (Item)
+	{
+		Item->OwningInventory = nullptr;
+		Item->World = nullptr;
+		Items.RemoveSingle(Item);
+		OnInventoryUpdated.Broadcast();
+	}
+
 	return false;
 }
