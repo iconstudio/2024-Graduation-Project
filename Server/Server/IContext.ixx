@@ -16,12 +16,12 @@ export namespace iconer::app
 		~IContext() noexcept = default;
 
 		explicit constexpr IContext(const AsyncOperations& op) noexcept
-			: lastOperation(op)
+			: Super(), lastOperation(op)
 		{
 		}
 
 		explicit constexpr IContext(AsyncOperations&& op) noexcept
-			: lastOperation(std::move(op))
+			: Super(), lastOperation(std::move(op))
 		{
 		}
 
