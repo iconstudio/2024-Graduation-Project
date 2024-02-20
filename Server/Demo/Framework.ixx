@@ -16,8 +16,9 @@ import <array>;
 import <span>;
 import <thread>;
 import <latch>;
-export import <string>;
-export import <string_view>;
+import <expected>;
+import <string>;
+import <string_view>;
 
 export namespace demo
 {
