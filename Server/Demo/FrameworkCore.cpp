@@ -17,15 +17,15 @@ demo::Framework::RouteEvent(bool is_succeed
 		// Phase 0
 		case iconer::app::Operations::OpReserveSession:
 		{
-			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
-			const IdType& id = user->GetID();
+			auto&& user = *std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user.GetID();
 
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tReserving an acceptance has failed on user {}\n", id);
 				OnFailedReservingAccept();
 			}
-			else if (auto error = OnReserveAccept(*user); error.has_value())
+			else if (auto error = OnReserveAccept(user); error.has_value())
 			{
 				myLogger.LogError(L"\tReserving an acceptance has failed on user {} due to {}\n", id, error.value());
 				OnFailedReservingAccept();
@@ -35,7 +35,7 @@ demo::Framework::RouteEvent(bool is_succeed
 				myLogger.Log(L"\tAcceptance is reserved on user {}\n", id);
 			}
 
-			user->Clear();
+			user.Clear();
 		}
 		break;
 
@@ -43,25 +43,25 @@ demo::Framework::RouteEvent(bool is_succeed
 		// an user is connected
 		case iconer::app::Operations::OpAccept:
 		{
-			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
-			const IdType& id = user->GetID();
+			auto&& user = *std::launder(static_cast<iconer::app::User*>(ctx));
+			const IdType& id = user.GetID();
 
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\ttConnection has failed on user {}\n", id);
-				OnFailedUserConnect(*user);
+				OnFailedUserConnect(user);
 			}
-			else if (auto result = OnUserConnected(*user); not result.has_value())
+			else if (auto result = OnUserConnected(user); not result.has_value())
 			{
 				myLogger.LogError(L"\tUser {} is connected, but acceptance has failed due to {}\n", id, result.error());
-				OnFailedUserConnect(*user);
+				OnFailedUserConnect(user);
 			}
 			else
 			{
 				myLogger.Log(L"\tUser {} is connected\n", id);
 			}
 
-			user->Clear();
+			user.Clear();
 		}
 		break;
 
