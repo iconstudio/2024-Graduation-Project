@@ -93,7 +93,7 @@ const noexcept
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, std::addressof(flags)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
 		return bytes;
@@ -126,7 +126,7 @@ net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory, size_
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, std::addressof(flags)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
 		return bytes;
@@ -160,7 +160,7 @@ const noexcept
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, std::addressof(flags)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
 		return bytes;
@@ -212,7 +212,7 @@ const noexcept
 	::DWORD transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(myHandle
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
@@ -240,7 +240,7 @@ const noexcept
 	::DWORD transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(myHandle
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));
@@ -268,7 +268,7 @@ const noexcept
 	::DWORD transferred_bytes = 0;
 
 	::BOOL result = ::WSAGetOverlappedResult(myHandle
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, std::addressof(transferred_bytes)
 		, TRUE
 		, std::addressof(flags));

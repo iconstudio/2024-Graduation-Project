@@ -300,7 +300,7 @@ RawSendEx(const net::Socket::HandleType& sock
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, 0
-		, reinterpret_cast<::LPWSAOVERLAPPED>(context)
+		, static_cast<::LPWSAOVERLAPPED>(context)
 		, routine))
 	{
 		return bytes;
