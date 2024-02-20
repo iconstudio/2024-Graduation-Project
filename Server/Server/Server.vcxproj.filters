@@ -294,6 +294,9 @@
     <ClCompile Include="BlobSendContext.ixx">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="AsyncOperation.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
