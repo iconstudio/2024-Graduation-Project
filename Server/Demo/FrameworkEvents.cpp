@@ -109,7 +109,7 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 void
 demo::Framework::OnFailedUserSignIn(iconer::app::User& user)
 {
-	if (not user.BeginClose(iconer::app::UserStates::Connected))
+	if (not user.BeginClose())
 	{
 		user.Cleanup();
 	}
