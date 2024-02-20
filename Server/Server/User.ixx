@@ -44,6 +44,7 @@ export namespace iconer::app
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, myName(), recvOffset(0)
 			, preSignInPacket()
+			, myTransform()
 		{
 		}
 
@@ -54,6 +55,7 @@ export namespace iconer::app
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, myName(), recvOffset(0)
 			, preSignInPacket()
+			, myTransform()
 		{
 		}
 
@@ -74,6 +76,7 @@ export namespace iconer::app
 			, myName(std::exchange(other.myName, {}))
 			, mySocket(std::exchange(other.mySocket, iconer::net::Socket{}))
 			, recvOffset(std::exchange(other.recvOffset, 0))
+			, myTransform(std::exchange(other.myTransform, {}))
 		{
 		}
 
@@ -85,6 +88,7 @@ export namespace iconer::app
 			myName = std::exchange(other.myName, {});
 			mySocket = std::exchange(other.mySocket, iconer::net::Socket{});
 			recvOffset = std::exchange(other.recvOffset, 0);
+			myTransform = std::exchange(other.myTransform, {});
 			return *this;
 		}
 
