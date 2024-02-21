@@ -64,16 +64,19 @@ demo::PacketProcessor(Framework& framework
 
 			case app::PacketProtocol::CS_REQUEST_VERSION:
 			{
+				// Empty packet
 			}
 			break;
 
 			case app::PacketProtocol::CS_REQUEST_ROOMS:
 			{
+				// Empty packet
 			}
 			break;
 
 			case app::PacketProtocol::CS_REQUEST_USERS:
 			{
+				// Empty packet
 			}
 			break;
 
@@ -85,6 +88,7 @@ demo::PacketProcessor(Framework& framework
 
 			case app::PacketProtocol::CS_ROOM_DESTROY:
 			{
+				// Empty packet
 
 			}
 			break;
@@ -97,17 +101,20 @@ demo::PacketProcessor(Framework& framework
 
 			case app::PacketProtocol::CS_ROOM_MATCH:
 			{
+				// Empty packet
 
 			}
 			break;
 
 			case app::PacketProtocol::CS_ROOM_LEAVE:
 			{
-
-			} break;
+				// Empty packet
+			}
+			break;
 
 			case app::PacketProtocol::CS_GAME_START:
 			{
+				// Empty packet
 			}
 			break;
 
