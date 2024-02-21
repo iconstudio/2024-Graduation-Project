@@ -1,12 +1,12 @@
 ﻿#pragma comment(lib, "Server.lib")
-import <cstdio>;
-import <type_traits>;
-import <expected>;
-import <utility>;
-import <memory>;
-import <string_view>;
-import <print>;
-import <algorithm>;
+#include <type_traits>
+#include <expected>
+#include <utility>
+#include <memory>
+#include <string_view>
+#include <unordered_map>
+#include <algorithm>
+#include <print>
 
 import Iconer.Utility.Serializer;
 import Iconer.Net;
@@ -28,40 +28,30 @@ static std::byte recv_space[recvMaxSize]{};
 static std::span<std::byte, recvMaxSize> recv_buffer{ recv_space };
 unsigned long received_bytes = 0;
 
-struct FSagaPlayerCharacter
+using IdType = int;
+IdType my_id = -1;
+
+struct FSagaPlayer
 {
+	IdType id;
+	std::wstring nickname;
+
 	// position
 	float x, y, z;
 	// orientation
 	float look, up, right;
 };
+std::unordered_map<IdType, FSagaPlayer> everyClients{};
+FSagaPlayer* localPlayer = nullptr;
 
-using IdType = int;
-IdType my_id = -1;
-net::IoContext send_ctx{};
-FSagaPlayerCharacter player{};
+constexpr app::packets::CS_SignInPacket sign_packet{ L"Iconer" };
 
 char commands[256]{};
 constexpr unsigned cmd_size = sizeof(commands);
 
 coroutine::Coroutine Receiver();
 void PullReceiveBuffer(const std::byte* last_offset);
-bool SendPositionPacket()
-{
-	app::packets::CS_UpdatePositionPacket position_pk{ player.x, player.y, player.z };
-
-	auto serialized = position_pk.Serialize();
-
-	auto sent_signin_r = app_socket.Send(send_ctx, serialized.get(), app::packets::CS_UpdatePositionPacket::WannabeSize());
-	if (not sent_signin_r.has_value())
-	{
-		return false;
-	}
-
-	send_ctx.Clear();
-
-	return true;
-}
+bool SendPositionPacket();
 
 int main()
 {
@@ -99,27 +89,27 @@ int main()
 		return 3;
 	}
 
-	std::println("Starting receiving...");
+	std::println("Sending nickname...");
 
 	app::packets::CS_SignInPacket pk{};
+
+	std::byte signin_buffer[recvMaxSize]{};
+	sign_packet.Write(signin_buffer);
+
+	net::IoContext send_signin_ctx{};
+	auto sent_signin_r = app_socket.Send(send_signin_ctx, signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
+	if (not sent_signin_r.has_value())
+	{
+		return 2;
+	}
+
+	std::println("Starting receiving...");
 
 	auto receiver = Receiver();
 	//auto sender = Sender();
 
 	receiver.StartAsync();
 	//sender.StartAsync();
-
-	constexpr app::packets::CS_SignInPacket sign_packet{ L"Iconer" };
-
-	std::byte signin_buffer[recvMaxSize]{};
-	sign_packet.Write(signin_buffer);
-	auto it = pk.Read(signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
-
-	auto sent_signin_r = app_socket.Send(send_ctx, signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
-	if (not sent_signin_r.has_value())
-	{
-		return 2;
-	}
 
 	while (true)
 	{
@@ -135,32 +125,32 @@ int main()
 				}
 				else if (cmd == 'w')
 				{
-					player.y = ++player.y;
+					localPlayer->y = ++localPlayer->y;
 					SendPositionPacket();
 				}
 				else if (cmd == 'a')
 				{
-					player.x = --player.x;
+					localPlayer->x = --localPlayer->x;
 					SendPositionPacket();
 				}
 				else if (cmd == 's')
 				{
-					player.y = --player.y;
+					localPlayer->y = --localPlayer->y;
 					SendPositionPacket();
 				}
 				else if (cmd == 'd')
 				{
-					player.x = ++player.x;
+					localPlayer->x = ++localPlayer->x;
 					SendPositionPacket();
 				}
 				else if (cmd == 'z')
 				{
-					player.z = ++player.z;
+					localPlayer->z = ++localPlayer->z;
 					SendPositionPacket();
 				}
 				else if (cmd == 'x')
 				{
-					player.z = --player.z;
+					localPlayer->z = --localPlayer->z;
 					SendPositionPacket();
 				}
 			}
@@ -168,32 +158,32 @@ int main()
 			auto cmd = std::string_view{ commands, static_cast<size_t>(inputs) };
 			if ("move up" == cmd)
 			{
-				player.z = ++player.z;
+				localPlayer->z = ++localPlayer->z;
 				SendPositionPacket();
 			}
 			else if ("move dw" == cmd)
 			{
-				player.z = --player.z;
+				localPlayer->z = --localPlayer->z;
 				SendPositionPacket();
 			}
 			else if ("move fw" == cmd)
 			{
-				player.y = ++player.y;
+				localPlayer->y = ++localPlayer->y;
 				SendPositionPacket();
 			}
 			else if ("move bw" == cmd)
 			{
-				player.y = --player.y;
+				localPlayer->y = --localPlayer->y;
 				SendPositionPacket();
 			}
 			else if ("move lt" == cmd)
 			{
-				player.x = --player.x;
+				localPlayer->x = --localPlayer->x;
 				SendPositionPacket();
 			}
 			else if ("move rt" == cmd)
 			{
-				player.x = ++player.x;
+				localPlayer->x = ++localPlayer->x;
 				SendPositionPacket();
 			}
 			else if ("quit" == cmd)
@@ -253,6 +243,12 @@ coroutine::Coroutine Receiver()
 							std::println("Local player's id is {}", pk.clientId);
 							my_id = pk.clientId;
 
+							auto r = everyClients.emplace(std::make_pair(pk.clientId, FSagaPlayer{}));
+
+							localPlayer = std::addressof(r.first->second);
+							localPlayer->id = pk.clientId;
+							localPlayer->nickname = sign_packet.userName;
+
 							PullReceiveBuffer(offset);
 						}
 						break;
@@ -260,7 +256,6 @@ coroutine::Coroutine Receiver()
 						case app::PacketProtocol::SC_SIGNIN_FAILURE:
 						{
 							app::packets::SC_FailedSignInPacket pk{};
-							//util::Deserialize(seek, my_id);
 							auto offset = pk.Read(recv_space);
 
 							std::println("Local player can't get an id from server due to {}", pk.errCause);
@@ -271,13 +266,30 @@ coroutine::Coroutine Receiver()
 
 						case app::PacketProtocol::SC_CREATE_PLAYER:
 						{
+							app::packets::SC_CreatePlayerPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::println("A player {} is created",  pk.clientId);
+							everyClients.emplace(std::make_pair(pk.clientId, FSagaPlayer{}));
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case app::PacketProtocol::SC_REMOVE_PLAYER:
+						{
+							app::packets::SC_DestroyPlayerPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::println("A player {} is destroyed(disconnected)", pk.clientId);
+
+							PullReceiveBuffer(offset);
 						}
 						break;
 
 						case app::PacketProtocol::SC_MOVE_CHARACTER:
 						{
 							app::packets::SC_UpdatePositionPacket pk{ 0, 0, 0, 0 };
-							//util::Deserialize(seek, my_id);
 							auto offset = pk.Read(recv_space);
 
 							std::println("Player id {}: pos({},{},{})", pk.clientId, pk.x, pk.y, pk.z);
@@ -313,4 +325,22 @@ PullReceiveBuffer(const std::byte* last_offset)
 		//++decrement;
 	}
 	received_bytes -= static_cast<unsigned long>(offset);
+}
+
+bool SendPositionPacket()
+{
+	app::packets::CS_UpdatePositionPacket position_pk{ localPlayer->x, localPlayer->y, localPlayer->z };
+
+	auto serialized = position_pk.Serialize();
+
+	net::IoContext send_position_ctx{};
+	auto sent_position_r = app_socket.Send(send_position_ctx, serialized.get(), app::packets::CS_UpdatePositionPacket::WannabeSize());
+	if (not sent_position_r.has_value())
+	{
+		return false;
+	}
+
+	send_position_ctx.Clear();
+
+	return true;
 }
