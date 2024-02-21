@@ -30,7 +30,7 @@
 		
 		<DisplayString>사용자 세션 객체 ({myHandle})</DisplayString>
 		
-		<Expand HideRawView="true">
+		<Expand HideRawView="false">
 			<Item Name="[핸들]">myHandle</Item>
 			<Synthetic Name="[이름]">
 				<DisplayString>{__GetName()}</DisplayString>
@@ -95,13 +95,13 @@
 		</Expand>
 	</Type>
 
-	<Type Name="iconer::net::IoContext" Priority="MediumLow">
+	<Type Name="iconer::net::IoContext" Priority="MediumLow" Inheritable="false">
 		<Intrinsic Category="Property" Name="__IsInProgress" Expression="Internal == 0"/>
 
-		<DisplayString Condition="!__IsInProgress()">IO 문맥 객체 ({Internal}~{InternalHigh} 진행)</DisplayString>
+		<DisplayString Condition="!__IsInProgress()">IO 문맥 객체 ({InternalHigh}~{Internal} 진행)</DisplayString>
 		<DisplayString Condition="__IsInProgress()">IO 문맥 객체 (초기 상태)</DisplayString>
 		
-		<Expand HideRawView="true">
+		<Expand HideRawView="false">
 			<Item Name="[시작점]">Internal</Item>
 			<Item Name="[종단점]">InternalHigh</Item>
 			<Synthetic Name="[IO 오프셋]">
@@ -129,7 +129,7 @@
 		</Expand>
 	</Type>
 
-	<Type Name="_OVERLAPPED" Priority="Low">
+	<Type Name="_OVERLAPPED" Priority="Low" Inheritable="false">
 		<Intrinsic Category="Property" Name="__Offset" Expression="Offset" Optional="true"/>
 		<Intrinsic Category="Property" Name="__OffsetHigh" Expression="OffsetHigh" Optional="true"/>
 		<Intrinsic Category="Property" Name="__Pointer" Expression="Pointer" Optional="true"/>
