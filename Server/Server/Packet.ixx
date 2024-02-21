@@ -90,6 +90,31 @@ export namespace iconer::app::packets
 		std::int32_t roomId;
 	};
 	/// <summary>
+	/// Room leaving packet for client
+	/// </summary>
+	/// <remarks>Client would send it to the server</remarks>
+	struct [[nodiscard]] CS_LeaveRoomPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize();
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return Super::SignedMinSize();
+		}
+
+		constexpr CS_LeaveRoomPacket() noexcept
+			: Super(PacketProtocol::CS_ROOM_LEAVE, SignedWannabeSize())
+		{
+		}
+	};
+	/// <summary>
 	/// Position packet for client
 	/// </summary>
 	/// <param name="x"/>
