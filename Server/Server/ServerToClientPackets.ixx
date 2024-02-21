@@ -5,7 +5,7 @@ import <cstddef>;
 import <utility>;
 import <algorithm>;
 
-export namespace iconer::app::packets
+export namespace iconer::app::packets::inline sc
 {
 #pragma pack(push, 1)
 	/// <summary>
