@@ -48,7 +48,7 @@ namespace iconer::util
 		MovableAtomicImplTrivial& operator=(const integral_type& value)
 			noexcept(IsNothrowWritable)
 		{
-			myValue.store(value, std::memory_order::acq_rel);
+			myValue.store(value);
 
 			return *this;
 		}
@@ -56,7 +56,7 @@ namespace iconer::util
 		MovableAtomicImplTrivial& operator=(integral_type&& value)
 			noexcept(IsNothrowWritable)
 		{
-			myValue.store(static_cast<integral_type&&>(value), std::memory_order::acq_rel);
+			myValue.store(static_cast<integral_type&&>(value));
 
 			return *this;
 		}
@@ -64,7 +64,7 @@ namespace iconer::util
 		volatile MovableAtomicImplTrivial& operator=(const integral_type& value)
 			volatile noexcept(IsNothrowWritable)
 		{
-			myValue.store(value, std::memory_order::acq_rel);
+			myValue.store(value);
 
 			return *this;
 		}
@@ -72,7 +72,7 @@ namespace iconer::util
 		volatile MovableAtomicImplTrivial& operator=(integral_type&& value)
 			volatile noexcept(IsNothrowWritable)
 		{
-			myValue.store(static_cast<integral_type&&>(value), std::memory_order::acq_rel);
+			myValue.store(static_cast<integral_type&&>(value));
 
 			return *this;
 		}
@@ -80,7 +80,7 @@ namespace iconer::util
 		MovableAtomicImplTrivial& operator=(const value_type& atom)
 			noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
-			myValue.store(atom.load(std::memory_order::acq_rel), std::memory_order::acq_rel);
+			myValue.store(atom.load(std::memory_order::relaxed));
 
 			return *this;
 		}
@@ -88,7 +88,7 @@ namespace iconer::util
 		MovableAtomicImplTrivial& operator=(value_type&& atom)
 			noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
-			myValue.store(atom.load(std::memory_order::acq_rel), std::memory_order::acq_rel);
+			myValue.store(atom.load(std::memory_order::relaxed));
 
 			return *this;
 		}
@@ -96,7 +96,7 @@ namespace iconer::util
 		volatile MovableAtomicImplTrivial& operator=(const value_type& atom)
 			volatile noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
-			myValue.store(atom.load(std::memory_order::acq_rel), std::memory_order::acq_rel);
+			myValue.store(atom.load(std::memory_order::relaxed));
 
 			return *this;
 		}
@@ -104,7 +104,7 @@ namespace iconer::util
 		volatile MovableAtomicImplTrivial& operator=(value_type&& atom)
 			volatile noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
-			myValue.store(atom.load(std::memory_order::acq_rel), std::memory_order::acq_rel);
+			myValue.store(atom.load(std::memory_order::relaxed));
 
 			return *this;
 		}
@@ -112,7 +112,7 @@ namespace iconer::util
 		MovableAtomicImplTrivial& operator=(MovableAtomicImplTrivial&& other)
 			noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
-			myValue.store(other.myValue.load(std::memory_order::acq_rel), std::memory_order::acq_rel);
+			myValue.store(other.myValue.load(std::memory_order::relaxed));
 
 			return *this;
 		}
@@ -120,7 +120,7 @@ namespace iconer::util
 		MovableAtomicImplTrivial& operator=(volatile MovableAtomicImplTrivial&& other)
 			noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
-			myValue.store(other.myValue.load(std::memory_order::acq_rel), std::memory_order::acq_rel);
+			myValue.store(other.myValue.load(std::memory_order::relaxed));
 
 			return *this;
 		}
@@ -128,7 +128,7 @@ namespace iconer::util
 		volatile MovableAtomicImplTrivial& operator=(MovableAtomicImplTrivial&& other)
 			volatile noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
-			myValue.store(other.myValue.load(std::memory_order::acq_rel), std::memory_order::acq_rel);
+			myValue.store(other.myValue.load(std::memory_order::relaxed));
 
 			return *this;
 		}
@@ -136,34 +136,34 @@ namespace iconer::util
 		volatile MovableAtomicImplTrivial& operator=(volatile MovableAtomicImplTrivial&& other)
 			volatile noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
-			myValue.store(other.myValue.load(std::memory_order::acq_rel), std::memory_order::acq_rel);
+			myValue.store(other.myValue.load(std::memory_order::relaxed));
 
 			return *this;
 		}
 
 		template<typename U>
-		void Store(U&& value, std::memory_order order = std::memory_order::acq_rel)
+		void Store(U&& value, std::memory_order order = std::memory_order::seq_cst)
 			noexcept(IsNothrowWritable)
 		{
 			myValue.store(std::forward<U>(value), order);
 		}
 
 		template<typename U>
-		void Store(U&& value, std::memory_order order = std::memory_order::acq_rel)
+		void Store(U&& value, std::memory_order order = std::memory_order::seq_cst)
 			volatile noexcept(IsNothrowWritable)
 		{
 			myValue.store(std::forward<U>(value), order);
 		}
 
 		[[nodiscard]]
-		integral_type Load(std::memory_order order = std::memory_order::acq_rel)
+		integral_type Load(std::memory_order order = std::memory_order::seq_cst)
 			const noexcept(IsNothrowReadable)
 		{
 			return myValue.load(order);
 		}
 
 		[[nodiscard]]
-		integral_type Load(std::memory_order order = std::memory_order::acq_rel)
+		integral_type Load(std::memory_order order = std::memory_order::seq_cst)
 			const volatile noexcept(IsNothrowReadable)
 		{
 			return myValue.load(order);
@@ -212,14 +212,14 @@ namespace iconer::util
 		}
 
 		template<typename U>
-		integral_type Exchange(U&& value, std::memory_order order = std::memory_order::acq_rel)
+		integral_type Exchange(U&& value, std::memory_order order = std::memory_order::relaxed)
 			noexcept
 		{
 			return std::atomic_exchange_explicit(std::addressof(myValue), std::forward<U>(value), order);
 		}
 
 		template<typename U>
-		integral_type Exchange(U&& value, std::memory_order order = std::memory_order::acq_rel)
+		integral_type Exchange(U&& value, std::memory_order order = std::memory_order::relaxed)
 			volatile noexcept
 		{
 			return std::atomic_exchange_explicit(std::addressof(myValue), std::forward<U>(value), order);
