@@ -1,12 +1,12 @@
 ﻿#pragma comment(lib, "Server.lib")
 import <cstdio>;
-import <string_view>;
-import <utility>;
-import <memory>;
 import <type_traits>;
 import <expected>;
-import <algorithm>;
+import <utility>;
+import <memory>;
+import <string_view>;
 import <print>;
+import <algorithm>;
 
 import Iconer.Utility.Serializer;
 import Iconer.Net;
@@ -153,12 +153,12 @@ int main()
 					player.x = ++player.x;
 					SendPositionPacket();
 				}
-				else if (cmd == 'q')
+				else if (cmd == 'z')
 				{
 					player.z = ++player.z;
 					SendPositionPacket();
 				}
-				else if (cmd == 'e')
+				else if (cmd == 'x')
 				{
 					player.z = --player.z;
 					SendPositionPacket();
