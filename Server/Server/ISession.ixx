@@ -3,7 +3,8 @@ import Iconer.Utility.Constraints;
 import Iconer.Utility.Handler;
 import Iconer.Utility.NamedObject;
 import Iconer.Utility.Property;
-import Iconer.Utility.AtomicSwitcher;
+import Iconer.Utility.Atomic;
+import Iconer.Utility.MovableAtomic;
 import <concepts>;
 import <memory>;
 import <atomic>;
@@ -23,7 +24,7 @@ export namespace iconer::app
 		using HandleType = Super::HandleType;
 		using IdType = Super::HandleType;
 		using StatusType = S;
-		using AtomicType = std::atomic<StatusType>;
+		using AtomicType = iconer::util::MovableAtomic<StatusType>;
 
 		static inline constexpr bool IsNothrowDefaultConstructible = nothrow_default_constructibles<AtomicType>;
 		static inline constexpr bool IsNothrowDestructible = nothrow_destructibles<AtomicType>;
@@ -46,77 +47,72 @@ export namespace iconer::app
 		}
 
 		ISession(ISession&& other)
-			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_constructibles<Super, StatusType, std::wstring>)
+			noexcept(nothrow_move_constructibles<Super, StatusType, std::wstring, AtomicType>)
 			: Super(std::move(other)), NamedObject(std::move(other))
 			, myState()
 		{
-			iconer::util::AtomicSwitcher switcher{ other.myState };
-			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
+			myState = std::move(other.myState);
 		}
 
 		ISession& operator=(ISession&& other)
-			noexcept(noexcept(std::declval<AtomicType>().store(std::declval<StatusType>(), std::memory_order{})) and nothrow_move_assignables<Super, StatusType, std::wstring>)
+			noexcept(nothrow_move_assignables<Super, StatusType, std::wstring, AtomicType>)
 		{
-			iconer::util::AtomicSwitcher switcher{ other.myState };
-			myState.store(std::move(switcher.GetValue()), std::memory_order_relaxed);
-
 			Super::operator=(std::move(other));
 			NamedObject::operator=(std::move(other));
+			myState = std::move(other.myState);
 			return *this;
 		}
 
 		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed)
-			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
+			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().Store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
 			requires copyable<StatusType>
 		{
-			myState.store(state, order);
+			myState.Store(state, order);
 		}
 
 		void SetState(StatusType&& state, std::memory_order order = std::memory_order_relaxed)
-			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
+			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().Store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
 			requires movable<StatusType>
 		{
-			myState.store(std::move(state), order);
+			myState.Store(std::move(state), order);
 		}
 
 		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed) volatile
-			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
+			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().Store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
 			requires copyable<StatusType>
 		{
-			myState.store(state, order);
+			myState.Store(state, order);
 		}
 
 		void SetState(StatusType&& state, std::memory_order order = std::memory_order_relaxed) volatile
-			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
+			noexcept(nothrow_move_assignables<StatusType> and noexcept(std::declval<AtomicType>().Store(std::declval<StatusType&&>(), std::declval<std::memory_order>())))
 			requires movable<StatusType>
 		{
-			myState.store(std::move(state), order);
+			myState.Store(std::move(state), order);
 		}
 
 		StatusType GetState(std::memory_order order = std::memory_order_relaxed) const
-			noexcept(noexcept(std::declval<AtomicType>().load(std::declval<std::memory_order>())))
+			noexcept(noexcept(std::declval<AtomicType>().Load(std::declval<std::memory_order>())))
 		{
-			return myState.load(order);
+			return myState.Load(order);
 		}
 
 		StatusType GetState(std::memory_order order = std::memory_order_relaxed) const volatile
-			noexcept(noexcept(std::declval<AtomicType>().load(std::declval<std::memory_order>())))
+			noexcept(noexcept(std::declval<AtomicType>().Load(std::declval<std::memory_order>())))
 		{
-			return myState.load(order);
+			return myState.Load(order);
 		}
 
 		StatusType AcquireState() const
 			noexcept(noexcept(GetState(std::declval<std::memory_order>())))
 		{
 			return GetState(std::memory_order_acquire);
-			//return GetState(std::memory_order_consume);
 		}
 
 		StatusType AcquireState() const volatile
 			noexcept(noexcept(GetState(std::declval<std::memory_order>())))
 		{
 			return GetState(std::memory_order_acquire);
-			//return GetState(std::memory_order_consume);
 		}
 
 		void ReleaseState(const StatusType& state)
@@ -158,35 +154,21 @@ export namespace iconer::app
 		bool TryChangeState(StatusType from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
 			requires copyable<StatusType>
 		{
-			return myState.compare_exchange_strong(from_state, to_state, order);
+			return myState.CompareAndSet(from_state, to_state, order);
 		}
 
 		[[nodiscard]]
 		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
 			requires movable<StatusType>
 		{
-			return myState.compare_exchange_strong(from_state, std::move(to_state), order);
+			return myState.CompareAndSet(from_state, std::move(to_state), order);
 		}
 
 		[[nodiscard]]
 		bool TryChangeState(StatusType from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
 			requires copyable<StatusType>
 		{
-			return myState.compare_exchange_strong(from_state, to_state, order);
-		}
-
-		[[nodiscard]]
-		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
-			noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
-		{
-			return iconer::util::AtomicSwitcher{ myState };
-		}
-
-		[[nodiscard]]
-		iconer::util::AtomicSwitcher<AtomicType> GetStateSwitcher()
-			volatile noexcept(nothrow_constructible<iconer::util::AtomicSwitcher<AtomicType>, AtomicType>)
-		{
-			return iconer::util::AtomicSwitcher{ myState };
+			return myState.CompareAndSet(from_state, to_state, order);
 		}
 
 		[[nodiscard]]
