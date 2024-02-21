@@ -34,7 +34,7 @@ export namespace iconer::app::packets::inline sc
 		{
 		}
 
-		constexpr SC_SucceedSignInPacket(int id) noexcept
+		constexpr SC_SucceedSignInPacket(std::int32_t id) noexcept
 			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, SignedWannabeSize())
 			, clientId(id)
 		{
@@ -56,7 +56,7 @@ export namespace iconer::app::packets::inline sc
 			return iconer::util::Deserialize(Super::Read(buffer), clientId);
 		}
 
-		int clientId;
+		std::int32_t clientId;
 	};
 	/// <summary>
 	/// Assigning ID to client packet for server
@@ -131,7 +131,7 @@ export namespace iconer::app::packets::inline sc
 		{
 		}
 
-		constexpr SC_UpdatePositionPacket(int id, float px, float py, float pz) noexcept
+		constexpr SC_UpdatePositionPacket(std::int32_t id, float px, float py, float pz) noexcept
 			: Super(PacketProtocol::SC_MOVE_CHARACTER, SignedWannabeSize())
 			, clientId(id), x(px), y(py), z(pz)
 		{
@@ -153,7 +153,7 @@ export namespace iconer::app::packets::inline sc
 			return iconer::util::Deserialize(iconer::util::Deserialize(iconer::util::Deserialize(iconer::util::Deserialize(Super::Read(buffer), clientId), x), y), z);
 		}
 
-		int clientId;
+		std::int32_t clientId;
 		float x, y, z;
 	};
 #pragma pack(pop)
