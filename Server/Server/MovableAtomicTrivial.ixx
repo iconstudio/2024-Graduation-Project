@@ -21,24 +21,24 @@ namespace iconer::util
 		static inline constexpr bool IsNothrowReadable = nothrow_atomic_readable<value_type>;
 		static inline constexpr bool IsNothrowWritable = nothrow_atomic_writable<value_type>;
 
-		constexpr MovableAtomicImplTrivial() noexcept(nothrow_default_constructibles<value_type>) = default;
+		explicit constexpr MovableAtomicImplTrivial() noexcept(nothrow_default_constructibles<value_type>) = default;
 		constexpr ~MovableAtomicImplTrivial() noexcept(nothrow_destructibles<value_type>) = default;
 
-		MovableAtomicImplTrivial(const integral_type& value)
+		explicit MovableAtomicImplTrivial(const integral_type& value)
 			noexcept(IsNothrowWritable)
 			: myValue()
 		{
 			myValue.store(value, std::memory_order::relaxed);
 		}
 
-		MovableAtomicImplTrivial(integral_type&& value)
+		explicit MovableAtomicImplTrivial(integral_type&& value)
 			noexcept(IsNothrowWritable)
 			: myValue()
 		{
 			myValue.store(static_cast<integral_type&&>(value), std::memory_order::relaxed);
 		}
 
-		MovableAtomicImplTrivial(MovableAtomicImplTrivial&& other)
+		explicit MovableAtomicImplTrivial(MovableAtomicImplTrivial&& other)
 			noexcept(IsNothrowReadable and IsNothrowWritable)
 			: myValue()
 		{

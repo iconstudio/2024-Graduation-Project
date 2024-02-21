@@ -44,7 +44,7 @@ namespace iconer::util
 		}
 
 	public:
-		MovableAtomicImplNonTrivial()
+		explicit MovableAtomicImplNonTrivial()
 			: myValue()
 		{
 			std::allocator<integral_type> alloc{};
@@ -54,7 +54,7 @@ namespace iconer::util
 		}
 		
 		template<typename... Args>
-		MovableAtomicImplNonTrivial(in_place_t, Args&&... args)
+		explicit MovableAtomicImplNonTrivial(in_place_t, Args&&... args)
 			: myValue()
 		{
 			auto handle = Allocate();
