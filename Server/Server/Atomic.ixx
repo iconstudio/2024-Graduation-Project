@@ -28,11 +28,14 @@ export namespace iconer::util
 		: std::bool_constant<noexcept(std::declval<std::atomic<T>>().store(std::declval<U>(), std::declval<std::memory_order>()))>
 	{};
 
-	template<typename T>
-	inline constexpr bool is_nothrow_atomic_writable_v = is_nothrow_atomic_writable<T>::value;
+	template<typename T, typename U>
+	inline constexpr bool is_nothrow_atomic_writable_v = is_nothrow_atomic_writable<T, U>::value;
 
 	template<typename T>
-	concept nothrow_atomic_writable = is_nothrow_atomic_writable_v<T>;
+	concept nothrow_atomic_writable = is_nothrow_atomic_writable_v<T, T>;
+
+	template<typename T, typename U>
+	concept nothrow_atomic_writable_with = is_nothrow_atomic_writable_v<T, U>;
 }
 
 namespace
