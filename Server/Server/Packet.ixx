@@ -40,6 +40,56 @@ export namespace iconer::app::packets
 		}
 	};
 	/// <summary>
+	/// Room entering packet for client
+	/// </summary>
+	/// <param name="roomId"/>
+	/// <remarks>Client would send it to the server</remarks>
+	struct [[nodiscard]] CS_EnterRoomPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(std::int32_t);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(std::int32_t));
+		}
+
+		constexpr CS_EnterRoomPacket() noexcept
+			: CS_EnterRoomPacket(-1)
+		{
+		}
+
+		constexpr CS_EnterRoomPacket(std::int32_t room_id) noexcept
+			: Super(PacketProtocol::CS_ROOM_JOIN, SignedWannabeSize())
+			, roomId(room_id)
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, roomId);
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			return iconer::util::Serializes(Super::Write(buffer), roomId);
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer)
+		{
+			return iconer::util::Deserialize(Super::Read(buffer), roomId);
+		}
+
+		std::int32_t roomId;
+	};
+	/// <summary>
 	/// Position packet for client
 	/// </summary>
 	/// <param name="x"/>
