@@ -2,44 +2,79 @@ export module Iconer.Utility.Atomic;
 import <atomic>;
 import <format>;
 
-/// <summary>
-/// {a} : memory order acquire
-/// {r} : memory order release
-/// {o} : memory order acq_rel
-/// {x} : memory order relaxed
-/// {_} : memory order consume
-/// {c} : memory order seq_cst
-/// {}  : default
-/// </summary>
-[[nodiscard]]
-constexpr std::memory_order ParseOrderSpec(const char ch)
+export namespace iconer::util
 {
-	switch (ch)
-	{
-		case 'a': return std::memory_order_acquire;
-		case 'r': return std::memory_order_release;
-		case 'o': return std::memory_order_acq_rel;
-		case 'x': return std::memory_order_relaxed;
-		case '_': return std::memory_order_consume;
-		case 'c': return std::memory_order_seq_cst;
-		default: std::format_error{ "Invalid order specifier." };
-	}
-}
-[[nodiscard]]
-constexpr std::memory_order ParseOrderSpec(const wchar_t ch)
-{
-	switch (ch)
-	{
-		case L'a': return std::memory_order_acquire;
-		case L'r': return std::memory_order_release;
-		case L'o': return std::memory_order_acq_rel;
-		case L'x': return std::memory_order_relaxed;
-		case L'_': return std::memory_order_consume;
-		case L'c': return std::memory_order_seq_cst;
-		default: std::format_error{ "Invalid order specifier." };
-	}
+	template <typename T>
+	struct is_nothrow_atomic_readable
+	{};
+
+	template<typename T>
+	struct is_nothrow_atomic_readable<std::atomic<T>>
+		: std::bool_constant<noexcept(std::declval<std::atomic<T>>().load(std::declval<std::memory_order>()))>
+	{};
+
+	template<typename T>
+	inline constexpr bool is_nothrow_atomic_readable_v = is_nothrow_atomic_readable<T>::value;
+
+	template<typename T>
+	concept nothrow_atomic_readable = is_nothrow_atomic_readable_v<T>;
+
+	template <typename T, typename U>
+	struct is_nothrow_atomic_writable
+	{};
+
+	template<typename T, typename U>
+	struct is_nothrow_atomic_writable<std::atomic<T>, U>
+		: std::bool_constant<noexcept(std::declval<std::atomic<T>>().store(std::declval<U>(), std::declval<std::memory_order>()))>
+	{};
+
+	template<typename T>
+	inline constexpr bool is_nothrow_atomic_writable_v = is_nothrow_atomic_writable<T>::value;
+
+	template<typename T>
+	concept nothrow_atomic_writable = is_nothrow_atomic_writable_v<T>;
 }
 
+namespace
+{
+	/// <summary>
+	/// {a} : memory order acquire
+	/// {r} : memory order release
+	/// {o} : memory order acq_rel
+	/// {x} : memory order relaxed
+	/// {_} : memory order consume
+	/// {c} : memory order seq_cst
+	/// {}  : default
+	/// </summary>
+	[[nodiscard]]
+	constexpr std::memory_order ParseOrderSpec(const char ch)
+	{
+		switch (ch)
+		{
+			case 'a': return std::memory_order_acquire;
+			case 'r': return std::memory_order_release;
+			case 'o': return std::memory_order_acq_rel;
+			case 'x': return std::memory_order_relaxed;
+			case '_': return std::memory_order_consume;
+			case 'c': return std::memory_order_seq_cst;
+			default: std::format_error{ "Invalid order specifier." };
+		}
+	}
+	[[nodiscard]]
+	constexpr std::memory_order ParseOrderSpec(const wchar_t ch)
+	{
+		switch (ch)
+		{
+			case L'a': return std::memory_order_acquire;
+			case L'r': return std::memory_order_release;
+			case L'o': return std::memory_order_acq_rel;
+			case L'x': return std::memory_order_relaxed;
+			case L'_': return std::memory_order_consume;
+			case L'c': return std::memory_order_seq_cst;
+			default: std::format_error{ "Invalid order specifier." };
+		}
+	}
+}
 
 export template<typename T>
 struct std::formatter<std::atomic<T>, char>
