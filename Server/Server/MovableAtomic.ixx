@@ -37,6 +37,9 @@ export namespace iconer::util
 			return *this;
 		}
 
+		explicit MovableAtomic(MovableAtomic&&) noexcept(nothrow_move_constructibles<Super>) = default;
+		MovableAtomic& operator=(MovableAtomic&&) noexcept(nothrow_move_assignables<Super>) = default;
+
 	private:
 		MovableAtomic(const MovableAtomic&) = delete;
 		MovableAtomic& operator=(const MovableAtomic&) = delete;
@@ -60,6 +63,7 @@ namespace iconer::util::test
 
 		aaa = 4;
 		aaa < 4;
+		bbb < 0;
 
 		MovableAtomic ccc{ CCC{} };
 	}
