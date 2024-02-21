@@ -24,52 +24,25 @@ namespace iconer::util
 		constexpr MovableAtomicImplTrivial() noexcept(nothrow_default_constructibles<value_type>) = default;
 		constexpr ~MovableAtomicImplTrivial() noexcept(nothrow_destructibles<value_type>) = default;
 
-		explicit
-			MovableAtomicImplTrivial(const integral_type& value)
-			noexcept(IsNothrowReadable and IsNothrowWritable)
+		MovableAtomicImplTrivial(const integral_type& value)
+			noexcept(IsNothrowWritable)
 			: myValue()
 		{
 			myValue.store(value, std::memory_order::relaxed);
 		}
 
-		explicit constexpr
-			MovableAtomicImplTrivial(integral_type&& value)
-			noexcept(IsNothrowReadable and IsNothrowWritable)
+		MovableAtomicImplTrivial(integral_type&& value)
+			noexcept(IsNothrowWritable)
 			: myValue()
 		{
 			myValue.store(static_cast<integral_type&&>(value), std::memory_order::relaxed);
 		}
 
-		explicit
-			MovableAtomicImplTrivial(const value_type& atom, std::memory_order order = std::memory_order::relaxed)
+		MovableAtomicImplTrivial(MovableAtomicImplTrivial&& other)
 			noexcept(IsNothrowReadable and IsNothrowWritable)
 			: myValue()
 		{
-			myValue.store(atom.load(order), std::memory_order::relaxed);
-		}
-
-		explicit
-			MovableAtomicImplTrivial(value_type&& atom, std::memory_order order = std::memory_order::relaxed)
-			noexcept(IsNothrowReadable and IsNothrowWritable)
-			: myValue()
-		{
-			myValue.store(atom.load(order), std::memory_order::relaxed);
-		}
-
-		explicit
-			MovableAtomicImplTrivial(MovableAtomicImplTrivial&& other, std::memory_order order = std::memory_order::relaxed)
-			noexcept(IsNothrowReadable and IsNothrowWritable)
-			: myValue()
-		{
-			myValue.store(other.Load(order), std::memory_order::relaxed);
-		}
-
-		explicit
-			MovableAtomicImplTrivial(volatile MovableAtomicImplTrivial&& other, std::memory_order order = std::memory_order::relaxed)
-			noexcept(IsNothrowReadable and IsNothrowWritable)
-			: myValue()
-		{
-			myValue.store(other.Load(order), std::memory_order::relaxed);
+			myValue.store(other.Load(std::memory_order::relaxed), std::memory_order::relaxed);
 		}
 
 		MovableAtomicImplTrivial& operator=(const integral_type& value)
@@ -82,6 +55,22 @@ namespace iconer::util
 
 		MovableAtomicImplTrivial& operator=(integral_type&& value)
 			noexcept(IsNothrowWritable)
+		{
+			myValue.store(static_cast<integral_type&&>(value), std::memory_order::acq_rel);
+
+			return *this;
+		}
+		
+		volatile MovableAtomicImplTrivial& operator=(const integral_type& value)
+			volatile noexcept(IsNothrowWritable)
+		{
+			myValue.store(value, std::memory_order::acq_rel);
+
+			return *this;
+		}
+
+		volatile MovableAtomicImplTrivial& operator=(integral_type&& value)
+			volatile noexcept(IsNothrowWritable)
 		{
 			myValue.store(static_cast<integral_type&&>(value), std::memory_order::acq_rel);
 
@@ -127,7 +116,7 @@ namespace iconer::util
 
 			return *this;
 		}
-
+		
 		MovableAtomicImplTrivial& operator=(volatile MovableAtomicImplTrivial&& other)
 			noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
@@ -135,7 +124,7 @@ namespace iconer::util
 
 			return *this;
 		}
-
+		
 		volatile MovableAtomicImplTrivial& operator=(MovableAtomicImplTrivial&& other)
 			volatile noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
@@ -143,7 +132,7 @@ namespace iconer::util
 
 			return *this;
 		}
-
+		
 		volatile MovableAtomicImplTrivial& operator=(volatile MovableAtomicImplTrivial&& other)
 			volatile noexcept(IsNothrowReadable and IsNothrowWritable)
 		{
@@ -168,14 +157,14 @@ namespace iconer::util
 
 		[[nodiscard]]
 		integral_type Load(std::memory_order order = std::memory_order::acq_rel)
-			noexcept(IsNothrowReadable)
+			const noexcept(IsNothrowReadable)
 		{
 			return myValue.load(order);
 		}
 
 		[[nodiscard]]
 		integral_type Load(std::memory_order order = std::memory_order::acq_rel)
-			volatile noexcept(IsNothrowReadable)
+			const volatile noexcept(IsNothrowReadable)
 		{
 			return myValue.load(order);
 		}
@@ -420,6 +409,10 @@ namespace iconer::util
 
 	protected:
 		value_type myValue;
+
+	private:
+		MovableAtomicImplTrivial(const MovableAtomicImplTrivial&) = delete;
+		MovableAtomicImplTrivial& operator=(const MovableAtomicImplTrivial&) = delete;
 	};
 }
 

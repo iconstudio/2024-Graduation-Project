@@ -22,9 +22,18 @@ export namespace iconer::util
 		using Super::Super;
 
 		template<typename U>
-		MovableAtomic& operator=(U&& value) noexcept(noexcept(Super::operator=(std::declval<U>())))
+		MovableAtomic& operator=(U&& value)
+			noexcept(noexcept(std::declval<Super&>() = std::declval<U>()))
 		{
-			Super::operator=(std::forward<U>(value));
+			static_cast<Super&>(*this) = std::forward<U>(value);
+			return *this;
+		}
+
+		template<typename U>
+		volatile MovableAtomic& operator=(U&& value)
+			volatile noexcept(noexcept(std::declval<volatile Super&>() = std::declval<U&&>()))
+		{
+			static_cast<volatile Super&>(*this) = std::forward<U>(value);
 			return *this;
 		}
 
@@ -34,9 +43,6 @@ export namespace iconer::util
 	};
 
 	template<trivials T>
-	MovableAtomic(T&&) -> MovableAtomic<T>;
-
-	template<specializations<std::atomic> T>
 	MovableAtomic(T&&) -> MovableAtomic<T>;
 }
 
