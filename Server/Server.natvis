@@ -49,6 +49,9 @@
 
 		<Expand HideRawView="false">
 			<Item Name="[핸들]">myHandle</Item>
+			<Synthetic Name="[상태]">
+				<DisplayString>{myState.myValue}</DisplayString>
+			</Synthetic>
 			<Synthetic Name="[이름]">
 				<DisplayString>{__GetName()}</DisplayString>
 			</Synthetic>
@@ -220,6 +223,18 @@
 		<DisplayString>{&quot;$T1&quot;} 싱글톤 객체</DisplayString>
 	</Type>
 
+	<Type Name="iconer::util::MovableAtomic&lt;*&gt;">
+		<DisplayString>{myValue}</DisplayString>
+		
+		<Expand>
+			<Item Name="[값]">myValue</Item>
+		</Expand>
+	</Type>
+
+	<Type Name="iconer::util::NamedObject">
+		<DisplayString>{myName}</DisplayString>
+	</Type>
+
 	<Type Name="iconer::util::IProperty&lt;*&gt;">
 		<DisplayString>{myValue}</DisplayString>
 
@@ -237,7 +252,7 @@
 		<Intrinsic Category="Method" Name="__HasValue" Expression="_Has_value"/>
 		
 		<DisplayString Condition="!__HasValue()">빈 선택 객체 &lt;{&quot;$T1&quot;}&gt;</DisplayString>
-		<DisplayString Condition="__HasValue()">선택 객체 &lt;{&quot;$T1&quot;}&gt;</DisplayString>
+		<DisplayString Condition="__HasValue()">{_Value}</DisplayString>
 		
 		<Expand HideRawView="0">
 			<Item Name="[값]" Optional="true" Condition="_Has_value">_Value</Item>
