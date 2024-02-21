@@ -170,42 +170,42 @@ namespace iconer::util
 		}
 
 		template<typename U>
-		bool CompareAndSet(U&& value, integral_type expected)
+		bool CompareAndSet(integral_type expected, U&& value)
 			noexcept
 		{
 			return myValue.compare_exchange_strong(expected, std::forward<U>(value));
 		}
 
 		template<typename U>
-		bool CompareAndSet(U&& value, integral_type expected)
+		bool CompareAndSet(integral_type expected, U&& value)
 			volatile noexcept
 		{
 			return myValue.compare_exchange_strong(expected, std::forward<U>(value));
 		}
 
 		template<typename U>
-		bool CompareAndSet(U&& value, integral_type expected, std::memory_order order)
+		bool CompareAndSet(integral_type expected, U&& value, std::memory_order order)
 			noexcept
 		{
 			return myValue.compare_exchange_strong(expected, std::forward<U>(value), order);
 		}
 
 		template<typename U>
-		bool CompareAndSet(U&& value, integral_type expected, std::memory_order order)
+		bool CompareAndSet(integral_type expected, U&& value, std::memory_order order)
 			volatile noexcept
 		{
 			return myValue.compare_exchange_strong(expected, std::forward<U>(value), order);
 		}
 
 		template<typename U>
-		bool CompareAndSet(U&& value, integral_type expected, std::memory_order success, std::memory_order failure)
+		bool CompareAndSet(integral_type expected, U&& value, std::memory_order success, std::memory_order failure)
 			noexcept
 		{
 			return myValue.compare_exchange_strong(expected, std::forward<U>(value), success, failure);
 		}
 
 		template<typename U>
-		bool CompareAndSet(U&& value, integral_type expected, std::memory_order success, std::memory_order failure)
+		bool CompareAndSet(integral_type expected, U&& value, std::memory_order success, std::memory_order failure)
 			volatile noexcept
 		{
 			return myValue.compare_exchange_strong(expected, std::forward<U>(value), success, failure);
