@@ -1,5 +1,5 @@
 export module Iconer.Utility.Atomic;
-import <atomic>;
+export import <atomic>;
 import <format>;
 
 export namespace iconer::util
