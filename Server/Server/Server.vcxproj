@@ -199,6 +199,7 @@
     <ClCompile Include="BorrowedSendContext.ixx" />
     <ClCompile Include="Byte.ixx" />
     <ClCompile Include="CharacterReader.ixx" />
+    <ClCompile Include="ClientToServerPackets.ixx" />
     <ClCompile Include="ConcurrentList.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
@@ -341,6 +342,7 @@
     <ClCompile Include="Room.ixx" />
     <ClCompile Include="Serializer.ixx" />
     <ClCompile Include="ISession.ixx" />
+    <ClCompile Include="ServerToClientPackets.ixx" />
     <ClCompile Include="Singleton.ixx" />
     <ClCompile Include="SkipList.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>

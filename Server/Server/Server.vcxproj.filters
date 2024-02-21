@@ -297,6 +297,12 @@
     <ClCompile Include="AsyncOperation.ixx">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="ClientToServerPackets.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerToClientPackets.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
