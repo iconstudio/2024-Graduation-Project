@@ -2,6 +2,7 @@
 
 
 #include "Item/EnergyDrinkItem.h"
+#include "InventoryComponent.h"
 #include "Character/SagaCharacterPlayer.h"
 
 void UEnergyDrinkItem::Use(ASagaCharacterPlayer* Character)
@@ -9,5 +10,10 @@ void UEnergyDrinkItem::Use(ASagaCharacterPlayer* Character)
 	if (Character)
 	{
 		Character->PlayerHP += HealAmount;
+
+		if (OwningInventory)
+		{
+			OwningInventory->RemoveItem(this);
+		}
 	}
 }
