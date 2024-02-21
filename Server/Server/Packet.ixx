@@ -31,7 +31,7 @@ export namespace iconer::app::packets
 			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(float) * 3);
 		}
 
-		constexpr CS_UpdatePositionPacket(float px, float py, float pz) noexcept
+		constexpr CS_UpdatePositionPacket() noexcept
 			: CS_UpdatePositionPacket(0, 0, 0)
 		{
 		}
