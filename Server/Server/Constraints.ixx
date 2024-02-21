@@ -348,8 +348,8 @@ export namespace iconer
 	template<typename T, typename... Ots>
 	concept abs_same = make_conjunction<typename detail::same_as_bind<T>::template result, Ots...>;
 
-	template<typename... Ts>
-	concept specializations = is_specialization_v<clean_t<Ts>...>;
+	template<typename Special, template<typename...> typename Template>
+	concept specializations = is_specialization_v<clean_t<Special>, Template>;
 
 	template<typename Fn, typename Rx, typename... Args>
 	concept invocable_results = invocables<Fn, Args...>&& same_as<std::invoke_result_t<Fn, Args...>, Rx>;
