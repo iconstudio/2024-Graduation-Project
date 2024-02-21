@@ -74,5 +74,6 @@ export namespace iconer::app
 
 		SC_CHAT = std::numeric_limits<std::uint8_t>::max(),
 		SC_RPC,
+		SC_REMOVE_PLAYER,
 	};
 }
