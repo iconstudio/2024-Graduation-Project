@@ -303,6 +303,9 @@
     <ClCompile Include="ServerToClientPackets.ixx">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="Atomic.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
