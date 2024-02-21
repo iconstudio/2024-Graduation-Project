@@ -33,6 +33,7 @@ export namespace iconer::app
 		CS_MY_ANIMATION_END,
 
 		CS_CHAT,
+		CS_RPC,
 
 		SC_SIGNIN_SUCCESS = 120,
 		SC_SIGNIN_FAILURE,
@@ -72,5 +73,6 @@ export namespace iconer::app
 		SC_ANIMATION_START,
 
 		SC_CHAT = std::numeric_limits<std::uint8_t>::max(),
+		SC_RPC,
 	};
 }
