@@ -11,7 +11,7 @@ export namespace iconer::app::packets::inline sc
 	/// <summary>
 	/// Assigning ID to client packet for server
 	/// </summary>
-	/// <param name="userName">An id of client</param>
+	/// <param name="clientId">An id of client</param>
 	/// <remarks>Server would send it to the client</remarks>
 	struct [[nodiscard]] SC_SucceedSignInPacket : public BasicPacket
 	{
