@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -191,6 +191,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
     </ClCompile>
     <ClCompile Include="AsyncOperation.ixx" />
+    <ClCompile Include="Atomic.ixx" />
     <ClCompile Include="AtomicSwitcher.ixx" />
     <ClCompile Include="BasicPacket.ixx" />
     <ClCompile Include="BehaviourTree.ixx" />
@@ -273,6 +274,10 @@
     <ClCompile Include="Matrix2x2.ixx" />
     <ClCompile Include="Matrix3x3.ixx" />
     <ClCompile Include="Monad.ixx" />
+    <ClCompile Include="MovableAtomic.ixx" />
+    <ClCompile Include="MovableAtomicNonTrivial.ixx" />
+    <ClCompile Include="MovableAtomicStorage.ixx" />
+    <ClCompile Include="MovableAtomicTrivial.ixx" />
     <ClCompile Include="NamedObject.ixx" />
     <ClCompile Include="Network.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>

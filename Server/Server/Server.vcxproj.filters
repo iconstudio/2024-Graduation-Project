@@ -303,7 +303,19 @@
     <ClCompile Include="ServerToClientPackets.ixx">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="MovableAtomic.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
     <ClCompile Include="Atomic.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableAtomicStorage.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableAtomicTrivial.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableAtomicNonTrivial.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
   </ItemGroup>
