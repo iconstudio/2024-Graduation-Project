@@ -9,6 +9,60 @@ export namespace iconer::app::packets::inline sc
 {
 #pragma pack(push, 1)
 	/// <summary>
+	/// Creating a client packet for server
+	/// </summary>
+	/// <param name="clientId">An id of client</param>
+	/// <param name="roomId"/>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_CreatePlayerPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		static inline constexpr size_t nickNameLength = 16;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(clientId) + sizeof(userName);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(clientId) + sizeof(userName));
+		}
+
+		constexpr SC_CreatePlayerPacket() noexcept
+			: SC_CreatePlayerPacket(-1)
+		{
+		}
+
+		constexpr SC_CreatePlayerPacket(std::int32_t id) noexcept
+			: Super(PacketProtocol::SC_CREATE_PLAYER, SignedWannabeSize())
+			, clientId(id), userName()
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, clientId, userName);
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			return iconer::util::Serializes(Super::Write(buffer), clientId, userName);
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer)
+		{
+			return iconer::util::Deserialize(iconer::util::Deserialize(Super::Read(buffer), clientId), nickNameLength, userName);
+		}
+
+		std::int32_t clientId;
+		wchar_t userName[nickNameLength];
+	};
+	/// <summary>
 	/// Assigning ID to client packet for server
 	/// </summary>
 	/// <param name="clientId">An id of client</param>
