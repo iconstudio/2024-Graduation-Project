@@ -557,7 +557,7 @@ export namespace iconer::util
 
 	/// <summary>Transfer arguments to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
-	template<typename... Args> requires (1 < sizeof...(Args))
+	template<typename... Args> requires (0 < sizeof...(Args))
 		constexpr std::byte* Serializes(std::byte* dest, Args&&... args)
 	{
 		return iconer::util::detail::Serialize(dest, std::forward_as_tuple(std::forward<Args>(args)...), std::index_sequence_for<Args...>{});
