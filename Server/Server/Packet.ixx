@@ -9,6 +9,37 @@ export namespace iconer::app::packets
 {
 #pragma pack(push, 1)
 	/// <summary>
+	/// Game initiating packet for client
+	/// </summary>
+	/// <remarks>Client would send it to the server</remarks>
+	struct [[nodiscard]] CS_GameStartPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize();
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return Super::SignedMinSize();
+		}
+
+		constexpr CS_GameStartPacket() noexcept
+			: Super(PacketProtocol::CS_GAME_START, SignedWannabeSize())
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize);
+		}
+	};
+	/// <summary>
 	/// Position packet for client
 	/// </summary>
 	/// <param name="x"/>
