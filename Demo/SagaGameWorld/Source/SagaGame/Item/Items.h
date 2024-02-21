@@ -45,7 +45,7 @@ public:
 	UPROPERTY()
 	class UInventoryComponent* OwningInventory;
 
-	virtual void Use(class ASagaCharacterPlayer* Character) PURE_VIRTUAL(UItems, );
+	virtual void Use(class ASagaCharacterPlayer* Character);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnUse(class ASagaCharacterPlayer* Character);
