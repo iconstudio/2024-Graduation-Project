@@ -63,6 +63,56 @@ export namespace iconer::app::packets::inline sc
 		wchar_t userName[nickNameLength];
 	};
 	/// <summary>
+	/// Remove a certain client packet for server
+	/// </summary>
+	/// <param name="clientId">An id of client</param>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_DestroyPlayerPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(clientId);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(clientId));
+		}
+
+		constexpr SC_DestroyPlayerPacket() noexcept
+			: SC_DestroyPlayerPacket(-1)
+		{
+		}
+
+		constexpr SC_DestroyPlayerPacket(std::int32_t id) noexcept
+			: Super(PacketProtocol::SC_REMOVE_PLAYER, SignedWannabeSize())
+			, clientId(id)
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, clientId);
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			return iconer::util::Serialize(Super::Write(buffer), clientId);
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer)
+		{
+			return iconer::util::Deserialize(Super::Read(buffer), clientId);
+		}
+
+		std::int32_t clientId;
+	};
+	/// <summary>
 	/// Assigning ID to client packet for server
 	/// </summary>
 	/// <param name="clientId">An id of client</param>
