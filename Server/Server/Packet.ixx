@@ -32,6 +32,11 @@ export namespace iconer::app::packets
 		}
 
 		constexpr CS_UpdatePositionPacket(float px, float py, float pz) noexcept
+			: CS_UpdatePositionPacket(0, 0, 0)
+		{
+		}
+
+		constexpr CS_UpdatePositionPacket(float px, float py, float pz) noexcept
 			: Super(PacketProtocol::CS_MY_POSITION, SignedWannabeSize())
 			, x(px), y(py), z(pz)
 		{
@@ -249,6 +254,10 @@ export namespace iconer::app::packets
 		{
 			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(int) + sizeof(float) * 3);
 		}
+
+		constexpr SC_UpdatePositionPacket()
+			: SC_UpdatePositionPacket(-1, 0, 0, 0)
+		{}
 
 		constexpr SC_UpdatePositionPacket(int id, float px, float py, float pz) noexcept
 			: Super(PacketProtocol::SC_MOVE_CHARACTER, SignedWannabeSize())
