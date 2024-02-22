@@ -37,7 +37,7 @@ export namespace iconer::util
 			return *this;
 		}
 
-		explicit MovableAtomic(MovableAtomic&&) noexcept(nothrow_move_constructibles<Super>) = default;
+		MovableAtomic(MovableAtomic&&) noexcept(nothrow_move_constructibles<Super>) = default;
 		MovableAtomic& operator=(MovableAtomic&&) noexcept(nothrow_move_assignables<Super>) = default;
 
 	private:
