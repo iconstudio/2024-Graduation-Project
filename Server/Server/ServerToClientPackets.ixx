@@ -110,6 +110,56 @@ export namespace iconer::app::packets::inline sc
 		std::int32_t clientId;
 		std::int32_t roomId;
 	};
+	/// <summary>
+	/// Failed to join to a room packet for server
+	/// </summary>
+	/// <param name="errCause">Reason of couldn't join to the room</param>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_RoomJoinFailedPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(errCause);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(errCause));
+		}
+
+		constexpr SC_RoomJoinFailedPacket() noexcept
+			: SC_RoomJoinFailedPacket(0)
+		{
+		}
+
+		constexpr SC_RoomJoinFailedPacket(int cause) noexcept
+			: Super(PacketProtocol::SC_ROOM_JOIN_FAILED, SignedWannabeSize())
+			, errCause(cause)
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, errCause);
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			return iconer::util::Serialize(Super::Write(buffer), errCause);
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer)
+		{
+			return iconer::util::Deserialize(Super::Read(buffer), errCause);
+		}
+
+		int errCause;
+	};
 	/// Creating a client packet for server
 	/// </summary>
 	/// <param name="clientId">An id of client</param>
