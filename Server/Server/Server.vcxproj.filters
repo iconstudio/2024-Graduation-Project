@@ -321,6 +321,9 @@
     <ClCompile Include="ISession.ixx">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="SharedMutex.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">

@@ -349,6 +349,7 @@
     <ClCompile Include="Serializer.ixx" />
     <ClCompile Include="IObject.ixx" />
     <ClCompile Include="ServerToClientPackets.ixx" />
+    <ClCompile Include="SharedMutex.ixx" />
     <ClCompile Include="Singleton.ixx" />
     <ClCompile Include="SkipList.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
