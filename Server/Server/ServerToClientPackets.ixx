@@ -9,6 +9,55 @@ export namespace iconer::app::packets::inline sc
 {
 #pragma pack(push, 1)
 	/// <summary>
+	/// Room created notification packet for server
+	/// </summary>
+	/// <param name="roomId">An id of the created room</param>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_RoomCreatedPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(roomId);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(roomId));
+		}
+
+		constexpr SC_RoomCreatedPacket() noexcept
+			: SC_RoomCreatedPacket(-1)
+		{
+		}
+
+		constexpr SC_RoomCreatedPacket(std::int32_t room_id) noexcept
+			: Super(PacketProtocol::SC_ROOM_CREATED, SignedWannabeSize())
+			, roomId(room_id)
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, roomId);
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			return iconer::util::Serialize(Super::Write(buffer), roomId);
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer)
+		{
+			return iconer::util::Deserialize(Super::Read(buffer), roomId);
+		}
+
+		std::int32_t roomId;
+	};
 	/// Creating a client packet for server
 	/// </summary>
 	/// <param name="clientId">An id of client</param>
