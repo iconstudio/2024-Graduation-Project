@@ -58,6 +58,58 @@ export namespace iconer::app::packets::inline sc
 
 		std::int32_t roomId;
 	};
+	/// <summary>
+	/// Joined to a room packet for server
+	/// </summary>
+	/// <param name="clientId">An id of client</param>
+	/// <param name="roomId">An id of the room</param>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_RoomJoinedPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(clientId) + sizeof(roomId);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(clientId) + sizeof(roomId));
+		}
+
+		constexpr SC_RoomJoinedPacket() noexcept
+			: SC_RoomJoinedPacket(-1, -1)
+		{
+		}
+
+		constexpr SC_RoomJoinedPacket(std::int32_t user_id, std::int32_t room_id) noexcept
+			: Super(PacketProtocol::SC_ROOM_JOINED, SignedWannabeSize())
+			, clientId(user_id), roomId(room_id)
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, clientId, roomId);
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			return iconer::util::Serializes(Super::Write(buffer), clientId, roomId);
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer)
+		{
+			return iconer::util::Deserialize(iconer::util::Deserialize(Super::Read(buffer), clientId), roomId);
+		}
+
+		std::int32_t clientId;
+		std::int32_t roomId;
+	};
 	/// Creating a client packet for server
 	/// </summary>
 	/// <param name="clientId">An id of client</param>
