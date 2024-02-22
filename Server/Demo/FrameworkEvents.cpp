@@ -207,19 +207,17 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 void
 demo::Framework::OnFailedReceive(iconer::app::User& user)
 {
-	if (not user.BeginClose())
+	// Make room out now
+	if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
 	{
-		// Make room out now
-		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
+		if (auto room = FindRoom(room_id); nullptr != room)
 		{
-			if (auto room = FindRoom(room_id); nullptr != room)
-			{
-				room->RemoveMember(user.GetID());
-			}
+			room->RemoveMember(user.GetID());
 		}
-
-		user.Cleanup();
 	}
+
+	user.Cleanup();
+	user.BeginClose();
 }
 
 int
