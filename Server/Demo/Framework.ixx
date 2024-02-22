@@ -93,9 +93,13 @@ export namespace demo
 		void CancelWorkers() noexcept;
 
 		[[nodiscard]]
-		constexpr iconer::app::Room*
-			FindRoom(const IdType& id)
-			const noexcept
+		iconer::app::User* FindUser(const IdType& id) const noexcept
+		{
+			return userManager->operator[](id);
+		}
+
+		[[nodiscard]]
+		constexpr iconer::app::Room* FindRoom(const IdType& id) const noexcept
 		{
 			for (auto&& room : everyRoom)
 			{
@@ -199,11 +203,11 @@ export namespace demo
 
 		// import Iconer.Application.UserManager;
 		alignas(std::hardware_constructive_interference_size) iconer::app::ISessionManager<iconer::app::User>* userManager;
+		std::array<iconer::app::Room*, maxRoomsNumber> everyRoom;
 
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<iconer::app::User[]> userSpace;
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<std::byte[]> recvSpace;
 
-		std::array<iconer::app::Room*, maxRoomsNumber> everyRoom;
 		iconer::util::SpinLock roomsLock;
 
 	private:
