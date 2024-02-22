@@ -19,6 +19,7 @@ namespace
 	const demo::DemoInitializerError socket_register_error{ "Error when registering a socket." };
 	const demo::DemoInitializerError socket_create_error{ "Error when creating a socket." };
 	const demo::DemoInitializerError user_awake_error{ "Error when awakening a user." };
+	const demo::DemoInitializerError room_create_error{ "Error when creating rooms." };
 }
 
 void
@@ -28,7 +29,7 @@ demo::Framework::Awake()
 
 	using namespace std::string_view_literals;
 	myLogger.Awake(L"server.log"sv);
-	
+
 	if (const auto startup_err = net::Startup())
 	{
 		myLogger.LogError(L"Error {} occured when starting network system.", startup_err.value());
@@ -90,6 +91,12 @@ demo::Framework::Awake()
 	if (not InitializeUsers())
 	{
 		throw user_awake_error;
+	}
+
+	myLogger.Log(L"\tcreating {} rooms...\n", maxRoomsNumber);
+	if (not InitializeRooms())
+	{
+		throw room_create_error;
 	}
 
 	myLogger.Log(L"\tgenerating {} workers...\n", workersCount);

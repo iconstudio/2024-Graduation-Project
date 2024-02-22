@@ -1,6 +1,7 @@
 export module Demo.Framework;
 import Iconer.Utility.Logger;
 import Iconer.Utility.ColourfulConsole;
+import Iconer.Utility.Concurrency.SpinLock;
 import Iconer.Collection.FixedString;
 import Iconer.Net.ErrorCode;
 import Iconer.Net.IoContext;
@@ -12,14 +13,14 @@ import Iconer.Application.Room;
 import Iconer.Application.ISessionManager;
 import Iconer.Application.IContext;
 import <memory>;
-import <vector>;
-import <array>;
-import <span>;
-import <thread>;
-import <latch>;
 import <expected>;
+import <span>;
 import <string>;
 import <string_view>;
+import <vector>;
+import <array>;
+import <thread>;
+import <latch>;
 
 export namespace demo
 {
@@ -52,8 +53,8 @@ export namespace demo
 		static inline constexpr std::uint16_t lobbySidePort{ 40000 };
 		static inline constexpr std::uint16_t gameSidePort{ 40001 };
 		static inline constexpr size_t maxUsersNumber = 20;
-		static inline constexpr size_t maxUsersInRoomNumber = 4;
-		static inline constexpr size_t maxRoomsNumber = 500;
+		static inline constexpr size_t maxUsersInRoomNumber = 6;
+		static inline constexpr size_t maxRoomsNumber = maxUsersNumber;
 		static inline constexpr IdType lobbyServerID = 0;
 		static inline constexpr IdType gameServerID = 1;
 		static inline constexpr IdType beginUserID = 2;
@@ -90,6 +91,22 @@ export namespace demo
 		}
 
 		void CancelWorkers() noexcept;
+
+		[[nodiscard]]
+		constexpr iconer::app::Room*
+			FindRoom(const IdType& id)
+			const noexcept
+		{
+			for (auto&& room : everyRoom)
+			{
+				if (room->GetID() == id)
+				{
+					return room;
+				}
+			}
+
+			return nullptr;
+		}
 
 		[[nodiscard]]
 		constexpr std::span<std::byte, userRecvSize>
@@ -151,6 +168,9 @@ export namespace demo
 		/// <summary>On Awake()</summary>
 		[[nodiscard]]
 		bool InitializeUsers();
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
+		bool InitializeRooms();
 		/// <summary>On Start()</summary>
 		[[nodiscard]]
 		bool StartAccepts();
@@ -191,6 +211,9 @@ export namespace demo
 		std::stop_source workerCanceller;
 
 		iconer::util::Logger myLogger;
+
+		std::array<iconer::app::Room*, maxRoomsNumber> everyRoom;
+		iconer::util::SpinLock roomsLock;
 	};
 
 	void Worker(Framework& framework, size_t nth);
