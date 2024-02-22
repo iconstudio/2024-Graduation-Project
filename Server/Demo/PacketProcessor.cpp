@@ -2,6 +2,7 @@ module Demo.Framework.PacketProcessor;
 import Iconer.Utility.Serializer;
 import Iconer.Application.Packet;
 import Iconer.Application.Resources.String;
+import Iconer.Application.BlobSendContext;
 import <memory>;
 import <string>;
 import <string_view>;
@@ -52,7 +53,10 @@ demo::PacketProcessor(Framework& framework
 
 			case app::PacketProtocol::CS_SIGNOUT:
 			{
-
+				if (not user.BeginClose())
+				{
+					user.Cleanup();
+				}
 			}
 			break;
 
@@ -82,7 +86,33 @@ demo::PacketProcessor(Framework& framework
 
 			case app::PacketProtocol::CS_ROOM_CREATE:
 			{
+				wchar_t room_title[16]{};
+				util::Deserialize(last_buf, 16, room_title);
 
+				bool success = false;
+				for (auto& room : framework.everyRoom)
+				{
+					if (room->TryChangeState(app::RoomStates::None, app::RoomStates::Reserved))
+					{
+						if (framework.Schedule(room, user_id))
+						{
+							room->SetOperation(app::AsyncOperations::OpCreateRoom);
+							room->SetName(room_title);
+							success = true;
+							break;
+						}
+					}
+				}
+
+				if (not success)
+				{
+					// 1: every room is busy
+					auto r = user.SendRoomCreationFailedPacket(1);
+					if (not r.first)
+					{
+						delete r.second;
+					}
+				}
 			}
 			break;
 
@@ -95,7 +125,41 @@ demo::PacketProcessor(Framework& framework
 
 			case app::PacketProtocol::CS_ROOM_JOIN:
 			{
+				std::int32_t room_id{};
+				util::Deserialize(last_buf, room_id);
 
+				auto room = framework.FindRoom(room_id);
+				if (nullptr == room)
+				{
+					// 0: cannot find a room with the id
+					auto r = user.SendRoomJoinFailedPacket(0);
+					if (not r.first)
+					{
+						delete r.second;
+					}
+				}
+				else if (room->IsFull() or room->GetState() != app::RoomStates::Idle)
+				{
+					// 1: room is busy
+					auto r = user.SendRoomJoinFailedPacket(1);
+					if (not r.first)
+					{
+						delete r.second;
+					}
+				}
+				else if (framework.Schedule(room, user_id))
+				{
+					room->SetOperation(app::AsyncOperations::OpEnterRoom);
+				}
+				else
+				{
+					// 1000: server error
+					auto r = user.SendRoomJoinFailedPacket(2);
+					if (not r.first)
+					{
+						delete r.second;
+					}
+				}
 			}
 			break;
 
@@ -126,13 +190,17 @@ demo::PacketProcessor(Framework& framework
 			case app::PacketProtocol::CS_MY_POSITION:
 			{
 				float px{}, py{}, pz{};
-				util::Deserialize(util::Deserialize(util::Deserialize(last_buf, px),  py), pz);
+				util::Deserialize(util::Deserialize(util::Deserialize(last_buf, px), py), pz);
 
 				user.PositionX(px);
 				user.PositionY(py);
 				user.PositionZ(pz);
 
-				user.SendPositionPacket(user_id, px, py, pz);
+				auto r = user.SendPositionPacket(user_id, px, py, pz);
+				if (not r.first)
+				{
+					delete r.second;
+				}
 			}
 			break;
 

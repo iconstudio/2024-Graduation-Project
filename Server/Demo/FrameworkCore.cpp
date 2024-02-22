@@ -216,19 +216,20 @@ demo::Framework::RouteEvent(bool is_succeed
 
 		case iconer::app::AsyncOperations::OpEnterRoom:
 		{
-			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
-			const IdType& id = user->GetID();
+			auto room = std::launder(static_cast<iconer::app::Room*>(ctx));
+			const IdType& room_id = room->GetID();
+			const IdType user_id = static_cast<IdType>(io_bytes);
 
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tUser {} could not enter to room {}\n", id, 0);
+				myLogger.LogError(L"\tUser {} could not enter to room {}\n", user_id, room_id);
 			}
 			else
 			{
-				myLogger.Log(L"\tUser {} entered to room {}\n", id, 0);
+				myLogger.Log(L"\tUser {} entered to room {}\n", user_id, room_id);
 			}
 
-			user->Clear();
+			room->Clear();
 		}
 		break;
 
