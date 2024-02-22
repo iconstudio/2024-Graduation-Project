@@ -184,6 +184,33 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 	user.BeginClose();
 }
 
+bool
+demo::Framework::OnCreatingRoom(iconer::app::User& user)
+{
+	return false;
+}
+
+void
+demo::Framework::OnFailedToCreateRoom(iconer::app::User& user, int reason)
+{
+}
+
+bool
+demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
+{
+	return false;
+}
+
+void
+demo::Framework::OnFailedToJoinRoom(iconer::app::User& user, int reason, const IdType& room_id)
+{
+	auto r = user.SendRoomJoinFailedPacket(reason);
+	if (not r.first)
+	{
+		delete r.second;
+	}
+}
+
 demo::Framework::AcceptResult
 demo::Framework::OnUserDisconnected(iconer::app::User& user)
 {

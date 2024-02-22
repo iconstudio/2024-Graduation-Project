@@ -148,11 +148,6 @@ export namespace demo
 			return std::move(id) - beginUserID;
 		}
 
-		friend void Worker(Framework& framework, size_t nth);
-		static void LockPhase() noexcept;
-		static void UnlockPhase() noexcept;
-
-	private:
 		/// <summary>On Awake()</summary>
 		[[nodiscard]]
 		bool CreateListenerSockets() noexcept;
@@ -194,11 +189,13 @@ export namespace demo
 		IoResult OnReceived(iconer::app::User& user, const ptrdiff_t& bytes);
 		void OnFailedReceive(iconer::app::User& user);
 		[[nodiscard]]
+		bool OnCreatingRoom(iconer::app::User& user);
+		void OnFailedToCreateRoom(iconer::app::User& user, int reason);
+		[[nodiscard]]
+		bool OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user);
+		void OnFailedToJoinRoom(iconer::app::User& user, int reason, const IdType& room_id);
+		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);
-
-		iconer::net::Socket serverListener;
-		iconer::net::Socket gameListener;
-		iconer::net::IoCompletionPort ioCompletionPort;
 
 		// import Iconer.Application.UserManager;
 		alignas(std::hardware_constructive_interference_size) iconer::app::ISessionManager<iconer::app::User>* userManager;
@@ -206,14 +203,22 @@ export namespace demo
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<iconer::app::User[]> userSpace;
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<std::byte[]> recvSpace;
 
+		std::array<iconer::app::Room*, maxRoomsNumber> everyRoom;
+		iconer::util::SpinLock roomsLock;
+
+	private:
+		friend void Worker(Framework& framework, size_t nth);
+		static void LockPhase() noexcept;
+		static void UnlockPhase() noexcept;
+
+		iconer::util::Logger myLogger;
 		std::vector<std::jthread> serverWorkers;
 		std::latch workerAwakens{ workersCount };
 		std::stop_source workerCanceller;
 
-		iconer::util::Logger myLogger;
-
-		std::array<iconer::app::Room*, maxRoomsNumber> everyRoom;
-		iconer::util::SpinLock roomsLock;
+		iconer::net::Socket serverListener;
+		iconer::net::Socket gameListener;
+		iconer::net::IoCompletionPort ioCompletionPort;
 	};
 
 	void Worker(Framework& framework, size_t nth);
