@@ -300,7 +300,7 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
-		const mapped_type* operator[](const key_type& id) const noexcept
+		mapped_type* operator[](const key_type& id) const noexcept
 		{
 			std::shared_lock lock{ myLock };
 			if (const_iterator it = Find(id); it != myData.end())
