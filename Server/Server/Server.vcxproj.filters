@@ -318,6 +318,9 @@
     <ClCompile Include="MovableAtomicNonTrivial.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="ISession.ixx">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">

@@ -6,7 +6,7 @@ export module Iconer.Application.User;
 import Iconer.Utility.Constraints;
 import Iconer.Net.Socket;
 import Iconer.Application.IContext;
-import Iconer.Application.IObject;
+import Iconer.Application.ISession;
 import <cstdint>;
 import <initializer_list>;
 import <memory>;
@@ -25,12 +25,11 @@ export namespace iconer::app
 		, Dead
 	};
 
-	class [[nodiscard]] User : public IObject<std::int32_t, UserStates>, public IContext
+	class [[nodiscard]] User : public ISession<UserStates>
 	{
 	public:
-		using Super = IObject<std::int32_t, UserStates>;
+		using Super = ISession<UserStates>;
 		using Super::IdType;
-		using ContextType = IContext;
 		using IoResult = iconer::net::Socket::AsyncResult;
 
 		static inline constexpr size_t nicknameLength = 16;
@@ -39,10 +38,10 @@ export namespace iconer::app
 
 		[[nodiscard]]
 		explicit constexpr User(const IdType& id, iconer::net::Socket&& socket)
-			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<std::wstring, ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
-			: Super(id), ContextType()
+			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_move_constructibles<iconer::net::Socket>)
+			: Super(id)
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
-			, myName(), recvOffset(0)
+			, recvOffset(0)
 			, preSignInPacket()
 			, myTransform()
 		{
@@ -50,30 +49,28 @@ export namespace iconer::app
 
 		[[nodiscard]]
 		explicit constexpr User(IdType&& id, iconer::net::Socket&& socket)
-			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<std::wstring, ContextType> and nothrow_move_constructibles<iconer::net::Socket>)
-			: Super(std::move(id)), ContextType()
+			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_move_constructibles<iconer::net::Socket>)
+			: Super(std::move(id))
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
-			, myName(), recvOffset(0)
+			, recvOffset(0)
 			, preSignInPacket()
 			, myTransform()
 		{
 		}
 
-		~User() noexcept(nothrow_destructibles<Super, ContextType, std::wstring, iconer::net::Socket>)
+		~User() noexcept(nothrow_destructibles<Super, iconer::net::Socket>)
 		{
 			if (mySocket.IsAvailable())
 			{
 				std::exchange(mySocket, iconer::net::Socket{}).Close();
 			}
 
-			Super::~IObject();
-			ContextType::~IContext();
+			Super::~ISession();
 		}
 
 		User(User&& other)
-			noexcept(nothrow_move_constructibles<Super, ContextType, std::wstring, iconer::net::Socket>)
-			: Super(std::move(other)), ContextType(std::move(other))
-			, myName(std::exchange(other.myName, {}))
+			noexcept(nothrow_move_constructibles<Super, iconer::net::Socket>)
+			: Super(std::move(other))
 			, mySocket(std::exchange(other.mySocket, iconer::net::Socket{}))
 			, recvOffset(std::exchange(other.recvOffset, 0))
 			, preSignInPacket(std::exchange(other.preSignInPacket, {}))
@@ -82,10 +79,9 @@ export namespace iconer::app
 		}
 
 		User& operator=(User&& other)
-			noexcept(nothrow_move_assignables<Super, ContextType, std::wstring, iconer::net::Socket>)
+			noexcept(nothrow_move_assignables<Super, iconer::net::Socket>)
 		{
 			Super::operator=(std::move(other));
-			ContextType::operator=(std::move(other));
 			myName = std::exchange(other.myName, {});
 			mySocket = std::exchange(other.mySocket, iconer::net::Socket{});
 			recvOffset = std::exchange(other.recvOffset, 0);
@@ -432,7 +428,6 @@ export namespace iconer::app
 			return myTransform[0];
 		}
 
-		std::wstring myName;
 		iconer::net::Socket mySocket;
 		volatile ptrdiff_t recvOffset;
 

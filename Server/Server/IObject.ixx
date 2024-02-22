@@ -15,7 +15,7 @@ export namespace iconer::app
 {
 	template<typename I, typename S, typename NameChar>
 	class [[nodiscard]] IObject
-		: protected iconer::util::Handler<I>, public iconer::util::NamedObject<NameChar>
+		: protected iconer::util::Handler<I>, protected iconer::util::NamedObject<NameChar>
 	{
 	public:
 		using Super = iconer::util::Handler<I>;
@@ -23,6 +23,7 @@ export namespace iconer::app
 		using IdType = Super::HandleType;
 		using StatusType = S;
 		using AtomicType = iconer::util::MovableAtomic<StatusType>;
+		using NameType = iconer::util::NamedObject<NameChar>;
 
 		static inline constexpr bool IsNothrowDefaultConstructible = nothrow_default_constructibles<AtomicType>;
 		static inline constexpr bool IsNothrowDestructible = nothrow_destructibles<AtomicType>;
@@ -32,34 +33,37 @@ export namespace iconer::app
 
 		explicit constexpr IObject(const IdType& handle)
 			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<AtomicType>)
-			: Super(handle), NamedObject("Session")
+			: Super(handle), NameType(L"Session")
 			, myState()
 		{
 		}
 
 		explicit constexpr IObject(IdType&& handle)
 			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<AtomicType>)
-			: Super(std::move(handle)), NamedObject("Session")
+			: Super(std::move(handle)), NameType(L"Session")
 			, myState()
 		{
 		}
 
 		IObject(IObject&& other)
-			noexcept(nothrow_move_constructibles<Super, StatusType, std::wstring, AtomicType>)
-			: Super(std::move(other)), NamedObject(std::move(other))
+			noexcept(nothrow_move_constructibles<Super, StatusType, AtomicType, NameType>)
+			: Super(std::move(other)), NameType(std::move(other))
 			, myState()
 		{
 			myState = std::move(other.myState);
 		}
 
 		IObject& operator=(IObject&& other)
-			noexcept(nothrow_move_assignables<Super, StatusType, std::wstring, AtomicType>)
+			noexcept(nothrow_move_assignables<Super, StatusType, AtomicType, NameType>)
 		{
 			Super::operator=(std::move(other));
-			NamedObject::operator=(std::move(other));
+			NameType::operator=(std::move(other));
 			myState = std::move(other.myState);
 			return *this;
 		}
+
+		using NameType::SetName;
+		using NameType::GetName;
 
 		void SetState(const StatusType& state, std::memory_order order = std::memory_order_relaxed)
 			noexcept(nothrow_copy_assignables<StatusType> and noexcept(std::declval<AtomicType>().Store(std::declval<const StatusType&>(), std::declval<std::memory_order>())))
@@ -202,8 +206,6 @@ export namespace iconer::app
 		[[nodiscard]]
 		static constexpr S Create(Args&&... args) noexcept(nothrow_constructible<S, Args&&...>)
 		{
-			static_assert(constructible_from<S, Args&&...>);
-
 			S result = S{ std::forward<Args>(args)... };
 			result.Awake();
 			return result;
