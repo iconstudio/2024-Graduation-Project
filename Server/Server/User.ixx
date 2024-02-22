@@ -6,6 +6,7 @@ export module Iconer.Application.User;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.MovableAtomic;
 import Iconer.Net.Socket;
+import Iconer.Application.IContext;
 import Iconer.Application.ISession;
 import <cstdint>;
 import <initializer_list>;
@@ -43,7 +44,7 @@ export namespace iconer::app
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
 			, preSignInPacket()
-			, myTransform()
+			, roomContext(), myRoomId(), myTransform()
 		{
 		}
 
@@ -54,7 +55,7 @@ export namespace iconer::app
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
 			, preSignInPacket()
-			, myTransform()
+			, roomContext(), myRoomId(), myTransform()
 		{
 		}
 
@@ -434,6 +435,8 @@ export namespace iconer::app
 		std::unique_ptr<std::byte[]> preSignInPacket;
 
 		glm::mat4 myTransform;
+
+		IContext roomContext;
 		iconer::util::MovableAtomic<IdType> myRoomId;
 
 	private:
