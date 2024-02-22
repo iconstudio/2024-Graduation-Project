@@ -130,8 +130,9 @@ export namespace iconer::app
 			SetOperation(AsyncOperations::None);
 			SetState(UserStates::None);
 			ContextType::Clear();
-			recvOffset = 0;
 			myName.clear();
+			recvOffset = 0;
+			myRoomId = -1;
 		}
 
 		template<size_t Size>
