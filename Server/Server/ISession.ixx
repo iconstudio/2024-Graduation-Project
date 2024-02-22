@@ -10,7 +10,7 @@ export namespace iconer::app
 		: public IObject<std::int32_t, S, wchar_t>, public IContext
 	{
 	public:
-		using Super = IObject<std::int32_t, S>;
+		using Super = IObject<std::int32_t, S, wchar_t>;
 		using IdType = Super::IdType;
 		using ContextType = IContext;
 
