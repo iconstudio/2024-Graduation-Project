@@ -11,8 +11,8 @@ export namespace iconer::app
 {
 	enum class [[nodiscard]] RoomStates
 	{
-		Idle
-		, Reserved
+		None
+		, Reserved, Idle
 		, InGame
 		, GameDone
 		, Cleanup
