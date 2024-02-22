@@ -147,6 +147,11 @@ export namespace iconer::app
 
 		IoResult SendSignInPacket();
 		std::pair<IoResult, BlobSendContext*> SendPositionPacket(IdType id, float x, float y, float z);
+		std::pair<IoResult, BlobSendContext*> SendRoomCreatedPacket(IdType room_id);
+		std::pair<IoResult, BlobSendContext*> SendRoomCreationFailedPacket(int reason);
+		/// <param name="who">- Not only local client</param>
+		std::pair<IoResult, BlobSendContext*> SendRoomJoinedPacket(IdType who, IdType room_id);
+		std::pair<IoResult, BlobSendContext*> SendRoomJoinFailedPacket(int reason);
 
 		constexpr User& PositionX(const float& v) noexcept
 		{
