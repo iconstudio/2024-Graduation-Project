@@ -77,7 +77,9 @@ export namespace iconer::app
 			, recvOffset(std::exchange(other.recvOffset, 0))
 			, preSignInPacket(std::exchange(other.preSignInPacket, {}))
 			, myTransform(std::exchange(other.myTransform, {}))
+			, myRoomId()
 		{
+			myRoomId = std::exchange(other.myRoomId, -1);
 		}
 
 		User& operator=(User&& other)
@@ -89,6 +91,7 @@ export namespace iconer::app
 			recvOffset = std::exchange(other.recvOffset, 0);
 			preSignInPacket = std::exchange(other.preSignInPacket, {});
 			myTransform = std::exchange(other.myTransform, {});
+			myRoomId = std::exchange(other.myRoomId, -1);
 			return *this;
 		}
 
