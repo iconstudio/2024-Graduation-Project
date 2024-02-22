@@ -26,7 +26,7 @@ export namespace iconer::util
 
 		constexpr void SetName(std::string&& name) noexcept
 		{
-			myName = std::move(name);
+			myName = std::exchange(name, std::string{});
 		}
 		
 		constexpr void SetName(std::string_view name)
