@@ -13,11 +13,9 @@ import <string_view>;
 
 export namespace iconer::app
 {
-	template<typename I, typename S>
-	class IObject;
-
-	template<typename I, typename S>
-	class [[nodiscard]] IObject : protected iconer::util::Handler<I>, public iconer::util::NamedObject
+	template<typename I, typename S, typename NameChar>
+	class [[nodiscard]] IObject
+		: protected iconer::util::Handler<I>, public iconer::util::NamedObject<NameChar>
 	{
 	public:
 		using Super = iconer::util::Handler<I>;

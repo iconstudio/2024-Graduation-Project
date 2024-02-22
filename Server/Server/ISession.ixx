@@ -6,7 +6,8 @@ import Iconer.Application.IObject;
 export namespace iconer::app
 {
 	template<typename S>
-	class [[nodiscard]] ISession : public IObject<std::int32_t, S>, public IContext
+	class [[nodiscard]] ISession
+		: public IObject<std::int32_t, S, wchar_t>, public IContext
 	{
 	public:
 		using Super = IObject<std::int32_t, S>;
