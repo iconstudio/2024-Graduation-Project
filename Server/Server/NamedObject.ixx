@@ -4,48 +4,55 @@ import <string_view>;
 
 export namespace iconer::util
 {
+	template<typename Char, typename Traits = std::char_traits<Char>>
 	class NamedObject
 	{
 	public:
+		using NameType = std::basic_string<Char, Traits>;
+		using NameViewType = std::basic_string_view<Char, Traits>;
+
 		template<size_t Length>
-		constexpr void SetName(const char(&name)[Length])
+		constexpr void SetName(const Char(&name)[Length])
 		{
-			myName = std::string{ name };
+			myName.reserve(Length);
+			myName = NameType{ name };
 		}
 
 		template<size_t Length>
-		constexpr void SetName(char(&& name)[Length])
+		constexpr void SetName(Char(&& name)[Length])
 		{
-			myName = std::string{ std::move(name) };
+			myName.reserve(Length);
+			myName = NameType{ std::move(name) };
 		}
 
-		constexpr void SetName(const std::string& name)
+		constexpr void SetName(const NameType& name)
 		{
 			myName = name;
 		}
 
-		constexpr void SetName(std::string&& name) noexcept
+		constexpr void SetName(NameType&& name) noexcept
 		{
-			myName = std::exchange(name, std::string{});
+			myName = std::exchange(name, NameType{});
 		}
 		
-		constexpr void SetName(std::string_view name)
+		constexpr void SetName(NameViewType name)
 		{
+			myName.reserve(name.length());
 			myName = name;
 		}
 
 		[[nodiscard]]
-		constexpr const std::string& GetName() const& noexcept
+		constexpr const NameType& GetName() const& noexcept
 		{
 			return myName;
 		}
 
 		[[nodiscard]]
-		constexpr std::string&& GetName() && noexcept
+		constexpr NameType&& GetName() && noexcept
 		{
 			return std::move(myName);
 		}
 
-		std::string myName;
+		NameType myName;
 	};
 }
