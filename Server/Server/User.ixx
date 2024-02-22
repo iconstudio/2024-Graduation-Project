@@ -39,24 +39,24 @@ export namespace iconer::app
 		explicit User() = default;
 
 		[[nodiscard]]
-		explicit constexpr User(const IdType& id, iconer::net::Socket&& socket)
+		explicit User(const IdType& id, iconer::net::Socket&& socket)
 			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_move_constructibles<iconer::net::Socket>)
 			: Super(id)
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
 			, preSignInPacket()
-			, roomContext(), myRoomId(), myTransform()
+			, roomContext(), myRoomId(-1), myTransform()
 		{
 		}
 
 		[[nodiscard]]
-		explicit constexpr User(IdType&& id, iconer::net::Socket&& socket)
+		explicit User(IdType&& id, iconer::net::Socket&& socket)
 			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_move_constructibles<iconer::net::Socket>)
 			: Super(std::move(id))
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
 			, preSignInPacket()
-			, roomContext(), myRoomId(), myTransform()
+			, roomContext(), myRoomId(-1), myTransform()
 		{
 		}
 
