@@ -1,3 +1,6 @@
 export module Iconer.Application.Room;
 
-export void MyFunc();
+export namespace iconer::app
+{
+
+}

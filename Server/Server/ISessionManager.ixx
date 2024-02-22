@@ -1,6 +1,6 @@
 export module Iconer.Application.ISessionManager;
 import Iconer.Utility.Constraints;
-import Iconer.Application.ISession;
+import Iconer.Application.IObject;
 import <exception>;
 import <atomic>;
 import <utility>;

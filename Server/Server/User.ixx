@@ -6,7 +6,7 @@ export module Iconer.Application.User;
 import Iconer.Utility.Constraints;
 import Iconer.Net.Socket;
 import Iconer.Application.IContext;
-import Iconer.Application.ISession;
+import Iconer.Application.IObject;
 import <cstdint>;
 import <initializer_list>;
 import <memory>;
@@ -25,10 +25,10 @@ export namespace iconer::app
 		, Dead
 	};
 
-	class [[nodiscard]] User : public ISession<std::int32_t, UserStates>, public IContext
+	class [[nodiscard]] User : public IObject<std::int32_t, UserStates>, public IContext
 	{
 	public:
-		using Super = ISession<std::int32_t, UserStates>;
+		using Super = IObject<std::int32_t, UserStates>;
 		using Super::IdType;
 		using ContextType = IContext;
 		using IoResult = iconer::net::Socket::AsyncResult;
@@ -66,7 +66,7 @@ export namespace iconer::app
 				std::exchange(mySocket, iconer::net::Socket{}).Close();
 			}
 
-			Super::~ISession();
+			Super::~IObject();
 			ContextType::~IContext();
 		}
 

@@ -346,7 +346,7 @@
     <ClCompile Include="Matrix.ixx" />
     <ClCompile Include="Room.ixx" />
     <ClCompile Include="Serializer.ixx" />
-    <ClCompile Include="ISession.ixx" />
+    <ClCompile Include="IObject.ixx" />
     <ClCompile Include="ServerToClientPackets.ixx" />
     <ClCompile Include="Singleton.ixx" />
     <ClCompile Include="SkipList.ixx">

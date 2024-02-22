@@ -8,6 +8,7 @@ import Iconer.Net.Socket;
 import Iconer.Net.IoCompletionPort;
 import Iconer.Application.IContext;
 import Iconer.Application.User;
+import Iconer.Application.Room;
 import Iconer.Application.ISessionManager;
 import Iconer.Application.IContext;
 import <memory>;

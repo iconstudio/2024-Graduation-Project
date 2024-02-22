@@ -198,7 +198,7 @@
     <ClCompile Include="IProperty.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="ISession.ixx">
+    <ClCompile Include="IObject.ixx">
       <Filter>Application</Filter>
     </ClCompile>
     <ClCompile Include="User.ixx">
