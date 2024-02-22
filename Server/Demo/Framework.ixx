@@ -198,6 +198,7 @@ export namespace demo
 		[[nodiscard]]
 		int OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user);
 		void OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& user, int reason);
+		bool OnLeavingRoom(iconer::app::User& user);
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);
 

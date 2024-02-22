@@ -160,11 +160,7 @@ demo::PacketProcessor(Framework& framework
 						delete r.second;
 					}
 				}
-				else if (framework.Schedule(room, user_id))
-				{
-					room->SetOperation(app::AsyncOperations::OpEnterRoom);
-				}
-				else
+				else if (not framework.Schedule(room, user_id))
 				{
 					// 1000: server error
 					auto r = user.SendRoomJoinFailedPacket(2);
@@ -172,6 +168,10 @@ demo::PacketProcessor(Framework& framework
 					{
 						delete r.second;
 					}
+				}
+				else
+				{
+					room->SetOperation(app::AsyncOperations::OpEnterRoom);
 				}
 			}
 			break;
@@ -186,6 +186,7 @@ demo::PacketProcessor(Framework& framework
 			case app::PacketProtocol::CS_ROOM_LEAVE:
 			{
 				// Empty packet
+				framework.OnLeavingRoom(user);
 			}
 			break;
 
