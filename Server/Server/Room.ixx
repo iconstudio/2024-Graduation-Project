@@ -14,7 +14,8 @@ export namespace iconer::app
 		Idle
 		, Reserved
 		, InGame
-		, Dead
+		, GameDone
+		, Cleanup
 	};
 
 	class [[nodiscard]] Room : public ISession<RoomStates>
