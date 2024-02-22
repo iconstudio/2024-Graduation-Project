@@ -101,16 +101,17 @@ export namespace iconer::app
 		{
 			ContextType::Clear();
 
-			SetOperation(AsyncOperations::OpDisconnect);
 			SetState(UserStates::Dead);
+			SetOperation(AsyncOperations::OpDisconnect);
 			return mySocket.CloseAsync(this);
 		}
 
 		bool BeginClose(UserStates prev_state) noexcept
 		{
+			ContextType::Clear();
+
 			if (TryChangeState(prev_state, UserStates::Dead, std::memory_order_acq_rel))
 			{
-				ContextType::Clear();
 				SetOperation(AsyncOperations::OpDisconnect);
 				return mySocket.CloseAsync(this);
 			}
