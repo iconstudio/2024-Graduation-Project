@@ -2,7 +2,6 @@ module Demo.Framework.PacketProcessor;
 import Iconer.Utility.Serializer;
 import Iconer.Application.Packet;
 import Iconer.Application.Resources.String;
-import Iconer.Application.BlobSendContext;
 import <memory>;
 import <string>;
 import <string_view>;
