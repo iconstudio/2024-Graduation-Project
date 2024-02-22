@@ -1,4 +1,4 @@
-export module Iconer.Application.ISession;
+export module Iconer.Application.IObject;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.Handler;
 import Iconer.Utility.NamedObject;
@@ -14,10 +14,10 @@ import <string_view>;
 export namespace iconer::app
 {
 	template<typename I, typename S>
-	class ISession;
+	class IObject;
 
 	template<typename I, typename S>
-	class [[nodiscard]] ISession : protected iconer::util::Handler<I>, public iconer::util::NamedObject
+	class [[nodiscard]] IObject : protected iconer::util::Handler<I>, public iconer::util::NamedObject
 	{
 	public:
 		using Super = iconer::util::Handler<I>;
@@ -29,24 +29,24 @@ export namespace iconer::app
 		static inline constexpr bool IsNothrowDefaultConstructible = nothrow_default_constructibles<AtomicType>;
 		static inline constexpr bool IsNothrowDestructible = nothrow_destructibles<AtomicType>;
 
-		explicit constexpr ISession() noexcept(IsNothrowDefaultConstructible) = default;
-		~ISession() noexcept(IsNothrowDestructible) = default;
+		explicit constexpr IObject() noexcept(IsNothrowDefaultConstructible) = default;
+		~IObject() noexcept(IsNothrowDestructible) = default;
 
-		explicit constexpr ISession(const IdType& handle)
+		explicit constexpr IObject(const IdType& handle)
 			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_default_constructibles<AtomicType>)
 			: Super(handle), NamedObject("Session")
 			, myState()
 		{
 		}
 
-		explicit constexpr ISession(IdType&& handle)
+		explicit constexpr IObject(IdType&& handle)
 			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_default_constructibles<AtomicType>)
 			: Super(std::move(handle)), NamedObject("Session")
 			, myState()
 		{
 		}
 
-		ISession(ISession&& other)
+		IObject(IObject&& other)
 			noexcept(nothrow_move_constructibles<Super, StatusType, std::wstring, AtomicType>)
 			: Super(std::move(other)), NamedObject(std::move(other))
 			, myState()
@@ -54,7 +54,7 @@ export namespace iconer::app
 			myState = std::move(other.myState);
 		}
 
-		ISession& operator=(ISession&& other)
+		IObject& operator=(IObject&& other)
 			noexcept(nothrow_move_assignables<Super, StatusType, std::wstring, AtomicType>)
 		{
 			Super::operator=(std::move(other));
@@ -192,8 +192,8 @@ export namespace iconer::app
 		volatile AtomicType myState;
 
 	private:
-		ISession(const ISession&) = delete;
-		void operator=(const ISession&) = delete;
+		IObject(const IObject&) = delete;
+		void operator=(const IObject&) = delete;
 	};
 
 	template<typename S>

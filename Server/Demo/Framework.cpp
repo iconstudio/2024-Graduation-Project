@@ -4,7 +4,7 @@ module;
 module Demo.Framework;
 import Iconer.Net.IpAddress;
 import Iconer.Net.EndPoint;
-import Iconer.Application.ISession;
+import Iconer.Application.IObject;
 import <atomic>;
 
 bool
