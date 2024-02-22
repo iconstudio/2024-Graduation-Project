@@ -36,9 +36,26 @@
 				<DisplayString>{__GetName()}</DisplayString>
 			</Synthetic>
 			<Item Name="[상태]">myState</Item>
+			<Item Name="[현재 방]">myRoomId</Item>
 			<Item Name="[명령]">lastOperation</Item>
 			<Item Name="[소켓]">mySocket</Item>
 			<Item Name="[수신 바이트 수]">recvOffset</Item>
+		</Expand>
+	</Type>
+
+	<Type Name="iconer::app::Room" Priority="High">
+		<Intrinsic Category="Property" Name="__GetName" Expression="myName"/>
+		
+		<DisplayString>방 객체 ({myHandle})</DisplayString>
+		
+		<Expand HideRawView="false">
+			<Item Name="[핸들]">myHandle</Item>
+			<Synthetic Name="[이름]">
+				<DisplayString>{__GetName()}</DisplayString>
+			</Synthetic>
+			<Item Name="[상태]">myState</Item>
+			<Item Name="[명령]">lastOperation</Item>
+			<Item Name="[멤버]">myMembers</Item>
 		</Expand>
 	</Type>
 
