@@ -8,6 +8,7 @@ import Iconer.Utility.MovableAtomic;
 import Iconer.Net.Socket;
 import Iconer.Application.IContext;
 import Iconer.Application.ISession;
+import Iconer.Application.BlobSendContext;
 import <cstdint>;
 import <initializer_list>;
 import <memory>;
@@ -145,7 +146,7 @@ export namespace iconer::app
 		}
 
 		IoResult SendSignInPacket();
-		IoResult SendPositionPacket(IdType id, float x, float y, float z);
+		std::pair<IoResult, BlobSendContext*> SendPositionPacket(IdType id, float x, float y, float z);
 
 		constexpr User& PositionX(const float& v) noexcept
 		{

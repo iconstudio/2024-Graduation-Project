@@ -1,7 +1,6 @@
 module;
 module Iconer.Application.User;
 import Iconer.Application.Packet;
-import Iconer.Application.BlobSendContext;
 
 void
 iconer::app::User::Awake()
@@ -24,11 +23,11 @@ iconer::app::User::SendSignInPacket()
 	return mySocket.Send(*this, preSignInPacket.get(), packets::SC_SucceedSignInPacket::WannabeSize());
 }
 
-iconer::app::User::IoResult
-iconer::app::User::SendPositionPacket(IdType id, float x, float y, float z)
+std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+iconer::app::User::SendPositionPacket(iconer::app::User::IdType id, float x, float y, float z)
 {
 	const iconer::app::packets::SC_UpdatePositionPacket pk{ id, x, y, z };
 	iconer::app::BlobSendContext* ctx = new iconer::app::BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
 
-	return mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize());
+	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
