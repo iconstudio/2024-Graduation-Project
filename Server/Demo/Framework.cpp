@@ -1,11 +1,11 @@
 module;
 #include <string_view>
+#include <atomic>
 
 module Demo.Framework;
 import Iconer.Net.IpAddress;
 import Iconer.Net.EndPoint;
 import Iconer.Application.IObject;
-import <atomic>;
 
 bool
 demo::Framework::CreateListenerSockets()
@@ -90,6 +90,26 @@ demo::Framework::InitializeUsers()
 		{
 			return false;
 		}
+	}
+
+	return true;
+}
+
+bool
+demo::Framework::InitializeRooms()
+{
+	auto room_factory = iconer::app::SessionFactory<iconer::app::Room>{};
+
+	IdType id = beginRoomID;
+	for (size_t i = 0; i < maxRoomsNumber; ++i)
+	{
+		auto room = room_factory.Allocate(id++);
+		if (nullptr == room)
+		{
+			return false;
+		}
+
+		everyRoom[i] = room;
 	}
 
 	return true;
