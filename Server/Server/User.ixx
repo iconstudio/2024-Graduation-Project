@@ -4,8 +4,8 @@ module;
 
 export module Iconer.Application.User;
 import Iconer.Utility.Constraints;
+import Iconer.Utility.MovableAtomic;
 import Iconer.Net.Socket;
-import Iconer.Application.IContext;
 import Iconer.Application.ISession;
 import <cstdint>;
 import <initializer_list>;
@@ -434,6 +434,7 @@ export namespace iconer::app
 		std::unique_ptr<std::byte[]> preSignInPacket;
 
 		glm::mat4 myTransform;
+		iconer::util::MovableAtomic<IdType> myRoomId;
 
 	private:
 		User(const User&) = delete;
