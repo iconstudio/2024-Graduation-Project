@@ -193,11 +193,11 @@ export namespace demo
 		IoResult OnReceived(iconer::app::User& user, const ptrdiff_t& bytes);
 		void OnFailedReceive(iconer::app::User& user);
 		[[nodiscard]]
-		bool OnCreatingRoom(iconer::app::User& user);
-		void OnFailedToCreateRoom(iconer::app::User& user, int reason);
+		int OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user);
+		void OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, int reason);
 		[[nodiscard]]
-		bool OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user);
-		void OnFailedToJoinRoom(iconer::app::User& user, int reason, const IdType& room_id);
+		int OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user);
+		void OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& user, int reason);
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);
 

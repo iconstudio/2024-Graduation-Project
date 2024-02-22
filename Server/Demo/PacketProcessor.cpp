@@ -101,6 +101,10 @@ demo::PacketProcessor(Framework& framework
 							success = true;
 							break;
 						}
+						else
+						{
+							room->TryChangeState(app::RoomStates::Reserved, app::RoomStates::None);
+						}
 					}
 				}
 
@@ -138,10 +142,19 @@ demo::PacketProcessor(Framework& framework
 						delete r.second;
 					}
 				}
-				else if (room->IsFull() or room->GetState() != app::RoomStates::Idle)
+				else if (room->IsFull())
 				{
-					// 1: room is busy
+					// 1: room is full
 					auto r = user.SendRoomJoinFailedPacket(1);
+					if (not r.first)
+					{
+						delete r.second;
+					}
+				}
+				else if (room->GetState() != app::RoomStates::Idle)
+				{
+					// 999: room is busy
+					auto r = user.SendRoomJoinFailedPacket(999);
 					if (not r.first)
 					{
 						delete r.second;

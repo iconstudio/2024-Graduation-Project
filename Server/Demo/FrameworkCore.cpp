@@ -198,19 +198,28 @@ demo::Framework::RouteEvent(bool is_succeed
 
 		case iconer::app::AsyncOperations::OpCreateRoom:
 		{
-			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
-			const IdType& id = user->GetID();
+			auto room = std::launder(static_cast<iconer::app::Room*>(ctx));
+			const IdType& room_id = room->GetID();
+			const IdType user_id = static_cast<IdType>(io_bytes);
+			auto user = FindUser(user_id);
 
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tUser {} could not create a room\n", id);
+				myLogger.LogError(L"\tUser {} could not create at room {}\n", user_id, room_id);
+				// 1000: server error
+				OnFailedToCreateRoom(*room, *user, 1000);
+			}
+			else if (int result = OnCreatingRoom(*room, *user); 0 != result)
+			{
+				myLogger.LogError(L"\tUser {} could not create at room {} due to {}\n", user_id, room_id, result);
+				OnFailedToCreateRoom(*room, *user, result);
 			}
 			else
 			{
-				myLogger.Log(L"\tUser {} created a room {}\n", id, 0);
+				myLogger.Log(L"\tUser {} created a room at the room {}\n", user_id, room_id);
 			}
 
-			user->Clear();
+			room->Clear();
 		}
 		break;
 
@@ -219,10 +228,18 @@ demo::Framework::RouteEvent(bool is_succeed
 			auto room = std::launder(static_cast<iconer::app::Room*>(ctx));
 			const IdType& room_id = room->GetID();
 			const IdType user_id = static_cast<IdType>(io_bytes);
+			auto user = FindUser(user_id);
 
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tUser {} could not enter to room {}\n", user_id, room_id);
+				// 1000: server error
+				OnFailedToJoinRoom(*room, *user, 1000);
+			}
+			else if (int result = OnJoiningRoom(*room, *user); 0 != result)
+			{
+				myLogger.LogError(L"\tUser {} could not enter to room {} due to {}\n", user_id, room_id, result);
+				OnFailedToJoinRoom(*room, *user, result);
 			}
 			else
 			{

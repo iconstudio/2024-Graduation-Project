@@ -53,6 +53,15 @@ demo::Framework::OnFailedUserConnect(iconer::app::User& user)
 {
 	if (not user.BeginClose(iconer::app::UserStates::Reserved))
 	{
+		// Make room out now
+		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
+		{
+			if (auto room = FindRoom(room_id); nullptr != room)
+			{
+				room->RemoveMember(user.GetID());
+			}
+		}
+
 		user.Cleanup();
 	}
 }
@@ -111,6 +120,15 @@ demo::Framework::OnFailedUserSignIn(iconer::app::User& user)
 {
 	if (not user.BeginClose())
 	{
+		// Make room out now
+		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
+		{
+			if (auto room = FindRoom(room_id); nullptr != room)
+			{
+				room->RemoveMember(user.GetID());
+			}
+		}
+
 		user.Cleanup();
 	}
 }
@@ -135,6 +153,15 @@ demo::Framework::OnFailedNotifyId(iconer::app::User& user)
 {
 	if (not user.BeginClose(iconer::app::UserStates::PendingID))
 	{
+		// Make room out now
+		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
+		{
+			if (auto room = FindRoom(room_id); nullptr != room)
+			{
+				room->RemoveMember(user.GetID());
+			}
+		}
+
 		user.Cleanup();
 	}
 }
@@ -180,35 +207,117 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 void
 demo::Framework::OnFailedReceive(iconer::app::User& user)
 {
-	user.Cleanup();
-	user.BeginClose();
+	if (not user.BeginClose())
+	{
+		// Make room out now
+		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
+		{
+			if (auto room = FindRoom(room_id); nullptr != room)
+			{
+				room->RemoveMember(user.GetID());
+			}
+		}
+
+		user.Cleanup();
+	}
 }
 
-bool
-demo::Framework::OnCreatingRoom(iconer::app::User& user)
+int
+demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user)
 {
-	return false;
+	if (not room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::Idle))
+	{
+		// 999: the room is busy
+		return 999;
+	}
+	else
+	{
+		const auto& room_id = room.GetID();
+		if (not user.myRoomId.CompareAndSet(-1, room_id))
+		{
+			// rollback
+			room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::None);
+			
+			// 3: room is already assigned to the client
+			return 3;
+
+		}
+		else if (not room.TryAddMember(user))
+		{
+			// rollback
+			room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::None);
+			user.myRoomId.CompareAndSet(room_id, -1);
+
+			// 2: the room is full
+			return 2;
+		}
+	}
+
+	return 0;
 }
 
 void
-demo::Framework::OnFailedToCreateRoom(iconer::app::User& user, int reason)
+demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
 {
+	if (room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::None))
+	{
+		room.SetOperation(iconer::app::AsyncOperations::None);
+	}
+
+	auto r = user.SendRoomCreationFailedPacket(reason);
+	if (not r.first)
+	{
+		delete r.second;
+	}
+
+	user.myRoomId.CompareAndSet(room.GetID(), -1);
 }
 
-bool
+int
 demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 {
-	return false;
+	if (room.IsFull())
+	{
+		// 1: room is full
+		return 1;
+	}
+	else if (room.GetState() != iconer::app::RoomStates::Idle)
+	{
+		// 999: room is busy
+		return 999;
+	}
+	else
+	{
+		const auto& room_id = room.GetID();
+		if (not user.myRoomId.CompareAndSet(-1, room_id))
+		{
+			// 2: another room is already assigned to the client
+			return 2;
+
+		}
+		else if (not room.TryAddMember(user))
+		{
+			// rollback
+			user.myRoomId.CompareAndSet(room_id, -1);
+
+			// 1: the room is full
+			return 1;
+		}
+	}
+
+	return 0;
 }
 
 void
-demo::Framework::OnFailedToJoinRoom(iconer::app::User& user, int reason, const IdType& room_id)
+demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
 {
 	auto r = user.SendRoomJoinFailedPacket(reason);
 	if (not r.first)
 	{
 		delete r.second;
 	}
+
+	user.myRoomId.CompareAndSet(room.GetID(), -1);
 }
 
 demo::Framework::AcceptResult
@@ -217,6 +326,15 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 	// Reserve the user again
 	if (user.EndClose())
 	{
+		// Make room out now
+		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
+		{
+			if (auto room = FindRoom(room_id); nullptr != room)
+			{
+				room->RemoveMember(user.GetID());
+			}
+		}
+
 		user.Cleanup();
 
 		if (Schedule(user, user.GetID()))
