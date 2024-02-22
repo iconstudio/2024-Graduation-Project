@@ -318,6 +318,21 @@ demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& 
 	user.myRoomId.CompareAndSet(room.GetID(), -1);
 }
 
+bool
+demo::Framework::OnLeavingRoom(iconer::app::User& user)
+{
+	if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
+	{
+		if (auto room = FindRoom(room_id); nullptr != room)
+		{
+			room->RemoveMember(user.GetID());
+			return true;
+		}
+	}
+
+	return false;
+}
+
 demo::Framework::AcceptResult
 demo::Framework::OnUserDisconnected(iconer::app::User& user)
 {
