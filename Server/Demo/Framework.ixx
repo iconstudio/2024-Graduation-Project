@@ -1,3 +1,7 @@
+module;
+#include <vector>
+#include <array>
+
 export module Demo.Framework;
 import Iconer.Utility.Logger;
 import Iconer.Utility.ColourfulConsole;
@@ -17,8 +21,6 @@ import <expected>;
 import <span>;
 import <string>;
 import <string_view>;
-import <vector>;
-import <array>;
 import <thread>;
 import <latch>;
 
@@ -204,7 +206,7 @@ export namespace demo
 
 		// import Iconer.Application.UserManager;
 		alignas(std::hardware_constructive_interference_size) iconer::app::ISessionManager<iconer::app::User>* userManager;
-		std::array<iconer::app::Room*, maxRoomsNumber> everyRoom;
+		std::array<iconer::app::Room*, Framework::maxRoomsNumber> everyRoom;
 
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<iconer::app::User[]> userSpace;
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<std::byte[]> recvSpace;
