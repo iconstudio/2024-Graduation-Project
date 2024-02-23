@@ -25,7 +25,7 @@ export namespace iconer::app
 		OpRecv, OpSend,
 
 		/// <summary>Phase 5 ~ </summary>
-		OpCreateRoom, OpEnterRoom, OpLeaveRoom,
+		OpReserveRoom, OpCreateRoom, OpEnterRoom, OpLeaveRoom,
 
 		/// <summary>Phase 6 ~ </summary>
 		OpNotifyMember, OpEnterGame, OpReadyGame, OpStartGame, OpLeaveGame,
