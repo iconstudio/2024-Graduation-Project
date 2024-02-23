@@ -103,13 +103,13 @@ demo::Framework::InitializeRooms()
 	IdType id = beginRoomID;
 	for (size_t i = 0; i < maxRoomsNumber; ++i)
 	{
-		auto room = room_factory.Allocate(id++);
+		auto room = room_factory.Allocate(1);
 		if (nullptr == room)
 		{
 			return false;
 		}
 
-		everyRoom[i] = room;
+		everyRoom[i] = room_factory.ConstructAt(room, id++);
 	}
 
 	return true;
