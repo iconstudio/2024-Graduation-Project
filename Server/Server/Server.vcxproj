@@ -346,6 +346,7 @@
     <ClCompile Include="Property.ixx" />
     <ClCompile Include="Matrix.ixx" />
     <ClCompile Include="Room.ixx" />
+    <ClCompile Include="RoomContract.ixx" />
     <ClCompile Include="Serializer.ixx" />
     <ClCompile Include="IObject.ixx" />
     <ClCompile Include="ServerToClientPackets.ixx" />
