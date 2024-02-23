@@ -220,13 +220,13 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 	user.BeginClose();
 }
 
-int
+iconer::app::RoomContract
 demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& user)
 {
 	if (not room.TryCreate())
 	{
-		// 999: the room is busy
-		return 999;
+		// the room is busy
+		return iconer::app::RoomContract::RoomIsBusy;
 	}
 	else
 	{
@@ -236,8 +236,8 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 			// rollback
 			room.TryCancelCreating();
 			
-			// 3: room is already assigned to the client
-			return 3;
+			// room is already assigned to the client
+			return iconer::app::RoomContract::AnotherRoomIsAlreadyAssigned;
 
 		}
 		else if (not room.TryAddMember(user))
@@ -246,8 +246,8 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 			room.TryCancelCreating();
 			user.myRoomId.CompareAndSet(room_id, -1);
 
-			// 2: the room is full
-			return 2;
+			// the room is full
+			return iconer::app::RoomContract::RoomIsFull;
 		}
 
 		user.roomContext.SetOperation(iconer::app::AsyncOperations::OpCreateRoom);
@@ -260,16 +260,16 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 			room.RemoveMember(user.GetID());
 			user.myRoomId.CompareAndSet(room_id, -1);
 
-			// 4: failed to notify
-			return 4;
+			// failed to notify
+			return iconer::app::RoomContract::ServerError;
 		}
 	}
 
-	return 0;
+	return iconer::app::RoomContract::Success;
 }
 
 void
-demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
+demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason)
 {
 	if (room.TryCancelContract())
 	{
@@ -286,22 +286,24 @@ demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::Use
 	}
 }
 
-int demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user)
+iconer::app::RoomContract
+demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user)
 {
 	if (not room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::Idle))
 	{
 		// 998: room is unstable
-		return 998;
+		return iconer::app::RoomContract::UnstableRoom;
 	}
 	else
 	{
 		room.SetOperation(iconer::app::AsyncOperations::None);
 	}
 
-	return 0;
+	return iconer::app::RoomContract::Success;
 }
 
-void demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
+void
+demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason)
 {
 	if (room.TryCancelCreating())
 	{
@@ -318,42 +320,42 @@ void demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app:
 	}
 }
 
-int
+iconer::app::RoomContract
 demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 {
 	if (room.IsFull())
 	{
-		// 1: room is full
-		return 1;
+		// room is full
+		return iconer::app::RoomContract::RoomIsFull;
 	}
 	else if (room.GetState() != iconer::app::RoomStates::Idle)
 	{
-		// 999: room is busy
-		return 999;
+		// room is busy
+		return iconer::app::RoomContract::RoomIsBusy;
 	}
 	else
 	{
 		const auto& room_id = room.GetID();
 		if (not user.myRoomId.CompareAndSet(-1, room_id))
 		{
-			// 2: another room is already assigned to the client
-			return 2;
+			// another room is already assigned to the client
+			return iconer::app::RoomContract::AnotherRoomIsAlreadyAssigned;
 		}
 		else if (not room.TryAddMember(user))
 		{
 			// rollback
 			user.myRoomId.CompareAndSet(room_id, -1);
 
-			// 1: the room is full
-			return 1;
+			// the room is full
+			return iconer::app::RoomContract::RoomIsFull;
 		}
 	}
 
-	return 0;
+	return iconer::app::RoomContract::Success;
 }
 
 void
-demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
+demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason)
 {
 	auto r = user.SendRoomJoinFailedPacket(reason);
 	if (not r.first)

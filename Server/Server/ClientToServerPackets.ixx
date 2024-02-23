@@ -1,6 +1,7 @@
 export module Iconer.Application.Packet:ClientToServerPackets;
-export import Iconer.Application.BasicPacket;
 import Iconer.Utility.Serializer;
+export import Iconer.Application.BasicPacket;
+export import Iconer.Application.RoomContract;
 import <cstddef>;
 import <utility>;
 import <algorithm>;

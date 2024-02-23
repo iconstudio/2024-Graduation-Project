@@ -75,7 +75,7 @@ iconer::coroutine::Coroutine test::Receiver()
 						
 						case iconer::app::PacketProtocol::SC_ROOM_CREATE_FAILED:
 						{
-							int error{};
+							iconer::app::RoomContract error{};
 							auto offset = ReceiveRoomCreationFailedPacket(recv_space, error);
 							std::println("Could not create a room due to {}", error);
 
@@ -96,7 +96,7 @@ iconer::coroutine::Coroutine test::Receiver()
 
 						case iconer::app::PacketProtocol::SC_ROOM_JOIN_FAILED:
 						{
-							int error{};
+							iconer::app::RoomContract error{};
 							auto offset = ReceiveRoomJoinFailedPacket(recv_space, error);
 							std::println("Failed to join to a room due to {}", error);
 

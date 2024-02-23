@@ -2,6 +2,7 @@ module Demo.Framework.PacketProcessor;
 import Iconer.Utility.Serializer;
 import Iconer.Application.BasicPacket;
 import Iconer.Application.Resources.String;
+import Iconer.Application.RoomContract;
 
 ptrdiff_t
 demo::PacketProcessor(Framework& framework
@@ -104,8 +105,8 @@ demo::PacketProcessor(Framework& framework
 
 				if (not success)
 				{
-					// 1: every room is busy
-					auto r = user.SendRoomCreationFailedPacket(1);
+					// every room is busy
+					auto r = user.SendRoomCreationFailedPacket(iconer::app::RoomContract::CannotLocateEmptyRoom);
 					if (not r.first)
 					{
 						delete r.second;
@@ -129,8 +130,8 @@ demo::PacketProcessor(Framework& framework
 				auto room = framework.FindRoom(room_id);
 				if (nullptr == room)
 				{
-					// 0: cannot find a room with the id
-					auto r = user.SendRoomJoinFailedPacket(0);
+					// cannot find a room with the id
+					auto r = user.SendRoomJoinFailedPacket(iconer::app::RoomContract::NoRoomFoundWithId);
 					if (not r.first)
 					{
 						delete r.second;
@@ -138,8 +139,8 @@ demo::PacketProcessor(Framework& framework
 				}
 				else if (not framework.Schedule(room, user_id))
 				{
-					// 1000: server error
-					auto r = user.SendRoomJoinFailedPacket(2);
+					// server error
+					auto r = user.SendRoomJoinFailedPacket(iconer::app::RoomContract::ServerError);
 					if (not r.first)
 					{
 						delete r.second;
