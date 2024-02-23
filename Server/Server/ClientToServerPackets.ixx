@@ -101,7 +101,7 @@ export namespace iconer::app::packets::inline cs
 		[[nodiscard]]
 		constexpr auto Serialize() const
 		{
-			return iconer::util::Serializes(myProtocol, mySize, roomTitle);
+			return iconer::util::Serializes(myProtocol, mySize, std::wstring_view{ roomTitle });
 		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
