@@ -28,7 +28,7 @@ std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
 iconer::app::User::SendPositionPacket(iconer::app::User::IdType id, float x, float y, float z)
 {
 	const iconer::app::packets::SC_UpdatePositionPacket pk{ id, x, y, z };
-	iconer::app::BlobSendContext* ctx = new iconer::app::BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
@@ -45,8 +45,8 @@ iconer::app::User::SendRoomCreatedPacket(iconer::app::User::IdType room_id)
 std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
 iconer::app::User::SendRoomCreationFailedPacket(iconer::app::RoomContract reason)
 {
-	const iconer::app::packets::SC_RoomCreationFailedPacket pk{ (reason) };
-	iconer::app::BlobSendContext* ctx = new iconer::app::BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+	const iconer::app::packets::SC_RoomCreationFailedPacket pk{ reason };
+	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
@@ -55,7 +55,7 @@ std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
 iconer::app::User::SendRoomJoinedPacket(iconer::app::User::IdType who, iconer::app::User::IdType room_id)
 {
 	const iconer::app::packets::SC_RoomJoinedPacket pk{ who, room_id };
-	iconer::app::BlobSendContext* ctx = new iconer::app::BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
