@@ -45,6 +45,10 @@ export namespace iconer::app
 			myMembers.reserve(maxUsersNumberInRoom);
 		}
 
+		void Awake() noexcept
+		{
+		}
+
 		bool TryAddMember(iconer::app::User& user)
 		{
 			std::unique_lock lock{ myLock };
