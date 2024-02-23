@@ -39,8 +39,6 @@ iconer::app::User::SendRoomCreatedPacket(iconer::app::User::IdType room_id)
 	const packets::SC_RoomCreatedPacket pk{ room_id };
 	pk.Write(preSignInPacket.get());
 
-	roomContext.SetOperation(AsyncOperations::OpCreateRoom);
-
 	return mySocket.Send(roomContext, preSignInPacket.get(), pk.WannabeSize());
 }
 
