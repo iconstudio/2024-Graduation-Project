@@ -47,6 +47,18 @@ export namespace iconer::app
 		{
 		}
 
+		[[nodiscard]]
+		bool TryReserveContract() volatile noexcept
+		{
+			return TryChangeState(RoomStates::None, RoomStates::Reserved);
+		}
+		
+		[[nodiscard]]
+		bool TryCancelContract() volatile noexcept
+		{
+			return TryChangeState(RoomStates::Reserved, RoomStates::None);
+		}
+
 		bool TryAddMember(iconer::app::User& user) noexcept
 		{
 			std::unique_lock lock{ myLock };
