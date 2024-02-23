@@ -76,6 +76,7 @@ export namespace iconer::app
 			, mySocket(std::exchange(other.mySocket, iconer::net::Socket{}))
 			, recvOffset(std::exchange(other.recvOffset, 0))
 			, preSignInPacket(std::exchange(other.preSignInPacket, {}))
+			, preRoomCreationPacket(std::exchange(other.preRoomCreationPacket, {}))
 			, myTransform(std::exchange(other.myTransform, {}))
 			, myRoomId()
 		{
@@ -90,6 +91,7 @@ export namespace iconer::app
 			mySocket = std::exchange(other.mySocket, iconer::net::Socket{});
 			recvOffset = std::exchange(other.recvOffset, 0);
 			preSignInPacket = std::exchange(other.preSignInPacket, {});
+			preRoomCreationPacket = std::exchange(other.preRoomCreationPacket, {});
 			myTransform = std::exchange(other.myTransform, {});
 			myRoomId = std::exchange(other.myRoomId, -1);
 			return *this;
@@ -152,7 +154,7 @@ export namespace iconer::app
 
 		IoResult SendSignInPacket();
 		std::pair<IoResult, BlobSendContext*> SendPositionPacket(IdType id, float x, float y, float z);
-		std::pair<IoResult, BlobSendContext*> SendRoomCreatedPacket(IdType room_id);
+		IoResult SendRoomCreatedPacket(IdType room_id);
 		std::pair<IoResult, BlobSendContext*> SendRoomCreationFailedPacket(int reason);
 		/// <param name="who">- Not only local client</param>
 		std::pair<IoResult, BlobSendContext*> SendRoomJoinedPacket(IdType who, IdType room_id);
