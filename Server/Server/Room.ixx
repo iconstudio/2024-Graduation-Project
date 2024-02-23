@@ -34,7 +34,7 @@ export namespace iconer::app
 		{}
 
 		explicit constexpr Room(IdType&& id)
-			noexcept(nothrow_constructible<Super, const IdType&>)
+			noexcept(nothrow_constructible<Super, IdType&&>)
 			: Super(std::move(id))
 			, myLock()
 			, myMembers(), membersCount(0)
@@ -62,14 +62,11 @@ export namespace iconer::app
 		{
 			std::unique_lock lock{ myLock };
 
-			for (auto it = myMembers.begin(); myMembers.end() != it; ++it)
+			for (auto& member : myMembers)
 			{
-				// copy the pointer
-				auto user = *it;
-
-				if (nullptr != user and id == user->GetID())
+				if (nullptr != member and id == member->GetID())
 				{
-					*it = nullptr;
+					member = nullptr;
 					break;
 				}
 			}
@@ -92,15 +89,13 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
-		bool HasMember(const IdType& id) const
+		bool HasMember(const IdType& id) const noexcept
 		{
 			std::unique_lock lock{ myLock };
 
-			for (size_t i = 0; i < maxUsersNumberInRoom; ++i)
+			for (auto& member : myMembers)
 			{
-				// copy the pointer
-				auto user = *(myMembers.data() + i);
-				if (nullptr != user and id == user->GetID())
+				if (nullptr != member and id == member->GetID())
 				{
 					return true;
 				}
