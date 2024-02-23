@@ -196,7 +196,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::AsyncOperations::OpCreateRoom:
+		case iconer::app::AsyncOperations::OpReserveRoom:
 		{
 			auto room = std::launder(static_cast<iconer::app::Room*>(ctx));
 			const IdType& room_id = room->GetID();
@@ -205,21 +205,48 @@ demo::Framework::RouteEvent(bool is_succeed
 
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tUser {} could not create at room {}\n", user_id, room_id);
+				myLogger.LogError(L"\tUser {} could not reserve room {}\n", user_id, room_id);
+				// 1000: server error
+				OnFailedToReserveRoom(*room, *user, 1000);
+			}
+			else if (int result = OnReservingRoom(*room, *user); 0 != result)
+			{
+				myLogger.LogError(L"\tUser {} could not reserve {} due to {}\n", user_id, room_id, result);
+				OnFailedToReserveRoom(*room, *user, result);
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} reserved room {}\n", user_id, room_id);
+			}
+
+			room->Clear();
+		}
+		break;
+
+		case iconer::app::AsyncOperations::OpCreateRoom:
+		{
+			const IdType user_id = static_cast<IdType>(io_id);
+			auto user = FindUser(user_id);
+			const IdType room_id = user->myRoomId;
+			auto room = FindRoom(room_id);
+
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUser {} could not create a room\n", user_id);
 				// 1000: server error
 				OnFailedToCreateRoom(*room, *user, 1000);
 			}
 			else if (int result = OnCreatingRoom(*room, *user); 0 != result)
 			{
-				myLogger.LogError(L"\tUser {} could not create at room {} due to {}\n", user_id, room_id, result);
+				myLogger.LogError(L"\tUser {} could not create room at {} due to {}\n", user_id, room_id, result);
 				OnFailedToCreateRoom(*room, *user, result);
 			}
 			else
 			{
-				myLogger.Log(L"\tUser {} created a room at the room {}\n", user_id, room_id);
+				myLogger.Log(L"\tUser {} created a room at {}\n", user_id, room_id);
 			}
 
-			room->Clear();
+			user->roomContext.Clear();
 		}
 		break;
 
