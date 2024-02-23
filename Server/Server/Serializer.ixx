@@ -1,6 +1,10 @@
 module;
 #define ICONER_SERIALIZER_NODISCARD [[nodiscard("The serialized buffer has been lost!")]]
+#include <cstdint>
 #include <cmath>
+#include <stdexcept>
+#include <bit>
+#include <memory>
 #include <tuple>
 #include <algorithm>
 #include <utility>
@@ -9,9 +13,6 @@ export module Iconer.Utility.Serializer;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.Byte;
 import Iconer.Utility.File;
-import <cstdint>;
-import <stdexcept>;
-import <memory>;
 export import <string>;
 export import <string_view>;
 
