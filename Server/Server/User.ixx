@@ -160,6 +160,8 @@ export namespace iconer::app
 		/// <param name="who">- Not only local client</param>
 		std::pair<IoResult, BlobSendContext*> SendRoomJoinedPacket(IdType who, IdType room_id);
 		std::pair<IoResult, BlobSendContext*> SendRoomJoinFailedPacket(RoomContract reason);
+		/// <param name="who">- Not only local client</param>
+		std::pair<IoResult, BlobSendContext*> SendRoomLeftPacket(IdType who);
 
 		constexpr User& PositionX(const float& v) noexcept
 		{
