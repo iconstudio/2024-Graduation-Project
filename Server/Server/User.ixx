@@ -44,7 +44,7 @@ export namespace iconer::app
 			: Super(id)
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
-			, preSignInPacket()
+			, preSignInPacket(), preRoomCreationPacket()
 			, roomContext(), myRoomId(-1), myTransform()
 		{
 		}
@@ -55,7 +55,7 @@ export namespace iconer::app
 			: Super(std::move(id))
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
-			, preSignInPacket()
+			, preSignInPacket(), preRoomCreationPacket()
 			, roomContext(), myRoomId(-1), myTransform()
 		{
 		}
@@ -444,6 +444,7 @@ export namespace iconer::app
 		volatile ptrdiff_t recvOffset;
 
 		std::unique_ptr<std::byte[]> preSignInPacket;
+		std::unique_ptr<std::byte[]> preRoomCreationPacket;
 
 		glm::mat4 myTransform;
 
@@ -454,4 +455,6 @@ export namespace iconer::app
 		User(const User&) = delete;
 		void operator=(const User&) = delete;
 	};
+
+	class Room;
 }

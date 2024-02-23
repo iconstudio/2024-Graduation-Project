@@ -12,6 +12,7 @@ iconer::app::User::Awake()
 	myName.reserve(nicknameLength);
 
 	preSignInPacket = std::make_unique<std::byte[]>(packets::SC_SucceedSignInPacket::WannabeSize());
+	preRoomCreationPacket = std::make_unique<std::byte[]>(packets::SC_RoomCreatedPacket::WannabeSize());
 
 	const packets::SC_SucceedSignInPacket signin_pk{ myHandle };
 	signin_pk.Write(preSignInPacket.get());
