@@ -89,7 +89,7 @@ demo::PacketProcessor(Framework& framework
 				bool success = false;
 				for (auto& room : framework.everyRoom)
 				{
-					if (room->TryChangeState(app::RoomStates::None, app::RoomStates::Reserved))
+					if (room->TryReserveContract())
 					{
 						if (framework.Schedule(room, user_id))
 						{
@@ -100,7 +100,7 @@ demo::PacketProcessor(Framework& framework
 						}
 						else
 						{
-							room->TryChangeState(app::RoomStates::Reserved, app::RoomStates::None);
+							room->TryCancelContract();
 						}
 					}
 				}
