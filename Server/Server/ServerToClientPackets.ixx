@@ -1,6 +1,7 @@
 export module Iconer.Application.Packet:ServerToClientPackets;
-import Iconer.Application.BasicPacket;
 import Iconer.Utility.Serializer;
+export import Iconer.Application.BasicPacket;
+export import Iconer.Application.RoomContract;
 import <cstddef>;
 import <utility>;
 import <algorithm>;
@@ -80,11 +81,11 @@ export namespace iconer::app::packets::inline sc
 		}
 
 		constexpr SC_RoomCreationFailedPacket() noexcept
-			: SC_RoomCreationFailedPacket(0)
+			: SC_RoomCreationFailedPacket(RoomContract::Success)
 		{
 		}
 
-		constexpr SC_RoomCreationFailedPacket(int cause) noexcept
+		constexpr SC_RoomCreationFailedPacket(RoomContract cause) noexcept
 			: Super(PacketProtocol::SC_ROOM_CREATE_FAILED, SignedWannabeSize())
 			, errCause(cause)
 		{
@@ -106,7 +107,7 @@ export namespace iconer::app::packets::inline sc
 			return iconer::util::Deserialize(Super::Read(buffer), errCause);
 		}
 
-		int errCause;
+		RoomContract errCause;
 	};
 	/// <summary>
 	/// Joined to a room packet for server
@@ -182,11 +183,11 @@ export namespace iconer::app::packets::inline sc
 		}
 
 		constexpr SC_RoomJoinFailedPacket() noexcept
-			: SC_RoomJoinFailedPacket(0)
+			: SC_RoomJoinFailedPacket(RoomContract::Success)
 		{
 		}
 
-		constexpr SC_RoomJoinFailedPacket(int cause) noexcept
+		constexpr SC_RoomJoinFailedPacket(RoomContract cause) noexcept
 			: Super(PacketProtocol::SC_ROOM_JOIN_FAILED, SignedWannabeSize())
 			, errCause(cause)
 		{
@@ -208,7 +209,7 @@ export namespace iconer::app::packets::inline sc
 			return iconer::util::Deserialize(Super::Read(buffer), errCause);
 		}
 
-		int errCause;
+		RoomContract errCause;
 	};
 	/// <summary>
 	/// Room left packet for server
@@ -436,7 +437,13 @@ export namespace iconer::app::packets::inline sc
 		}
 
 		constexpr SC_FailedSignInPacket() noexcept
+			: SC_FailedSignInPacket(0)
+		{
+		}
+
+		constexpr SC_FailedSignInPacket(int reason) noexcept
 			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, SignedWannabeSize())
+			, errCause(reason)
 		{
 		}
 
