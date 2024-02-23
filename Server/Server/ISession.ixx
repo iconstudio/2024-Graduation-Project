@@ -6,7 +6,7 @@ import Iconer.Application.IObject;
 export namespace iconer::app
 {
 	template<typename S>
-	class [[nodiscard]] ISession
+	class __declspec(novtable) [[nodiscard]] ISession
 		: public IObject<std::int32_t, S, wchar_t>, public IContext
 	{
 	public:
@@ -29,6 +29,8 @@ export namespace iconer::app
 			: Super(static_cast<IdType&&>(id)), ContextType()
 		{
 		}
+
+		virtual void Awake() = 0;
 
 		ISession(ISession&&) noexcept(nothrow_move_constructibles<Super, ContextType>) = default;
 		ISession& operator=(ISession&&) noexcept(nothrow_move_assignables<Super, ContextType>) = default;
