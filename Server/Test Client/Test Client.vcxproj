@@ -147,7 +147,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Test Client Annihilator.cpp" />
+    <ClCompile Include="Test Client Initializer.cpp" />
+    <ClCompile Include="Test Client Receiver.cpp" />
+    <ClCompile Include="Test Client Senders.cpp" />
+    <ClCompile Include="Test Client Updater.cpp" />
     <ClCompile Include="Test Client.cpp" />
+    <ClCompile Include="Test Client.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Colourful-Console\ColourfulConsole\ColourfulConsole.vcxproj">
