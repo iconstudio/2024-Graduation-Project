@@ -296,6 +296,12 @@ namespace iconer::util
 		}
 
 		[[nodiscard]]
+		operator integral_type() const noexcept
+		{
+			return myValue.load();
+		}
+
+		[[nodiscard]]
 		bool operator==(const integral_type& value)
 			const noexcept(IsNothrowReadable)
 		{
