@@ -1,5 +1,6 @@
 module;
 #include <array>
+#include <atomic>
 
 export module Iconer.Application.Room;
 import Iconer.Utility.Constraints;
@@ -52,7 +53,7 @@ export namespace iconer::app
 
 			if (membersCount < maxUsersNumberInRoom)
 			{
-				return nullptr != (myMembers[membersCount++] = std::addressof(user));
+				return nullptr != (myMembers[membersCount.fetch_add(1, std::memory_order_acq_rel)] = std::addressof(user));
 			}
 			else
 			{
@@ -60,18 +61,29 @@ export namespace iconer::app
 			}
 		}
 
-		void RemoveMember(const IdType& id) noexcept
+		size_t RemoveMember(const IdType& id) noexcept
 		{
 			std::unique_lock lock{ myLock };
 
+			bool got = false;
+			size_t result = membersCount.load(std::memory_order_acquire);
 			for (auto& member : myMembers)
 			{
 				if (nullptr != member and id == member->GetID())
 				{
 					member = nullptr;
+					result = membersCount.fetch_sub(1, std::memory_order_release) - 1;
+					got = true;
+
 					break;
 				}
 			}
+
+			if (not got)
+			{
+				membersCount.store(result, std::memory_order_release);
+			}
+			return result;
 		}
 
 		void ClearMembers() noexcept
@@ -110,26 +122,26 @@ export namespace iconer::app
 		size_t GetMembersCount() const noexcept
 		{
 			std::shared_lock lock{ myLock };
-			return membersCount;
+			return membersCount.load(std::memory_order_relaxed);
 		}
 
 		[[nodiscard]]
 		bool IsFull() const noexcept
 		{
 			std::shared_lock lock{ myLock };
-			return maxUsersNumberInRoom <= membersCount;
+			return maxUsersNumberInRoom <= membersCount.load(std::memory_order_relaxed);
 		}
 
 		[[nodiscard]]
 		bool IsEmpty() const noexcept
 		{
 			std::shared_lock lock{ myLock };
-			return 0 == membersCount;
+			return 0 == membersCount.load(std::memory_order_relaxed);
 		}
 
 	private:
 		mutable iconer::util::SharedMutex myLock;
 		std::array<iconer::app::User*, maxUsersNumberInRoom> myMembers;
-		size_t membersCount;
+		std::atomic_size_t membersCount;
 	};
 }
