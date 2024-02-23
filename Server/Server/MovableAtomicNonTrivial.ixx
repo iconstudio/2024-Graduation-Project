@@ -52,7 +52,7 @@ namespace iconer::util
 
 			myValue.store(std::construct_at(handle), std::memory_order::relaxed);
 		}
-		
+
 		template<typename... Args>
 		explicit MovableAtomicImplNonTrivial(in_place_t, Args&&... args)
 			: myValue()
@@ -308,6 +308,42 @@ namespace iconer::util
 			const volatile
 		{
 			return *other.myValue.load(rhs_order) == *myValue.load(order);
+		}
+
+		[[nodiscard]]
+		explicit operator integral_type& () & noexcept
+		{
+			return *myValue.load();
+		}
+
+		[[nodiscard]]
+		explicit operator const integral_type& () const& noexcept
+		{
+			return *myValue.load();
+		}
+
+		[[nodiscard]]
+		explicit operator integral_type && () && noexcept
+		{
+			return std::move(*myValue.load());
+		}
+
+		[[nodiscard]]
+		explicit operator const integral_type && () const&& noexcept
+		{
+			return std::move(*myValue.load());
+		}
+
+		[[nodiscard]]
+		pointer operator->() const noexcept
+		{
+			return myValue.load();
+		}
+
+		[[nodiscard]]
+		pointer operator->() const volatile noexcept
+		{
+			return myValue.load();
 		}
 
 		[[nodiscard]]
