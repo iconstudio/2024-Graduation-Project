@@ -2,6 +2,7 @@ module;
 #include <array>
 
 export module Iconer.Application.Room;
+import Iconer.Utility.Constraints;
 import Iconer.Utility.Concurrency.SharedMutex;
 import Iconer.Application.ISession;
 import Iconer.Application.User;
