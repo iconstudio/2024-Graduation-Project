@@ -255,6 +255,11 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 		auto sent_r = user.SendRoomCreatedPacket(room_id);
 		if (not sent_r)
 		{
+			// rollback
+			room.TryCancelCreating();
+			room.RemoveMember(user.GetID());
+			user.myRoomId.CompareAndSet(room_id, -1);
+
 			// 4: failed to notify
 			return 4;
 		}
@@ -266,11 +271,7 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 void
 demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
 {
-	if (room.TryCancelCreating())
-	{
-		room.SetOperation(iconer::app::AsyncOperations::None);
-	}
-	else if (room.TryCancelContract())
+	if (room.TryCancelContract())
 	{
 		room.SetOperation(iconer::app::AsyncOperations::None);
 	}
