@@ -33,13 +33,15 @@ iconer::app::User::SendPositionPacket(iconer::app::User::IdType id, float x, flo
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+iconer::app::User::IoResult
 iconer::app::User::SendRoomCreatedPacket(iconer::app::User::IdType room_id)
 {
-	const iconer::app::packets::SC_RoomCreatedPacket pk{ room_id };
-	iconer::app::BlobSendContext* ctx = new iconer::app::BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+	const packets::SC_RoomCreatedPacket pk{ room_id };
+	pk.Write(preSignInPacket.get());
 
-	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
+	roomContext.SetOperation(AsyncOperations::OpCreateRoom);
+
+	return mySocket.Send(roomContext, preSignInPacket.get(), pk.WannabeSize());
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
