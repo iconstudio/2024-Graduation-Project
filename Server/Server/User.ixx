@@ -22,7 +22,7 @@ export namespace iconer::app
 		None
 		, Reserved
 		, Connected, PendingID, Idle
-		, InLobby, InRoom
+		, InLobby, InRoom, EnteringRoom, LeavingRoom
 		, InGame
 		, Dead
 	};
