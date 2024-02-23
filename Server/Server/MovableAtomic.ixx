@@ -1,12 +1,9 @@
 module;
 #include <type_traits>
-#include <compare>
-#include <atomic>
 #include <utility>
 
 export module Iconer.Utility.MovableAtomic;
 import Iconer.Utility.Constraints;
-import Iconer.Utility.Atomic;
 import :Trivial;
 import :NonTrivial;
 
