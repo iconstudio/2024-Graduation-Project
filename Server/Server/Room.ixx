@@ -58,6 +58,18 @@ export namespace iconer::app
 		{
 			return TryChangeState(RoomStates::Reserved, RoomStates::None);
 		}
+		
+		[[nodiscard]]
+		bool TryCreate() volatile noexcept
+		{
+			return TryChangeState(RoomStates::Reserved, RoomStates::Creating);
+		}
+		
+		[[nodiscard]]
+		bool TryCancelCreating() volatile noexcept
+		{
+			return TryChangeState(RoomStates::Creating, RoomStates::None);
+		}
 
 		bool TryAddMember(iconer::app::User& user) noexcept
 		{

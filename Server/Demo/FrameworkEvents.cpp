@@ -223,7 +223,7 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 int
 demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& user)
 {
-	if (not room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::Creating))
+	if (not room.TryCreate())
 	{
 		// 999: the room is busy
 		return 999;
@@ -234,7 +234,7 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 		if (not user.myRoomId.CompareAndSet(-1, room_id))
 		{
 			// rollback
-			room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::None);
+			room.TryCancelCreating();
 			
 			// 3: room is already assigned to the client
 			return 3;
@@ -243,7 +243,7 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 		else if (not room.TryAddMember(user))
 		{
 			// rollback
-			room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::None);
+			room.TryCancelCreating();
 			user.myRoomId.CompareAndSet(room_id, -1);
 
 			// 2: the room is full
@@ -266,11 +266,11 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 void
 demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
 {
-	if (room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::None))
+	if (room.TryCancelCreating())
 	{
 		room.SetOperation(iconer::app::AsyncOperations::None);
 	}
-	else if (room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::None))
+	else if (room.TryCancelContract())
 	{
 		room.SetOperation(iconer::app::AsyncOperations::None);
 	}
@@ -302,7 +302,7 @@ int demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& 
 
 void demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
 {
-	if (room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::None))
+	if (room.TryCancelCreating())
 	{
 		room.SetOperation(iconer::app::AsyncOperations::None);
 	}
