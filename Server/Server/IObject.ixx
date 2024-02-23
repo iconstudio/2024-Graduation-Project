@@ -148,7 +148,7 @@ export namespace iconer::app
 		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
 			requires movable<StatusType>
 		{
-			return myState.compare_exchange_strong(from_state, std::move(to_state), order);
+			return myState.CompareAndSet(from_state, std::move(to_state), order);
 		}
 
 		[[nodiscard]]
