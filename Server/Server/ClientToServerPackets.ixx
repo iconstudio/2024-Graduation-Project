@@ -190,6 +190,12 @@ export namespace iconer::app::packets::inline cs
 			: Super(PacketProtocol::CS_ROOM_LEAVE, SignedWannabeSize())
 		{
 		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize);
+		}
 	};
 	/// <summary>
 	/// Position packet for client
