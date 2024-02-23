@@ -200,7 +200,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		{
 			auto room = std::launder(static_cast<iconer::app::Room*>(ctx));
 			const IdType& room_id = room->GetID();
-			const IdType user_id = static_cast<IdType>(io_bytes);
+			const IdType user_id = static_cast<IdType>(io_id);
 			auto user = FindUser(user_id);
 
 			if (not is_succeed)
@@ -227,7 +227,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		{
 			auto room = std::launder(static_cast<iconer::app::Room*>(ctx));
 			const IdType& room_id = room->GetID();
-			const IdType user_id = static_cast<IdType>(io_bytes);
+			const IdType user_id = static_cast<IdType>(io_id);
 			auto user = FindUser(user_id);
 
 			if (not is_succeed)
