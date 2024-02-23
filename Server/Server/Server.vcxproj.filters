@@ -324,6 +324,9 @@
     <ClCompile Include="SharedMutex.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="RoomContract.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
