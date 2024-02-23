@@ -5,6 +5,7 @@ import Iconer.Net.IpAddress;
 import Iconer.Net.EndPoint;
 import Iconer.Net.Socket;
 import Iconer.Coroutine;
+import Iconer.Application.RoomContract;
 import <cstddef>;
 import <type_traits>;
 import <expected>;
@@ -35,9 +36,9 @@ namespace test
 	const std::byte* ReceiveSignInSucceedPacket(const std::byte* buffer);
 	const std::byte* ReceiveSignInFailurePacket(const std::byte* buffer, int& error);
 	const std::byte* ReceiveRoomCreatedPacket(const std::byte* buffer, IdType& room_id);
-	const std::byte* ReceiveRoomCreationFailedPacket(const std::byte* buffer, int& error);
+	const std::byte* ReceiveRoomCreationFailedPacket(const std::byte* buffer, iconer::app::RoomContract& error);
 	const std::byte* ReceiveRoomJoinedPacket(const std::byte* buffer, IdType& client_id);
-	const std::byte* ReceiveRoomJoinFailedPacket(const std::byte* buffer, int& error);
+	const std::byte* ReceiveRoomJoinFailedPacket(const std::byte* buffer, iconer::app::RoomContract& error);
 
 	iconer::coroutine::Coroutine Receiver();
 

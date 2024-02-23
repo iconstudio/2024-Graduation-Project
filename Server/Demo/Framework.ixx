@@ -19,6 +19,7 @@ import Iconer.Application.User;
 import Iconer.Application.Room;
 import Iconer.Application.ISessionManager;
 import Iconer.Application.IContext;
+import Iconer.Application.RoomContract;
 export import <memory>;
 export import <expected>;
 import <span>;
@@ -196,14 +197,14 @@ export namespace demo
 		IoResult OnReceived(iconer::app::User& user, const ptrdiff_t& bytes);
 		void OnFailedReceive(iconer::app::User& user);
 		[[nodiscard]]
-		int OnReservingRoom(iconer::app::Room& room, iconer::app::User& user);
-		void OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::User& user, int reason);
+		iconer::app::RoomContract OnReservingRoom(iconer::app::Room& room, iconer::app::User& user);
+		void OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason);
 		[[nodiscard]]
-		int OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user);
-		void OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, int reason);
+		iconer::app::RoomContract OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user);
+		void OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason);
 		[[nodiscard]]
-		int OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user);
-		void OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& user, int reason);
+		iconer::app::RoomContract OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user);
+		void OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason);
 		bool OnLeavingRoom(iconer::app::User& user);
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);

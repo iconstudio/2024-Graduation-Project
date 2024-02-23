@@ -43,9 +43,9 @@ iconer::app::User::SendRoomCreatedPacket(iconer::app::User::IdType room_id)
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
-iconer::app::User::SendRoomCreationFailedPacket(int reason)
+iconer::app::User::SendRoomCreationFailedPacket(iconer::app::RoomContract reason)
 {
-	const iconer::app::packets::SC_RoomCreationFailedPacket pk{ reason };
+	const iconer::app::packets::SC_RoomCreationFailedPacket pk{ (reason) };
 	iconer::app::BlobSendContext* ctx = new iconer::app::BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
@@ -61,9 +61,9 @@ iconer::app::User::SendRoomJoinedPacket(iconer::app::User::IdType who, iconer::a
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
-iconer::app::User::SendRoomJoinFailedPacket(int reason)
+iconer::app::User::SendRoomJoinFailedPacket(iconer::app::RoomContract reason)
 {
-	const iconer::app::packets::SC_RoomJoinFailedPacket pk{ reason };
+	const iconer::app::packets::SC_RoomJoinFailedPacket pk{ (reason) };
 	iconer::app::BlobSendContext* ctx = new iconer::app::BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };

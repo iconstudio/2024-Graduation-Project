@@ -207,9 +207,9 @@ demo::Framework::RouteEvent(bool is_succeed
 			{
 				myLogger.LogError(L"\tUser {} could not reserve room {}\n", user_id, room_id);
 				// 1000: server error
-				OnFailedToReserveRoom(*room, *user, 1000);
+				OnFailedToReserveRoom(*room, *user, iconer::app::RoomContract::ServerError);
 			}
-			else if (int result = OnReservingRoom(*room, *user); 0 != result)
+			else if (auto result = OnReservingRoom(*room, *user); iconer::app::RoomContract::Success != result)
 			{
 				myLogger.LogError(L"\tUser {} could not reserve {} due to {}\n", user_id, room_id, result);
 				OnFailedToReserveRoom(*room, *user, result);
@@ -234,9 +234,9 @@ demo::Framework::RouteEvent(bool is_succeed
 			{
 				myLogger.LogError(L"\tUser {} could not create a room\n", user_id);
 				// 1000: server error
-				OnFailedToCreateRoom(*room, *user, 1000);
+				OnFailedToCreateRoom(*room, *user, iconer::app::RoomContract::ServerError);
 			}
-			else if (int result = OnCreatingRoom(*room, *user); 0 != result)
+			else if (auto result = OnCreatingRoom(*room, *user); iconer::app::RoomContract::Success != result)
 			{
 				myLogger.LogError(L"\tUser {} could not create room at {} due to {}\n", user_id, room_id, result);
 				OnFailedToCreateRoom(*room, *user, result);
@@ -261,9 +261,9 @@ demo::Framework::RouteEvent(bool is_succeed
 			{
 				myLogger.LogError(L"\tUser {} could not enter to room {}\n", user_id, room_id);
 				// 1000: server error
-				OnFailedToJoinRoom(*room, *user, 1000);
+				OnFailedToJoinRoom(*room, *user, iconer::app::RoomContract::ServerError);
 			}
-			else if (int result = OnJoiningRoom(*room, *user); 0 != result)
+			else if (auto result = OnJoiningRoom(*room, *user); iconer::app::RoomContract::Success != result)
 			{
 				myLogger.LogError(L"\tUser {} could not enter to room {} due to {}\n", user_id, room_id, result);
 				OnFailedToJoinRoom(*room, *user, result);

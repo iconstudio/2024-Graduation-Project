@@ -39,7 +39,7 @@ const std::byte* test::ReceiveRoomCreatedPacket(const std::byte* buffer, IdType&
 	return offset;
 }
 
-const std::byte* test::ReceiveRoomCreationFailedPacket(const std::byte* buffer, int& error)
+const std::byte* test::ReceiveRoomCreationFailedPacket(const std::byte* buffer, iconer::app::RoomContract& error)
 {
 	iconer::app::packets::SC_RoomCreationFailedPacket pk{};
 	auto offset = pk.Read(recv_space);
@@ -61,7 +61,7 @@ std::byte* test::ReceiveRoomJoinedPacket(const std::byte* buffer, IdType& client
 }
 
 const
-std::byte* test::ReceiveRoomJoinFailedPacket(const std::byte* buffer, int& error)
+std::byte* test::ReceiveRoomJoinFailedPacket(const std::byte* buffer, iconer::app::RoomContract& error)
 {
 	iconer::app::packets::SC_RoomJoinFailedPacket pk{};
 	auto offset = pk.Read(recv_space);

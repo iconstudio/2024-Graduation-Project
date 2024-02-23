@@ -9,6 +9,7 @@ import Iconer.Net.Socket;
 import Iconer.Application.IContext;
 import Iconer.Application.ISession;
 import Iconer.Application.BlobSendContext;
+import Iconer.Application.RoomContract;
 import <cstdint>;
 import <initializer_list>;
 import <memory>;
@@ -155,10 +156,10 @@ export namespace iconer::app
 		IoResult SendSignInPacket();
 		std::pair<IoResult, BlobSendContext*> SendPositionPacket(IdType id, float x, float y, float z);
 		IoResult SendRoomCreatedPacket(IdType room_id);
-		std::pair<IoResult, BlobSendContext*> SendRoomCreationFailedPacket(int reason);
+		std::pair<IoResult, BlobSendContext*> SendRoomCreationFailedPacket(RoomContract reason);
 		/// <param name="who">- Not only local client</param>
 		std::pair<IoResult, BlobSendContext*> SendRoomJoinedPacket(IdType who, IdType room_id);
-		std::pair<IoResult, BlobSendContext*> SendRoomJoinFailedPacket(int reason);
+		std::pair<IoResult, BlobSendContext*> SendRoomJoinFailedPacket(RoomContract reason);
 
 		constexpr User& PositionX(const float& v) noexcept
 		{
