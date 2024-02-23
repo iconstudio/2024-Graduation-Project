@@ -77,7 +77,7 @@ iconer::coroutine::Coroutine test::Receiver()
 						{
 							int error{};
 							auto offset = ReceiveRoomCreationFailedPacket(recv_space, error);
-							std::println("Local player can't get an id from server due to {}", error);
+							std::println("Could not create a room due to {}", error);
 
 							PullReceiveBuffer(offset);
 						}
