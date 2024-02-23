@@ -1,7 +1,9 @@
+module;
+#include <span>
+
 export module Demo.Framework.PacketProcessor;
 import Iconer.Application.User;
 import Demo.Framework;
-import <span>;
 
 export namespace demo
 {
