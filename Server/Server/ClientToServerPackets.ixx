@@ -40,6 +40,83 @@ export namespace iconer::app::packets::inline cs
 		}
 	};
 	/// <summary>
+	/// Room create packet for client
+	/// </summary>
+	/// <param name="roomTitle">Title of the new room</param>
+	/// <remarks>Client would send it to the server</remarks>
+	struct [[nodiscard]] CS_CreateRoomPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		static inline constexpr size_t roomTitleLength = 16;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(roomTitle);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(roomTitle));
+		}
+
+		constexpr CS_CreateRoomPacket() noexcept
+			: Super(PacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
+			, roomTitle()
+		{
+		}
+
+		explicit constexpr CS_CreateRoomPacket(const wchar_t* begin, const wchar_t* end)
+			: Super(PacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
+			, roomTitle()
+		{
+			std::copy(begin, end, roomTitle);
+		}
+
+		explicit constexpr CS_CreateRoomPacket(const wchar_t* nts, const size_t length)
+			: Super(PacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
+			, roomTitle()
+		{
+			std::copy_n(nts, std::min(length, roomTitleLength), roomTitle);
+		}
+
+		template<size_t Length>
+		explicit constexpr CS_CreateRoomPacket(const wchar_t(&str)[Length])
+			: Super(PacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
+			, roomTitle()
+		{
+			std::copy_n(str, std::min(Length, roomTitleLength), roomTitle);
+		}
+
+		template<size_t Length>
+		explicit constexpr CS_CreateRoomPacket(wchar_t(&& str)[Length])
+			: Super(PacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
+			, roomTitle()
+		{
+			std::move(str, str + std::min(Length, roomTitleLength), roomTitle);
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, roomTitle);
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			return iconer::util::Serialize(Super::Write(buffer), std::wstring_view{ roomTitle });
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer, const size_t& buffer_length)
+		{
+			return iconer::util::Deserialize(Super::Read(buffer), buffer_length, roomTitle);
+		}
+
+		wchar_t roomTitle[roomTitleLength];
+	};
+	/// <summary>
 	/// Room entering packet for client
 	/// </summary>
 	/// <param name="roomId"/>
