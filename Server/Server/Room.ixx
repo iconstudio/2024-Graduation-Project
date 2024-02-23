@@ -1,6 +1,5 @@
 module;
-#include <vector>
-#include <mutex>
+#include <array>
 
 export module Iconer.Application.Room;
 import Iconer.Utility.Concurrency.SharedMutex;
@@ -31,31 +30,27 @@ export namespace iconer::app
 			noexcept(nothrow_constructible<Super, const IdType&>)
 			: Super(id)
 			, myLock()
-			, myMembers()
-		{
-			myMembers.reserve(maxUsersNumberInRoom);
-		}
+			, myMembers(), membersCount(0)
+		{}
 
 		explicit constexpr Room(IdType&& id)
 			noexcept(nothrow_constructible<Super, const IdType&>)
 			: Super(std::move(id))
 			, myLock()
-			, myMembers()
-		{
-			myMembers.reserve(maxUsersNumberInRoom);
-		}
+			, myMembers(), membersCount(0)
+		{}
 
 		void Awake() noexcept
 		{
 		}
 
-		bool TryAddMember(iconer::app::User& user)
+		bool TryAddMember(iconer::app::User& user) noexcept
 		{
 			std::unique_lock lock{ myLock };
 
-			if (myMembers.size() < maxUsersNumberInRoom)
+			if (membersCount < maxUsersNumberInRoom)
 			{
-				return nullptr != myMembers.emplace_back(std::addressof(user));
+				return nullptr != (myMembers[membersCount++] = std::addressof(user));
 			}
 			else
 			{
@@ -63,7 +58,7 @@ export namespace iconer::app
 			}
 		}
 
-		void RemoveMember(const IdType& id)
+		void RemoveMember(const IdType& id) noexcept
 		{
 			std::unique_lock lock{ myLock };
 
@@ -74,7 +69,7 @@ export namespace iconer::app
 
 				if (nullptr != user and id == user->GetID())
 				{
-					myMembers.erase(it);
+					*it = nullptr;
 					break;
 				}
 			}
@@ -83,14 +78,17 @@ export namespace iconer::app
 		void ClearMembers() noexcept
 		{
 			std::unique_lock lock{ myLock };
-			myMembers.clear();
+			for (auto& member : myMembers)
+			{
+				member = nullptr;
+			}
 		}
 
 		[[nodiscard]]
 		bool CanStartGame() const noexcept
 		{
 			std::unique_lock lock{ myLock };
-			return minUsersNumberForGame <= myMembers.size();
+			return minUsersNumberForGame <= membersCount;
 		}
 
 		[[nodiscard]]
@@ -100,8 +98,6 @@ export namespace iconer::app
 
 			for (size_t i = 0; i < maxUsersNumberInRoom; ++i)
 			{
-				if (myMembers.size() <= i) break;
-
 				// copy the pointer
 				auto user = *(myMembers.data() + i);
 				if (nullptr != user and id == user->GetID())
@@ -117,25 +113,26 @@ export namespace iconer::app
 		size_t GetMembersCount() const noexcept
 		{
 			std::shared_lock lock{ myLock };
-			return myMembers.size();
+			return membersCount;
 		}
 
 		[[nodiscard]]
 		bool IsFull() const noexcept
 		{
 			std::shared_lock lock{ myLock };
-			return maxUsersNumberInRoom <= myMembers.size();
+			return maxUsersNumberInRoom <= membersCount;
 		}
 
 		[[nodiscard]]
 		bool IsEmpty() const noexcept
 		{
 			std::shared_lock lock{ myLock };
-			return myMembers.empty();
+			return 0 == membersCount;
 		}
 
 	private:
 		mutable iconer::util::SharedMutex myLock;
-		std::vector<iconer::app::User*> myMembers;
+		std::array<iconer::app::User*, maxUsersNumberInRoom> myMembers;
+		size_t membersCount;
 	};
 }
