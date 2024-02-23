@@ -9,7 +9,7 @@ export namespace iconer::app
 {
 	enum class [[nodiscard]] RoomContract : std::uint8_t
 	{
-		Unknown = 0 // Shall not be happened
+		Success = 0
 		, CannotLocateEmptyRoom // Cannot create a room
 		, NoRoomFoundWithId // Cannot find any room with a specific id
 		, RoomIsFull // Full of members
@@ -28,6 +28,7 @@ export namespace std
 		using enum iconer::app::RoomContract;
 		switch (ctr)
 		{
+			case Success: return "Success";
 			case CannotLocateEmptyRoom: return "CannotLocateEmptyRoom";
 			case NoRoomFoundWithId: return "NoRoomFoundWithId";
 			case RoomIsFull: return "RoomIsFull";
@@ -45,6 +46,7 @@ export namespace std
 		using enum iconer::app::RoomContract;
 		switch (ctr)
 		{
+			case Success: return L"Success";
 			case CannotLocateEmptyRoom: return L"CannotLocateEmptyRoom";
 			case NoRoomFoundWithId: return L"NoRoomFoundWithId";
 			case RoomIsFull: return L"RoomIsFull";
@@ -85,6 +87,7 @@ struct std::formatter<iconer::app::RoomContract, char>
 		using enum iconer::app::RoomContract;
 		switch (ctr)
 		{
+			case Success: return std::format_to(context.out(), "{}", "Success");
 			case CannotLocateEmptyRoom: return std::format_to(context.out(), "{}", "Cannot locate empty room");
 			case NoRoomFoundWithId: return std::format_to(context.out(), "{}", "Cannot find any room with a specific id");
 			case RoomIsFull: return std::format_to(context.out(), "{}", "Full of members");
@@ -102,6 +105,7 @@ struct std::formatter<iconer::app::RoomContract, char>
 		using enum iconer::app::RoomContract;
 		switch (std::move(ctr))
 		{
+			case Success: return std::format_to(context.out(), "{}", "Success");
 			case CannotLocateEmptyRoom: return std::format_to(context.out(), "{}", "Cannot locate empty room");
 			case NoRoomFoundWithId: return std::format_to(context.out(), "{}", "Cannot find any room with a specific id");
 			case RoomIsFull: return std::format_to(context.out(), "{}", "Full of members");
@@ -142,6 +146,7 @@ struct std::formatter<iconer::app::RoomContract, wchar_t>
 		using enum iconer::app::RoomContract;
 		switch (ctr)
 		{
+			case Success: return std::format_to(context.out(), L"{}", L"Success");
 			case CannotLocateEmptyRoom: return std::format_to(context.out(), L"{}", L"Cannot locate empty room");
 			case NoRoomFoundWithId: return std::format_to(context.out(), L"{}", L"Cannot find any room with a specific id");
 			case RoomIsFull: return std::format_to(context.out(), L"{}", L"Full of members");
@@ -159,6 +164,7 @@ struct std::formatter<iconer::app::RoomContract, wchar_t>
 		using enum iconer::app::RoomContract;
 		switch (std::move(ctr))
 		{
+			case Success: return std::format_to(context.out(), L"{}", L"Success");
 			case CannotLocateEmptyRoom: return std::format_to(context.out(), L"{}", L"Cannot locate empty room");
 			case NoRoomFoundWithId: return std::format_to(context.out(), L"{}", L"Cannot find any room with a specific id");
 			case RoomIsFull: return std::format_to(context.out(), L"{}", L"Full of members");
