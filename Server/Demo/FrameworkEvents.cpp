@@ -221,9 +221,9 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 }
 
 int
-demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user)
+demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& user)
 {
-	if (not room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::Idle))
+	if (not room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::Creating))
 	{
 		// 999: the room is busy
 		return 999;
@@ -234,7 +234,7 @@ demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user
 		if (not user.myRoomId.CompareAndSet(-1, room_id))
 		{
 			// rollback
-			room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::None);
+			room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::None);
 			
 			// 3: room is already assigned to the client
 			return 3;
@@ -243,11 +243,20 @@ demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user
 		else if (not room.TryAddMember(user))
 		{
 			// rollback
-			room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::None);
+			room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::None);
 			user.myRoomId.CompareAndSet(room_id, -1);
 
 			// 2: the room is full
 			return 2;
+		}
+
+		user.roomContext.SetOperation(iconer::app::AsyncOperations::OpCreateRoom);
+
+		auto sent_r = user.SendRoomCreatedPacket(room_id);
+		if (not sent_r)
+		{
+			// 4: failed to notify
+			return 4;
 		}
 	}
 
@@ -255,20 +264,57 @@ demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user
 }
 
 void
-demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
+demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
 {
 	if (room.TryChangeState(iconer::app::RoomStates::Reserved, iconer::app::RoomStates::None))
 	{
 		room.SetOperation(iconer::app::AsyncOperations::None);
 	}
-
-	auto r = user.SendRoomCreationFailedPacket(reason);
-	if (not r.first)
+	else if (room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::None))
 	{
-		delete r.second;
+		room.SetOperation(iconer::app::AsyncOperations::None);
 	}
 
+	room.RemoveMember(user.GetID());
 	user.myRoomId.CompareAndSet(room.GetID(), -1);
+
+	auto sent_r = user.SendRoomCreationFailedPacket(reason);
+	if (not sent_r.first)
+	{
+		delete sent_r.second;
+	}
+}
+
+int demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user)
+{
+	if (not room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::Idle))
+	{
+		// 998: room is unstable
+		return 998;
+	}
+	else
+	{
+		room.SetOperation(iconer::app::AsyncOperations::None);
+	}
+
+	return 0;
+}
+
+void demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, int reason)
+{
+	if (room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::None))
+	{
+		room.SetOperation(iconer::app::AsyncOperations::None);
+	}
+
+	room.RemoveMember(user.GetID());
+	user.myRoomId.CompareAndSet(room.GetID(), -1);
+
+	auto sent_r = user.SendRoomCreationFailedPacket(reason);
+	if (not sent_r.first)
+	{
+		delete sent_r.second;
+	}
 }
 
 int
@@ -291,7 +337,6 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 		{
 			// 2: another room is already assigned to the client
 			return 2;
-
 		}
 		else if (not room.TryAddMember(user))
 		{
@@ -315,7 +360,9 @@ demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& 
 		delete r.second;
 	}
 
-	user.myRoomId.CompareAndSet(room.GetID(), -1);
+	// Dont do it
+	//room.RemoveMember(user.GetID());
+	//user.myRoomId.CompareAndSet(room.GetID(), -1);
 }
 
 bool

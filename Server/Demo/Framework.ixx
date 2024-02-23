@@ -196,6 +196,9 @@ export namespace demo
 		IoResult OnReceived(iconer::app::User& user, const ptrdiff_t& bytes);
 		void OnFailedReceive(iconer::app::User& user);
 		[[nodiscard]]
+		int OnReservingRoom(iconer::app::Room& room, iconer::app::User& user);
+		void OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::User& user, int reason);
+		[[nodiscard]]
 		int OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user);
 		void OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, int reason);
 		[[nodiscard]]

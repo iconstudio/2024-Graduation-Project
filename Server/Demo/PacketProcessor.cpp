@@ -95,7 +95,7 @@ demo::PacketProcessor(Framework& framework
 					{
 						if (framework.Schedule(room, user_id))
 						{
-							room->SetOperation(app::AsyncOperations::OpCreateRoom);
+							room->SetOperation(app::AsyncOperations::OpReserveRoom);
 							room->SetName(room_title);
 							success = true;
 							break;
@@ -136,24 +136,6 @@ demo::PacketProcessor(Framework& framework
 				{
 					// 0: cannot find a room with the id
 					auto r = user.SendRoomJoinFailedPacket(0);
-					if (not r.first)
-					{
-						delete r.second;
-					}
-				}
-				else if (room->IsFull())
-				{
-					// 1: room is full
-					auto r = user.SendRoomJoinFailedPacket(1);
-					if (not r.first)
-					{
-						delete r.second;
-					}
-				}
-				else if (room->GetState() != app::RoomStates::Idle)
-				{
-					// 999: room is busy
-					auto r = user.SendRoomJoinFailedPacket(999);
 					if (not r.first)
 					{
 						delete r.second;
