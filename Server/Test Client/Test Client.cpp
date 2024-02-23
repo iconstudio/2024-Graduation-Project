@@ -130,7 +130,7 @@ int main()
 					auto ptr = pk.Serialize();
 
 					net::IoContext send_ctx{};
-					auto sent_r = app_socket.Send(send_signin_ctx, ptr.get(), pk.WannabeSize());
+					auto sent_r = app_socket.Send(send_ctx, ptr.get(), pk.WannabeSize());
 					if (not sent_r.has_value())
 					{
 						return 3;
@@ -138,12 +138,12 @@ int main()
 				}
 				else if (cmd == 'c') // create a room
 				{
-					app::packets::CS_EnterRoomPacket pk{ 0 };
+					app::packets::CS_CreateRoomPacket pk{ L"Test room" };
 
 					auto ptr = pk.Serialize();
 
 					net::IoContext send_ctx{};
-					auto sent_r = app_socket.Send(send_signin_ctx, ptr.get(), pk.WannabeSize());
+					auto sent_r = app_socket.Send(send_ctx, ptr.get(), pk.WannabeSize());
 					if (not sent_r.has_value())
 					{
 						return 3;
@@ -151,12 +151,12 @@ int main()
 				}
 				else if (cmd == 'l') // leave room
 				{
-					app::packets::CS_EnterRoomPacket pk{ 0 };
+					app::packets::CS_LeaveRoomPacket pk{};
 
 					auto ptr = pk.Serialize();
 
 					net::IoContext send_ctx{};
-					auto sent_r = app_socket.Send(send_signin_ctx, ptr.get(), pk.WannabeSize());
+					auto sent_r = app_socket.Send(send_ctx, ptr.get(), pk.WannabeSize());
 					if (not sent_r.has_value())
 					{
 						return 3;
