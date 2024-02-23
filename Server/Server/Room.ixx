@@ -13,11 +13,13 @@ export namespace iconer::app
 	enum class [[nodiscard]] RoomStates
 	{
 		None
-		, Reserved, Creating // first phases
+		, Reserved, Creating // first phases: menu scene
 		, Idle
-		, InGame
-		, GameDone
-		, Cleanup
+		, Idle // lobby scene
+		, Ready // loading scene
+		, InGame // game scene
+		, GameDone // game scene
+		, Cleanup // game scene, score scene
 	};
 
 	class [[nodiscard]] Room : public ISession<RoomStates>
