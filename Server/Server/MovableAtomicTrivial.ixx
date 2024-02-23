@@ -298,119 +298,13 @@ namespace iconer::util
 		[[nodiscard]]
 		operator integral_type() const noexcept
 		{
-			return myValue.load();
+			return myValue.load(std::memory_order::relaxed);
 		}
-
+		
 		[[nodiscard]]
-		bool operator==(const integral_type& value)
-			const noexcept(IsNothrowReadable)
+		operator integral_type() const volatile noexcept
 		{
-			return Equals(value);
-		}
-
-		[[nodiscard]]
-		auto operator<=>(const integral_type& value)
-			const noexcept(IsNothrowReadable)
-		{
-			return value <=> myValue.load(std::memory_order::relaxed);
-		}
-
-		[[nodiscard]]
-		bool operator==(const integral_type& value)
-			const volatile noexcept(IsNothrowReadable)
-		{
-			return Equals(value);
-		}
-
-		[[nodiscard]]
-		auto operator<=>(const integral_type& value)
-			const volatile noexcept(IsNothrowReadable)
-		{
-			return value <=> myValue.load(std::memory_order::relaxed);
-		}
-
-		[[nodiscard]]
-		bool operator==(const value_type& atom)
-			const noexcept(IsNothrowReadable)
-		{
-			return Equals(atom);
-		}
-
-		[[nodiscard]]
-		auto operator<=>(const value_type& atom)
-			const noexcept(IsNothrowReadable)
-		{
-			return atom.load(std::memory_order::relaxed) <=> myValue.load(std::memory_order::relaxed);
-		}
-
-		[[nodiscard]]
-		bool operator==(const value_type& atom)
-			const volatile noexcept(IsNothrowReadable)
-		{
-			return Equals(atom);
-		}
-
-		[[nodiscard]]
-		auto operator<=>(const value_type& atom)
-			const volatile noexcept(IsNothrowReadable)
-		{
-			return atom.load(std::memory_order::relaxed) <=> myValue.load(std::memory_order::relaxed);
-		}
-
-		[[nodiscard]]
-		bool operator==(const MovableAtomicImplTrivial& other)
-			const noexcept(IsNothrowReadable)
-		{
-			return Equals(other);
-		}
-
-		[[nodiscard]]
-		auto operator<=>(const MovableAtomicImplTrivial& other)
-			const noexcept(IsNothrowReadable)
-		{
-			return other.myValue.load(std::memory_order::relaxed) <=> myValue.load(std::memory_order::relaxed);
-		}
-
-		[[nodiscard]]
-		bool operator==(const volatile MovableAtomicImplTrivial& other)
-			const noexcept(IsNothrowReadable)
-		{
-			return Equals(other);
-		}
-
-		[[nodiscard]]
-		auto operator<=>(const volatile MovableAtomicImplTrivial& other)
-			const noexcept(IsNothrowReadable)
-		{
-			return other.myValue.load(std::memory_order::relaxed) <=> myValue.load(std::memory_order::relaxed);
-		}
-
-		[[nodiscard]]
-		bool operator==(const MovableAtomicImplTrivial& other)
-			const volatile noexcept(IsNothrowReadable)
-		{
-			return Equals(other);
-		}
-
-		[[nodiscard]]
-		auto operator<=>(const MovableAtomicImplTrivial& other)
-			const volatile noexcept(IsNothrowReadable)
-		{
-			return other.myValue.load(std::memory_order::relaxed) <=> myValue.load(std::memory_order::relaxed);
-		}
-
-		[[nodiscard]]
-		bool operator==(const volatile MovableAtomicImplTrivial& other)
-			const volatile noexcept(IsNothrowReadable)
-		{
-			return Equals(other);
-		}
-
-		[[nodiscard]]
-		auto operator<=>(const volatile MovableAtomicImplTrivial& other)
-			const volatile noexcept(IsNothrowReadable)
-		{
-			return other.myValue.load(std::memory_order::relaxed) <=> myValue.load(std::memory_order::relaxed);
+			return myValue.load(std::memory_order::relaxed);
 		}
 
 	protected:
