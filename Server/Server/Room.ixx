@@ -14,7 +14,7 @@ export namespace iconer::app
 	{
 		None
 		, Reserved, Creating // first phases: menu scene
-		, Idle
+		, Closing // menu scene
 		, Idle // lobby scene
 		, Ready // loading scene
 		, InGame // game scene
