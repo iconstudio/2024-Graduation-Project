@@ -43,11 +43,11 @@ export namespace iconer
 	template<typename... Ts>
 	concept member_function_ptrs = make_conjunction<is_member_function_pointer, decay_t<Ts>...>;
 
-	template<typename M, typename C>
-	concept method = classes<C> && member_function_ptrs<M>;
-
-	template<typename M, typename Ref>
-	concept method_by = classes<clean_t<Ref>> && is_method_invocable_v<Ref, decay_t<M>>;
+	template<typename Method, typename Class, typename... Params, typename... Args>
+	concept method_invocable = classes<Class> and requires(Class && instance, Method(Class ::* const& fn)(Params...), Args&&... args)
+	{
+		(std::forward<Class>(instance).*fn)(std::forward<Args>(args)...);
+	};
 
 	template<typename Derived, typename Parent>
 	concept hierachy = classes<Derived, Parent>&& std::derived_from<Derived, remove_cv_t<Parent>>;
@@ -358,7 +358,7 @@ export namespace iconer
 	[[nodiscard]]
 	consteval bool CheckMethodException() noexcept
 	{
-		if constexpr (method_by<Method, Host&&>)
+		if constexpr (method_invocable<Method, Host&&>)
 		{
 			return noexcept((std::declval<Host&&>().*std::declval<Method>())());
 		}
