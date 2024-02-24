@@ -106,9 +106,29 @@ export namespace iconer::app
 			}
 
 			if (not got)
+
+		template<invocables Predicate>
+		size_t RemoveMember(const IdType& id, Predicate&& pred) noexcept
+		{
+			std::unique_lock lock{ myLock };
+
+			size_t result = membersCount.load(std::memory_order_acquire);
+			for (auto& member : myMembers)
 			{
-				membersCount.store(result, std::memory_order_release);
+				if (nullptr != member and id == member->GetID())
+				{
+					member = nullptr;
+					result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
+					if (0 == result)
+					{
+						std::invoke(std::forward<Predicate>(pred));
+					}
+
+					break;
+				}
 			}
+
+			membersCount.store(result, std::memory_order_release);
 			return result;
 		}
 
