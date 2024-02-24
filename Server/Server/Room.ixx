@@ -1,6 +1,7 @@
 module;
-#include <array>
+#include <utility>
 #include <atomic>
+#include <array>
 
 export module Iconer.Application.Room;
 import Iconer.Utility.Constraints;
@@ -36,14 +37,16 @@ export namespace iconer::app
 			: Super(id)
 			, myLock()
 			, myMembers(), membersCount(0)
-		{}
+		{
+		}
 
 		explicit constexpr Room(IdType&& id)
 			noexcept(nothrow_constructible<Super, IdType&&>)
 			: Super(std::move(id))
 			, myLock()
 			, myMembers(), membersCount(0)
-		{}
+		{
+		}
 
 		void Awake() noexcept
 		{
@@ -54,19 +57,19 @@ export namespace iconer::app
 		{
 			return TryChangeState(RoomStates::None, RoomStates::Reserved);
 		}
-		
+
 		[[nodiscard]]
 		bool TryCancelContract() volatile noexcept
 		{
 			return TryChangeState(RoomStates::Reserved, RoomStates::None);
 		}
-		
+
 		[[nodiscard]]
 		bool TryCreate() volatile noexcept
 		{
 			return TryChangeState(RoomStates::Reserved, RoomStates::Creating);
 		}
-		
+
 		[[nodiscard]]
 		bool TryCancelCreating() volatile noexcept
 		{
@@ -91,21 +94,21 @@ export namespace iconer::app
 		{
 			std::unique_lock lock{ myLock };
 
-			bool got = false;
 			size_t result = membersCount.load(std::memory_order_acquire);
 			for (auto& member : myMembers)
 			{
 				if (nullptr != member and id == member->GetID())
 				{
 					member = nullptr;
-					result = membersCount.fetch_sub(1, std::memory_order_release) - 1;
-					got = true;
+					result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
 
 					break;
 				}
 			}
 
-			if (not got)
+			membersCount.store(result, std::memory_order_release);
+			return result;
+		}
 
 		template<invocables Predicate>
 		size_t RemoveMember(const IdType& id, Predicate&& pred) noexcept
