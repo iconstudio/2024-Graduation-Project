@@ -39,6 +39,7 @@ namespace test
 	const std::byte* ReceiveRoomCreationFailedPacket(const std::byte* buffer, iconer::app::RoomContract& error);
 	const std::byte* ReceiveRoomJoinedPacket(const std::byte* buffer, IdType& client_id);
 	const std::byte* ReceiveRoomJoinFailedPacket(const std::byte* buffer, iconer::app::RoomContract& error);
+	const std::byte* ReceiveRoomLeftPacket(const std::byte* buffer, IdType& client_id);
 
 	iconer::coroutine::Coroutine Receiver();
 
