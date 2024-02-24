@@ -15,6 +15,7 @@ export namespace iconer::app
 		, RoomIsFull // Full of members
 		, RoomIsBusy // State mismatching
 		, AnotherRoomIsAlreadyAssigned // The client already have a room id
+		, NoRoom // The room have not reserved yet
 		, UnstableRoom // Room's state is changed at time
 		, ServerError // Unknown internal error
 	};
@@ -34,6 +35,7 @@ export namespace std
 			case RoomIsFull: return "RoomIsFull";
 			case RoomIsBusy: return "RoomIsBusy";
 			case AnotherRoomIsAlreadyAssigned: return "AnotherRoomIsAlreadyAssigned";
+			case NoRoom: return "NoRoom";
 			case UnstableRoom: return "UnstableRoom";
 			case ServerError: return "ServerError";
 			default: return "Unknown";
@@ -52,6 +54,7 @@ export namespace std
 			case RoomIsFull: return L"RoomIsFull";
 			case RoomIsBusy: return L"RoomIsBusy";
 			case AnotherRoomIsAlreadyAssigned: return L"AnotherRoomIsAlreadyAssigned";
+			case NoRoom: return L"NoRoom";
 			case UnstableRoom: return L"UnstableRoom";
 			case ServerError: return L"ServerError";
 			default: return L"Unknown";
@@ -80,6 +83,7 @@ struct std::formatter<iconer::app::RoomContract, char>
 			case RoomIsFull: return std::format_to(context.out(), "{}", "Full of members");
 			case RoomIsBusy: return std::format_to(context.out(), "{}", "Room mismatching");
 			case AnotherRoomIsAlreadyAssigned: return std::format_to(context.out(), "{}", "The client already have a room");
+			case NoRoom: return std::format_to(context.out(), "{}", "No room found");
 			case UnstableRoom: return std::format_to(context.out(), "{}", "Room is unstable");
 			case ServerError: return std::format_to(context.out(), "{}", "Internal server error");
 			default: return std::format_to(context.out(), "{}", "Unknown");
@@ -98,6 +102,7 @@ struct std::formatter<iconer::app::RoomContract, char>
 			case RoomIsFull: return std::format_to(context.out(), "{}", "Full of members");
 			case RoomIsBusy: return std::format_to(context.out(), "{}", "Room mismatching");
 			case AnotherRoomIsAlreadyAssigned: return std::format_to(context.out(), "{}", "The client already have a room");
+			case NoRoom: return std::format_to(context.out(), "{}", "No room found");
 			case UnstableRoom: return std::format_to(context.out(), "{}", "Room is unstable");
 			case ServerError: return std::format_to(context.out(), "{}", "Internal server error");
 			default: return std::format_to(context.out(), "{}", "Unknown");
@@ -126,6 +131,7 @@ struct std::formatter<iconer::app::RoomContract, wchar_t>
 			case RoomIsFull: return std::format_to(context.out(), L"{}", L"Full of members");
 			case RoomIsBusy: return std::format_to(context.out(), L"{}", L"Room mismatching");
 			case AnotherRoomIsAlreadyAssigned: return std::format_to(context.out(), L"{}", L"The client already have a room");
+			case NoRoom: return std::format_to(context.out(), L"{}", L"No room found");
 			case UnstableRoom: return std::format_to(context.out(), L"{}", L"Room is unstable");
 			case ServerError: return std::format_to(context.out(), L"{}", L"Internal server error");
 			default: return std::format_to(context.out(), L"{}", L"Unknown");
@@ -144,6 +150,7 @@ struct std::formatter<iconer::app::RoomContract, wchar_t>
 			case RoomIsFull: return std::format_to(context.out(), L"{}", L"Full of members");
 			case RoomIsBusy: return std::format_to(context.out(), L"{}", L"Room mismatching");
 			case AnotherRoomIsAlreadyAssigned: return std::format_to(context.out(), L"{}", L"The client already have a room");
+			case NoRoom: return std::format_to(context.out(), L"{}", L"No room found");
 			case UnstableRoom: return std::format_to(context.out(), L"{}", L"Room is unstable");
 			case ServerError: return std::format_to(context.out(), L"{}", L"Internal server error");
 			default: return std::format_to(context.out(), L"{}", L"Unknown");
