@@ -1,7 +1,6 @@
 module;
 #include <utility>
 #include <atomic>
-#include <tuple>
 #include <array>
 
 export module Iconer.Application.Room;
@@ -115,8 +114,6 @@ export namespace iconer::app
 			requires invocables<Predicate, Args...>
 		size_t RemoveMember(const IdType& id, Predicate&& pred, Args&&... args) noexcept(nothrow_invocables<Predicate, Args...>)
 		{
-			auto arguments = std::forward_as_tuple(std::forward<Args>(args)...);
-
 			std::unique_lock lock{ myLock };
 
 			size_t result = membersCount.load(std::memory_order_acquire);
@@ -128,7 +125,33 @@ export namespace iconer::app
 					result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
 					if (0 == result)
 					{
-						std::apply(std::forward<Predicate>(pred), std::move(arguments));
+						std::invoke(std::forward<Predicate>(pred), std::forward<Args>(args)...);
+					}
+
+					break;
+				}
+			}
+
+			membersCount.store(result, std::memory_order_release);
+			return result;
+		}
+
+		template<classes Class, typename Method, typename... Args>
+		size_t RemoveMember(const IdType& id, Class&& instance, Method&& method, Args&&... args)
+			noexcept(noexcept(std::invoke(std::declval<Method>(), std::declval<Class>(), std::declval<Args>()...)))
+		{
+			std::unique_lock lock{ myLock };
+
+			size_t result = membersCount.load(std::memory_order_acquire);
+			for (auto& member : myMembers)
+			{
+				if (nullptr != member and id == member->GetID())
+				{
+					member = nullptr;
+					result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
+					if (0 == result)
+					{
+						std::invoke(std::forward<Method>(method), std::forward<Class>(instance), std::forward<Args>(args)...);
 					}
 
 					break;
@@ -197,4 +220,43 @@ export namespace iconer::app
 		std::array<iconer::app::User*, maxUsersNumberInRoom> myMembers;
 		std::atomic_size_t membersCount;
 	};
+}
+
+module :private;
+
+namespace iconer::app::test
+{
+	void testment()
+	{
+		Room room{ 0 };
+
+		std::array<int, 3> test_arr{};
+
+		using arr_t = decltype(test_arr);
+		using method_arr_size_t = decltype(std::array<int, 3>::size);
+		//using method_arr_begin_t = decltype(std::array<int, 3>::begin);
+		//const_nothrow_method_t<arr_t, std::array<int, 3>::iterator(*)()> aaa_beg1 = static_cast<>(&test_arr.begin);
+		using method_arr_begin_t = decltype(static_cast<std::array<int, 3>::iterator(arr_t::*)()>(&arr_t::begin));
+
+		//auto&& aaa_beg2 = (test_arr.begin);
+
+		constexpr bool aaa1 = methods<method_arr_size_t>;
+		constexpr bool aaa2 = methods<method_arr_size_t>;
+		constexpr bool bbb = methods<arr_t>;
+
+		constexpr bool ccc = method_invocable<method_arr_size_t, arr_t>;
+		constexpr bool ddd = method_invocable<method_arr_begin_t, arr_t>;
+
+		constexpr bool eee = classes<arr_t>;
+		constexpr bool fff = methods<method_arr_size_t>;
+
+		std::invoke(&std::array<int, 3>::size, test_arr);
+		//std::invoke(std::declval<method_arr_size_t>(), std::declval<arr_t>());
+
+		room.RemoveMember(0, test_arr, &(std::array<int, 3>::size));
+		//room.RemoveMember(0, test_arr, &(std::array<int, 3>::begin));
+		//room.RemoveMember(0, test_arr, &(std::array<int, 3>::at), 0ULL);
+		room.RemoveMember(0, room, &(Room::IsFull));
+		room.RemoveMember(0, room, static_cast<size_t(Room::*)()>(&Room::RemoveMember), 0);
+	}
 }
