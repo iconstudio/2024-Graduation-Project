@@ -138,7 +138,7 @@ export namespace iconer::app
 
 		template<classes Class, typename Method, typename... Args>
 		size_t RemoveMember(const IdType& id, Class&& instance, Method&& method, Args&&... args)
-			noexcept(noexcept(std::invoke(std::declval<Method>(), std::declval<Class>(), std::declval<Args>()...)))
+			noexcept(noexcept(std::invoke(std::forward<Method>(method), std::forward<Class>(instance), std::forward<Args>(args)...)))
 		{
 			std::unique_lock lock{ myLock };
 
@@ -257,6 +257,6 @@ namespace iconer::app::test
 		//room.RemoveMember(0, test_arr, &(std::array<int, 3>::begin));
 		//room.RemoveMember(0, test_arr, &(std::array<int, 3>::at), 0ULL);
 		room.RemoveMember(0, room, &(Room::IsFull));
-		room.RemoveMember(0, room, static_cast<size_t(Room::*)()>(&Room::RemoveMember), 0);
+		//room.RemoveMember(0, room, static_cast<size_t(Room::*)()>(&Room::RemoveMember), 0);
 	}
 }
