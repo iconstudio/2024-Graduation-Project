@@ -354,6 +354,7 @@ demo::Framework::OnLeavingRoom(iconer::app::User& user)
 					{
 						if (room->TryBeginClose(iconer::app::RoomStates::Idle))
 						{
+							room->Clear();
 							if (not Schedule(room, room_id))
 							{
 								room->Cleanup();
