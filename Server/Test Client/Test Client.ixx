@@ -26,10 +26,10 @@ namespace test
 {
 	using IdType = int;
 
-	iconer::net::Socket::AsyncResult SendSignInPacket();
-	iconer::net::Socket::AsyncResult SendCreateRoomPacket(std::wstring_view title);
-	iconer::net::Socket::AsyncResult SendJoinRoomPacket(IdType room_id);
-	iconer::net::Socket::AsyncResult SendLeaveRoomPacket();
+	iconer::net::Socket::IoResult SendSignInPacket();
+	iconer::net::Socket::IoResult SendCreateRoomPacket(std::wstring_view title);
+	iconer::net::Socket::IoResult SendJoinRoomPacket(IdType room_id);
+	iconer::net::Socket::IoResult SendLeaveRoomPacket();
 	bool SendPositionPacket();
 
 	const std::byte* ReceiveSignInSucceedPacket(const std::byte* buffer);

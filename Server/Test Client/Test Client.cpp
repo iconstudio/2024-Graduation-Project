@@ -13,6 +13,8 @@ namespace test
 void
 test::Receiver()
 {
+	iconer::net::IoContext recv_context{};
+
 	while (true)
 	{
 		auto recv_result = app_socket.Receive(recv_buffer.subspan(received_bytes));
@@ -26,6 +28,8 @@ test::Receiver()
 		}
 		else
 		{
+			recv_context.Clear();
+
 			const auto& bytes = recv_result.value();
 
 			received_bytes += bytes;
