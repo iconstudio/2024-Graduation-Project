@@ -39,7 +39,7 @@ iconer::coroutine::Coroutine test::Receiver()
 					//throw "error!";
 					std::println("Packet's size is zero!");
 				}
-				else if (const auto sz = static_cast<unsigned long>(basic_pk.mySize); received_bytes <= sz)
+				else if (const auto sz = static_cast<unsigned long>(basic_pk.mySize); sz <= received_bytes)
 				{
 					switch (basic_pk.myProtocol)
 					{
