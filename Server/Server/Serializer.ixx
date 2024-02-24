@@ -491,6 +491,34 @@ namespace iconer::util::detail
 
 		return it;
 	}
+
+	template<typename Arg>
+	constexpr size_t GetItemByteSize(Arg&& arg) noexcept
+	{
+		return sizeof(Arg);
+	}
+
+	template<typename Char, typename Traits>
+	constexpr size_t GetItemByteSize(const std::basic_string<Char, Traits>& str) noexcept
+	{
+		return str.length() * sizeof(Char);
+	}
+	
+	template<typename Char, typename Traits>
+	constexpr size_t GetItemByteSize(const std::basic_string_view<Char, Traits>& str) noexcept
+	{
+		return str.length() * sizeof(Char);
+	}
+
+	template<typename Tuple, size_t... Indices>
+	constexpr size_t GetByteSize(const Tuple& tuple, std::index_sequence<Indices...>) noexcept
+	{
+		size_t result{};
+
+		((result += GetItemByteSize(std::get<Indices>(tuple))), ...);
+
+		return result;
+	}
 }
 
 export namespace iconer::util
@@ -501,7 +529,9 @@ export namespace iconer::util
 	ICONER_SERIALIZER_NODISCARD
 		constexpr std::unique_ptr<std::byte[]> Serialize(const std::tuple<Args...>& tuple)
 	{
-		auto buffer = std::make_unique<std::byte[]>(byte_size_v<Args...>);
+		const size_t bfsize = detail::GetByteSize(tuple, std::index_sequence_for<Args...>{});
+
+		std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(bfsize);
 		Serialize(buffer.get(), tuple);
 		return buffer;
 	}
@@ -527,7 +557,9 @@ export namespace iconer::util
 	ICONER_SERIALIZER_NODISCARD
 		constexpr std::unique_ptr<std::byte[]> Serialize(std::tuple<Args...>&& tuple)
 	{
-		auto buffer = std::make_unique<std::byte[]>(byte_size_v<Args...>);
+		const size_t bfsize = detail::GetByteSize(tuple, std::index_sequence_for<Args...>{});
+
+		std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(bfsize);
 		Serialize(buffer.get(), std::move(tuple));
 		return buffer;
 	}
