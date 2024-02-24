@@ -34,12 +34,12 @@ iconer::app::User::SendPositionPacket(iconer::app::User::IdType id, float x, flo
 }
 
 iconer::app::User::IoResult
-iconer::app::User::SendRoomCreatedPacket(iconer::app::User::IdType room_id)
+iconer::app::User::SendRoomCreatedPacket(iconer::app::IContext* room, iconer::app::User::IdType room_id)
 {
 	const packets::SC_RoomCreatedPacket pk{ room_id };
 	pk.Write(preSignInPacket.get());
 
-	return mySocket.Send(roomContext, preSignInPacket.get(), pk.WannabeSize());
+	return mySocket.Send(*room, preSignInPacket.get(), pk.WannabeSize());
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
