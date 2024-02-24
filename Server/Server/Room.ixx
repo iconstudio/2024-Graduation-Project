@@ -52,8 +52,6 @@ export namespace iconer::app
 
 		void Cleanup() noexcept
 		{
-			std::unique_lock lock{ myLock, std::try_to_lock };
-
 			Clear();
 			SetState(RoomStates::None);
 			SetOperation(AsyncOperations::None);
