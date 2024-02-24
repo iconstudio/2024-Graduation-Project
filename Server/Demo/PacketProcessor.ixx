@@ -15,6 +15,13 @@ export namespace demo
 	ptrdiff_t PacketProcessor(Framework& framework, iconer::app::User& user, std::span<std::byte, Framework::userRecvSize> packet_data, ptrdiff_t last_offset);
 }
 
+#define SEND(user_var, method, ...)\
+auto sr = ((user_var).method)(__VA_ARGS__);\
+if (not sr.first)\
+{\
+	delete sr.second;\
+}
+
 ptrdiff_t
 demo::PacketProcessor(demo::Framework& framework
 	, iconer::app::User& user
@@ -100,16 +107,20 @@ demo::PacketProcessor(demo::Framework& framework
 				{
 					if (room->TryReserveContract())
 					{
+						room->SetOperation(iconer::app::AsyncOperations::OpReserveRoom);
+
 						if (framework.Schedule(room, user_id))
 						{
-							room->SetOperation(iconer::app::AsyncOperations::OpReserveRoom);
 							room->SetName(room_title);
 							success = true;
 							break;
 						}
 						else
 						{
-							room->TryCancelContract();
+							if (room->TryCancelContract())
+							{
+								room->SetOperation(iconer::app::AsyncOperations::None);
+							}
 						}
 					}
 				}
@@ -117,11 +128,7 @@ demo::PacketProcessor(demo::Framework& framework
 				if (not success)
 				{
 					// every room is busy
-					auto r = user.SendRoomCreationFailedPacket(iconer::app::RoomContract::CannotLocateEmptyRoom);
-					if (not r.first)
-					{
-						delete r.second;
-					}
+					SEND(user, SendRoomCreationFailedPacket, iconer::app::RoomContract::CannotLocateEmptyRoom);
 				}
 			}
 			break;
@@ -138,28 +145,27 @@ demo::PacketProcessor(demo::Framework& framework
 				std::int32_t room_id{};
 				iconer::util::Deserialize(last_buf, room_id);
 
-				auto room = framework.FindRoom(room_id);
-				if (nullptr == room)
+				if (auto room = framework.FindRoom(room_id); nullptr != room)
 				{
-					// cannot find a room with the id
-					auto r = user.SendRoomJoinFailedPacket(iconer::app::RoomContract::NoRoomFoundWithId);
-					if (not r.first)
+					if (user.myRoomId.CompareAndSet(-1, -1))
 					{
-						delete r.second;
+						user.roomContext.SetOperation(iconer::app::AsyncOperations::OpEnterRoom);
+
+						if (not framework.Schedule(user.roomContext, user_id, static_cast<unsigned long>(room_id)))
+						{
+							// server error
+							SEND(user, SendRoomJoinFailedPacket, iconer::app::RoomContract::ServerError);
+						}
 					}
-				}
-				else if (not framework.Schedule(room, user_id))
-				{
-					// server error
-					auto r = user.SendRoomJoinFailedPacket(iconer::app::RoomContract::ServerError);
-					if (not r.first)
+					else
 					{
-						delete r.second;
+						SEND(user, SendRoomJoinFailedPacket, iconer::app::RoomContract::AnotherRoomIsAlreadyAssigned);
 					}
 				}
 				else
 				{
-					room->SetOperation(iconer::app::AsyncOperations::OpEnterRoom);
+					// cannot find a room with the id
+					SEND(user, SendRoomJoinFailedPacket, iconer::app::RoomContract::NoRoomFoundWithId);
 				}
 			}
 			break;
@@ -167,14 +173,19 @@ demo::PacketProcessor(demo::Framework& framework
 			case iconer::app::PacketProtocol::CS_ROOM_MATCH:
 			{
 				// Empty packet
-
 			}
 			break;
 
 			case iconer::app::PacketProtocol::CS_ROOM_LEAVE:
 			{
 				// Empty packet
-				user.SendRoomLeftPacket(user_id);
+				if (user.myRoomId == -1)
+				{
+				}
+				else
+				{
+					SEND(user, SendRoomLeftPacket, user_id);
+				}
 			}
 			break;
 

@@ -196,7 +196,7 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 iconer::app::RoomContract
 demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& user)
 {
-	if (not room.TryCreate())
+	if (not room.TryBeginCreate())
 	{
 		// the room is busy
 		return iconer::app::RoomContract::RoomIsBusy;
@@ -211,7 +211,6 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 
 			// room is already assigned to the client
 			return iconer::app::RoomContract::AnotherRoomIsAlreadyAssigned;
-
 		}
 		else if (not room.TryAddMember(user))
 		{
@@ -223,13 +222,16 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 			return iconer::app::RoomContract::RoomIsFull;
 		}
 
-		user.roomContext.SetOperation(iconer::app::AsyncOperations::OpCreateRoom);
+		room.SetOperation(iconer::app::AsyncOperations::OpCreateRoom);
 
-		auto sent_r = user.SendRoomCreatedPacket(room_id);
+		auto sent_r = user.SendRoomCreatedPacket(std::addressof(room), room_id);
 		if (not sent_r)
 		{
 			// rollback
-			room.TryCancelCreating();
+			if (room.TryCancelCreating())
+			{
+				room.SetOperation(iconer::app::AsyncOperations::None);
+			}
 			room.RemoveMember(user.GetID());
 			user.myRoomId.CompareAndSet(room_id, -1);
 
@@ -244,9 +246,13 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 void
 demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason)
 {
-	if (room.TryCancelContract())
+	if (room.TryCancelCreating())
 	{
 		room.SetOperation(iconer::app::AsyncOperations::None);
+	}
+	else
+	{
+		room.TryCancelContract();
 	}
 
 	room.RemoveMember(user.GetID());
@@ -322,9 +328,9 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 			// the room is full
 			return iconer::app::RoomContract::RoomIsFull;
 		}
-	}
 
-	return iconer::app::RoomContract::Success;
+		return iconer::app::RoomContract::Success;
+	}
 }
 
 void
@@ -335,10 +341,6 @@ demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& 
 	{
 		delete r.second;
 	}
-
-	// Dont do it
-	//room.RemoveMember(user.GetID());
-	//user.myRoomId.CompareAndSet(room.GetID(), -1);
 }
 
 bool
