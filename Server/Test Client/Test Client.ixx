@@ -4,7 +4,6 @@ import Iconer.Net;
 import Iconer.Net.IpAddress;
 import Iconer.Net.EndPoint;
 import Iconer.Net.Socket;
-import Iconer.Coroutine;
 import Iconer.Application.RoomContract;
 import <cstddef>;
 import <type_traits>;
@@ -41,7 +40,7 @@ namespace test
 	const std::byte* ReceiveRoomJoinFailedPacket(const std::byte* buffer, iconer::app::RoomContract& error);
 	const std::byte* ReceiveRoomLeftPacket(const std::byte* buffer, IdType& client_id);
 
-	iconer::coroutine::Coroutine Receiver();
+	void Receiver();
 
 	inline constexpr std::wstring_view my_name = L"iconer";
 	IdType my_id = -1;

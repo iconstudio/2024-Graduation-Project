@@ -1,13 +1,13 @@
 module TestClient;
 import <print>;
+import <thread>;
 
 int
 test::Update()
 {
 	std::println("Starting receiving...");
 
-	auto receiver = Receiver();
-	receiver.StartAsync();
+	std::thread th{ Receiver };
 
 	char commands[256]{};
 	constexpr unsigned cmd_size = sizeof(commands);
@@ -26,21 +26,21 @@ test::Update()
 				}
 				else if (cmd == 'c') // create a room
 				{
-					if (auto sent_leave_r = SendCreateRoomPacket(L"Test Room"); not sent_leave_r.has_value())
+					if (auto sr = SendCreateRoomPacket(L"Test Room"); not sr.has_value())
 					{
 						return 3;
 					}
 				}
 				else if (cmd == 'j') // join a room
 				{
-					if (auto sent_leave_r = SendJoinRoomPacket(22); not sent_leave_r.has_value())
+					if (auto sr = SendJoinRoomPacket(22); not sr.has_value())
 					{
 						return 3;
 					}
 				}
 				else if (cmd == 'l') // leave room
 				{
-					if (auto sent_leave_r = SendLeaveRoomPacket(); not sent_leave_r.has_value())
+					if (auto sr = SendLeaveRoomPacket(); not sr.has_value())
 					{
 						return 3;
 					}
@@ -116,6 +116,8 @@ test::Update()
 			std::ranges::fill(commands, 0);
 		}
 	}
+
+	th.join();
 
 	return 0;
 }

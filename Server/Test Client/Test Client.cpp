@@ -10,7 +10,8 @@ namespace test
 	void PullReceiveBuffer(const std::byte* last_offset);
 }
 
-iconer::coroutine::Coroutine test::Receiver()
+void
+test::Receiver()
 {
 	while (true)
 	{
@@ -150,8 +151,6 @@ iconer::coroutine::Coroutine test::Receiver()
 
 		recv_ctx.Clear();
 	}
-
-	co_return;
 }
 
 void
