@@ -16,7 +16,7 @@ test::SendSignInPacket()
 iconer::net::Socket::AsyncResult
 test::SendCreateRoomPacket(std::wstring_view title)
 {
-	const iconer::app::packets::CS_CreateRoomPacket pk{ title.data(), my_name.size() };
+	const iconer::app::packets::CS_CreateRoomPacket pk{ title.data(), title.length() };
 
 	auto ptr = pk.Serialize();
 
