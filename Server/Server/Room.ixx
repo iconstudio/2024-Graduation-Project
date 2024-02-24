@@ -103,7 +103,7 @@ export namespace iconer::app
 			bool result = false;
 			auto count = membersCount.load(std::memory_order_acquire);
 
-			if (membersCount < maxUsersNumberInRoom)
+			if (count < maxUsersNumberInRoom)
 			{
 				for (auto& member : myMembers)
 				{
@@ -113,6 +113,7 @@ export namespace iconer::app
 						++count;
 
 						result = true;
+						break;
 					}
 				}
 			}
@@ -134,7 +135,7 @@ export namespace iconer::app
 
 					if (0 < result)
 					{
-						result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
+						--result;
 					}
 
 					break;
@@ -160,9 +161,7 @@ export namespace iconer::app
 
 					if (0 < result)
 					{
-						result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
-
-						std::invoke(std::forward<Predicate>(pred), result, std::forward<Args>(args)...);
+						std::invoke(std::forward<Predicate>(pred), --result, std::forward<Args>(args)...);
 					}
 
 					break;
@@ -180,6 +179,7 @@ export namespace iconer::app
 			{
 				member = nullptr;
 			}
+			membersCount = 0;
 		}
 
 		[[nodiscard]]

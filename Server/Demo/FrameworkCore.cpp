@@ -293,6 +293,8 @@ demo::Framework::RouteEvent(bool is_succeed
 			}
 
 			auto sender = static_cast<iconer::app::BlobSendContext*>(ctx);
+			auto sender2 = static_cast<iconer::app::Room*>(ctx);
+			auto sender3 = static_cast<iconer::app::User*>(ctx);
 			delete sender;
 		}
 		break;
