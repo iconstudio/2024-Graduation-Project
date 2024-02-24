@@ -292,7 +292,8 @@ demo::Framework::RouteEvent(bool is_succeed
 				myLogger.Log(L"\tUser {} has been left from the room\n", user_id);
 			}
 
-			delete ctx;
+			auto sender = static_cast<iconer::app::BlobSendContext*>(ctx);
+			delete sender;
 		}
 		break;
 
