@@ -1,6 +1,5 @@
 export module Iconer.Net.Socket;
 export import :SocketOption;
-import Iconer.Utility.Constraints;
 import Iconer.Utility.Handler;
 import Iconer.Utility.Property;
 export import Iconer.Net.ErrorCode;
