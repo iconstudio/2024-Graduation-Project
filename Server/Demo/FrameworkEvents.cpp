@@ -371,11 +371,15 @@ demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& 
 bool
 demo::Framework::OnLeavingRoom(iconer::app::User& user)
 {
+	//TODO
 	if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
 	{
 		if (auto room = FindRoom(room_id); nullptr != room)
 		{
-			room->RemoveMember(user.GetID());
+			room->RemoveMember(user.GetID(), [&room]()
+			{
+
+			});
 			return true;
 		}
 	}
