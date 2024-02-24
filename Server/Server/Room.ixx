@@ -80,14 +80,25 @@ export namespace iconer::app
 		{
 			std::unique_lock lock{ myLock };
 
+			bool result = false;
+			auto count = membersCount.load(std::memory_order_acquire);
+
 			if (membersCount < maxUsersNumberInRoom)
 			{
-				return nullptr != (myMembers[membersCount.fetch_add(1, std::memory_order_acq_rel)] = std::addressof(user));
+				for (auto& member : myMembers)
+				{
+					if (nullptr == member)
+					{
+						member = std::addressof(user);
+						++count;
+
+						result = true;
+					}
+				}
 			}
-			else
-			{
-				return false;
-			}
+
+			membersCount.store(count, std::memory_order_release);
+			return result;
 		}
 
 		size_t RemoveMember(const IdType& id) noexcept
