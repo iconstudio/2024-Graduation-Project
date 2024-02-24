@@ -14,10 +14,9 @@ iconer::coroutine::Coroutine test::Receiver()
 {
 	while (true)
 	{
-		//auto recv = app_socket.Receive(recv_buffer.subspan(received_bytes));
-		auto recv = app_socket.MakeReceiveTask(recv_ctx, recv_space + received_bytes, recvMaxSize - received_bytes);
-
-		auto recv_result = co_await recv;
+		auto recv_result = app_socket.Receive(recv_buffer.subspan(received_bytes));
+		//auto recv = app_socket.MakeReceiveTask(recv_ctx, recv_space + received_bytes, recvMaxSize - received_bytes);
+		//auto recv_result = co_await recv;
 
 		if (not recv_result.has_value())
 		{
