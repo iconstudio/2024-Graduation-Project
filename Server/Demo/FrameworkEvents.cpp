@@ -350,17 +350,18 @@ demo::Framework::OnLeavingRoom(iconer::app::User& user)
 		{
 			room->RemoveMember(user.GetID()
 				, [&](const size_t& members_count) noexcept {
-					if (0 == members_count)
+				if (0 == members_count)
+				{
+					if (room->TryBeginClose(iconer::app::RoomStates::Idle))
 					{
-						if (room->TryBeginClose(iconer::app::RoomStates::Idle))
+						room->SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
+
+						if (not Schedule(room, room_id))
 						{
-							room->Clear();
-							if (not Schedule(room, room_id))
-							{
-								room->Cleanup();
-							}
+							room->Cleanup();
 						}
 					}
+				}
 			});
 
 			return true;
@@ -392,15 +393,16 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 			{
 				room->RemoveMember(user.GetID()
 					, [&](const size_t& members_count) noexcept {
-						if (0 == members_count)
-						{
-							room->BeginClose();
+					if (0 == members_count)
+					{
+						room->BeginClose();
+						room->SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
 
-							if (not Schedule(room, room_id))
-							{
-								room->Cleanup();
-							}
+						if (not Schedule(room, room_id))
+						{
+							room->Cleanup();
 						}
+					}
 				});
 			}
 		}
