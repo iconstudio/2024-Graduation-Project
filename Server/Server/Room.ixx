@@ -2,6 +2,7 @@ module;
 #include <utility>
 #include <atomic>
 #include <array>
+#include <mutex>
 
 export module Iconer.Application.Room;
 import Iconer.Utility.Constraints;
@@ -37,19 +38,26 @@ export namespace iconer::app
 			: Super(id)
 			, myLock()
 			, myMembers(), membersCount(0)
-		{
-		}
+		{}
 
 		explicit constexpr Room(IdType&& id)
 			noexcept(nothrow_constructible<Super, IdType&&>)
 			: Super(std::move(id))
 			, myLock()
 			, myMembers(), membersCount(0)
-		{
-		}
+		{}
 
 		void Awake() noexcept
+		{}
+
+		void Cleanup() noexcept
 		{
+			std::unique_lock lock{ myLock, std::try_to_lock };
+
+			Clear();
+			SetOperation(AsyncOperations::None);
+			ClearMembers();
+			membersCount = 0;
 		}
 
 		[[nodiscard]]
