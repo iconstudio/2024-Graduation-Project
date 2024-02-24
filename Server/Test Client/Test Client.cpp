@@ -104,6 +104,17 @@ test::Receiver()
 						}
 						break;
 
+						case iconer::app::PacketProtocol::SC_ROOM_LEFT:
+						{
+							std::int32_t left_client{};
+							auto offset = ReceiveRoomLeftPacket(recv_space, left_client);
+
+							std::println("Client {} has been left from room", left_client);
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
 						case iconer::app::PacketProtocol::SC_CREATE_PLAYER:
 						{
 							//iconer::app::packets::SC_CreatePlayerPacket pk{};
