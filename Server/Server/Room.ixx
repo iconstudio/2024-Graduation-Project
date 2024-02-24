@@ -1,6 +1,7 @@
 module;
 #include <utility>
 #include <atomic>
+#include <tuple>
 #include <array>
 
 export module Iconer.Application.Room;
@@ -110,9 +111,12 @@ export namespace iconer::app
 			return result;
 		}
 
-		template<invocables Predicate>
-		size_t RemoveMember(const IdType& id, Predicate&& pred) noexcept
+		template<typename Predicate, typename... Args>
+			requires invocables<Predicate, Args...>
+		size_t RemoveMember(const IdType& id, Predicate&& pred, Args&&... args) noexcept(nothrow_invocables<Predicate, Args...>)
 		{
+			auto arguments = std::forward_as_tuple(std::forward<Args>(args)...);
+
 			std::unique_lock lock{ myLock };
 
 			size_t result = membersCount.load(std::memory_order_acquire);
@@ -124,7 +128,7 @@ export namespace iconer::app
 					result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
 					if (0 == result)
 					{
-						std::invoke(std::forward<Predicate>(pred));
+						std::apply(std::forward<Predicate>(pred), std::move(arguments));
 					}
 
 					break;
