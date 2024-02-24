@@ -92,11 +92,11 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 			user.SetOperation(iconer::app::AsyncOperations::OpAssignID);
 
 			return user.SendSignInPacket();
-			}
+		}
 		else [[unlikely]] {
 			// TODO: send sign in failed packet
 			return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
-			};
+		};
 	}
 	else
 	{
@@ -160,7 +160,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 			myLogger.LogWarning(iconer::app::GetResourceString<7>());
 
 			return std::unexpected{ iconer::net::ErrorCode::NoBufferStorage };
-			}
+		}
 		else if (0 == proceed_bytes)
 		{
 			myLogger.DebugLogWarning(iconer::app::GetResourceString<8>());
@@ -362,6 +362,7 @@ demo::Framework::OnLeavingRoom(iconer::app::User& user)
 						}
 					}
 			});
+
 			return true;
 		}
 	}
