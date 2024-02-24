@@ -53,15 +53,6 @@ demo::Framework::OnFailedUserConnect(iconer::app::User& user)
 {
 	if (not user.BeginClose(iconer::app::UserStates::Reserved))
 	{
-		// Make room out now
-		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
-		{
-			if (auto room = FindRoom(room_id); nullptr != room)
-			{
-				room->RemoveMember(user.GetID());
-			}
-		}
-
 		user.Cleanup();
 	}
 }
@@ -101,11 +92,11 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 			user.SetOperation(iconer::app::AsyncOperations::OpAssignID);
 
 			return user.SendSignInPacket();
-		}
+			}
 		else [[unlikely]] {
 			// TODO: send sign in failed packet
 			return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
-		};
+			};
 	}
 	else
 	{
@@ -120,15 +111,6 @@ demo::Framework::OnFailedUserSignIn(iconer::app::User& user)
 {
 	if (not user.BeginClose())
 	{
-		// Make room out now
-		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
-		{
-			if (auto room = FindRoom(room_id); nullptr != room)
-			{
-				room->RemoveMember(user.GetID());
-			}
-		}
-
 		user.Cleanup();
 	}
 }
@@ -153,15 +135,6 @@ demo::Framework::OnFailedNotifyId(iconer::app::User& user)
 {
 	if (not user.BeginClose(iconer::app::UserStates::PendingID))
 	{
-		// Make room out now
-		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
-		{
-			if (auto room = FindRoom(room_id); nullptr != room)
-			{
-				room->RemoveMember(user.GetID());
-			}
-		}
-
 		user.Cleanup();
 	}
 }
@@ -187,7 +160,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 			myLogger.LogWarning(iconer::app::GetResourceString<7>());
 
 			return std::unexpected{ iconer::net::ErrorCode::NoBufferStorage };
-		}
+			}
 		else if (0 == proceed_bytes)
 		{
 			myLogger.DebugLogWarning(iconer::app::GetResourceString<8>());
@@ -235,7 +208,7 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 		{
 			// rollback
 			room.TryCancelCreating();
-			
+
 			// room is already assigned to the client
 			return iconer::app::RoomContract::AnotherRoomIsAlreadyAssigned;
 
@@ -371,20 +344,37 @@ demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& 
 bool
 demo::Framework::OnLeavingRoom(iconer::app::User& user)
 {
-	//TODO
 	if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
 	{
 		if (auto room = FindRoom(room_id); nullptr != room)
 		{
-			room->RemoveMember(user.GetID(), [&room]()
-			{
-
+			room->RemoveMember(user.GetID()
+				, [&](const size_t& members_count) noexcept {
+					if (0 == members_count)
+					{
+						if (room->TryBeginClose(iconer::app::RoomStates::Idle))
+						{
+							if (not Schedule(room, room_id))
+							{
+								room->Cleanup();
+							}
+						}
+					}
 			});
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void
+demo::Framework::OnClosingRoom(iconer::app::Room& room)
+{
+	if (room.TryEndClose())
+	{
+		room.Cleanup();
+	}
 }
 
 demo::Framework::AcceptResult
@@ -398,7 +388,18 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 		{
 			if (auto room = FindRoom(room_id); nullptr != room)
 			{
-				room->RemoveMember(user.GetID());
+				room->RemoveMember(user.GetID()
+					, [&](const size_t& members_count) noexcept {
+						if (0 == members_count)
+						{
+							room->BeginClose();
+
+							if (not Schedule(room, room_id))
+							{
+								room->Cleanup();
+							}
+						}
+				});
 			}
 		}
 
