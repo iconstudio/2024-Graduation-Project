@@ -223,13 +223,13 @@ export namespace iconer::app::packets::inline sc
 		[[nodiscard]]
 		static consteval size_t WannabeSize() noexcept
 		{
-			return Super::MinSize();
+			return Super::MinSize() + sizeof(clientId);
 		}
 
 		[[nodiscard]]
 		static consteval ptrdiff_t SignedWannabeSize() noexcept
 		{
-			return Super::SignedMinSize();
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(clientId));
 		}
 
 		constexpr SC_RoomLeftPacket() noexcept
