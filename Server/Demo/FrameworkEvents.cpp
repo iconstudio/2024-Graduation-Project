@@ -329,6 +329,12 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 			return iconer::app::RoomContract::RoomIsFull;
 		}
 
+		auto r = user.SendRoomJoinedPacket(user.GetID(), room_id);
+		if (not r.first)
+		{
+			delete r.second;
+		}
+
 		return iconer::app::RoomContract::Success;
 	}
 }
