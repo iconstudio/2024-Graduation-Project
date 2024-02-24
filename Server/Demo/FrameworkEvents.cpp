@@ -291,7 +291,7 @@ demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user
 {
 	if (not room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::Idle))
 	{
-		// 998: room is unstable
+		// room is unstable
 		return iconer::app::RoomContract::UnstableRoom;
 	}
 	else
