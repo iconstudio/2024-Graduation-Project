@@ -281,11 +281,11 @@ demo::Framework::RouteEvent(bool is_succeed
 
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tUser {} did not left from the room\n", user_id);
+				myLogger.LogError(L"\tUser {} has failed to send a left packet\n", user_id);
 			}
 			else if (auto result = OnLeavingRoom(*user); not result)
 			{
-				myLogger.LogError(L"\tUser {} did not left from the room\n", user_id);
+				myLogger.LogError(L"\tUser {} has failed to left the room\n", user_id);
 			}
 			else
 			{
@@ -294,6 +294,17 @@ demo::Framework::RouteEvent(bool is_succeed
 
 			auto sender = static_cast<iconer::app::BlobSendContext*>(ctx);
 			delete sender;
+		}
+		break;
+
+		case iconer::app::AsyncOperations::OpCloseRoom:
+		{
+			auto room = std::launder(static_cast<iconer::app::Room*>(ctx));
+			
+			if (nullptr != room)
+			{
+				OnClosingRoom(*room);
+			}
 		}
 		break;
 

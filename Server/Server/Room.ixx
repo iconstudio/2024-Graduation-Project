@@ -55,30 +55,27 @@ export namespace iconer::app
 			std::unique_lock lock{ myLock, std::try_to_lock };
 
 			Clear();
+			SetState(RoomStates::None);
 			SetOperation(AsyncOperations::None);
 			ClearMembers();
 			membersCount = 0;
 		}
 
-		[[nodiscard]]
 		bool TryReserveContract() volatile noexcept
 		{
 			return TryChangeState(RoomStates::None, RoomStates::Reserved);
 		}
 
-		[[nodiscard]]
 		bool TryCancelContract() volatile noexcept
 		{
 			return TryChangeState(RoomStates::Reserved, RoomStates::None);
 		}
 
-		[[nodiscard]]
 		bool TryCreate() volatile noexcept
 		{
 			return TryChangeState(RoomStates::Reserved, RoomStates::Creating);
 		}
 
-		[[nodiscard]]
 		bool TryCancelCreating() volatile noexcept
 		{
 			return TryChangeState(RoomStates::Creating, RoomStates::None);
@@ -89,13 +86,11 @@ export namespace iconer::app
 			SetState(RoomStates::Closing);
 		}
 
-		[[nodiscard]]
 		bool TryBeginClose(RoomStates prev_state) volatile noexcept
 		{
 			return TryChangeState(prev_state, RoomStates::Closing);
 		}
 
-		[[nodiscard]]
 		bool TryEndClose(RoomStates next_state = RoomStates::None) volatile noexcept
 		{
 			return TryChangeState(RoomStates::Closing, next_state);
@@ -168,34 +163,6 @@ export namespace iconer::app
 						result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
 
 						std::invoke(std::forward<Predicate>(pred), result, std::forward<Args>(args)...);
-					}
-
-					break;
-				}
-			}
-
-			membersCount.store(result, std::memory_order_release);
-			return result;
-		}
-
-		template<classes Class, typename Method, typename... Args>
-		size_t RemoveMember(const IdType& id, Class&& instance, Method&& method, Args&&... args)
-			noexcept(noexcept(std::invoke(std::forward<Method>(method), std::forward<Class>(instance), size_t, std::forward<Args>(args)...)))
-		{
-			std::unique_lock lock{ myLock };
-
-			size_t result = membersCount.load(std::memory_order_acquire);
-			for (auto& member : myMembers)
-			{
-				if (nullptr != member and id == member->GetID())
-				{
-					member = nullptr;
-
-					if (0 < result)
-					{
-						result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
-
-						std::invoke(std::forward<Method>(method), std::forward<Class>(instance), result, std::forward<Args>(args)...);
 					}
 
 					break;
@@ -297,10 +264,10 @@ namespace iconer::app::test
 		std::invoke(&std::array<int, 3>::size, test_arr);
 		//std::invoke(std::declval<method_arr_size_t>(), std::declval<arr_t>());
 
-		room.RemoveMember(0, test_arr, &(std::array<int, 3>::size));
+		//room.RemoveMember(0, test_arr, &(std::array<int, 3>::size));
 		//room.RemoveMember(0, test_arr, &(std::array<int, 3>::begin));
 		//room.RemoveMember(0, test_arr, &(std::array<int, 3>::at), 0ULL);
-		room.RemoveMember(0, room, &(Room::IsFull));
+		//room.RemoveMember(0, room, &(Room::IsFull));
 		//room.RemoveMember(0, room, static_cast<size_t(Room::*)()>(&Room::RemoveMember), 0);
 	}
 }
