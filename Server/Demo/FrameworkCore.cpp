@@ -279,11 +279,23 @@ demo::Framework::RouteEvent(bool is_succeed
 
 		case iconer::app::AsyncOperations::OpLeaveRoom:
 		{
-			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
-			const IdType& id = user->GetID();
+			const IdType user_id = static_cast<IdType>(io_id);
+			auto user = FindUser(user_id);
 
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUser {} did not left from the room\n", user_id);
+			}
+			else if (auto result = OnLeavingRoom(*user); not result)
+			{
+				myLogger.LogError(L"\tUser {} did not left from the room\n", user_id);
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} has been left from the room\n", user_id);
+			}
 
-			user->Clear();
+			delete ctx;
 		}
 		break;
 
