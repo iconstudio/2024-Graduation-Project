@@ -43,10 +43,13 @@ export namespace iconer
 	template<typename... Ts>
 	concept member_function_ptrs = make_conjunction<is_member_function_pointer, decay_t<Ts>...>;
 
-	template<typename Method, typename Class, typename... Params, typename... Args>
-	concept method_invocable = classes<Class> and requires(Class && instance, Method(Class ::* const& fn)(Params...), Args&&... args)
+	template<typename Method>
+	concept methods = member_function_ptrs<Method>;
+
+	template<typename Method, typename Class, typename... Args>
+	concept method_invocable = classes<clean_t<Class>> and methods<decay_t<Method>> and requires
 	{
-		(std::forward<Class>(instance).*fn)(std::forward<Args>(args)...);
+		std::invoke(std::declval<Method>(), std::declval<Class>(), std::declval<Args>()...);
 	};
 
 	template<typename Derived, typename Parent>
