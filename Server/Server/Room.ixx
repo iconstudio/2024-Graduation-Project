@@ -122,8 +122,8 @@ export namespace iconer::app
 		}
 
 		template<typename Predicate, typename... Args>
-			requires invocables<Predicate, Args...>
-		size_t RemoveMember(const IdType& id, Predicate&& pred, Args&&... args) noexcept(nothrow_invocables<Predicate, Args...>)
+			requires invocables<Predicate, size_t, Args...>
+		size_t RemoveMember(const IdType& id, Predicate&& pred, Args&&... args) noexcept(nothrow_invocables<Predicate, size_t, Args...>)
 		{
 			std::unique_lock lock{ myLock };
 
@@ -134,10 +134,8 @@ export namespace iconer::app
 				{
 					member = nullptr;
 					result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
-					if (0 == result)
-					{
-						std::invoke(std::forward<Predicate>(pred), std::forward<Args>(args)...);
-					}
+
+					std::invoke(std::forward<Predicate>(pred), result, std::forward<Args>(args)...);
 
 					break;
 				}
@@ -149,7 +147,7 @@ export namespace iconer::app
 
 		template<classes Class, typename Method, typename... Args>
 		size_t RemoveMember(const IdType& id, Class&& instance, Method&& method, Args&&... args)
-			noexcept(noexcept(std::invoke(std::forward<Method>(method), std::forward<Class>(instance), std::forward<Args>(args)...)))
+			noexcept(noexcept(std::invoke(std::forward<Method>(method), std::forward<Class>(instance), size_t, std::forward<Args>(args)...)))
 		{
 			std::unique_lock lock{ myLock };
 
@@ -160,10 +158,8 @@ export namespace iconer::app
 				{
 					member = nullptr;
 					result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
-					if (0 == result)
-					{
-						std::invoke(std::forward<Method>(method), std::forward<Class>(instance), std::forward<Args>(args)...);
-					}
+
+					std::invoke(std::forward<Method>(method), std::forward<Class>(instance), result,  std::forward<Args>(args)...);
 
 					break;
 				}
