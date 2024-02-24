@@ -84,6 +84,23 @@ export namespace iconer::app
 			return TryChangeState(RoomStates::Creating, RoomStates::None);
 		}
 
+		void BeginClose() volatile noexcept
+		{
+			SetState(RoomStates::Closing);
+		}
+
+		[[nodiscard]]
+		bool TryBeginClose(RoomStates prev_state) volatile noexcept
+		{
+			return TryChangeState(prev_state, RoomStates::Closing);
+		}
+
+		[[nodiscard]]
+		bool TryEndClose(RoomStates next_state = RoomStates::None) volatile noexcept
+		{
+			return TryChangeState(RoomStates::Closing, next_state);
+		}
+
 		bool TryAddMember(iconer::app::User& user) noexcept
 		{
 			std::unique_lock lock{ myLock };
@@ -119,7 +136,11 @@ export namespace iconer::app
 				if (nullptr != member and id == member->GetID())
 				{
 					member = nullptr;
-					result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
+
+					if (0 < result)
+					{
+						result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
+					}
 
 					break;
 				}
@@ -141,9 +162,13 @@ export namespace iconer::app
 				if (nullptr != member and id == member->GetID())
 				{
 					member = nullptr;
-					result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
 
-					std::invoke(std::forward<Predicate>(pred), result, std::forward<Args>(args)...);
+					if (0 < result)
+					{
+						result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
+
+						std::invoke(std::forward<Predicate>(pred), result, std::forward<Args>(args)...);
+					}
 
 					break;
 				}
@@ -165,9 +190,13 @@ export namespace iconer::app
 				if (nullptr != member and id == member->GetID())
 				{
 					member = nullptr;
-					result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
 
-					std::invoke(std::forward<Method>(method), std::forward<Class>(instance), result,  std::forward<Args>(args)...);
+					if (0 < result)
+					{
+						result = membersCount.fetch_sub(1, std::memory_order_relaxed) - 1;
+
+						std::invoke(std::forward<Method>(method), std::forward<Class>(instance), result, std::forward<Args>(args)...);
+					}
 
 					break;
 				}
