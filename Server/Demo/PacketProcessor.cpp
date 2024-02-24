@@ -163,7 +163,7 @@ demo::PacketProcessor(Framework& framework
 			case iconer::app::PacketProtocol::CS_ROOM_LEAVE:
 			{
 				// Empty packet
-				framework.OnLeavingRoom(user);
+				user.SendRoomLeftPacket(user_id);
 			}
 			break;
 
