@@ -69,7 +69,7 @@ export namespace iconer::app
 			return TryChangeState(RoomStates::Reserved, RoomStates::None);
 		}
 
-		bool TryCreate() volatile noexcept
+		bool TryBeginCreate() volatile noexcept
 		{
 			return TryChangeState(RoomStates::Reserved, RoomStates::Creating);
 		}
