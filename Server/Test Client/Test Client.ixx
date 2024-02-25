@@ -36,7 +36,7 @@ namespace test
 	const std::byte* ReceiveSignInFailurePacket(const std::byte* buffer, int& error);
 	const std::byte* ReceiveRoomCreatedPacket(const std::byte* buffer, IdType& room_id);
 	const std::byte* ReceiveRoomCreationFailedPacket(const std::byte* buffer, iconer::app::RoomContract& error);
-	const std::byte* ReceiveRoomJoinedPacket(const std::byte* buffer, IdType& client_id);
+	const std::byte* ReceiveRoomJoinedPacket(const std::byte* buffer, IdType& client_id, IdType& room_id);
 	const std::byte* ReceiveRoomJoinFailedPacket(const std::byte* buffer, iconer::app::RoomContract& error);
 	const std::byte* ReceiveRoomLeftPacket(const std::byte* buffer, IdType& client_id);
 

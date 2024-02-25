@@ -89,10 +89,19 @@ test::Receiver()
 
 						case iconer::app::PacketProtocol::SC_ROOM_JOINED:
 						{
-							IdType newbie{};
-							auto offset = ReceiveRoomJoinedPacket(recv_space, newbie);
+							IdType newbie_id{};
+							IdType room_id{};
+							auto offset = ReceiveRoomJoinedPacket(recv_space, newbie_id, room_id);
 
-							std::println("Client {} is joined to the room {}", newbie, roomId);
+							if (newbie_id == my_id)
+							{
+								roomId = room_id;
+								std::println("Local client has joined to the room {}", room_id);
+							}
+							else
+							{
+								std::println("Client {} has joined to the room {}", newbie_id, room_id);
+							}
 
 							PullReceiveBuffer(offset);
 						}
