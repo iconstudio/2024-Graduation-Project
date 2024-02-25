@@ -1,7 +1,7 @@
 module;
 #include <span>
 
-export module Demo.Framework.PacketProcessor;
+export module Demo.PacketProcessor;
 import Iconer.Utility.Chronograph;
 import Iconer.Utility.Serializer;
 import Iconer.Application.User;
