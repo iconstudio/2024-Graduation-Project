@@ -94,3 +94,30 @@ iconer::app::User::SendRoomLeftPacket(IdType who)
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
+
+std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+iconer::app::User::SendCannotStartGamePacket(int reason)
+{
+	const iconer::app::packets::SC_FailedGameStartingPacket pk{ reason };
+	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+
+	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
+}
+
+std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+iconer::app::User::SendMakeGameReadyPacket()
+{
+	const iconer::app::packets::SC_ReadyForGamePacket pk{};
+	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+
+	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
+}
+
+std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+iconer::app::User::SendGameJustStartedPacket()
+{
+	const iconer::app::packets::SC_GameStartPacket pk{};
+	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+
+	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
+}
