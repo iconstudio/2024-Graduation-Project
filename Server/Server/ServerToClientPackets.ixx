@@ -23,6 +23,36 @@ export namespace iconer::app::packets::inline sc
 {
 #pragma pack(push, 1)
 	/// <summary>
+	/// Getting game ready notification packet for server
+	/// </summary>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_ReadyForGamePacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize();
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return Super::SignedMinSize();
+		}
+
+		constexpr SC_ReadyForGamePacket() noexcept
+			: Super(PacketProtocol::SC_GAME_GETTING_READY, SignedWannabeSize())
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize);
+		}
+	};
 	/// <summary>
 	/// Game starting notification packet for server
 	/// </summary>
@@ -104,6 +134,7 @@ export namespace iconer::app::packets::inline sc
 
 		int errCause;
 	};
+	/// <summary>
 	/// Room members response packet for server
 	/// </summary>
 	/// <param name="roomId">An id of the created room</param>
@@ -622,13 +653,13 @@ export namespace iconer::app::packets::inline sc
 		[[nodiscard]]
 		static consteval size_t WannabeSize() noexcept
 		{
-			return Super::MinSize();
+			return Super::MinSize() + sizeof(errCause);
 		}
 
 		[[nodiscard]]
 		static consteval ptrdiff_t SignedWannabeSize() noexcept
 		{
-			return static_cast<ptrdiff_t>(Super::MinSize());
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(errCause));
 		}
 
 		constexpr SC_FailedSignInPacket() noexcept
