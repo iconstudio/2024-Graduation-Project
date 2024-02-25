@@ -10,6 +10,9 @@
 				"glfw-binding",
 				"opengl3-binding"
 			]
+		},
+		{
+			"name": "concurrentqueue"
 		}
 	]
 }
