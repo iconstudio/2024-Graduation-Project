@@ -330,6 +330,9 @@
     <ClCompile Include="Chronograph.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="Private\Room.cpp">
+      <Filter>Application\Implementain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
