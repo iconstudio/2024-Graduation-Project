@@ -28,7 +28,10 @@ export namespace iconer::app
 		OpReserveRoom, OpCreateRoom, OpEnterRoom, OpLeaveRoom, OpCloseRoom,
 
 		/// <summary>Phase 6 ~ </summary>
-		OpNotifyMember, OpEnterGame, OpReadyGame, OpStartGame, OpLeaveGame,
+		OpNotifyMember,
+
+		/// <summary>Phase 7 ~ </summary>
+		OpCreateGame, OpReadyGame, OpStartGame, OpLeaveGame,
 
 		/// <summary>Phase 10 - Sign out (Quit)</summary>
 		OpDisconnect,
@@ -57,7 +60,7 @@ export namespace std
 			case iconer::app::AsyncOperations::OpEnterRoom: return "EnterRoom";
 			case iconer::app::AsyncOperations::OpLeaveRoom: return "LeaveRoom";
 			case iconer::app::AsyncOperations::OpNotifyMember: return "NotifyMember";
-			case iconer::app::AsyncOperations::OpEnterGame: return "EnterGame";
+			case iconer::app::AsyncOperations::OpCreateGame: return "EnterGame";
 			case iconer::app::AsyncOperations::OpReadyGame: return "ReadyGame";
 			case iconer::app::AsyncOperations::OpStartGame: return "StartGame";
 			case iconer::app::AsyncOperations::OpLeaveGame: return "LeaveGame";
@@ -84,7 +87,7 @@ export namespace std
 			case iconer::app::AsyncOperations::OpEnterRoom: return L"EnterRoom";
 			case iconer::app::AsyncOperations::OpLeaveRoom: return L"LeaveRoom";
 			case iconer::app::AsyncOperations::OpNotifyMember: return L"NotifyMember";
-			case iconer::app::AsyncOperations::OpEnterGame: return L"EnterGame";
+			case iconer::app::AsyncOperations::OpCreateGame: return L"EnterGame";
 			case iconer::app::AsyncOperations::OpReadyGame: return L"ReadyGame";
 			case iconer::app::AsyncOperations::OpStartGame: return L"StartGame";
 			case iconer::app::AsyncOperations::OpLeaveGame: return L"LeaveGame";
@@ -169,7 +172,7 @@ struct std::formatter<iconer::app::AsyncOperations, char>
 				return std::format_to(context.out(), "{}", "Notifying members to to the session");
 			}
 
-			case iconer::app::AsyncOperations::OpEnterGame:
+			case iconer::app::AsyncOperations::OpCreateGame:
 			{
 				return std::format_to(context.out(), "{}", "Entering a game");
 			}
@@ -281,7 +284,7 @@ struct std::formatter<iconer::app::AsyncOperations, wchar_t>
 				return std::format_to(context.out(), L"{}", L"Notifying members to to the session");
 			}
 
-			case iconer::app::AsyncOperations::OpEnterGame:
+			case iconer::app::AsyncOperations::OpCreateGame:
 			{
 				return std::format_to(context.out(), L"{}", L"Entering a game");
 			}
