@@ -164,7 +164,7 @@ export namespace iconer::app::packets::inline sc
 		}
 
 		constexpr SC_RespondMembersPacket() noexcept
-			: Super(PacketProtocol::SC_ROOM_CREATED, SignedWannabeSize())
+			: Super(PacketProtocol::SC_RESPOND_USERS, SignedWannabeSize())
 			, serializedMembers()
 		{
 		}
