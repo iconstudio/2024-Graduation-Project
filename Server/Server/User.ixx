@@ -71,33 +71,6 @@ export namespace iconer::app
 			Super::~ISession();
 		}
 
-		User(User&& other)
-			noexcept(nothrow_move_constructibles<Super, iconer::net::Socket>)
-			: Super(std::move(other))
-			, mySocket(std::exchange(other.mySocket, iconer::net::Socket{}))
-			, recvOffset(std::exchange(other.recvOffset, 0))
-			, preSignInPacket(std::exchange(other.preSignInPacket, {}))
-			, preRoomCreationPacket(std::exchange(other.preRoomCreationPacket, {}))
-			, myTransform(std::exchange(other.myTransform, {}))
-			, myRoomId()
-		{
-			myRoomId = std::exchange(other.myRoomId, -1);
-		}
-
-		User& operator=(User&& other)
-			noexcept(nothrow_move_assignables<Super, iconer::net::Socket>)
-		{
-			Super::operator=(std::move(other));
-			myName = std::exchange(other.myName, {});
-			mySocket = std::exchange(other.mySocket, iconer::net::Socket{});
-			recvOffset = std::exchange(other.recvOffset, 0);
-			preSignInPacket = std::exchange(other.preSignInPacket, {});
-			preRoomCreationPacket = std::exchange(other.preRoomCreationPacket, {});
-			myTransform = std::exchange(other.myTransform, {});
-			myRoomId = std::exchange(other.myRoomId, -1);
-			return *this;
-		}
-
 		void Awake();
 
 		bool BeginClose() noexcept
@@ -445,6 +418,9 @@ export namespace iconer::app
 			return myTransform[0];
 		}
 
+		User(User&&) noexcept = default;
+		User& operator=(User&&) noexcept = default;
+
 		iconer::net::Socket mySocket;
 		volatile ptrdiff_t recvOffset;
 
@@ -458,7 +434,7 @@ export namespace iconer::app
 
 	private:
 		User(const User&) = delete;
-		void operator=(const User&) = delete;
+		User& operator=(const User&) = delete;
 	};
 
 	class Room;
