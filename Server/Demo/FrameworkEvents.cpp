@@ -8,6 +8,25 @@ import Iconer.Application.Resources.String;
 import Demo.Framework.PacketProcessor;
 import <stdexcept>;
 
+void RemoveRoomMember(demo::Framework& framework, iconer::app::Room& room, const iconer::app::User::IdType& user_id) noexcept
+{
+	room.RemoveMember(user_id
+		, [&](const size_t& members_count) noexcept {
+		if (0 == members_count)
+		{
+			if (room.TryBeginClose(iconer::app::RoomStates::Idle))
+			{
+				room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
+
+				if (not framework.Schedule(room, room.GetID()))
+				{
+					room.Cleanup();
+				}
+			}
+		}
+	});
+}
+
 demo::Framework::AcceptResult
 demo::Framework::OnReserveAccept(iconer::app::User& user)
 {
@@ -185,7 +204,7 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 	{
 		if (auto room = FindRoom(room_id); nullptr != room)
 		{
-			room->RemoveMember(user.GetID());
+			::RemoveRoomMember(*this, *room, user.GetID());
 		}
 	}
 
@@ -232,7 +251,8 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 			{
 				room.SetOperation(iconer::app::AsyncOperations::None);
 			}
-			room.RemoveMember(user.GetID());
+			::RemoveRoomMember(*this, room, user.GetID());
+
 			user.myRoomId.CompareAndSet(room_id, -1);
 
 			// failed to notify
@@ -255,7 +275,7 @@ demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::Use
 		room.TryCancelContract();
 	}
 
-	room.RemoveMember(user.GetID());
+	::RemoveRoomMember(*this, room, user.GetID());
 	user.myRoomId.CompareAndSet(room.GetID(), -1);
 
 	auto sent_r = user.SendRoomCreationFailedPacket(reason);
@@ -273,6 +293,10 @@ demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user
 		// room is unstable
 		return iconer::app::RoomContract::UnstableRoom;
 	}
+	else if (not user.TryChangeState(iconer::app::UserStates::Idle, iconer::app::UserStates::InRoom))
+	{
+		return iconer::app::RoomContract::InvalidOperation;
+	}
 	else
 	{
 		room.SetOperation(iconer::app::AsyncOperations::None);
@@ -289,7 +313,7 @@ demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User
 		room.SetOperation(iconer::app::AsyncOperations::None);
 	}
 
-	room.RemoveMember(user.GetID());
+	::RemoveRoomMember(*this, room, user.GetID());
 	user.myRoomId.CompareAndSet(room.GetID(), -1);
 
 	auto sent_r = user.SendRoomCreationFailedPacket(reason);
@@ -307,26 +331,49 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 		// room is full
 		return iconer::app::RoomContract::RoomIsFull;
 	}
-	else if (not room.TryChangeState(iconer::app::RoomStates::Idle, iconer::app::RoomStates::Idle))
+	else if (room.GetState() != iconer::app::RoomStates::Idle)
 	{
+		// rollback
+		user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+
 		// room is busy
 		return iconer::app::RoomContract::RoomIsBusy;
+	}
+	else if (not user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::EnteringRoom))
+	{
+		// rollback
+		user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+
+		return iconer::app::RoomContract::InvalidOperation;
 	}
 	else
 	{
 		const auto& room_id = room.GetID();
 		if (not user.myRoomId.CompareAndSet(-1, room_id))
 		{
+			// rollback
+			user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+
 			// another room is already assigned to the client
 			return iconer::app::RoomContract::AnotherRoomIsAlreadyAssigned;
 		}
 		else if (not room.TryAddMember(user))
 		{
 			// rollback
+			user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
 			user.myRoomId.CompareAndSet(room_id, -1);
 
 			// the room is full
 			return iconer::app::RoomContract::RoomIsFull;
+		}
+		else if (not user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::InRoom))
+		{
+			// rollback
+			user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+			user.myRoomId.CompareAndSet(room_id, -1);
+			::RemoveRoomMember(*this, room, user.GetID());
+
+			return iconer::app::RoomContract::InvalidOperation;
 		}
 
 		auto r = user.SendRoomJoinedPacket(user.GetID(), room_id);
@@ -342,6 +389,11 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 void
 demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason)
 {
+	// rollback
+	user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+	user.myRoomId.CompareAndSet(room.GetID(), -1);
+	::RemoveRoomMember(*this, room, user.GetID());
+
 	auto r = user.SendRoomJoinFailedPacket(reason);
 	if (not r.first)
 	{
@@ -354,23 +406,11 @@ demo::Framework::OnLeavingRoom(iconer::app::User& user)
 {
 	if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
 	{
+		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
+
 		if (auto room = FindRoom(room_id); nullptr != room)
 		{
-			room->RemoveMember(user.GetID()
-				, [&](const size_t& members_count) noexcept {
-				if (0 == members_count)
-				{
-					if (room->TryBeginClose(iconer::app::RoomStates::Idle))
-					{
-						room->SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
-
-						if (not Schedule(room, room_id))
-						{
-							room->Cleanup();
-						}
-					}
-				}
-			});
+			::RemoveRoomMember(*this, *room, user.GetID());
 
 			return true;
 		}
@@ -397,6 +437,8 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 		// Make room out now
 		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
 		{
+			user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
+
 			if (auto room = FindRoom(room_id); nullptr != room)
 			{
 				room->RemoveMember(user.GetID()
