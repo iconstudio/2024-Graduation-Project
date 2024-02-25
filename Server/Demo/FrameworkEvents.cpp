@@ -268,7 +268,7 @@ demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::Use
 iconer::app::RoomContract
 demo::Framework::OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user)
 {
-	if (not room.TryChangeState(iconer::app::RoomStates::Creating, iconer::app::RoomStates::Idle))
+	if (not room.TryEstablish())
 	{
 		// room is unstable
 		return iconer::app::RoomContract::UnstableRoom;
@@ -307,7 +307,7 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 		// room is full
 		return iconer::app::RoomContract::RoomIsFull;
 	}
-	else if (room.GetState() != iconer::app::RoomStates::Idle)
+	else if (not room.TryChangeState(iconer::app::RoomStates::Idle, iconer::app::RoomStates::Idle))
 	{
 		// room is busy
 		return iconer::app::RoomContract::RoomIsBusy;

@@ -78,6 +78,16 @@ export namespace iconer::app
 		{
 			return TryChangeState(RoomStates::Creating, RoomStates::None);
 		}
+		
+		bool TryEstablish() volatile noexcept
+		{
+			return TryChangeState(RoomStates::Creating, RoomStates::Idle);
+		}
+
+		bool TryCancelEstablishing() volatile noexcept
+		{
+			return TryChangeState(RoomStates::Idle, RoomStates::None);
+		}
 
 		void BeginClose() volatile noexcept
 		{
