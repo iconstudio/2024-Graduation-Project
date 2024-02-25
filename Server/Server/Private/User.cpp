@@ -28,6 +28,13 @@ const noexcept
 }
 
 iconer::app::User::IoResult
+iconer::app::User::SendGeneralData(iconer::app::IContext* ctx, std::byte* static_buffer, size_t size)
+const noexcept
+{
+	return mySocket.Send(*ctx, static_buffer, size);
+}
+
+iconer::app::User::IoResult
 iconer::app::User::SendSignInPacket()
 {
 	return mySocket.Send(*this, preSignInPacket.get(), packets::SC_SucceedSignInPacket::WannabeSize());
