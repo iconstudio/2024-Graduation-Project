@@ -322,20 +322,20 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
-		case iconer::app::AsyncOperations::OpReadyGame:
+		case iconer::app::AsyncOperations::OpCreateGame:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
+
 
 			user->Clear();
 		}
 		break;
 
-		case iconer::app::AsyncOperations::OpEnterGame:
+		case iconer::app::AsyncOperations::OpReadyGame:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
-
 
 			user->Clear();
 		}
