@@ -100,16 +100,29 @@ demo::Framework::InitializeRooms()
 {
 	auto room_factory = iconer::app::SessionFactory<iconer::app::Room>{};
 
+	auto rooms = room_factory.Allocate(maxRoomsNumber);
+	if (nullptr == rooms)
+	{
+		return false;
+	}
+
 	IdType id = beginRoomID;
 	for (size_t i = 0; i < maxRoomsNumber; ++i)
 	{
-		auto room = room_factory.Allocate(1);
-		if (nullptr == room)
+		auto ptr = rooms + i;
+		if (nullptr == ptr)
 		{
 			return false;
 		}
 
-		everyRoom[i] = room_factory.ConstructAt(room, id++);
+		if (auto obj = room_factory.ConstructAt(ptr, id++); nullptr != obj)
+		{
+			everyRoom[i] = obj;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	return true;
