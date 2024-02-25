@@ -1,6 +1,7 @@
 module;
 #include <string_view>
 #include <atomic>
+#include <memory>
 
 module Demo.Framework;
 import Iconer.Net.IpAddress;
@@ -128,12 +129,13 @@ demo::Framework::InitializeRooms()
 	return true;
 }
 
-bool
+void
 demo::Framework::CacheSendContexts()
 {
-	auto alloc = sendContextPool.get_allocator();
-
-	return false;
+	for (size_t i = 0; i < initSendContextsNumber; ++i)
+	{
+		//while (not sendContextPool.try_enqueue(iconer::app::BorrowedSendContext{}));
+	}
 }
 
 bool

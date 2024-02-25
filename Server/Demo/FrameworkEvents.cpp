@@ -377,10 +377,17 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 			return iconer::app::RoomContract::InvalidOperation;
 		}
 
-		auto r = user.SendRoomJoinedPacket(user.GetID(), room_id);
-		if (not r.first)
+		auto sjr = user.SendRoomJoinedPacket(user.GetID(), room_id);
+		if (not sjr.first)
 		{
-			delete r.second;
+			delete sjr.second;
+		}
+
+		std::span<std::byte> members = room.SerializeMembers();
+		//auto smr = user.SendGeneralData(members, members.size());
+		//if (not smr.first)
+		{
+		//	delete smr.second;
 		}
 
 		return iconer::app::RoomContract::Success;

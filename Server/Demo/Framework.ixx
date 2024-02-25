@@ -4,12 +4,11 @@ module;
 #include <thread>
 #include <stop_token>
 #include <latch>
-#include <concurrent_queue.h>
 
 export module Demo.Framework;
 import Iconer.Utility.Logger;
 import Iconer.Utility.ColourfulConsole;
-import Iconer.Utility.Concurrency.SpinLock;
+//import Iconer.Collection.Concurrent.Queue;
 import Iconer.Collection.FixedString;
 import Iconer.Net.ErrorCode;
 import Iconer.Net.IoContext;
@@ -21,7 +20,7 @@ import Iconer.Application.Room;
 import Iconer.Application.ISessionManager;
 import Iconer.Application.RoomContract;
 import Iconer.Application.BorrowedSendContext;
-export  import <memory>;
+export import <memory>;
 export import <expected>;
 import <span>;
 import <string>;
@@ -178,8 +177,7 @@ export namespace demo
 		[[nodiscard]]
 		bool InitializeRooms();
 		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool CacheSendContexts();
+		void CacheSendContexts();
 		/// <summary>On Start()</summary>
 		[[nodiscard]]
 		bool StartAccepts();
@@ -223,8 +221,6 @@ export namespace demo
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<iconer::app::User[]> userSpace;
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<std::byte[]> recvSpace;
 
-		iconer::util::SpinLock roomsLock;
-
 	private:
 		friend void Worker(Framework& framework, size_t nth);
 		static void LockPhase() noexcept;
@@ -239,7 +235,7 @@ export namespace demo
 		iconer::net::Socket gameListener;
 		iconer::net::IoCompletionPort ioCompletionPort;
 
-		concurrency::concurrent_queue<iconer::app::BorrowedSendContext*> sendContextPool;
+		//iconer::collection::ConcurrentQueue<iconer::app::BorrowedSendContext> sendContextPool{ initSendContextsNumber };
 	};
 
 	void Worker(Framework& framework, size_t nth);
