@@ -327,6 +327,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			const IdType user_id = static_cast<IdType>(io_id);
 			auto user = FindUser(user_id);
 
+			//TODO
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tUser {}'s the operation of making a game is failed\n", user_id);
@@ -345,6 +346,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
 			const IdType& id = user->GetID();
 
+			//TODO
 			user->Clear();
 		}
 		break;
@@ -355,6 +357,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			const IdType& id = user->GetID();
 
 
+			//TODO
 			user->Clear();
 		}
 		break;
