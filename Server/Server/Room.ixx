@@ -1,6 +1,5 @@
 module;
 #include <utility>
-#include <memory>
 #include <atomic>
 #include <array>
 #include <vector>
@@ -11,6 +10,8 @@ import Iconer.Utility.Constraints;
 import Iconer.Utility.Concurrency.SharedMutex;
 import Iconer.Application.ISession;
 import Iconer.Application.User;
+import <memory>;
+import <span>;
 
 export namespace iconer::app
 {
@@ -125,6 +126,8 @@ export namespace iconer::app
 						++count;
 
 						result = true;
+
+						isMemberUpdated = true;
 						break;
 					}
 				}
@@ -150,6 +153,7 @@ export namespace iconer::app
 						--result;
 					}
 
+					isMemberUpdated = true;
 					break;
 				}
 			}
@@ -176,6 +180,7 @@ export namespace iconer::app
 						std::invoke(std::forward<Predicate>(pred), --result, std::forward<Args>(args)...);
 					}
 
+					isMemberUpdated = true;
 					break;
 				}
 			}
@@ -191,7 +196,9 @@ export namespace iconer::app
 			{
 				member = nullptr;
 			}
+
 			membersCount = 0;
+			isMemberUpdated = true;
 		}
 
 		[[nodiscard]]
@@ -203,7 +210,7 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
-		std::unique_ptr<std::byte[]> SerializeMembers() const;
+		std::span<std::byte> SerializeMembers();
 
 		[[nodiscard]]
 		bool CanStartGame() const noexcept
@@ -251,8 +258,10 @@ export namespace iconer::app
 
 	private:
 		mutable iconer::util::SharedMutex myLock;
+
 		MemberStorageType myMembers;
 		std::atomic_size_t membersCount;
+		std::atomic_bool isMemberUpdated;
 
 		std::unique_ptr<std::byte[]> preRespondMembersPacket;
 	};
