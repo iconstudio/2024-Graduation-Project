@@ -32,6 +32,12 @@ export namespace iconer::app::packets::inline sc
 		using Super = BasicPacket;
 
 		[[nodiscard]]
+		static consteval size_t MaxSize() noexcept
+		{
+			return Super::MinSize() + sizeof(datagrams::SerializedMember) * 6 + sizeof(std::vector<datagrams::SerializedMember>::size_type);
+		}
+		
+		[[nodiscard]]
 		constexpr size_t WannabeSize() const noexcept
 		{
 			return Super::MinSize() + sizeof(datagrams::SerializedMember) * serializedMembers.size() + sizeof(std::vector<datagrams::SerializedMember>::size_type);
