@@ -324,11 +324,19 @@ demo::Framework::RouteEvent(bool is_succeed
 
 		case iconer::app::AsyncOperations::OpCreateGame:
 		{
-			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
-			const IdType& id = user->GetID();
+			const IdType user_id = static_cast<IdType>(io_id);
+			auto user = FindUser(user_id);
 
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUser {}'s the operation of making a game is failed\n", user_id);
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} the operation of making a game is done\n", user_id);
+			}
 
-			user->Clear();
+			ctx->Clear();
 		}
 		break;
 
