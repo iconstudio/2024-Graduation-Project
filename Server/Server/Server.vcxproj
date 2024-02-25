@@ -293,6 +293,7 @@
     <ClCompile Include="Packet.ixx" />
     <ClCompile Include="Private\Matrix.cpp" />
     <ClCompile Include="Private\Matrix3x3.cpp" />
+    <ClCompile Include="Private\Room.cpp" />
     <ClCompile Include="Private\User.cpp" />
     <ClCompile Include="Protocol.ixx" />
     <ClCompile Include="Private\AddressFamily.cpp">

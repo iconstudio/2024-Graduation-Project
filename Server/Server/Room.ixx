@@ -1,5 +1,6 @@
 module;
 #include <utility>
+#include <memory>
 #include <atomic>
 #include <array>
 #include <vector>
@@ -40,6 +41,7 @@ export namespace iconer::app
 			: Super(id)
 			, myLock()
 			, myMembers(), membersCount(0)
+			, preRespondMembersPacket()
 		{}
 
 		explicit constexpr Room(IdType&& id)
@@ -47,10 +49,10 @@ export namespace iconer::app
 			: Super(std::move(id))
 			, myLock()
 			, myMembers(), membersCount(0)
+			, preRespondMembersPacket()
 		{}
 
-		void Awake() noexcept
-		{}
+		void Awake() noexcept;
 
 		void Cleanup() noexcept
 		{
@@ -201,6 +203,9 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
+		std::unique_ptr<std::byte[]> SerializeMembers() const;
+
+		[[nodiscard]]
 		bool CanStartGame() const noexcept
 		{
 			std::unique_lock lock{ myLock };
@@ -248,6 +253,8 @@ export namespace iconer::app
 		mutable iconer::util::SharedMutex myLock;
 		MemberStorageType myMembers;
 		std::atomic_size_t membersCount;
+
+		std::unique_ptr<std::byte[]> preRespondMembersPacket;
 	};
 }
 
