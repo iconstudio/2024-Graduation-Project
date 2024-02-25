@@ -88,7 +88,15 @@ export namespace iconer::app::packets::inline sc
 
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
-			return iconer::util::Serialize(Super::Write(buffer), 0);
+			auto seek = iconer::util::Serialize(Super::Write(buffer), serializedMembers.size());
+
+			for (auto& member : serializedMembers)
+			{
+				seek = iconer::util::Serialize(seek, member.id);
+				seek = iconer::util::Serialize(seek, member.nickname);
+			}
+
+			return seek;
 		}
 
 		constexpr const std::byte* Read(const std::byte* buffer)

@@ -30,7 +30,11 @@ iconer::app::Room::SerializeMembers()
 		}
 
 		pk.Write(preRespondMembersPacket.get());
-	}
 
-	return std::span<std::byte>{ preRespondMembersPacket.get(), pk.WannabeSize() };
+		return std::span<std::byte>{ preRespondMembersPacket.get(), pk.WannabeSize() };
+	}
+	else
+	{
+		return std::span<std::byte>{ preRespondMembersPacket.get(), packets::SC_RespondMembersPacket::MinSize() + sizeof(iconer::app::packets::datagrams::SerializedMember) * membersCount + sizeof(size_t) };
+	}
 }
