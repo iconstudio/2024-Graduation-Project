@@ -174,6 +174,12 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
+		case iconer::app::AsyncOperations::OpSendBorrowed:
+		{
+			delete ctx;
+		}
+		break;
+
 		case iconer::app::AsyncOperations::OpDisconnect:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
