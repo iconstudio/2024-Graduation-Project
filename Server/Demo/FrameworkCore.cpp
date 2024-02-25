@@ -300,10 +300,24 @@ demo::Framework::RouteEvent(bool is_succeed
 		case iconer::app::AsyncOperations::OpCloseRoom:
 		{
 			auto room = std::launder(static_cast<iconer::app::Room*>(ctx));
-			
+
 			if (nullptr != room)
 			{
+				const IdType& room_id = room->GetID();
 				OnClosingRoom(*room);
+
+				if (not is_succeed)
+				{
+					myLogger.LogError(L"\tRoom {}'s closing operation is failed\n", room_id);
+				}
+				else
+				{
+					myLogger.Log(L"\ttRoom {} has been closed\n", room_id);
+				}
+			}
+			else
+			{
+				myLogger.LogError(L"\tInvalid room closing operation is detected\n");
 			}
 		}
 		break;
