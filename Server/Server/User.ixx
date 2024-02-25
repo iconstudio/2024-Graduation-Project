@@ -24,7 +24,7 @@ export namespace iconer::app
 		, Reserved
 		, Connected, PendingID, Idle
 		, InLobby, InRoom, EnteringRoom, LeavingRoom
-		, InGame
+		, MakingGame, ReadyForGame, InGame
 		, Dead
 	};
 
