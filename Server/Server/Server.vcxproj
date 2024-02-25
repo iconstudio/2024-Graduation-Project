@@ -205,6 +205,7 @@
     <ClCompile Include="BorrowedSendContext.ixx" />
     <ClCompile Include="Byte.ixx" />
     <ClCompile Include="CharacterReader.ixx" />
+    <ClCompile Include="Chronograph.ixx" />
     <ClCompile Include="ClientToServerPackets.ixx" />
     <ClCompile Include="ConcurrentList.ixx">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
