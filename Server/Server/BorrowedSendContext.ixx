@@ -1,32 +1,18 @@
 export module Iconer.Application.BorrowedSendContext;
 import Iconer.Application.IContext;
+import Iconer.Application.BlobSendContext;
 import <utility>;
 
 export namespace iconer::app
 {
-	class [[nodiscard]] BorrowedSendContext : public IContext
+	class [[nodiscard]] BorrowedSendContext : public BlobSendContext
 	{
 	public:
-		using Super = IContext;
+		using Super = BlobSendContext;
 
-		explicit constexpr BorrowedSendContext(const size_t size) noexcept
-			: Super(AsyncOperations::OpSend)
-			, mySize(size)
+		explicit constexpr BorrowedSendContext(std::unique_ptr<std::byte[]>&& buffer, const size_t& size) noexcept
+			: Super(std::move(buffer), size)
 		{
 		}
-
-		[[nodiscard]]
-		constexpr const size_t& GetSize() const& noexcept
-		{
-			return mySize;
-		}
-
-		[[nodiscard]]
-		constexpr size_t&& GetSize() && noexcept
-		{
-			return std::move(mySize);
-		}
-
-		size_t mySize;
 	};
 }
