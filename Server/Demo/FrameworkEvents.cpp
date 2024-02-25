@@ -6,7 +6,7 @@ import Iconer.Application.User;
 import Iconer.Application.BasicPacket;
 import Iconer.Application.Packet;
 import Iconer.Application.Resources.String;
-import Demo.Framework.PacketProcessor;
+import Demo.PacketProcessor;
 import <stdexcept>;
 
 void RemoveRoomMember(demo::Framework& framework, iconer::app::Room& room, const iconer::app::User::IdType& user_id) noexcept
