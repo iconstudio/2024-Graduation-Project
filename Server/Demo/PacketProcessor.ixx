@@ -2,6 +2,7 @@ module;
 #include <span>
 
 export module Demo.Framework.PacketProcessor;
+import Iconer.Utility.Chronograph;
 import Iconer.Utility.Serializer;
 import Iconer.Application.User;
 import Iconer.Application.BasicPacket;
@@ -147,19 +148,56 @@ demo::PacketProcessor(demo::Framework& framework
 
 				if (auto room = framework.FindRoom(room_id); nullptr != room)
 				{
-					if (user.myRoomId.CompareAndSet(-1, -1))
+					if (user.TryChangeState(iconer::app::UserStates::Idle, iconer::app::UserStates::EnteringRoom))
 					{
-						user.roomContext.SetOperation(iconer::app::AsyncOperations::OpEnterRoom);
+						iconer::util::Chronograph chronograph{};
+						static constexpr auto time_limit = iconer::util::Chronograph::Seconds(3);
 
-						if (not framework.Schedule(user.roomContext, user_id, static_cast<unsigned long>(room_id)))
+						while (true)
 						{
-							// server error
-							SEND(user, SendRoomJoinFailedPacket, iconer::app::RoomContract::ServerError);
+							if (iconer::app::RoomStates rstate = room->GetState(); rstate == iconer::app::RoomStates::Idle)
+							{
+								if (user.myRoomId.CompareAndSet(-1, -1))
+								{
+									user.roomContext.SetOperation(iconer::app::AsyncOperations::OpEnterRoom);
+
+									if (not framework.Schedule(user.roomContext, user_id, static_cast<unsigned long>(room_id)))
+									{
+										// rollback
+										user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+										user.roomContext.SetOperation(iconer::app::AsyncOperations::None);
+
+										// server error
+										SEND(user, SendRoomJoinFailedPacket, iconer::app::RoomContract::ServerError);
+									}
+
+									break; // while (true)
+								}
+								else
+								{
+									// rollback
+									user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+
+									SEND(user, SendRoomJoinFailedPacket, iconer::app::RoomContract::AnotherRoomIsAlreadyAssigned);
+
+									break; // while (true)
+								}
+							}
+
+							if (chronograph.HasTimePassed(time_limit))
+							{
+								// rollback
+								user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+
+								SEND(user, SendRoomJoinFailedPacket, iconer::app::RoomContract::RoomIsBusy);
+
+								break; // while (true)
+							}
 						}
 					}
 					else
 					{
-						SEND(user, SendRoomJoinFailedPacket, iconer::app::RoomContract::AnotherRoomIsAlreadyAssigned);
+						SEND(user, SendRoomJoinFailedPacket, iconer::app::RoomContract::InvalidOperation);
 					}
 				}
 				else
