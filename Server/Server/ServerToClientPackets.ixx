@@ -23,6 +23,37 @@ export namespace iconer::app::packets::inline sc
 {
 #pragma pack(push, 1)
 	/// <summary>
+	/// <summary>
+	/// Game starting notification packet for server
+	/// </summary>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_GameStartPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize();
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return Super::SignedMinSize();
+		}
+
+		constexpr SC_GameStartPacket() noexcept
+			: Super(PacketProtocol::SC_GAME_START, SignedWannabeSize())
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize);
+		}
+	};
 	/// Room members response packet for server
 	/// </summary>
 	/// <param name="roomId">An id of the created room</param>
