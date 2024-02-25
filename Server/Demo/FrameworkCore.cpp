@@ -312,7 +312,7 @@ demo::Framework::RouteEvent(bool is_succeed
 				}
 				else
 				{
-					myLogger.Log(L"\ttRoom {} has been closed\n", room_id);
+					myLogger.Log(L"\tRoom {} has been closed\n", room_id);
 				}
 			}
 			else
