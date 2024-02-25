@@ -37,9 +37,9 @@ iconer::app::User::IoResult
 iconer::app::User::SendRoomCreatedPacket(iconer::app::IContext* room, iconer::app::User::IdType room_id)
 {
 	const packets::SC_RoomCreatedPacket pk{ room_id };
-	pk.Write(preSignInPacket.get());
+	pk.Write(preRoomCreationPacket.get());
 
-	return mySocket.Send(*room, preSignInPacket.get(), pk.WannabeSize());
+	return mySocket.Send(*room, preRoomCreationPacket.get(), pk.WannabeSize());
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
