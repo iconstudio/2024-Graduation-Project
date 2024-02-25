@@ -3,11 +3,6 @@ module;
 #include <chrono>
 export module Iconer.Utility.Chronograph;
 
-export namespace std::chrono
-{
-	using namespace ::std::chrono;
-}
-
 export namespace iconer::util
 {
 	template<typename ChronoClock>
@@ -27,15 +22,47 @@ export namespace iconer::util
 		}
 
 		[[nodiscard]]
-		bool HasTimePassed(const duration& duration) const noexcept
+		static constexpr duration Seconds(const rep seconds) noexcept
 		{
-			return clock_t::now() + duration <= myTime;
+			return std::chrono::duration_cast<duration>(std::chrono::seconds{ seconds });
 		}
 
 		[[nodiscard]]
-		bool HasTimePassed(duration&& duration) const noexcept
+		static constexpr duration MilliSeconds(const rep seconds) noexcept
 		{
-			return clock_t::now() + std::move(duration) <= myTime;
+			return std::chrono::duration_cast<duration>(std::chrono::milliseconds{ seconds });
+		}
+
+		[[nodiscard]]
+		static constexpr duration NanoSeconds(const rep seconds) noexcept
+		{
+			return std::chrono::duration_cast<duration>(std::chrono::nanoseconds{ seconds });
+		}
+
+		[[nodiscard]]
+		bool HasTimePassed(const duration& dur) const noexcept
+		{
+			return clock_t::now() + dur <= myTime;
+		}
+
+		[[nodiscard]]
+		bool HasTimePassed(duration&& dur) const noexcept
+		{
+			return clock_t::now() + std::move(dur) <= myTime;
+		}
+
+		template<typename Rep, typename Period>
+		[[nodiscard]]
+		bool HasTimePassed(const std::chrono::duration<Rep, Period>& dur) const noexcept
+		{
+			return clock_t::now() + std::chrono::duration_cast<duration>(dur) <= myTime;
+		}
+
+		template<typename Rep, typename Period>
+		[[nodiscard]]
+		bool HasTimePassed(std::chrono::duration<Rep, Period>&& dur) const noexcept
+		{
+			return clock_t::now() + std::chrono::duration_cast<duration>(std::move(dur)) <= myTime;
 		}
 
 		[[nodiscard]]
@@ -46,6 +73,20 @@ export namespace iconer::util
 
 		[[nodiscard]]
 		constexpr bool HasReachedClock(time_point&& clock) const noexcept
+		{
+			return std::move(clock).time_since_epoch() <= myTime.time_since_epoch();
+		}
+
+		template<typename Clock, typename Duration>
+		[[nodiscard]]
+		constexpr bool HasReachedClock(const std::chrono::time_point<Clock, Duration>& clock) const noexcept
+		{
+			return myTime <= clock;
+		}
+
+		template<typename Clock, typename Duration>
+		[[nodiscard]]
+		constexpr bool HasReachedClock(std::chrono::time_point<Clock, Duration>&& clock) const noexcept
 		{
 			return std::move(clock).time_since_epoch() <= myTime.time_since_epoch();
 		}
