@@ -327,6 +327,9 @@
     <ClCompile Include="RoomContract.ixx">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="Chronograph.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
