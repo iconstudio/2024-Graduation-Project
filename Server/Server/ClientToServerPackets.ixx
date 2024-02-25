@@ -102,17 +102,17 @@ export namespace iconer::app::packets::inline cs
 		[[nodiscard]]
 		constexpr auto Serialize() const
 		{
-			return iconer::util::Serializes(myProtocol, mySize, roomTitle);
+			return iconer::util::Serializes(myProtocol, mySize, std::wstring_view{ roomTitle, roomTitleLength });
 		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
-			return iconer::util::Serialize(Super::Write(buffer), roomTitle);
+			return iconer::util::Serialize(Super::Write(buffer), std::wstring_view{ roomTitle, roomTitleLength });
 		}
 
-		constexpr const std::byte* Read(const std::byte* buffer, const size_t& buffer_length)
+		constexpr const std::byte* Read(const std::byte* buffer, const size_t&)
 		{
-			return iconer::util::Deserialize(Super::Read(buffer), buffer_length, roomTitle);
+			return iconer::util::Deserialize(Super::Read(buffer), roomTitleLength, roomTitle);
 		}
 
 		wchar_t roomTitle[roomTitleLength];
@@ -312,17 +312,17 @@ export namespace iconer::app::packets::inline cs
 		[[nodiscard]]
 		constexpr auto Serialize() const
 		{
-			return iconer::util::Serializes(myProtocol, mySize, userName);
+			return iconer::util::Serializes(myProtocol, mySize, std::wstring_view{ userName, nickNameLength });
 		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
-			return iconer::util::Serialize(Super::Write(buffer), std::wstring_view{ userName });
+			return iconer::util::Serialize(Super::Write(buffer), std::wstring_view{ userName, nickNameLength });
 		}
 
 		constexpr const std::byte* Read(const std::byte* buffer, const size_t& buffer_length)
 		{
-			return iconer::util::Deserialize(Super::Read(buffer), buffer_length, userName);
+			return iconer::util::Deserialize(Super::Read(buffer), nickNameLength, userName);
 		}
 
 		wchar_t userName[nickNameLength];
