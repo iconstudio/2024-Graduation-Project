@@ -42,27 +42,27 @@ export namespace iconer::util
 		[[nodiscard]]
 		bool HasTimePassed(const duration& dur) const noexcept
 		{
-			return clock_t::now() + dur <= myTime;
+			return clock_t::now() <= myTime + dur;
 		}
 
 		[[nodiscard]]
 		bool HasTimePassed(duration&& dur) const noexcept
 		{
-			return clock_t::now() + std::move(dur) <= myTime;
+			return clock_t::now() <= myTime + std::move(dur);
 		}
 
 		template<typename Rep, typename Period>
 		[[nodiscard]]
 		bool HasTimePassed(const std::chrono::duration<Rep, Period>& dur) const noexcept
 		{
-			return clock_t::now() + std::chrono::duration_cast<duration>(dur) <= myTime;
+			return clock_t::now() <= myTime + std::chrono::duration_cast<duration>(dur);
 		}
 
 		template<typename Rep, typename Period>
 		[[nodiscard]]
 		bool HasTimePassed(std::chrono::duration<Rep, Period>&& dur) const noexcept
 		{
-			return clock_t::now() + std::chrono::duration_cast<duration>(std::move(dur)) <= myTime;
+			return clock_t::now() <= myTime + std::chrono::duration_cast<duration>(std::move(dur));
 		}
 
 		[[nodiscard]]
