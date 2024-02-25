@@ -22,7 +22,7 @@ export namespace iconer::app
 			mySize = 0;
 			return myBlob.release();
 		}
-		
+
 		constexpr void Destroy() noexcept
 		{
 			myBlob.reset();
@@ -52,11 +52,18 @@ export namespace iconer::app
 		{
 			return std::move(mySize);
 		}
-		
+
 		[[nodiscard]]
 		constexpr ptrdiff_t GetSignedSize() const noexcept
 		{
 			return static_cast<ptrdiff_t>(mySize);
+		}
+
+	protected:
+		explicit constexpr BlobSendContext() noexcept
+			: Super(AsyncOperations::OpSend)
+			, myBlob(), mySize(0)
+		{
 		}
 
 		std::unique_ptr<std::byte[]> myBlob;
