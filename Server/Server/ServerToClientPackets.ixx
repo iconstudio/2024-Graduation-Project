@@ -1,3 +1,6 @@
+module;
+#include <vector>
+
 export module Iconer.Application.Packet:ServerToClientPackets;
 import Iconer.Utility.Serializer;
 export import Iconer.Application.BasicPacket;
@@ -5,7 +8,6 @@ export import Iconer.Application.RoomContract;
 import <cstddef>;
 import <utility>;
 import <memory>;
-import <vector>;
 import <algorithm>;
 
 export namespace iconer::app::packets::datagrams
