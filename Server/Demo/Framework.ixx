@@ -177,6 +177,9 @@ export namespace demo
 		/// <summary>On Awake()</summary>
 		[[nodiscard]]
 		bool InitializeRooms();
+		/// <summary>On Awake()</summary>
+		[[nodiscard]]
+		bool CacheSendContexts();
 		/// <summary>On Start()</summary>
 		[[nodiscard]]
 		bool StartAccepts();
