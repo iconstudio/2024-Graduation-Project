@@ -9,7 +9,7 @@ void
 iconer::app::Room::Awake()
 noexcept
 {
-	preRespondMembersPacket = std::make_unique<std::byte[]>(packets::SC_RespondMembersPacket::MaxSize());
+	preRespondMembersPacket = std::make_unique_for_overwrite<std::byte[]>(packets::SC_RespondMembersPacket::MaxSize());
 }
 
 std::span<std::byte>
