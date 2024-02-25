@@ -3,6 +3,7 @@ module;
 
 module Demo.Framework;
 import Iconer.Application.User;
+import Iconer.Application.BasicPacket;
 import Iconer.Application.Packet;
 import Iconer.Application.Resources.String;
 import Demo.Framework.PacketProcessor;
