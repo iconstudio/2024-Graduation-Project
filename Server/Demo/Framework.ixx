@@ -4,6 +4,7 @@ module;
 #include <thread>
 #include <stop_token>
 #include <latch>
+#include <concurrent_queue.h>
 
 export module Demo.Framework;
 import Iconer.Utility.Logger;
@@ -232,6 +233,8 @@ export namespace demo
 		iconer::net::Socket serverListener;
 		iconer::net::Socket gameListener;
 		iconer::net::IoCompletionPort ioCompletionPort;
+
+		concurrency::concurrent_queue<iconer::app::IContext*> sendContextPool;
 	};
 
 	void Worker(Framework& framework, size_t nth);
