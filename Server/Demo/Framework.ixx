@@ -19,9 +19,9 @@ import Iconer.Application.IContext;
 import Iconer.Application.User;
 import Iconer.Application.Room;
 import Iconer.Application.ISessionManager;
-import Iconer.Application.IContext;
 import Iconer.Application.RoomContract;
-export import <memory>;
+import Iconer.Application.BorrowedSendContext;
+export  import <memory>;
 export import <expected>;
 import <span>;
 import <string>;
@@ -234,7 +234,7 @@ export namespace demo
 		iconer::net::Socket gameListener;
 		iconer::net::IoCompletionPort ioCompletionPort;
 
-		concurrency::concurrent_queue<iconer::app::IContext*> sendContextPool;
+		concurrency::concurrent_queue<iconer::app::BorrowedSendContext*> sendContextPool;
 	};
 
 	void Worker(Framework& framework, size_t nth);
