@@ -3,6 +3,7 @@
 
 module TestClient;
 import Iconer.Application.BasicPacket;
+import Iconer.Application.Packet;
 import <print>;
 
 namespace test
@@ -128,39 +129,84 @@ test::Receiver()
 						}
 						break;
 
+						case iconer::app::PacketProtocol::SC_RESPOND_USERS:
+						{
+							iconer::app::packets::SC_RespondMembersPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							auto& members = pk.serializedMembers;
+							std::println("Members: {}", members.size());
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_FAILED_GAME_START:
+						{
+							iconer::app::packets::SC_FailedGameStartingPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::println("Failed to start game due to {}", pk.errCause);
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+						
+						case iconer::app::PacketProtocol::SC_GAME_GETTING_READY:
+						{
+							iconer::app::packets::SC_ReadyForGamePacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::println("Now start loading game...");
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+						
+						case iconer::app::PacketProtocol::SC_GAME_START:
+						{
+							iconer::app::packets::SC_GameStartPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::println("Now start game...");
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
 						case iconer::app::PacketProtocol::SC_CREATE_PLAYER:
 						{
-							//iconer::app::packets::SC_CreatePlayerPacket pk{};
-							//auto offset = pk.Read(recv_space);
+							iconer::app::packets::SC_CreatePlayerPacket pk{};
+							auto offset = pk.Read(recv_space);
 
 							//std::println("A player {} is created",  pk.clientId);
 							//everyClients.emplace(std::make_pair(pk.clientId, FSagaPlayer{}));
 
-							//PullReceiveBuffer(offset);
+							PullReceiveBuffer(offset);
 						}
 						break;
 
 						case iconer::app::PacketProtocol::SC_REMOVE_PLAYER:
 						{
-							//iconer::app::packets::SC_DestroyPlayerPacket pk{};
-							//auto offset = pk.Read(recv_space);
+							iconer::app::packets::SC_DestroyPlayerPacket pk{};
+							auto offset = pk.Read(recv_space);
 
 							//std::println("A player {} is destroyed(disconnected)", pk.clientId);
 							//std::println("A player is destroyed(disconnected)");
 
-							//PullReceiveBuffer(offset);
+							PullReceiveBuffer(offset);
 						}
 						break;
 
 						case iconer::app::PacketProtocol::SC_MOVE_CHARACTER:
 						{
-							//iconer::app::packets::SC_UpdatePositionPacket pk{ 0, 0, 0, 0 };
-							//auto offset = pk.Read(recv_space);
+							iconer::app::packets::SC_UpdatePositionPacket pk{ 0, 0, 0, 0 };
+							auto offset = pk.Read(recv_space);
 
 							//std::println("Player id {}: pos({},{},{})", pk.clientId, pk.x, pk.y, pk.z);
 							//std::println("Player id pos");
 
-							//PullReceiveBuffer(offset);
+							PullReceiveBuffer(offset);
 						}
 						break;
 
