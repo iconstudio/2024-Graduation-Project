@@ -129,6 +129,14 @@ demo::Framework::InitializeRooms()
 }
 
 bool
+demo::Framework::CacheSendContexts()
+{
+	auto alloc = sendContextPool.get_allocator();
+
+	return false;
+}
+
+bool
 demo::Framework::StartAccepts()
 {
 	for (auto& [id, user] : *userManager)
