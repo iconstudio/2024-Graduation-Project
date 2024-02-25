@@ -32,13 +32,31 @@ export namespace iconer::net
 		using ActionTask = iconer::coroutine::Task<ActionResult>;
 		using IoTask = iconer::coroutine::Task<AsyncResult>;
 
+		// Static members
+
+		static inline constexpr std::uintptr_t InvalidId = static_cast<std::uintptr_t>(-1);
+
 		// Constructors, Destructors, Assignees
 
 		explicit Socket() noexcept;
 		~Socket() noexcept = default;
 
-		constexpr Socket(Socket&&) noexcept = default;
-		constexpr Socket& operator=(Socket&&) noexcept = default;
+		constexpr Socket(Socket&& other) noexcept
+			: Super(std::exchange(other.GetHandle(), InvalidId))
+			, myProtocol(std::exchange(other.myProtocol, {}))
+			, myFamily(std::exchange(other.myFamily, {}))
+			, IsAddressReusable(std::move(other.IsAddressReusable))
+		{
+		}
+
+		constexpr Socket& operator=(Socket&& other) noexcept
+		{
+			Super::operator=(std::exchange(other.GetHandle(), InvalidId));
+			myProtocol = std::exchange(other.myProtocol, {});
+			myFamily = std::exchange(other.myFamily, {});
+			IsAddressReusable = std::move(other.IsAddressReusable);
+			return *this;
+		}
 
 		// Opt-in Interfaces
 
