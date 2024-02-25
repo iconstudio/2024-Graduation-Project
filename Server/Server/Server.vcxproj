@@ -136,7 +136,6 @@
       <UseFullPaths>false</UseFullPaths>
       <StringPooling>true</StringPooling>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
-      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -168,7 +167,6 @@
       <UseFullPaths>false</UseFullPaths>
       <StringPooling>true</StringPooling>
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
-      <GenerateXMLDocumentationFiles>true</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
