@@ -15,8 +15,10 @@ export namespace iconer::app::packets::datagrams
 #pragma pack(push, 1)
 	struct SerializedMember
 	{
+		static inline constexpr size_t nameLength = 16;
+
 		std::int32_t id;
-		wchar_t nickname[16];
+		wchar_t nickname[nameLength];
 	};
 #pragma pack(pop)
 }
@@ -182,6 +184,7 @@ export namespace iconer::app::packets::inline sc
 			}
 
 			serializedMembers.emplace_back(std::move(member));
+			mySize = static_cast<std::int16_t>(WannabeSize());
 		}
 
 		[[nodiscard]]
@@ -194,7 +197,7 @@ export namespace iconer::app::packets::inline sc
 			for (auto& member : serializedMembers)
 			{
 				seek = iconer::util::Serialize(seek, member.id);
-				seek = iconer::util::Serialize(seek, member.nickname);
+				seek = iconer::util::Serialize(seek, std::wstring_view{ member.nickname, member.nameLength });
 			}
 
 			return std::move(buffer);
@@ -207,7 +210,7 @@ export namespace iconer::app::packets::inline sc
 			for (auto& member : serializedMembers)
 			{
 				seek = iconer::util::Serialize(seek, member.id);
-				seek = iconer::util::Serialize(seek, member.nickname);
+				seek = iconer::util::Serialize(seek, std::wstring_view{ member.nickname, member.nameLength });
 			}
 
 			return seek;
@@ -228,7 +231,7 @@ export namespace iconer::app::packets::inline sc
 				for (auto& member : serializedMembers)
 				{
 					seek = iconer::util::Deserialize(seek, member.id);
-					seek = iconer::util::Deserialize(seek, sizeof(member.nickname), member.nickname);
+					seek = iconer::util::Deserialize(seek, member.nameLength, member.nickname);
 				}
 			}
 
