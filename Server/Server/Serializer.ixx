@@ -495,19 +495,26 @@ namespace iconer::util::detail
 	template<typename Arg>
 	constexpr size_t GetItemByteSize(Arg&& arg) noexcept
 	{
-		return sizeof(Arg);
-	}
-
-	template<typename Char, typename Traits>
-	constexpr size_t GetItemByteSize(const std::basic_string<Char, Traits>& str) noexcept
-	{
-		return str.length() * sizeof(Char);
-	}
-	
-	template<typename Char, typename Traits>
-	constexpr size_t GetItemByteSize(const std::basic_string_view<Char, Traits>& str) noexcept
-	{
-		return str.length() * sizeof(Char);
+		if constexpr (std::is_same_v<clean_t<Arg>, std::string>)
+		{
+			return arg.length();
+		}
+		else if constexpr (std::is_same_v<clean_t<Arg>, std::wstring>)
+		{
+			return arg.length() * sizeof(wchar_t);
+		}
+		if constexpr (std::is_same_v<clean_t<Arg>, std::string_view>)
+		{
+			return arg.length();
+		}
+		else if constexpr (std::is_same_v<clean_t<Arg>, std::wstring_view>)
+		{
+			return arg.length() * sizeof(wchar_t);
+		}
+		else
+		{
+			return sizeof(Arg);
+		}
 	}
 
 	template<typename Tuple, size_t... Indices>
