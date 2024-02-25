@@ -34,6 +34,7 @@ export namespace iconer::app
 
 		CS_CHAT,
 		CS_RPC,
+		CS_GAME_LOADED,
 
 		SC_SIGNIN_SUCCESS = 120,
 		SC_SIGNIN_FAILURE,
@@ -75,7 +76,6 @@ export namespace iconer::app
 		SC_CHAT = std::numeric_limits<std::uint8_t>::max(),
 		SC_RPC,
 		SC_REMOVE_PLAYER,
-		CS_GAME_LOADED,
 		SC_GAME_GETTING_READY,
 	};
 }
