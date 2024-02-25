@@ -30,6 +30,7 @@ iconer::app::Room::SerializeMembers()
 		}
 
 		pk.Write(preRespondMembersPacket.get());
+		isMemberUpdated = false;
 
 		return std::span<std::byte>{ preRespondMembersPacket.get(), pk.WannabeSize() };
 	}
