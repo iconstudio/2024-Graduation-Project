@@ -383,11 +383,13 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 			delete sjr.second;
 		}
 
+		iconer::app::IContext* ctx = new iconer::app::IContext{ iconer::app::AsyncOperations::OpSendBorrowed };
+
 		std::span<std::byte> members = room.SerializeMembers();
-		//auto smr = user.SendGeneralData(members, members.size());
-		//if (not smr.first)
+		auto smr = user.SendGeneralData(ctx, members.data(), members.size());
+		if (not smr)
 		{
-		//	delete smr.second;
+			delete ctx;
 		}
 
 		return iconer::app::RoomContract::Success;
