@@ -219,6 +219,7 @@ demo::PacketProcessor(demo::Framework& framework
 				// Empty packet
 				if (user.myRoomId == -1)
 				{
+					break;
 				}
 				else
 				{
@@ -230,6 +231,52 @@ demo::PacketProcessor(demo::Framework& framework
 			case iconer::app::PacketProtocol::CS_GAME_START:
 			{
 				// Empty packet
+				if (user.myRoomId == -1)
+				{
+					// cannot start a game: The client is not in a room
+					SEND(user, SendCannotStartGamePacket, 0);
+				}
+				else if (auto room = framework.FindRoom(user.myRoomId); nullptr != room)
+				{
+					if (not user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
+					{
+						// cannot start a game: The client is busy
+						SEND(user, SendCannotStartGamePacket, 2);
+					}
+					else if (not room->CanStartGame())
+					{
+						// cannot start a game: The room is lack of members
+						SEND(user, SendCannotStartGamePacket, 3);
+					}
+					else
+					{
+						user.roomContext.SetOperation(iconer::app::AsyncOperations::OpCreateGame);
+
+						// make clients getting ready for game
+						if (not framework.Schedule(user.roomContext, user_id))
+						{
+							// rollback
+							user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+							user.roomContext.SetOperation(iconer::app::AsyncOperations::None);
+
+							// cannot start a game:server error
+							SEND(user, SendCannotStartGamePacket, 1000);
+						}
+					}
+				}
+				else
+				{
+					// cannot start a game: The client has a invalid room
+					SEND(user, SendCannotStartGamePacket, 1);
+				}
+			}
+			break;
+
+			case iconer::app::PacketProtocol::CS_GAME_LOADED:
+			{
+				// Empty packet
+
+				// now start game
 			}
 			break;
 
