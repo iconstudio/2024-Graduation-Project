@@ -10,6 +10,8 @@ export namespace iconer::app
 	public:
 		using Super = BlobSendContext;
 
+		explicit constexpr BorrowedSendContext() noexcept = default;
+
 		explicit constexpr BorrowedSendContext(std::unique_ptr<std::byte[]>&& buffer, const size_t& size) noexcept
 			: Super(std::move(buffer), size)
 		{
