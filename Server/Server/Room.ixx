@@ -2,6 +2,7 @@ module;
 #include <utility>
 #include <atomic>
 #include <array>
+#include <vector>
 #include <mutex>
 
 export module Iconer.Application.Room;
@@ -32,6 +33,7 @@ export namespace iconer::app
 
 		using Super = ISession<RoomStates>;
 		using Super::IdType;
+		using MemberStorageType = std::array<iconer::app::User*, maxUsersNumberInRoom>;
 
 		explicit constexpr Room(const IdType& id)
 			noexcept(nothrow_constructible<Super, const IdType&>)
@@ -191,6 +193,14 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
+		auto AcquireMemberList() const
+		{
+			std::unique_lock lock{ myLock };
+
+			return std::vector<User*>{ std::from_range, myMembers };
+		}
+
+		[[nodiscard]]
 		bool CanStartGame() const noexcept
 		{
 			std::unique_lock lock{ myLock };
@@ -236,7 +246,7 @@ export namespace iconer::app
 
 	private:
 		mutable iconer::util::SharedMutex myLock;
-		std::array<iconer::app::User*, maxUsersNumberInRoom> myMembers;
+		MemberStorageType myMembers;
 		std::atomic_size_t membersCount;
 	};
 }
