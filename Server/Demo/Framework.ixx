@@ -60,6 +60,8 @@ export namespace demo
 		static inline constexpr size_t maxUsersNumber = 20;
 		static inline constexpr size_t maxUsersInRoomNumber = 6;
 		static inline constexpr size_t maxRoomsNumber = maxUsersNumber;
+		static inline constexpr size_t initSendContextsNumber = 100000;
+		static inline constexpr size_t maxSendContextsNumber = 200000;
 		static inline constexpr IdType lobbyServerID = 0;
 		static inline constexpr IdType gameServerID = 1;
 		static inline constexpr IdType beginUserID = 2;
