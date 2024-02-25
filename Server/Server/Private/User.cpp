@@ -18,6 +18,15 @@ iconer::app::User::Awake()
 	signin_pk.Write(preSignInPacket.get());
 }
 
+std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+iconer::app::User::SendGeneralData(std::unique_ptr<std::byte[]> buffer, size_t size)
+const noexcept
+{
+	iconer::app::BlobSendContext* ctx = new BlobSendContext{ std::move(buffer), size };
+
+	return { mySocket.Send(*ctx, ctx->GetBlob().get(), size), ctx };
+}
+
 iconer::app::User::IoResult
 iconer::app::User::SendSignInPacket()
 {
