@@ -77,5 +77,6 @@ export namespace iconer::app
 		SC_RPC,
 		SC_REMOVE_PLAYER,
 		SC_GAME_GETTING_READY,
+		SC_FAILED_GAME_START,
 	};
 }
