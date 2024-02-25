@@ -259,7 +259,7 @@ demo::PacketProcessor(demo::Framework& framework
 							user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
 							user.roomContext.SetOperation(iconer::app::AsyncOperations::None);
 
-							// cannot start a game:server error
+							// cannot start a game: server error
 							SEND(user, SendCannotStartGamePacket, 1000);
 						}
 					}
