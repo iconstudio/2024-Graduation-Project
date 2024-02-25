@@ -73,7 +73,7 @@ export namespace iconer::app
 		SC_PLAY_MUSIC,
 		SC_ANIMATION_START,
 
-		SC_CHAT = std::numeric_limits<std::uint8_t>::max(),
+		SC_CHAT,
 		SC_RPC,
 		SC_REMOVE_PLAYER,
 		SC_GAME_GETTING_READY,
