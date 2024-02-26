@@ -95,7 +95,6 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <BuildStlModules>true</BuildStlModules>
       <StringPooling>true</StringPooling>
-      <TranslateIncludes>true</TranslateIncludes>
       <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -116,7 +115,6 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <BuildStlModules>true</BuildStlModules>
       <StringPooling>true</StringPooling>
-      <TranslateIncludes>true</TranslateIncludes>
       <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -138,7 +136,6 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <StringPooling>true</StringPooling>
       <BuildStlModules>true</BuildStlModules>
-      <TranslateIncludes>true</TranslateIncludes>
       <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -160,7 +157,6 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <StringPooling>true</StringPooling>
       <BuildStlModules>true</BuildStlModules>
-      <TranslateIncludes>true</TranslateIncludes>
       <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>

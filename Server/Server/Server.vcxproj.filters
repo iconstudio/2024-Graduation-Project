@@ -339,6 +339,9 @@
     <ClCompile Include="BehaviourTreeHelper.hpp">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="GameContract.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\Server.natvis" />
