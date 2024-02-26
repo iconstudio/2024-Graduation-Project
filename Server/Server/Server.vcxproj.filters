@@ -318,9 +318,6 @@
     <ClCompile Include="MovableAtomicNonTrivial.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="ISession.ixx">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SharedMutex.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
@@ -332,6 +329,9 @@
     </ClCompile>
     <ClCompile Include="Private\Room.cpp">
       <Filter>Application\Implementain</Filter>
+    </ClCompile>
+    <ClCompile Include="ISession.ixx">
+      <Filter>Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
