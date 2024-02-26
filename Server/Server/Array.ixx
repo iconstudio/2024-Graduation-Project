@@ -1,24 +1,44 @@
+module;
+#include <stdexcept>
+#include <memory>
+#include <algorithm>
+
 export module Iconer.Collection.Array;
 import Iconer.Utility.Constraints;
-import <stdexcept>;
-import <initializer_list>;
-import <array>;
-import <algorithm>;
-import <ranges>;
+export import <initializer_list>;
+
+namespace iconer::collection
+{
+	struct uninitialize_tag_t { explicit uninitialize_tag_t() noexcept = default; };
+	inline constexpr uninitialize_tag_t uninitialize_tag{};
+}
 
 export namespace iconer::collection
 {
-	template<typename T, size_t Size>
+	template<typename T, size_t Size, typename Alloc = std::allocator<T>>
 	class Array
 	{
 	public:
-		using value_type = T;
-		using size_type = size_t;
-		using difference_type = ptrdiff_t;
-		using pointer = T*;
-		using const_pointer = const T*;
-		using reference = T&;
-		using const_reference = const T&;
+		static_assert(not std::is_reference_v<T>);
+
+		using self_type = Array<T, Size, Alloc>;
+		using allocator_type = Alloc;
+		using allocator_trait = std::allocator_traits<allocator_type>;
+
+		using value_type = allocator_trait::value_type;
+		using size_type = allocator_trait::size_type;
+		using difference_type = allocator_trait::difference_type;
+		using pointer = allocator_trait::pointer;
+		using const_pointer = allocator_trait::const_pointer;
+		using reference = add_lvalue_reference_t<value_type>;
+		using const_reference = add_lvalue_reference_t<add_const_t<value_type>>;
+		using volatile_reference = add_lvalue_reference_t<add_volatile_t<value_type>>;
+		using const_volatile_reference = add_lvalue_reference_t<add_volatile_t<add_const_t<value_type>>>;
+		using rvalue_type = add_rvalue_reference_t<value_type>;
+		using const_rvalue_type = add_rvalue_reference_t<add_const_t<value_type>>;
+		using volatile_rvalue = add_rvalue_reference_t<add_volatile_t<value_type>>;
+		using const_volatile_rvalue = add_rvalue_reference_t<add_volatile_t<add_const_t<value_type>>>;
+
 		using iterator = T*;
 		using const_iterator = const T*;
 		using volatile_iterator = volatile T*;
@@ -26,42 +46,305 @@ export namespace iconer::collection
 		using reverse_iterator = std::reverse_iterator<iterator>;
 		using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
-		explicit constexpr Array() noexcept = default;
-		constexpr ~Array() noexcept = default;
-
-		constexpr Array(std::initializer_list<value_type> list)
-			: myData()
+	private:
+		constexpr Array(uninitialize_tag_t)
+			: myData(nullptr), myAllocator()
 		{
-			std::ranges::move(list, std::ranges::begin(myData));
+			myData = myAllocator.allocate(max_size());
 		}
 
-		explicit constexpr Array(const std::array<value_type, Size>& array)
-			noexcept(nothrow_copy_constructibles<value_type>)
-			: myData()
+		constexpr Array(uninitialize_tag_t, const allocator_type& allocator)
+			: myData(nullptr), myAllocator(allocator)
 		{
-			std::ranges::copy(array, std::ranges::begin(myData));
+			myData = myAllocator.allocate(max_size());
 		}
 
-		explicit constexpr Array(std::array<value_type, Size>&& array)
-			noexcept(nothrow_move_constructibles<value_type>)
-			: myData()
+	public:
+		constexpr Array()
+			: myData(nullptr), myAllocator()
 		{
-			std::ranges::move(std::move(array), std::ranges::begin(myData));
+			myData = myAllocator.allocate(max_size());
+
+			if constexpr (std::is_pointer_v<value_type>)
+			{
+				for (auto it = begin(); it != end(); ++it)
+				{
+					it = nullptr;
+				}
+			}
+			else
+			{
+				for (auto it = begin(); it != end(); ++it)
+				{
+					std::uninitialized_construct_using_allocator(it, myAllocator);
+				}
+			}
+		}
+
+		constexpr Array(const allocator_type& allocator)
+			: myData(nullptr), myAllocator(allocator)
+		{
+			myData = myAllocator.allocate(max_size());
+
+			if constexpr (std::is_pointer_v<value_type>)
+			{
+				for (auto it = begin(); it != end(); ++it)
+				{
+					it = nullptr;
+				}
+			}
+			else
+			{
+				for (auto it = begin(); it != end(); ++it)
+				{
+					std::uninitialized_construct_using_allocator(it, myAllocator);
+				}
+			}
+		}
+
+		constexpr ~Array()
+		{
+			for (auto it = begin(); it != end(); ++it)
+			{
+				std::destroy_at(it);
+			}
+
+			myAllocator.deallocate(myData, Size);
+		}
+
+		explicit constexpr Array(std::initializer_list<value_type> list) requires copyable<value_type>
+			: Array(uninitialize_tag)
+		{
+			for (auto it = begin(); const value_type & item : list)
+			{
+				if (it == end()) break;
+
+				std::uninitialized_construct_using_allocator(it, myAllocator, item);
+				(void)++it;
+			}
+		}
+
+		template<typename U, size_t L>
+		explicit constexpr Array(const U(&array)[L]) requires copyable<value_type> and copyable<U>
+			: Array(uninitialize_tag)
+		{
+			for (auto it = begin(); const U & item : array)
+			{
+				if (it == end()) break;
+
+				std::uninitialized_construct_using_allocator(it, myAllocator, item);
+				(void)++it;
+			}
+		}
+
+		template<typename U, size_t L>
+		explicit constexpr Array(U(&& array)[L]) requires movable<value_type> and movable<U>
+			: Array(uninitialize_tag)
+		{
+			for (auto it = begin(); U & item : array)
+			{
+				if (it == end()) break;
+
+				std::uninitialized_construct_using_allocator(it, myAllocator, std::move(item));
+				(void)++it;
+			}
 		}
 
 		template<std::ranges::range R>
-		constexpr Array(R&& range)
-			: myData()
+		explicit constexpr Array(std::from_range_t, R&& range)
+			: Array(uninitialize_tag)
 		{
-			auto it = begin();
-			for (auto&& item : std::forward<R>(range))
+			for (auto it = begin(); auto&& item : std::forward<R>(range))
 			{
-				*(it++) = std::forward<std::ranges::range_value_t<R>>(item);
+				if (it == end()) break;
+
+				std::uninitialized_construct_using_allocator(it, myAllocator, std::forward<std::ranges::range_value_t<R>>(item));
+				(void)++it;
+			}
+		}
+
+		template<std::input_iterator It, std::sentinel_for<It> Sentinel>
+		explicit constexpr Array(It it, const Sentinel sentinel)
+			: Array(uninitialize_tag)
+		{
+			auto mit = begin();
+			for (; it != sentinel; ++it)
+			{
+				if (mit == end()) break;
+
+				std::uninitialized_construct_using_allocator(it, myAllocator, std::move(*it));
+				(void)++it;
+			}
+		}
+
+		constexpr Array(const Array& other, allocator_type allocator = {}) requires copy_constructibles<value_type>
+			: Array(uninitialize_tag, allocator)
+		{
+			auto mit = begin();
+			for (auto it = other.cbegin(); it != other.cend(); ++it)
+			{
+				if (mit == end()) break;
+
+				std::uninitialized_construct_using_allocator(it, myAllocator, std::as_const(*it));
+				(void)++it;
+			}
+		}
+
+		constexpr Array(const volatile Array& other, allocator_type allocator = {}) requires copy_constructibles<value_type>
+			: Array(uninitialize_tag, allocator)
+		{
+			auto mit = begin();
+			for (auto it = other.cbegin(); it != other.cend(); ++it)
+			{
+				if (mit == end()) break;
+
+				std::uninitialized_construct_using_allocator(it, myAllocator, std::as_const(*it));
+				(void)++it;
+			}
+		}
+
+		constexpr Array& operator=(const Array& other)
+			requires copy_assignables<value_type>
+		{
+			auto mit = begin();
+			for (auto it = other.cbegin(); it != other.cend(); ++it)
+			{
+				if (mit == end()) break;
+				*mit = *it;
+
+				(void)++it;
+			}
+
+			return *this;
+		}
+
+		constexpr Array& operator=(const volatile Array& other)
+			requires copy_assignables<value_type>
+		{
+			auto mit = begin();
+			for (auto it = other.cbegin(); it != other.cend(); ++it)
+			{
+				if (mit == end()) break;
+				*mit++ = *it;
+
+				(void)++it;
+			}
+
+			return *this;
+		}
+
+		constexpr volatile Array& operator=(const Array& other)
+			volatile requires copy_assignables<value_type>
+		{
+			auto mit = begin();
+			for (auto it = other.cbegin(); it != other.cend(); ++it)
+			{
+				if (mit == end()) break;
+				*mit++ = *it;
+
+				(void)++it;
+			}
+
+			return *this;
+		}
+
+		constexpr volatile Array& operator=(const volatile Array& other)
+			volatile requires copy_assignables<value_type>
+		{
+			auto mit = begin();
+			for (auto it = other.cbegin(); it != other.cend(); ++it)
+			{
+				if (mit == end()) break;
+				*mit++ = *it;
+
+				(void)++it;
+			}
+
+			return *this;
+		}
+
+		constexpr Array(Array&& other, allocator_type allocator = {}) noexcept
+			: myData(std::exchange(other.myData, nullptr))
+			, myAllocator(allocator)
+		{
+		}
+
+		constexpr Array(volatile Array&& other, allocator_type allocator = {}) noexcept
+			: myData(std::exchange(other.myData, nullptr))
+			, myAllocator(allocator)
+		{
+		}
+
+		constexpr Array& operator=(Array&& other) noexcept
+		{
+			myData = std::exchange(other.myData, nullptr);
+
+			return *this;
+		}
+
+		constexpr Array& operator=(volatile Array&& other) noexcept
+		{
+			myData = std::exchange(other.myData, nullptr);
+
+			return *this;
+		}
+
+		constexpr volatile Array& operator=(Array&& other) volatile noexcept
+		{
+			myData = std::exchange(other.myData, nullptr);
+
+			return *this;
+		}
+
+		constexpr volatile Array& operator=(volatile Array&& other) volatile noexcept
+		{
+			myData = std::exchange(other.myData, nullptr);
+
+			return *this;
+		}
+
+		template<invocables<reference> Predicate>
+		constexpr void ForEach(Predicate&& pred)
+			noexcept(nothrow_invocables<Predicate, reference>)
+		{
+			for (auto it = begin(); it != end(); ++it)
+			{
+				std::invoke(std::forward<Predicate>(pred), *it);
+			}
+		}
+
+		template<invocables<reference> Predicate>
+		constexpr void ForEach(Predicate&& pred)
+			const noexcept(nothrow_invocables<Predicate, const_reference>)
+		{
+			for (auto it = begin(); it != end(); ++it)
+			{
+				std::invoke(std::forward<Predicate>(pred), *it);
+			}
+		}
+
+		template<invocables<reference> Predicate>
+		constexpr void ForEach(Predicate&& pred)
+			volatile noexcept(nothrow_invocables<Predicate, volatile_reference>)
+		{
+			for (auto it = begin(); it != end(); ++it)
+			{
+				std::invoke(std::forward<Predicate>(pred), *it);
+			}
+		}
+
+		template<invocables<reference> Predicate>
+		constexpr void ForEach(Predicate&& pred)
+			const volatile noexcept(nothrow_invocables<Predicate, const_volatile_reference>)
+		{
+			for (auto it = begin(); it != end(); ++it)
+			{
+				std::invoke(std::forward<Predicate>(pred), *it);
 			}
 		}
 
 		[[nodiscard]]
-		constexpr reference At(size_type index)
+		constexpr reference At(size_type index)&
 		{
 			if (Size <= index)
 			{
@@ -72,7 +355,7 @@ export namespace iconer::collection
 		}
 
 		[[nodiscard]]
-		constexpr const_reference At(size_type index) const
+		constexpr const_reference At(size_type index) const&
 		{
 			if (Size <= index)
 			{
@@ -83,7 +366,7 @@ export namespace iconer::collection
 		}
 
 		[[nodiscard]]
-		constexpr reference operator[](size_type index)
+		constexpr volatile_reference At(size_type index) volatile&
 		{
 			if (Size <= index)
 			{
@@ -94,7 +377,7 @@ export namespace iconer::collection
 		}
 
 		[[nodiscard]]
-		constexpr const_reference operator[](size_type index) const
+		constexpr const_volatile_reference At(size_type index) const volatile&
 		{
 			if (Size <= index)
 			{
@@ -105,14 +388,144 @@ export namespace iconer::collection
 		}
 
 		[[nodiscard]]
-		constexpr value_type GetOr(size_type index, const value_type& alternative)
-			const noexcept(nothrow_copy_constructibles<value_type>)
+		constexpr rvalue_type At(size_type index)&&
 		{
-			static_assert(copy_constructible<value_type>);
-
 			if (Size <= index)
 			{
-				return alternative;
+				ThrowAccessError();
+			}
+
+			return std::move(myData[index]);
+		}
+
+		[[nodiscard]]
+		constexpr const_rvalue_type At(size_type index) const&&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return std::move(myData[index]);
+		}
+
+		[[nodiscard]]
+		constexpr volatile_rvalue At(size_type index) volatile&&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return std::move(myData[index]);
+		}
+
+		[[nodiscard]]
+		constexpr const_volatile_rvalue At(size_type index) const volatile&&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return std::move(myData[index]);
+		}
+
+		[[nodiscard]]
+		constexpr reference operator[](size_type index)&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return myData[index];
+		}
+
+		[[nodiscard]]
+		constexpr const_reference operator[](size_type index) const&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return myData[index];
+		}
+
+		[[nodiscard]]
+		constexpr volatile_reference operator[](size_type index) volatile&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return myData[index];
+		}
+
+		[[nodiscard]]
+		constexpr const_volatile_reference operator[](size_type index) const volatile&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return myData[index];
+		}
+
+		[[nodiscard]]
+		constexpr rvalue_type operator[](size_type index)&&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return std::move(myData[index]);
+		}
+
+		[[nodiscard]]
+		constexpr const_rvalue_type operator[](size_type index) const&&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return std::move(myData[index]);
+		}
+
+		[[nodiscard]]
+		constexpr volatile_rvalue operator[](size_type index) volatile&&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return std::move(myData[index]);
+		}
+
+		[[nodiscard]]
+		constexpr const_volatile_rvalue operator[](size_type index) const volatile&&
+		{
+			if (Size <= index)
+			{
+				ThrowAccessError();
+			}
+
+			return std::move(myData[index]);
+		}
+
+		template<typename U>
+		[[nodiscard]]
+		constexpr value_type GetOr(size_type index, U&& alternative) const
+		{
+			if (Size <= index)
+			{
+				return std::forward<U>(alternative);
 			}
 			else
 			{
@@ -120,15 +533,13 @@ export namespace iconer::collection
 			}
 		}
 
+		template<typename U>
 		[[nodiscard]]
-		constexpr value_type GetOr(size_type index, value_type&& alternative)
-			const noexcept(nothrow_copy_constructibles<value_type>)
+		constexpr value_type GetOr(size_type index, U&& alternative) const volatile
 		{
-			static_assert(copy_constructible<value_type>);
-
 			if (Size <= index)
 			{
-				return std::move(alternative);
+				return std::forward<U>(alternative);
 			}
 			else
 			{
@@ -233,23 +644,94 @@ export namespace iconer::collection
 		}
 
 		[[nodiscard]]
-		constexpr size_type GetSize() const noexcept
+		static consteval size_type max_size() noexcept
 		{
 			return Size;
 		}
 
 		[[nodiscard]]
-		constexpr size_type GetSize() const volatile noexcept
+		constexpr bool operator==(const Array& other) const noexcept
 		{
-			return Size;
+			if (std::addressof(other) == this) return true;
+			if (other.myData == myData) return true;
+
+			auto mit = cbegin();
+			for (auto it = other.cbegin(); it != other.cend(); (void)++it)
+			{
+				if (mit == cend()) break;
+				if (*mit != *it)
+				{
+					return false;
+				}
+
+				(void)++mit;
+			}
+
+			return true;
 		}
 
-		[[nodiscard]] constexpr bool operator==(const Array&) const noexcept = default;
+		[[nodiscard]]
+		constexpr bool operator==(const Array& other) const volatile noexcept
+		{
+			if (std::addressof(other) == this) return true;
+			if (other.myData == myData) return true;
 
-		constexpr Array(const Array&) noexcept(nothrow_copy_constructibles<T>) = default;
-		constexpr Array& operator=(const Array&) noexcept(nothrow_copy_assignables<T>) = default;
-		constexpr Array(Array&&) noexcept(nothrow_move_constructibles<T>) = default;
-		constexpr Array& operator=(Array&&) noexcept(nothrow_move_assignables<T>) = default;
+			auto mit = cbegin();
+			for (auto it = other.cbegin(); it != other.cend(); (void)++it)
+			{
+				if (mit == cend()) break;
+				if (*mit != *it)
+				{
+					return false;
+				}
+
+				(void)++mit;
+			}
+
+			return true;
+		}
+
+		[[nodiscard]]
+		constexpr bool operator==(const volatile Array& other) const noexcept
+		{
+			if (std::addressof(other) == this) return true;
+			if (other.myData == myData) return true;
+
+			auto mit = cbegin();
+			for (auto it = other.cbegin(); it != other.cend(); (void)++it)
+			{
+				if (mit == cend()) break;
+				if (*mit != *it)
+				{
+					return false;
+				}
+
+				(void)++mit;
+			}
+
+			return true;
+		}
+
+		[[nodiscard]]
+		constexpr bool operator==(const volatile Array& other) const volatile noexcept
+		{
+			if (std::addressof(other) == this) return true;
+			if (other.myData == myData) return true;
+
+			auto mit = cbegin();
+			for (auto it = other.cbegin(); it != other.cend(); (void)++it)
+			{
+				if (mit == cend()) break;
+				if (*mit != *it)
+				{
+					return false;
+				}
+
+				(void)++mit;
+			}
+
+			return true;
+		}
 
 	private:
 		[[noreturn]]
@@ -258,11 +740,23 @@ export namespace iconer::collection
 			throw std::out_of_range{ "Invalid Array<T, Size> subscript!" };
 		}
 
-		T myData[Size];
+		T* myData;
+		allocator_type myAllocator;
 	};
 
 	template<typename T, size_t Size>
-	Array(const std::array<T, Size>&) -> Array<T, Size>;
+	Array(T[Size]) -> Array<T, Size>;
 	template<typename T, size_t Size>
-	Array(std::array<T, Size>&&) -> Array<T, Size>;
+	Array(std::array<T, Size>) -> Array<T, Size>;
+}
+
+module :private;
+
+namespace iconer::collection::test
+{
+	constexpr void testments()
+	{
+		constexpr Array<int, 100> arr0{};
+
+	}
 }
