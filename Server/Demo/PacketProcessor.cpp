@@ -121,7 +121,7 @@ demo::OnJoinRoom(demo::Framework& framework, iconer::app::User& user, const std:
 void
 demo::OnLeaveRoom(demo::Framework& framework, iconer::app::User& user)
 {
-	if (user.myRoomId == -1)
+	if (user.myRoomId != -1)
 	{
 		SEND(user, SendRoomLeftPacket, user.GetID());
 	}
