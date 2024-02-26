@@ -98,7 +98,6 @@
       <StringPooling>true</StringPooling>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <BuildStlModules>true</BuildStlModules>
-      <TranslateIncludes>true</TranslateIncludes>
       <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -120,7 +119,6 @@
       <StringPooling>true</StringPooling>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <BuildStlModules>true</BuildStlModules>
-      <TranslateIncludes>true</TranslateIncludes>
       <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -142,7 +140,6 @@
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <StringPooling>true</StringPooling>
       <BuildStlModules>true</BuildStlModules>
-      <TranslateIncludes>true</TranslateIncludes>
       <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -164,7 +161,6 @@
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <StringPooling>true</StringPooling>
       <BuildStlModules>true</BuildStlModules>
-      <TranslateIncludes>true</TranslateIncludes>
       <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
