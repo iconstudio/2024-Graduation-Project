@@ -1,7 +1,9 @@
 module;
 #include <mutex>
 #include <shared_mutex>
+
 export module Iconer.Utility.Concurrency.SharedMutex;
+export import Iconer.Utility.Concurrency.Lock;
 
 export namespace iconer::util
 {
@@ -50,6 +52,8 @@ export namespace iconer::util
 		friend class std::unique_lock;
 		template<typename M>
 		friend class std::shared_lock;
+		template<lockable_object... Mtxes>
+		friend class ScopedLock;
 
 	private:
 		void lock() noexcept
