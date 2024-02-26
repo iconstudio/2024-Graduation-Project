@@ -96,6 +96,7 @@
       <BuildStlModules>true</BuildStlModules>
       <StringPooling>true</StringPooling>
       <TranslateIncludes>true</TranslateIncludes>
+      <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -116,6 +117,7 @@
       <BuildStlModules>true</BuildStlModules>
       <StringPooling>true</StringPooling>
       <TranslateIncludes>true</TranslateIncludes>
+      <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,6 +139,7 @@
       <StringPooling>true</StringPooling>
       <BuildStlModules>true</BuildStlModules>
       <TranslateIncludes>true</TranslateIncludes>
+      <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -158,6 +161,7 @@
       <StringPooling>true</StringPooling>
       <BuildStlModules>true</BuildStlModules>
       <TranslateIncludes>true</TranslateIncludes>
+      <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
