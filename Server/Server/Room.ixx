@@ -41,7 +41,7 @@ export namespace iconer::app
 			noexcept(nothrow_constructible<Super, const IdType&>)
 			: Super(id)
 			, myLock()
-			, myMembers(), membersCount(0)
+			, myMembers(), membersCount(), readyCount()
 			, preRespondMembersPacket()
 		{}
 
@@ -49,7 +49,7 @@ export namespace iconer::app
 			noexcept(nothrow_constructible<Super, IdType&&>)
 			: Super(std::move(id))
 			, myLock()
-			, myMembers(), membersCount(0)
+			, myMembers(), membersCount(0), readyCount()
 			, preRespondMembersPacket()
 		{}
 
@@ -261,6 +261,7 @@ export namespace iconer::app
 
 		MemberStorageType myMembers;
 		std::atomic_size_t membersCount;
+		std::atomic_size_t readyCount;
 		std::atomic_bool isMemberUpdated;
 
 		std::unique_ptr<std::byte[]> preRespondMembersPacket;
