@@ -12,6 +12,13 @@ if (not sr.first)\
 	delete sr.second;\
 }
 
+#define IGNORE_DISCARDED_BEGIN \
+__pragma (warning(push)) \
+__pragma (warning(disable : 4834)) \
+
+#define IGNORE_DISCARDED_END \
+__pragma (warning(pop))
+
 void
 demo::OnSignOut(iconer::app::User& user)
 {
@@ -59,6 +66,7 @@ demo::OnJoinRoom(demo::Framework& framework, iconer::app::User& user, const std:
 {
 	if (auto room = framework.FindRoom(room_id); nullptr != room)
 	{
+		IGNORE_DISCARDED_BEGIN;
 		if (user.TryChangeState(iconer::app::UserStates::Idle, iconer::app::UserStates::EnteringRoom))
 		{
 			iconer::util::Chronograph chronograph{};
@@ -110,6 +118,7 @@ demo::OnJoinRoom(demo::Framework& framework, iconer::app::User& user, const std:
 		{
 			SEND(user, SendRoomJoinFailedPacket, iconer::app::RoomContract::InvalidOperation);
 		}
+		IGNORE_DISCARDED_END;
 	}
 	else
 	{
@@ -137,6 +146,7 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 	}
 	else if (auto room = framework.FindRoom(user.myRoomId); nullptr != room)
 	{
+		IGNORE_DISCARDED_BEGIN;
 		if (not user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
 		{
 			// cannot start a game: The client is busy
@@ -162,6 +172,7 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 				SEND(user, SendCannotStartGamePacket, 1000);
 			}
 		}
+		IGNORE_DISCARDED_END;
 	}
 	else
 	{
