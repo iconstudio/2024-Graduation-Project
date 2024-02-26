@@ -8,6 +8,7 @@ module;
 export module Iconer.Application.Room;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.Concurrency.SharedMutex;
+import Iconer.Collection.Array;
 import Iconer.Application.ISession;
 import Iconer.Application.User;
 import <memory>;
@@ -35,7 +36,8 @@ export namespace iconer::app
 
 		using Super = ISession<RoomStates>;
 		using Super::IdType;
-		using MemberStorageType = std::array<iconer::app::User*, maxUsersNumberInRoom>;
+		//using MemberStorageType = std::array<iconer::app::User*, maxUsersNumberInRoom>;
+		using MemberStorageType = iconer::collection::Array<User*, maxUsersNumberInRoom>;
 
 		explicit constexpr Room(const IdType& id)
 			noexcept(nothrow_constructible<Super, const IdType&>)
@@ -139,6 +141,16 @@ export namespace iconer::app
 
 		size_t ReadyMember(iconer::app::User& user) volatile noexcept
 		{
+			std::unique_lock lock{ myLock };
+
+			for (auto& member : myMembers)
+			{
+				if (nullptr != member and user.GetID() == member->GetID())
+				{
+
+					break;
+				}
+			}
 		}
 
 		size_t RemoveMember(const IdType& id) noexcept
