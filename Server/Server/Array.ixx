@@ -756,7 +756,16 @@ namespace iconer::collection::test
 {
 	constexpr void testments()
 	{
-		constexpr Array<int, 100> arr0{};
+		Array<int, 100> arr0{};
+		arr0.At(0);
 
+		volatile Array<int, 100> arr1{};
+		arr1.At(0);
+
+		const Array<int, 100> arr2{};
+		arr2.At(0);
+
+		const volatile Array<int, 100> arr3{};
+		arr3.At(0);
 	}
 }
