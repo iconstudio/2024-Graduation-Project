@@ -137,6 +137,10 @@ export namespace iconer::app
 			return result;
 		}
 
+		size_t ReadyMember(iconer::app::User& user) volatile noexcept
+		{
+		}
+
 		size_t RemoveMember(const IdType& id) noexcept
 		{
 			std::unique_lock lock{ myLock };
@@ -222,7 +226,7 @@ export namespace iconer::app
 		[[nodiscard]]
 		bool HasMember(const IdType& id) const noexcept
 		{
-			std::unique_lock lock{ myLock };
+			std::shared_lock lock{ myLock };
 
 			for (auto& member : myMembers)
 			{
