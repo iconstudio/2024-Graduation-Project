@@ -110,6 +110,7 @@
       <BuildStlModules>true</BuildStlModules>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <TranslateIncludes>true</TranslateIncludes>
+      <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,6 +134,7 @@
       <BuildStlModules>true</BuildStlModules>
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <TranslateIncludes>true</TranslateIncludes>
+      <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,6 +159,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <BuildStlModules>true</BuildStlModules>
       <TranslateIncludes>true</TranslateIncludes>
+      <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -189,6 +192,7 @@
       <DiagnosticsFormat>Caret</DiagnosticsFormat>
       <BuildStlModules>true</BuildStlModules>
       <TranslateIncludes>true</TranslateIncludes>
+      <DisableSpecificWarnings>5057</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
