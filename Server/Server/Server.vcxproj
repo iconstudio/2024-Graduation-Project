@@ -272,6 +272,7 @@
     <ClCompile Include="IProperty.ixx" />
     <ClCompile Include="ISession.ixx" />
     <ClCompile Include="ISessionManager.ixx" />
+    <ClCompile Include="Lock.ixx" />
     <ClCompile Include="Logger.ixx" />
     <ClCompile Include="LooseMonad.ixx" />
     <ClCompile Include="Matrix2x2.ixx" />
