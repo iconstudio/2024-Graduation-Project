@@ -26,6 +26,11 @@ namespace test
 {
 	using IdType = int;
 
+	enum class Levels
+	{
+		None, Init, Logo, Title, MainMenu, Lobby, Room, Game, GameFinished,
+	};
+
 	iconer::net::Socket::IoResult SendSignInPacket();
 	iconer::net::Socket::IoResult SendCreateRoomPacket(std::wstring_view title);
 	iconer::net::Socket::IoResult SendJoinRoomPacket(IdType room_id);
@@ -42,6 +47,7 @@ namespace test
 
 	void Receiver();
 
+	Levels currentLevel = Levels::Init;
 	inline constexpr std::wstring_view my_name = L"iconer";
 	IdType my_id = -1;
 	IdType roomId = -1;

@@ -26,6 +26,22 @@ test::Update()
 				{
 					break;
 				}
+				else if (cmd == 'g') // send game start message (by room master)
+				{
+					// CS_GAME_START
+					if (auto sr = SendCreateRoomPacket(L"Test Room"); not sr.has_value())
+					{
+						return 4;
+					}
+				}
+				else if (cmd == 'r') // send game ready message (by everyone)
+				{
+					// CS_GAME_LOADED
+					if (auto sr = SendCreateRoomPacket(L"Test Room"); not sr.has_value())
+					{
+						return 4;
+					}
+				}
 				else if (cmd == 'c') // create a room
 				{
 					if (auto sr = SendCreateRoomPacket(L"Test Room"); not sr.has_value())
