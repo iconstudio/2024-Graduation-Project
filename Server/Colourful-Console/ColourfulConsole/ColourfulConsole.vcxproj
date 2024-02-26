@@ -92,6 +92,11 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <BuildStlModules>true</BuildStlModules>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -109,6 +114,11 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <BuildStlModules>true</BuildStlModules>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -130,6 +140,7 @@
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <StringPooling>true</StringPooling>
+      <BuildStlModules>true</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -157,6 +168,7 @@
       <UseStandardPreprocessor>true</UseStandardPreprocessor>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
       <StringPooling>true</StringPooling>
+      <BuildStlModules>true</BuildStlModules>
     </ClCompile>
     <Link>
       <SubSystem>

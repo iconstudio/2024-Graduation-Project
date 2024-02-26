@@ -336,16 +336,14 @@
     <ClCompile Include="Lock.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
+    <ClCompile Include="BehaviourTreeHelper.hpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\Server.natvis" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BehaviourTreeHelper.hpp">
-      <Filter>Utility</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
