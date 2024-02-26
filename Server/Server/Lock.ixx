@@ -41,7 +41,7 @@ export namespace iconer::util
 	{
 	public:
 		explicit ScopedLock(Mtxes&... mtxes) noexcept(nothrow_lockables<Mtxes...>)
-			: lockImplementations(std::tie(mtxes..).)
+			: lockImplementations(std::tie(mtxes...))
 		{
 			std::lock(mtxes...);
 		}
@@ -57,7 +57,7 @@ export namespace iconer::util
 		}
 
 		explicit ScopedLock(std::try_to_lock_t, Mtxes&... mtxes) noexcept(nothrow_lockables<Mtxes...>)
-			: lockImplementations(std::tie(mtxes..).)
+			: lockImplementations(std::tie(mtxes...))
 		{
 			std::try_lock(mtxes...);
 		}
