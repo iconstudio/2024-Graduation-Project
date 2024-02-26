@@ -1,7 +1,6 @@
 module;
 #include <stdexcept>
 #include <memory>
-#include <algorithm>
 
 export module Iconer.Collection.Array;
 import Iconer.Utility.Constraints;
