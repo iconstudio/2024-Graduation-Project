@@ -9,6 +9,8 @@ export namespace iconer::util
 	class BasicChronograph
 	{
 	public:
+		static_assert(std::chrono::is_clock_v<ChronoClock>, "Clock type required");
+
 		using clock_t = ChronoClock;
 		using rep = clock_t::rep;
 		using period = clock_t::period;
