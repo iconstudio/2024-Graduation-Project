@@ -45,7 +45,8 @@ export namespace iconer::app
 			, myLock()
 			, myMembers(), membersCount(), readyCount()
 			, preRespondMembersPacket()
-		{}
+		{
+		}
 
 		explicit constexpr Room(IdType&& id)
 			noexcept(nothrow_constructible<Super, IdType&&>)
@@ -53,7 +54,8 @@ export namespace iconer::app
 			, myLock()
 			, myMembers(), membersCount(0), readyCount()
 			, preRespondMembersPacket()
-		{}
+		{
+		}
 
 		void Awake() noexcept;
 
@@ -85,7 +87,7 @@ export namespace iconer::app
 		{
 			return TryChangeState(RoomStates::Creating, RoomStates::None);
 		}
-		
+
 		bool TryEstablish() volatile noexcept
 		{
 			return TryChangeState(RoomStates::Creating, RoomStates::Idle);
@@ -139,7 +141,7 @@ export namespace iconer::app
 			return result;
 		}
 
-		size_t ReadyMember(iconer::app::User& user) volatile noexcept
+		size_t ReadyMember(iconer::app::User& user) noexcept
 		{
 			std::unique_lock lock{ myLock };
 
@@ -158,8 +160,9 @@ export namespace iconer::app
 			std::unique_lock lock{ myLock };
 
 			size_t result = membersCount.load(std::memory_order_acquire);
-			for (auto& member : myMembers)
+			for (auto it = myMembers.begin(); it != myMembers.end(); ++it)
 			{
+				auto& member = *it;
 				if (nullptr != member and id == member->GetID())
 				{
 					member = nullptr;
