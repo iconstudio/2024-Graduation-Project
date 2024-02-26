@@ -1,6 +1,7 @@
 ﻿#pragma comment(lib, "Server.lib")
+#include <print>
+
 import Demo.Framework;
-import <print>;
 
 demo::Framework serverFramework{};
 

@@ -1,5 +1,6 @@
+module;
+#include <print>
 module TestClient;
-import <print>;
 
 int
 test::Awake()
