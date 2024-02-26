@@ -1,5 +1,7 @@
+module;
+#include <print>
+
 module TestClient;
-import <print>;
 import <thread>;
 
 int

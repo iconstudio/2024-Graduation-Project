@@ -1,10 +1,10 @@
 ﻿module;
 #pragma comment(lib, "Server.lib")
+#include <print>
 
 module TestClient;
 import Iconer.Application.BasicPacket;
 import Iconer.Application.Packet;
-import <print>;
 
 namespace test
 {
