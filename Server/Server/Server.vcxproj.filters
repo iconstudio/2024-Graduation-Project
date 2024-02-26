@@ -333,6 +333,9 @@
     <ClCompile Include="ISession.ixx">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="Lock.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BehaviourTreeHelper.hpp">
