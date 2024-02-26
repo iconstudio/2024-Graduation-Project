@@ -60,44 +60,20 @@ export namespace iconer::collection
 
 	public:
 		constexpr Array()
-			: myData(nullptr), myAllocator()
+			: Array(uninitialize_tag)
 		{
-			myData = myAllocator.allocate(max_size());
-
-			if constexpr (std::is_pointer_v<value_type>)
+			for (auto it = begin(); it != end(); ++it)
 			{
-				for (auto it = begin(); it != end(); ++it)
-				{
-					it = nullptr;
-				}
-			}
-			else
-			{
-				for (auto it = begin(); it != end(); ++it)
-				{
-					std::uninitialized_construct_using_allocator(it, myAllocator);
-				}
+				std::uninitialized_construct_using_allocator(it, myAllocator);
 			}
 		}
 
 		constexpr Array(const allocator_type& allocator)
-			: myData(nullptr), myAllocator(allocator)
+			: Array(uninitialize_tag)
 		{
-			myData = myAllocator.allocate(max_size());
-
-			if constexpr (std::is_pointer_v<value_type>)
+			for (auto it = begin(); it != end(); ++it)
 			{
-				for (auto it = begin(); it != end(); ++it)
-				{
-					it = nullptr;
-				}
-			}
-			else
-			{
-				for (auto it = begin(); it != end(); ++it)
-				{
-					std::uninitialized_construct_using_allocator(it, myAllocator);
-				}
+				std::uninitialized_construct_using_allocator(it, myAllocator);
 			}
 		}
 
