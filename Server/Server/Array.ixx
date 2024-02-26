@@ -6,7 +6,7 @@ export module Iconer.Collection.Array;
 import Iconer.Utility.Constraints;
 export import <initializer_list>;
 
-namespace iconer::collection
+namespace
 {
 	struct uninitialize_tag_t { explicit uninitialize_tag_t() noexcept = default; };
 	inline constexpr uninitialize_tag_t uninitialize_tag{};
