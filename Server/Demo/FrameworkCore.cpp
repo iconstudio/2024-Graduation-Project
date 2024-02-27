@@ -328,6 +328,31 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
+		// Phase 6
+		case iconer::app::AsyncOperations::OpNotifyMember:
+		{
+			const IdType user_id = static_cast<IdType>(io_id);
+			auto user = FindUser(user_id);
+
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUser {} has failed to send a member notifying packet\n", user_id);
+				OnFailedNotifyRoomMember(*user);
+			}
+			else if (not OnNotifyMemberOfRoom(*user))
+			{
+				myLogger.LogError(L"\tUser {} has failed to notify members in the room\n", user_id);
+				OnFailedNotifyRoomMember(*user);
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} has been notified members in the room\n", user_id);
+			}
+
+			ctx->Clear();
+		}
+		break;
+
 		case iconer::app::AsyncOperations::OpCreateGame:
 		{
 			const IdType user_id = static_cast<IdType>(io_id);
