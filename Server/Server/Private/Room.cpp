@@ -97,7 +97,7 @@ iconer::app::Room::RemoveMember(const IdType& id, const iconer::app::Room::Membe
 	{
 		for (iconer::app::User*& member : myMembers)
 		{
-			if (nullptr == member)
+			if (nullptr != member and id == member->GetID())
 			{
 				member = nullptr;
 
@@ -129,7 +129,7 @@ iconer::app::Room::RemoveMember(const IdType& id, iconer::app::Room::MemberRemov
 	{
 		for (iconer::app::User*& member : myMembers)
 		{
-			if (nullptr == member)
+			if (nullptr != member and id == member->GetID())
 			{
 				member = nullptr;
 
@@ -161,7 +161,7 @@ iconer::app::Room::RemoveMember(const IdType& id, LockerType& owned_lock) noexce
 	{
 		for (iconer::app::User*& member : myMembers)
 		{
-			if (nullptr == member)
+			if (nullptr != member and id == member->GetID())
 			{
 				member = nullptr;
 
@@ -192,7 +192,7 @@ iconer::app::Room::RemoveMember(const IdType& id, const MemberRemover& predicate
 	{
 		for (iconer::app::User*& member : myMembers)
 		{
-			if (nullptr == member)
+			if (nullptr != member and id == member->GetID())
 			{
 				member = nullptr;
 
@@ -225,7 +225,7 @@ iconer::app::Room::RemoveMember(const IdType& id, MemberRemover&& predicate, Loc
 	{
 		for (iconer::app::User*& member : myMembers)
 		{
-			if (nullptr == member)
+			if (nullptr != member and id == member->GetID())
 			{
 				member = nullptr;
 
