@@ -13,7 +13,14 @@ import <algorithm>;
 export namespace iconer::app::packets::datagrams
 {
 #pragma pack(push, 1)
-	struct SerializedMember
+	struct SerializedRoom
+	{
+		static inline constexpr size_t nameLength = 16;
+
+		std::int32_t id;
+		wchar_t title[nameLength];
+	};
+	struct [[nodiscard]] SerializedMember
 	{
 		static inline constexpr size_t nameLength = 16;
 
