@@ -8,41 +8,7 @@ import Iconer.Application.Packet;
 import Iconer.Application.Resources.String;
 import Demo.PacketProcessor;
 
-void RemoveRoomMember(demo::Framework& framework, iconer::app::Room& room, const iconer::app::User::IdType& user_id) noexcept
-{
-	struct Remover final : public iconer::app::Room::MemberRemover
-	{
-		constexpr Remover(demo::Framework& framework) noexcept
-			: iconer::app::Room::MemberRemover(), myFramework(framework)
-		{
-		}
-
-		void operator()(iconer::app::Room& room, const size_t& members_count) const noexcept override
-		{
-			if (0 == members_count)
-			{
-				if (room.TryBeginClose(iconer::app::RoomStates::Idle))
-				{
-					room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
-
-					if (not myFramework.Schedule(room, room.GetID()))
-					{
-						room.Cleanup();
-					}
-				}
-			}
-		}
-
-		demo::Framework& myFramework;
-	};
-
-	iconer::app::Room::LockerType legacy_lock{};
-	if (room.RemoveMember(user_id, Remover{ framework }, legacy_lock))
-	{
-		framework.SetRoomModifiedFlag();
-	}
-	// `room` would be unlocked here
-}
+bool RemoveRoomMember(demo::Framework& framework, iconer::app::Room& room, const iconer::app::User::IdType& user_id) noexcept;
 
 demo::Framework::AcceptResult
 demo::Framework::OnReserveAccept(iconer::app::User& user)
@@ -513,37 +479,35 @@ demo::Framework::OnRespondRoomsList(iconer::app::User& user)
 	return user.SendGeneralData(std::addressof(user.requestContext), serializedRoomsBuffer.get(), serializedRoomsBufferSize);
 }
 
-void demo::Framework::OnFailedRespondRoomsList(iconer::app::User& user)
+struct EndToEndRemover final : public iconer::app::Room::MemberRemover
 {
-}
+	using Super = iconer::app::Room::MemberRemover;
+
+	constexpr EndToEndRemover(demo::Framework& framework) noexcept
+		: Super(), myFramework(framework)
+	{
+	}
+
+	void operator()(iconer::app::Room& room, const size_t& members_count) const noexcept override
+	{
+		if (0 == members_count)
+		{
+			room.BeginClose();
+			room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
+
+			if (not myFramework.Schedule(room, room.GetID()))
+			{
+				room.Cleanup();
+			}
+		}
+	}
+
+	demo::Framework& myFramework;
+};
 
 demo::Framework::AcceptResult
 demo::Framework::OnUserDisconnected(iconer::app::User& user)
 {
-	struct EndToEndRemover final : public iconer::app::Room::MemberRemover
-	{
-		constexpr EndToEndRemover(demo::Framework& framework) noexcept
-			: iconer::app::Room::MemberRemover(), myFramework(framework)
-		{
-		}
-
-		void operator()(iconer::app::Room& room, const size_t& members_count) const noexcept override
-		{
-			if (0 == members_count)
-			{
-				room.BeginClose();
-				room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
-
-				if (not myFramework.Schedule(room, room.GetID()))
-				{
-					room.Cleanup();
-				}
-			}
-		}
-
-		demo::Framework& myFramework;
-	};
-
 	static EndToEndRemover remover{ *this };
 
 	// Reserve the user again
@@ -575,4 +539,49 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 	}
 
 	return iconer::net::ErrorCode::OPERATION_ABORTED;
+}
+
+bool
+RemoveRoomMember(demo::Framework& framework, iconer::app::Room& room, const iconer::app::User::IdType& user_id)
+noexcept
+{
+	struct Remover final : public iconer::app::Room::MemberRemover
+	{
+		using Super = iconer::app::Room::MemberRemover;
+
+		constexpr Remover(demo::Framework& framework) noexcept
+			: Super(), myFramework(framework)
+		{
+		}
+
+		void operator()(iconer::app::Room& room, const size_t& members_count) const noexcept override
+		{
+			if (0 == members_count)
+			{
+				if (room.TryBeginClose(iconer::app::RoomStates::Idle))
+				{
+					room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
+
+					if (not myFramework.Schedule(room, room.GetID()))
+					{
+						room.Cleanup();
+					}
+				}
+			}
+		}
+
+		demo::Framework& myFramework;
+	};
+
+	iconer::app::Room::LockerType legacy_lock{};
+	if (auto r = room.RemoveMember(user_id, Remover{ framework }, legacy_lock); r)
+	{
+		framework.SetRoomModifiedFlag();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+	// `room` would be unlocked here
 }
