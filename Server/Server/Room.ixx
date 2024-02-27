@@ -1,6 +1,5 @@
 module;
-#include <utility>
-#include <atomic>
+#include <memory>
 #include <vector>
 #include <mutex>
 
@@ -10,7 +9,6 @@ import Iconer.Utility.Concurrency.SharedMutex;
 import Iconer.Collection.Array;
 import Iconer.Application.IContext;
 import Iconer.Application.ISession;
-import <memory>;
 import <span>;
 
 export namespace iconer::app
@@ -60,7 +58,7 @@ export namespace iconer::app
 			noexcept(nothrow_constructible<Super, IdType&&>)
 			: Super(std::move(id))
 			, myLock()
-			, myMembers(), membersCount(0), readyCount()
+			, myMembers(), membersCount(), readyCount()
 			, preRespondMembersPacket()
 		{
 		}
