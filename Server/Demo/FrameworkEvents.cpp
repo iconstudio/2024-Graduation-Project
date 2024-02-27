@@ -36,7 +36,8 @@ void RemoveRoomMember(demo::Framework& framework, iconer::app::Room& room, const
 		demo::Framework& myFramework;
 	};
 
-	room.RemoveMember(user_id, Remover{ framework });
+	auto legacy_lock = room.RemoveMember(user_id, Remover{ framework });
+	// `room` would be unlocked here
 }
 
 demo::Framework::AcceptResult
@@ -488,7 +489,8 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 
 			if (auto room = FindRoom(room_id); nullptr != room)
 			{
-				room->RemoveMember(user.GetID(), remover);
+				auto legacy_lock = room->RemoveMember(user.GetID(), remover);
+				// `room` would be unlocked here
 			}
 		}
 
