@@ -10,7 +10,6 @@ import Iconer.Utility.Concurrency.SharedMutex;
 import Iconer.Collection.Array;
 import Iconer.Application.IContext;
 import Iconer.Application.ISession;
-import Iconer.Application.User;
 import <memory>;
 import <span>;
 
@@ -27,6 +26,8 @@ export namespace iconer::app
 		, GameDone // game scene
 		, Cleanup // game scene, score scene
 	};
+
+	class User;
 
 	class [[nodiscard]] Room : public ISession<RoomStates>
 	{
