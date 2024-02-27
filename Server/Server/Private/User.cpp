@@ -28,7 +28,7 @@ const noexcept
 }
 
 iconer::app::User::IoResult
-iconer::app::User::SendGeneralData(iconer::app::IContext* ctx, std::byte* static_buffer, size_t size)
+iconer::app::User::SendGeneralData(iconer::app::IContext* ctx, const std::byte* static_buffer, size_t size)
 const noexcept
 {
 	return mySocket.Send(*ctx, static_buffer, size);
