@@ -22,7 +22,7 @@ export namespace iconer::app
 		OpAssignID,
 
 		/// <summary>Phase 4 ~ </summary>
-		OpRecv, OpSend, OpSendBorrowed,
+		OpRecv, OpSend, OpSendBorrowed, OpSendUniqueContext,
 
 		/// <summary>Phase 5 ~ </summary>
 		OpReserveRoom, OpCreateRoom, OpEnterRoom, OpLeaveRoom, OpCloseRoom,
