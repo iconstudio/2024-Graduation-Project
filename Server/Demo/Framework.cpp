@@ -156,6 +156,13 @@ demo::Framework::StartAccepts()
 }
 
 void
+demo::Framework::SetRoomModifiedFlag()
+noexcept
+{
+	haveRoomUpdated = true;
+}
+
+void
 demo::Framework::LockPhase()
 noexcept
 {
