@@ -242,6 +242,7 @@ export namespace demo
 		iconer::net::IoCompletionPort ioCompletionPort;
 
 		//iconer::collection::ConcurrentQueue<iconer::app::BorrowedSendContext> sendContextPool{ initSendContextsNumber };
+		std::atomic_bool haveRoomUpdated;
 	};
 
 	void Worker(Framework& framework, size_t nth);
