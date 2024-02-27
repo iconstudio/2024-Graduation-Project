@@ -35,6 +35,11 @@ namespace test
 	iconer::net::Socket::IoResult SendCreateRoomPacket(std::wstring_view title);
 	iconer::net::Socket::IoResult SendJoinRoomPacket(IdType room_id);
 	iconer::net::Socket::IoResult SendLeaveRoomPacket();
+	iconer::net::Socket::IoResult SendRequestVersionPacket();
+	iconer::net::Socket::IoResult SendRequestRoomsPacket();
+	iconer::net::Socket::IoResult SendRequestMembersPacket();
+	iconer::net::Socket::IoResult SendGameStartPacket();
+	iconer::net::Socket::IoResult SendGameIsLoadedPacket();
 	bool SendPositionPacket();
 
 	const std::byte* ReceiveSignInSucceedPacket(const std::byte* buffer);
