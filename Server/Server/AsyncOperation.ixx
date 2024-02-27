@@ -60,6 +60,7 @@ export namespace std
 			case iconer::app::AsyncOperations::OpEnterRoom: return "EnterRoom";
 			case iconer::app::AsyncOperations::OpLeaveRoom: return "LeaveRoom";
 			case iconer::app::AsyncOperations::OpNotifyMember: return "NotifyMember";
+			case iconer::app::AsyncOperations::OpNotifyRoom: return "OpNotifyroom";
 			case iconer::app::AsyncOperations::OpCreateGame: return "EnterGame";
 			case iconer::app::AsyncOperations::OpReadyGame: return "ReadyGame";
 			case iconer::app::AsyncOperations::OpStartGame: return "StartGame";
@@ -87,6 +88,7 @@ export namespace std
 			case iconer::app::AsyncOperations::OpEnterRoom: return L"EnterRoom";
 			case iconer::app::AsyncOperations::OpLeaveRoom: return L"LeaveRoom";
 			case iconer::app::AsyncOperations::OpNotifyMember: return L"NotifyMember";
+			case iconer::app::AsyncOperations::OpNotifyRoom: return L"OpNotifyroom";
 			case iconer::app::AsyncOperations::OpCreateGame: return L"EnterGame";
 			case iconer::app::AsyncOperations::OpReadyGame: return L"ReadyGame";
 			case iconer::app::AsyncOperations::OpStartGame: return L"StartGame";
@@ -167,9 +169,15 @@ struct std::formatter<iconer::app::AsyncOperations, char>
 			{
 				return std::format_to(context.out(), "{}", "Leaving a room");
 			}
+
 			case iconer::app::AsyncOperations::OpNotifyMember:
 			{
-				return std::format_to(context.out(), "{}", "Notifying members to to the session");
+				return std::format_to(context.out(), "{}", "Notifying members to the session");
+			}
+			
+			case iconer::app::AsyncOperations::OpNotifyRoom:
+			{
+				return std::format_to(context.out(), "{}", "Notifying room to the session");
 			}
 
 			case iconer::app::AsyncOperations::OpCreateGame:
@@ -281,7 +289,12 @@ struct std::formatter<iconer::app::AsyncOperations, wchar_t>
 			}
 			case iconer::app::AsyncOperations::OpNotifyMember:
 			{
-				return std::format_to(context.out(), L"{}", L"Notifying members to to the session");
+				return std::format_to(context.out(), L"{}", L"Notifying members to the session");
+			}
+
+			case iconer::app::AsyncOperations::OpNotifyRoom:
+			{
+				return std::format_to(context.out(), L"{}", L"Notifying room to the session");
 			}
 
 			case iconer::app::AsyncOperations::OpCreateGame:
