@@ -395,13 +395,12 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 			delete sjr.second;
 		}
 
-		iconer::app::IContext* ctx = new iconer::app::IContext{ iconer::app::AsyncOperations::OpSendBorrowed };
-
+		user.roomContext.SetOperation(iconer::app::AsyncOperations::OpNotifyMember);
 		std::span<std::byte> members = room.SerializeMembers();
-		auto smr = user.SendGeneralData(ctx, members.data(), members.size());
+		auto smr = user.SendGeneralData(std::addressof(user.roomContext), members.data(), members.size());
 		if (not smr)
 		{
-			delete ctx;
+			user.roomContext.SetOperation(iconer::app::AsyncOperations::None);
 		}
 
 		return iconer::app::RoomContract::Success;
