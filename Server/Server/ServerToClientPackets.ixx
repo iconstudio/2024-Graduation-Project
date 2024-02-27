@@ -19,6 +19,7 @@ export namespace iconer::app::packets::datagrams
 
 		std::int32_t id;
 		wchar_t title[nameLength];
+		size_t members;
 	};
 	struct [[nodiscard]] SerializedMember
 	{
@@ -151,7 +152,106 @@ export namespace iconer::app::packets::inline sc
 	/// <param name="serializedRooms">Serialized every room</param>
 	/// <remarks>Server would send it to the client</remarks>
 	struct [[nodiscard]] SC_RespondRoomsPacket : public BasicPacket
-	{};
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t MaxSize() noexcept
+		{
+			return Super::MinSize() + sizeof(datagrams::SerializedRoom) * 20 + sizeof(std::vector<datagrams::SerializedRoom>::size_type);
+		}
+
+		[[nodiscard]]
+		constexpr size_t WannabeSize() const noexcept
+		{
+			return Super::MinSize() + sizeof(datagrams::SerializedRoom) * serializedRooms.size() + sizeof(std::vector<datagrams::SerializedRoom>::size_type);
+		}
+
+		[[nodiscard]]
+		constexpr ptrdiff_t SignedWannabeSize() const noexcept
+		{
+			return static_cast<ptrdiff_t>(WannabeSize());
+		}
+
+		constexpr SC_RespondRoomsPacket() noexcept
+			: Super(PacketProtocol::SC_RESPOND_ROOMS, SignedWannabeSize())
+			, serializedRooms()
+		{
+		}
+
+		constexpr void AddMember(std::int32_t room_id, std::wstring_view title, size_t members_count)
+		{
+			datagrams::SerializedRoom room{ room_id };
+
+			auto it = room.title;
+			for (auto ch : title)
+			{
+				*it = ch;
+
+				if (++it == room.title + sizeof(room.title)) break;
+			}
+			room.members = members_count;
+
+			serializedRooms.emplace_back(std::move(room));
+			mySize = static_cast<std::int16_t>(WannabeSize());
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(WannabeSize());
+			auto seek = Super::Write(buffer.get());
+
+			seek = iconer::util::Serialize(seek, serializedRooms.size());
+			for (auto& room : serializedRooms)
+			{
+				seek = iconer::util::Serialize(seek, room.id);
+				seek = iconer::util::Serialize(seek, std::wstring_view{ room.title, room.nameLength });
+				seek = iconer::util::Serialize(seek, room.members);
+			}
+
+			return std::move(buffer);
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			auto seek = iconer::util::Serialize(Super::Write(buffer), serializedRooms.size());
+
+			for (auto& room : serializedRooms)
+			{
+				seek = iconer::util::Serialize(seek, room.id);
+				seek = iconer::util::Serialize(seek, std::wstring_view{ room.title, room.nameLength });
+				seek = iconer::util::Serialize(seek, room.members);
+			}
+
+			return seek;
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer)
+		{
+			auto seek = Super::Read(buffer);
+
+			size_t size{};
+			seek = iconer::util::Deserialize(seek, size);
+
+			if (0 < size)
+			{
+				serializedRooms.clear();
+				serializedRooms.resize(size);
+
+				for (auto& room : serializedRooms)
+				{
+					seek = iconer::util::Deserialize(seek, room.id);
+					seek = iconer::util::Deserialize(seek, room.nameLength, room.title);
+					seek = iconer::util::Deserialize(seek, room.members);
+				}
+			}
+
+			return seek;
+		}
+
+		std::vector<datagrams::SerializedRoom> serializedRooms;
+	};
 	/// <summary>
 	/// Room members response packet for server
 	/// </summary>
@@ -176,7 +276,7 @@ export namespace iconer::app::packets::inline sc
 		[[nodiscard]]
 		constexpr ptrdiff_t SignedWannabeSize() const noexcept
 		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(datagrams::SerializedMember) * serializedMembers.size() + sizeof(std::vector<datagrams::SerializedMember>::size_type));
+			return static_cast<ptrdiff_t>(WannabeSize());
 		}
 
 		constexpr SC_RespondMembersPacket() noexcept
