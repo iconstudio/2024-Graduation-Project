@@ -1,4 +1,7 @@
 module;
+#include <cstdint>
+#include <initializer_list>
+#include <memory>
 #include "glm/glm.hpp"
 #include "glm/vec3.hpp"
 
@@ -10,10 +13,6 @@ import Iconer.Application.IContext;
 import Iconer.Application.ISession;
 import Iconer.Application.BlobSendContext;
 import Iconer.Application.RoomContract;
-import <cstdint>;
-import <initializer_list>;
-import <memory>;
-import <string>;
 import <span>;
 
 export namespace iconer::app
