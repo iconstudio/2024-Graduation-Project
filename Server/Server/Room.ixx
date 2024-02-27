@@ -8,6 +8,7 @@ export module Iconer.Application.Room;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.Concurrency.SharedMutex;
 import Iconer.Collection.Array;
+import Iconer.Application.IContext;
 import Iconer.Application.ISession;
 import Iconer.Application.User;
 import <memory>;
@@ -33,9 +34,16 @@ export namespace iconer::app
 		static inline constexpr size_t maxUsersNumberInRoom = 6;
 		static inline constexpr size_t minUsersNumberForGame = 4;
 
+		struct [[nodiscard]] MemberRemover
+		{
+			constexpr MemberRemover() noexcept = default;
+			virtual constexpr ~MemberRemover() noexcept = default;
+
+			virtual void operator()(Room& room, const size_t& member_count) const = 0;
+		};
+
 		using Super = ISession<RoomStates>;
 		using Super::IdType;
-		//using MemberStorageType = std::array<iconer::app::User*, maxUsersNumberInRoom>;
 		using MemberStorageType = iconer::collection::Array<User*, maxUsersNumberInRoom>;
 
 		explicit constexpr Room(const IdType& id)
@@ -67,6 +75,15 @@ export namespace iconer::app
 			membersCount = 0;
 		}
 
+		bool TryAddMember(iconer::app::User& user) noexcept;
+		[[nodiscard]]
+		std::unique_lock<iconer::util::SharedMutex> RemoveMember(const IdType& id) noexcept;
+		[[nodiscard]]
+		std::unique_lock<iconer::util::SharedMutex> RemoveMember(const IdType& id, const MemberRemover& predicate);
+		[[nodiscard]]
+		std::unique_lock<iconer::util::SharedMutex> RemoveMember(const IdType& id, MemberRemover&& predicate);
+		void ClearMembers() noexcept;
+
 		template<invocables<User&> Predicate>
 		void ForEach(Predicate&& predicate) const
 		{
@@ -76,23 +93,13 @@ export namespace iconer::app
 			{
 				if (nullptr != member)
 				{
-					std::invoke(std::forwad<Predicate>(predicate), *member);
+					std::invoke(std::move(predicate), *member);
 				}
 			}
 		}
+		size_t Broadcast(std::span<IContext*> ctxes, const std::byte* buffer, size_t size) const;
 
-		size_t Broadcast(const std::byte* buffer, size_t size) const
-		{
-			size_t result{};
-			ForEach([&](User& user) noexcept {
-				if (user.GetState() != UserStates::None)
-				{
-					user.SendGeneralData(nullptr, buffer, size);
-				}
-			});
-
-			return result;
-		}
+		size_t ReadyMember(iconer::app::User& user) noexcept;
 
 		bool TryReserveContract() volatile noexcept
 		{
@@ -139,165 +146,15 @@ export namespace iconer::app
 			return TryChangeState(RoomStates::Closing, next_state);
 		}
 
-		bool TryAddMember(iconer::app::User& user) noexcept
-		{
-			std::unique_lock lock{ myLock };
+		[[nodiscard]] std::vector<User*> AcquireMemberList() const;
+		[[nodiscard]] std::span<std::byte> SerializeMembers();
 
-			bool result = false;
-			auto count = membersCount.load(std::memory_order_acquire);
+		[[nodiscard]] size_t GetMembersCount() const noexcept;
 
-			if (count < maxUsersNumberInRoom)
-			{
-				for (auto& member : myMembers)
-				{
-					if (nullptr == member)
-					{
-						member = std::addressof(user);
-						++count;
-
-						result = true;
-
-						isMemberUpdated = true;
-						break;
-					}
-				}
-			}
-
-			membersCount.store(count, std::memory_order_release);
-			return result;
-		}
-
-		size_t ReadyMember(iconer::app::User& user) noexcept
-		{
-			std::unique_lock lock{ myLock };
-
-			for (auto& member : myMembers)
-			{
-				if (nullptr != member and user.GetID() == member->GetID())
-				{
-
-					break;
-				}
-			}
-		}
-
-		size_t RemoveMember(const IdType& id) noexcept
-		{
-			std::unique_lock lock{ myLock };
-
-			size_t result = membersCount.load(std::memory_order_acquire);
-			for (auto it = myMembers.begin(); it != myMembers.end(); ++it)
-			{
-				auto& member = *it;
-				if (nullptr != member and id == member->GetID())
-				{
-					member = nullptr;
-
-					if (0 < result)
-					{
-						--result;
-					}
-
-					isMemberUpdated = true;
-					break;
-				}
-			}
-
-			membersCount.store(result, std::memory_order_release);
-			return result;
-		}
-
-		template<typename Predicate, typename... Args>
-			requires invocables<Predicate, size_t, Args...>
-		size_t RemoveMember(const IdType& id, Predicate&& pred, Args&&... args) noexcept(nothrow_invocables<Predicate, size_t, Args...>)
-		{
-			std::unique_lock lock{ myLock };
-
-			size_t result = membersCount.load(std::memory_order_acquire);
-			for (auto& member : myMembers)
-			{
-				if (nullptr != member and id == member->GetID())
-				{
-					member = nullptr;
-
-					if (0 < result)
-					{
-						std::invoke(std::forward<Predicate>(pred), --result, std::forward<Args>(args)...);
-					}
-
-					isMemberUpdated = true;
-					break;
-				}
-			}
-
-			membersCount.store(result, std::memory_order_release);
-			return result;
-		}
-
-		void ClearMembers() noexcept
-		{
-			std::unique_lock lock{ myLock };
-			for (auto& member : myMembers)
-			{
-				member = nullptr;
-			}
-
-			membersCount = 0;
-			isMemberUpdated = true;
-		}
-
-		[[nodiscard]]
-		std::vector<User*> AcquireMemberList() const
-		{
-			std::unique_lock lock{ myLock };
-
-			return std::vector<User*>{ std::from_range, myMembers };
-		}
-
-		[[nodiscard]]
-		std::span<std::byte> SerializeMembers();
-
-		[[nodiscard]]
-		bool CanStartGame() const noexcept
-		{
-			std::shared_lock lock{ myLock };
-
-			return minUsersNumberForGame <= membersCount;
-		}
-
-		[[nodiscard]]
-		bool HasMember(const IdType& id) const noexcept
-		{
-			std::shared_lock lock{ myLock };
-
-			for (auto& member : myMembers)
-			{
-				if (nullptr != member and id == member->GetID())
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		[[nodiscard]]
-		size_t GetMembersCount() const noexcept
-		{
-			return membersCount.load(std::memory_order_relaxed);
-		}
-
-		[[nodiscard]]
-		bool IsFull() const noexcept
-		{
-			return maxUsersNumberInRoom <= membersCount.load(std::memory_order_relaxed);
-		}
-
-		[[nodiscard]]
-		bool IsEmpty() const noexcept
-		{
-			return 0 == membersCount.load(std::memory_order_relaxed);
-		}
+		[[nodiscard]] bool HasMember(const IdType& id) const noexcept;
+		[[nodiscard]] bool IsEmpty() const noexcept;
+		[[nodiscard]] bool IsFull() const noexcept;
+		[[nodiscard]] bool CanStartGame() const noexcept;
 
 	private:
 		mutable iconer::util::SharedMutex myLock;
@@ -309,43 +166,4 @@ export namespace iconer::app
 
 		std::unique_ptr<std::byte[]> preRespondMembersPacket;
 	};
-}
-
-module :private;
-
-namespace iconer::app::test
-{
-	void testment()
-	{
-		Room room{ 0 };
-
-		std::array<int, 3> test_arr{};
-
-		using arr_t = decltype(test_arr);
-		using method_arr_size_t = decltype(std::array<int, 3>::size);
-		//using method_arr_begin_t = decltype(std::array<int, 3>::begin);
-		//const_nothrow_method_t<arr_t, std::array<int, 3>::iterator(*)()> aaa_beg1 = static_cast<>(&test_arr.begin);
-		using method_arr_begin_t = decltype(static_cast<std::array<int, 3>::iterator(arr_t::*)()>(&arr_t::begin));
-
-		//auto&& aaa_beg2 = (test_arr.begin);
-
-		constexpr bool aaa1 = methods<method_arr_size_t>;
-		constexpr bool aaa2 = methods<method_arr_size_t>;
-		constexpr bool bbb = methods<arr_t>;
-
-		constexpr bool ccc = method_invocable<method_arr_size_t, arr_t>;
-		constexpr bool ddd = method_invocable<method_arr_begin_t, arr_t>;
-
-		constexpr bool eee = classes<arr_t>;
-		constexpr bool fff = methods<method_arr_size_t>;
-
-		std::invoke(&std::array<int, 3>::size, test_arr);
-		//std::invoke(std::declval<method_arr_size_t>(), std::declval<arr_t>());
-
-		//room.RemoveMember(0, test_arr, &(std::array<int, 3>::size));
-		//room.RemoveMember(0, test_arr, &(std::array<int, 3>::begin));
-		//room.RemoveMember(0, test_arr, &(std::array<int, 3>::at), 0ULL);
-		//room.RemoveMember(0, room, &(Room::IsFull));
-		//room.RemoveMember(0, room, static_cast<size_t(Room::*)()>(&Room::RemoveMember), 0);
-	}
 }
