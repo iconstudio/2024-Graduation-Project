@@ -38,11 +38,55 @@ test::SendJoinRoomPacket(IdType room_id)
 iconer::net::Socket::IoResult
 test::SendLeaveRoomPacket()
 {
-	iconer::app::packets::CS_LeaveRoomPacket pk{};
-
-	auto ptr = pk.Serialize();
+	static constexpr iconer::app::packets::CS_LeaveRoomPacket pk{};
+	static auto ptr = pk.Serialize();
 
 	return app_socket.Send(ptr.get(), pk.WannabeSize());
+}
+
+iconer::net::Socket::IoResult
+test::SendRequestVersionPacket()
+{
+	static constexpr iconer::app::packets::CS_RequestVersionPacket pk{};
+	static auto ptr = pk.Serialize();
+
+	return app_socket.Send(ptr.get(), pk.WannabeSize());
+}
+
+iconer::net::Socket::IoResult
+test::SendRequestRoomsPacket()
+{
+	static constexpr iconer::app::packets::CS_RequestRoomsPacket pk{};
+	static auto ptr = pk.Serialize();
+
+	return app_socket.Send(ptr.get(), pk.WannabeSize());
+}
+
+iconer::net::Socket::IoResult
+test::SendRequestMembersPacket()
+{
+	static constexpr iconer::app::packets::CS_RequestMembersPacket pk{};
+	static auto ptr = pk.Serialize();
+
+	return app_socket.Send(ptr.get(), pk.WannabeSize());
+}
+
+iconer::net::Socket::IoResult
+test::SendGameStartPacket()
+{
+	static constexpr iconer::app::packets::CS_GameStartPacket pk{};
+	static auto ptr = pk.Serialize();
+
+	return iconer::net::Socket::IoResult();
+}
+
+iconer::net::Socket::IoResult
+test::SendGameIsLoadedPacket()
+{
+	static constexpr iconer::app::packets::CS_GameLoadedPacket pk{};
+	static auto ptr = pk.Serialize();
+
+	return iconer::net::Socket::IoResult();
 }
 
 bool
