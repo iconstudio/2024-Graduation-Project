@@ -361,6 +361,31 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
+		// Phase 6
+		case iconer::app::AsyncOperations::OpNotifyRoom:
+		{
+			const IdType user_id = static_cast<IdType>(io_id);
+			auto user = FindUser(user_id);
+
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUser {}'s notifying rooms operation is failed\n", user_id);
+				OnFailedRespondRoomsList(*user);
+			}
+			else if (auto error = OnRespondRoomsList(*user); not error.has_value())
+			{
+				myLogger.LogError(L"\tUser {} has failed to send a list of rooms due to {}\n", user_id, error.error());
+				OnFailedRespondRoomsList(*user);
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} sent a list of rooms\n", user_id);
+			}
+
+			ctx->Clear();
+		}
+		break;
+
 		// Phase 7
 		case iconer::app::AsyncOperations::OpCreateGame:
 		{
