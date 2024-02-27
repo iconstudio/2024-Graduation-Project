@@ -261,7 +261,8 @@ export namespace iconer::app
 		[[nodiscard]]
 		bool CanStartGame() const noexcept
 		{
-			std::unique_lock lock{ myLock };
+			std::shared_lock lock{ myLock };
+
 			return minUsersNumberForGame <= membersCount;
 		}
 
@@ -284,21 +285,18 @@ export namespace iconer::app
 		[[nodiscard]]
 		size_t GetMembersCount() const noexcept
 		{
-			std::shared_lock lock{ myLock };
 			return membersCount.load(std::memory_order_relaxed);
 		}
 
 		[[nodiscard]]
 		bool IsFull() const noexcept
 		{
-			std::shared_lock lock{ myLock };
 			return maxUsersNumberInRoom <= membersCount.load(std::memory_order_relaxed);
 		}
 
 		[[nodiscard]]
 		bool IsEmpty() const noexcept
 		{
-			std::shared_lock lock{ myLock };
 			return 0 == membersCount.load(std::memory_order_relaxed);
 		}
 
