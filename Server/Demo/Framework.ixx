@@ -216,7 +216,6 @@ export namespace demo
 		void OnFailedNotifyRoomMember(iconer::app::User& user) noexcept;
 		[[nodiscard]]
 		IoResult OnRespondRoomsList(iconer::app::User& user);
-		void OnFailedRespondRoomsList(iconer::app::User& user);
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);
 
