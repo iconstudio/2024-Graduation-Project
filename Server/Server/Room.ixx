@@ -44,6 +44,7 @@ export namespace iconer::app
 		using Super = ISession<RoomStates>;
 		using Super::IdType;
 		using MemberStorageType = iconer::collection::Array<User*, maxUsersNumberInRoom>;
+		using LockerType = std::unique_lock<iconer::util::SharedMutex>;
 
 		explicit constexpr Room(const IdType& id)
 			noexcept(nothrow_constructible<Super, const IdType&>)
@@ -75,12 +76,15 @@ export namespace iconer::app
 		}
 
 		bool TryAddMember(iconer::app::User& user) noexcept;
+		bool RemoveMember(const IdType& id) noexcept;
+		bool RemoveMember(const IdType& id, const MemberRemover& predicate);
+		bool RemoveMember(const IdType& id, MemberRemover&& predicate);
 		[[nodiscard]]
-		std::unique_lock<iconer::util::SharedMutex> RemoveMember(const IdType& id) noexcept;
+		bool RemoveMember(const IdType& id, LockerType& owned_lock) noexcept;
 		[[nodiscard]]
-		std::unique_lock<iconer::util::SharedMutex> RemoveMember(const IdType& id, const MemberRemover& predicate);
+		bool RemoveMember(const IdType& id, const MemberRemover& predicate, LockerType& owned_lock);
 		[[nodiscard]]
-		std::unique_lock<iconer::util::SharedMutex> RemoveMember(const IdType& id, MemberRemover&& predicate);
+		bool RemoveMember(const IdType& id, MemberRemover&& predicate, LockerType& owned_lock);
 		void ClearMembers() noexcept;
 
 		template<invocables<User&> Predicate>
