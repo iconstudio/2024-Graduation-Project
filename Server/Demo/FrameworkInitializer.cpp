@@ -1,10 +1,11 @@
 module;
+#include <string>
+#include <string_view>
+
 module Demo.Framework;
 import Iconer.Net;
 import Iconer.Application.UserManager;
-import <memory>;
-import <string>;
-import <string_view>;
+import Iconer.Application.Packet;
 
 using namespace iconer;
 
@@ -82,6 +83,7 @@ demo::Framework::Awake()
 	myLogger.Log(L"\tallocating memory of buffers...\n");
 	recvSpace = std::make_unique<std::byte[]>(userRecvSize * maxUsersNumber);
 	userSpace = std::make_unique<app::User[]>(maxUsersNumber);
+	serializedRoomsBuffer = std::make_unique<std::byte[]>(iconer::app::packets::SC_RespondRoomsPacket::MaxSize());
 
 	myLogger.Log(L"\tallocating space of objects...\n");
 	userManager->Reserve(maxUsersNumber);
