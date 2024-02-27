@@ -29,6 +29,18 @@ demo::OnSignOut(iconer::app::User& user)
 }
 
 void
+demo::OnRequestRoomList(Framework& framework, iconer::app::User& user)
+{
+	if (std::int32_t room_id = user.myRoomId; -1 != room_id)
+	{
+		if (auto room = framework.FindRoom(room_id); nullptr != room)
+		{
+			framework.Schedule(user.requestContext, user.GetID());
+		}
+	}
+}
+
+void
 demo::OnCreateRoom(demo::Framework& framework, iconer::app::User& user, const wchar_t(&room_title)[16])
 {
 	bool success = false;
