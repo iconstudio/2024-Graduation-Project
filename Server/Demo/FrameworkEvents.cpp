@@ -492,29 +492,25 @@ noexcept
 demo::Framework::IoResult
 demo::Framework::OnRespondRoomsList(iconer::app::User& user)
 {
-	std::int32_t room_id = user.myRoomId;
-
-	if (-1 == room_id)
+	if (haveRoomUpdated)
 	{
-		return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
+		static iconer::app::packets::SC_RespondRoomsPacket pk{};
+
+		pk.serializedRooms.clear();
+		for (auto room : everyRoom)
+		{
+			if (nullptr != room)
+			{
+				pk.AddMember(room->GetID(), room->GetName(), room->GetMembersCount());
+			}
+		}
+		pk.Write(serializedRoomsBuffer.get());
+		serializedRoomsBufferSize = pk.WannabeSize();
+
+		haveRoomUpdated = false;
 	}
 
-	auto room = FindRoom(room_id);
-	if (nullptr == room)
-	{
-		return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
-	}
-
-
-	user.roomContext.SetOperation(iconer::app::AsyncOperations::OpNotifyMember);
-	std::span<std::byte> members;
-	auto smr = user.SendGeneralData(std::addressof(user.roomContext), members.data(), members.size());
-	if (not smr)
-	{
-		user.roomContext.SetOperation(iconer::app::AsyncOperations::None);
-	}
-
-	//return IoResult();
+	return user.SendGeneralData(std::addressof(user.requestContext), serializedRoomsBuffer.get(), serializedRoomsBufferSize);
 }
 
 void demo::Framework::OnFailedRespondRoomsList(iconer::app::User& user)
