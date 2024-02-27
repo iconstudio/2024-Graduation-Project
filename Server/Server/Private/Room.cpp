@@ -142,13 +142,28 @@ noexcept
 {
 	std::unique_lock lock{ myLock };
 
-	for (auto& member : myMembers)
+	size_t result{};
+	for (iconer::app::User*& member : myMembers)
 	{
-		if (nullptr != member and user.GetID() == member->GetID())
+		if (nullptr != member)
 		{
+			if (user.GetID() == member->GetID())
+			{
+				if (user.isReady.CompareAndSet(false, true))
+				{
+					++result;
+				}
+			}
+			else if (user.isReady)
+			{
+				++result;
+			}
+
 			break;
 		}
 	}
+
+	return result;
 }
 
 void
