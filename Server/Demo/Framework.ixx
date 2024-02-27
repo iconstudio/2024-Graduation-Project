@@ -214,9 +214,9 @@ export namespace demo
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);
 
-		// import Iconer.Application.UserManager;
 		alignas(std::hardware_constructive_interference_size) iconer::app::ISessionManager<iconer::app::User>* userManager;
 		std::array<iconer::app::Room*, Framework::maxRoomsNumber> everyRoom;
+		alignas(std::hardware_constructive_interference_size) std::unique_ptr<std::byte[]> serializedRoomsBuffer;
 
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<iconer::app::User[]> userSpace;
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<std::byte[]> recvSpace;
