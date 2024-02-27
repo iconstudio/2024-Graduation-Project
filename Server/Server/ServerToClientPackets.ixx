@@ -146,9 +146,16 @@ export namespace iconer::app::packets::inline sc
 		int errCause;
 	};
 	/// <summary>
+	/// Show rooms response packet for server
+	/// </summary>
+	/// <param name="serializedRooms">Serialized every room</param>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_RespondRoomsPacket : public BasicPacket
+	{};
+	/// <summary>
 	/// Room members response packet for server
 	/// </summary>
-	/// <param name="roomId">An id of the created room</param>
+	/// <param name="serializedMembers">Serialized members in the room</param>
 	/// <remarks>Server would send it to the client</remarks>
 	struct [[nodiscard]] SC_RespondMembersPacket : public BasicPacket
 	{
