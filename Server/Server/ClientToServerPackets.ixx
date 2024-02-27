@@ -12,6 +12,36 @@ export namespace iconer::app::packets::inline cs
 {
 #pragma pack(push, 1)
 	/// <summary>
+	/// Requesting game version packet for client
+	/// </summary>
+	/// <remarks>Client would send it to the server</remarks>
+	struct [[nodiscard]] CS_RequestVersionPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize();
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return Super::SignedMinSize();
+		}
+
+		constexpr CS_RequestVersionPacket() noexcept
+			: Super(PacketProtocol::CS_REQUEST_VERSION, SignedWannabeSize())
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize);
+		}
+	};
 	/// Game initiating packet for client
 	/// </summary>
 	/// <remarks>Client would send it to the server</remarks>
