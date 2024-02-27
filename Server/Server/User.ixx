@@ -46,6 +46,7 @@ export namespace iconer::app
 			, recvOffset(0)
 			, preSignInPacket(), preRoomCreationPacket()
 			, roomContext(), myRoomId(-1), isReady()
+			, requestContext(AsyncOperations::OpNotifyRoom)
 			, myTransform()
 		{
 		}
@@ -58,6 +59,7 @@ export namespace iconer::app
 			, recvOffset(0)
 			, preSignInPacket(), preRoomCreationPacket()
 			, roomContext(), myRoomId(-1), isReady()
+			, requestContext(AsyncOperations::OpNotifyRoom)
 			, myTransform()
 		{
 		}
@@ -441,7 +443,7 @@ export namespace iconer::app
 
 		glm::mat4 myTransform;
 
-		IContext roomContext;
+		IContext roomContext, requestContext;
 		iconer::util::MovableAtomic<IdType> myRoomId;
 		iconer::util::MovableAtomic<bool> isReady;
 
