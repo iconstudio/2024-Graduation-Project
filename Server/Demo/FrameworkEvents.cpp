@@ -472,6 +472,38 @@ noexcept
 	user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
 }
 
+demo::Framework::IoResult
+demo::Framework::OnRespondRoomsList(iconer::app::User& user)
+{
+	std::int32_t room_id = user.myRoomId;
+
+	if (-1 == room_id)
+	{
+		return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
+	}
+
+	auto room = FindRoom(room_id);
+	if (nullptr == room)
+	{
+		return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
+	}
+
+
+	user.roomContext.SetOperation(iconer::app::AsyncOperations::OpNotifyMember);
+	std::span<std::byte> members = room.SerializeMembers();
+	auto smr = user.SendGeneralData(std::addressof(user.roomContext), members.data(), members.size());
+	if (not smr)
+	{
+		user.roomContext.SetOperation(iconer::app::AsyncOperations::None);
+	}
+
+	//return IoResult();
+}
+
+void demo::Framework::OnFailedRespondRoomsList(iconer::app::User& user)
+{
+}
+
 demo::Framework::AcceptResult
 demo::Framework::OnUserDisconnected(iconer::app::User& user)
 {
