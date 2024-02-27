@@ -221,7 +221,7 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
-		auto AcquireMemberList() const
+		std::vector<User*> AcquireMemberList() const
 		{
 			std::unique_lock lock{ myLock };
 
