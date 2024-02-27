@@ -57,6 +57,8 @@ export namespace std
 			case OpAssignID: return "AssignID";
 			case OpRecv: return "Recv";
 			case OpSend: return "Send";
+			case OpSendBorrowed: return "OpSendBorrowed";
+			case OpSendUniqueContext: return "OpSendUniqueContext";
 			case OpCreateRoom: return "CreateRoom";
 			case OpEnterRoom: return "EnterRoom";
 			case OpLeaveRoom: return "LeaveRoom";
@@ -86,6 +88,8 @@ export namespace std
 			case OpAssignID: return L"AssignID";
 			case OpRecv: return L"Recv";
 			case OpSend: return L"Send";
+			case OpSendBorrowed: return L"OpSendBorrowed";
+			case OpSendUniqueContext: return L"OpSendUniqueContext";
 			case OpCreateRoom: return L"CreateRoom";
 			case OpEnterRoom: return L"EnterRoom";
 			case OpLeaveRoom: return L"LeaveRoom";
@@ -156,6 +160,16 @@ struct std::formatter<iconer::app::AsyncOperations, char>
 			case OpSend:
 			{
 				return std::format_to(context.out(), "{}", "Sending");
+			}
+			
+			case OpSendBorrowed:
+			{
+				return std::format_to(context.out(), "{}", "Sending with a borrowed context");
+			}
+			
+			case OpSendUniqueContext:
+			{
+				return std::format_to(context.out(), "{}", "Sending  with a owned context");
 			}
 
 			case OpCreateRoom:
@@ -275,6 +289,16 @@ struct std::formatter<iconer::app::AsyncOperations, wchar_t>
 			case OpSend:
 			{
 				return std::format_to(context.out(), L"{}", L"Sending");
+			}
+
+			case OpSendBorrowed:
+			{
+				return std::format_to(context.out(), L"{}", L"Sending with a borrowed context");
+			}
+
+			case OpSendUniqueContext:
+			{
+				return std::format_to(context.out(), L"{}", L"Sending  with a owned context");
 			}
 
 			case OpCreateRoom:
