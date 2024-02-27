@@ -1,13 +1,12 @@
 module;
 #include <string_view>
+#include <stdexcept>
 
 module Demo.Framework;
-import Iconer.Application.User;
 import Iconer.Application.BasicPacket;
 import Iconer.Application.Packet;
 import Iconer.Application.Resources.String;
 import Demo.PacketProcessor;
-import <stdexcept>;
 
 void RemoveRoomMember(demo::Framework& framework, iconer::app::Room& room, const iconer::app::User::IdType& user_id) noexcept
 {

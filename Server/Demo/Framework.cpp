@@ -6,6 +6,8 @@ module;
 module Demo.Framework;
 import Iconer.Net.IpAddress;
 import Iconer.Net.EndPoint;
+import Iconer.Net.InternetProtocol;
+import Iconer.Net.Socket;
 import Iconer.Application.IObject;
 
 bool

@@ -1,8 +1,8 @@
 module;
+#include <cstdio>
 #include <print>
-
+#include <thread>
 module TestClient;
-import <thread>;
 
 int
 test::Update()
