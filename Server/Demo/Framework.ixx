@@ -220,6 +220,8 @@ export namespace demo
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);
 
+		void SetRoomModifiedFlag() noexcept;
+
 		alignas(std::hardware_constructive_interference_size) iconer::app::ISessionManager<iconer::app::User>* userManager;
 		std::array<iconer::app::Room*, Framework::maxRoomsNumber> everyRoom;
 		alignas(std::hardware_constructive_interference_size) std::unique_ptr<std::byte[]> serializedRoomsBuffer;
