@@ -277,6 +277,7 @@ demo::Framework::OnReservingRoom(iconer::app::Room& room, iconer::app::User& use
 		}
 	}
 
+	SetRoomModifiedFlag();
 	return iconer::app::RoomContract::Success;
 }
 
@@ -294,6 +295,7 @@ demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::Use
 
 	::RemoveRoomMember(*this, room, user.GetID());
 	user.myRoomId.CompareAndSet(room.GetID(), -1);
+	SetRoomModifiedFlag();
 
 	auto sent_r = user.SendRoomCreationFailedPacket(reason);
 	if (not sent_r.first)
@@ -332,6 +334,7 @@ demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User
 
 	::RemoveRoomMember(*this, room, user.GetID());
 	user.myRoomId.CompareAndSet(room.GetID(), -1);
+	SetRoomModifiedFlag();
 
 	auto sent_r = user.SendRoomCreationFailedPacket(reason);
 	if (not sent_r.first)
@@ -389,6 +392,7 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 			user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
 			user.myRoomId.CompareAndSet(room_id, -1);
 			::RemoveRoomMember(*this, room, user.GetID());
+			SetRoomModifiedFlag();
 
 			return iconer::app::RoomContract::InvalidOperation;
 		}
@@ -398,6 +402,8 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 		{
 			delete sjr.second;
 		}
+
+		SetRoomModifiedFlag();
 
 		user.roomContext.SetOperation(iconer::app::AsyncOperations::OpNotifyMember);
 		std::span<std::byte> members = room.SerializeMembers();
@@ -417,7 +423,11 @@ demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& 
 	// rollback
 	user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
 	user.myRoomId.CompareAndSet(room.GetID(), -1);
-	::RemoveRoomMember(*this, room, user.GetID());
+
+	if (::RemoveRoomMember(*this, room, user.GetID()))
+	{
+		SetRoomModifiedFlag();
+	}
 
 	auto r = user.SendRoomJoinFailedPacket(reason);
 	if (not r.first)
@@ -435,7 +445,10 @@ demo::Framework::OnLeavingRoom(iconer::app::User& user)
 
 		if (auto room = FindRoom(room_id); nullptr != room)
 		{
-			::RemoveRoomMember(*this, *room, user.GetID());
+			if (::RemoveRoomMember(*this, *room, user.GetID()))
+			{
+				SetRoomModifiedFlag();
+			}
 
 			return true;
 		}
