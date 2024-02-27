@@ -73,6 +73,38 @@ export namespace iconer::app::packets::inline cs
 			return iconer::util::Serializes(myProtocol, mySize);
 		}
 	};
+	/// <summary>
+	/// Requesting users in the room packet for client
+	/// </summary>
+	/// <remarks>Client would send it to the server</remarks>
+	struct [[nodiscard]] CS_RequestMembersPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize();
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return Super::SignedMinSize();
+		}
+
+		constexpr CS_RequestMembersPacket() noexcept
+			: Super(PacketProtocol::CS_REQUEST_USERS, SignedWannabeSize())
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize);
+		}
+	};
+	/// <summary>
 	/// Game initiating packet for client
 	/// </summary>
 	/// <remarks>Client would send it to the server</remarks>
