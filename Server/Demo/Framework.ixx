@@ -212,6 +212,9 @@ export namespace demo
 		bool OnLeavingRoom(iconer::app::User& user);
 		void OnClosingRoom(iconer::app::Room& room);
 		[[nodiscard]]
+		bool OnNotifyMemberOfRoom(iconer::app::User& user) noexcept;
+		void OnFailedNotifyRoomMember(iconer::app::User& user) noexcept;
+		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);
 
 		alignas(std::hardware_constructive_interference_size) iconer::app::ISessionManager<iconer::app::User>* userManager;
