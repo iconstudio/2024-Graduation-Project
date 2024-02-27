@@ -2,6 +2,7 @@ module;
 #include <mutex>
 
 module Iconer.Application.Room;
+import Iconer.Utility.AtomicSwitcher;
 import Iconer.Application.User;
 import Iconer.Application.Packet;
 
@@ -33,108 +34,216 @@ noexcept
 {
 	std::unique_lock lock{ myLock };
 
-	bool result = false;
-	auto count = membersCount.load(std::memory_order_acquire);
+	iconer::util::AtomicSwitcher capture{ membersCount };
+	auto& count = capture.GetValue();
 
 	if (count < maxUsersNumberInRoom)
 	{
-		for (auto& member : myMembers)
+		for (iconer::app::User*& member : myMembers)
 		{
 			if (nullptr == member)
 			{
 				member = std::addressof(user);
+
 				++count;
 
-				result = true;
-
 				isMemberUpdated = true;
-				break;
+				return true;
 			}
 		}
 	}
 
-	membersCount.store(count, std::memory_order_release);
-	return result;
+	return false;
 }
 
-std::unique_lock<iconer::util::SharedMutex>
+bool
 iconer::app::Room::RemoveMember(const iconer::app::Room::IdType& id)
 noexcept
 {
 	std::unique_lock lock{ myLock };
 
-	size_t result = membersCount.load(std::memory_order_acquire);
+	iconer::util::AtomicSwitcher capture{ membersCount };
+	auto& count = capture.GetValue();
+
 	for (auto it = myMembers.begin(); it != myMembers.end(); ++it)
 	{
-		auto& member = *it;
+		iconer::app::User*& member = *it;
 		if (nullptr != member and id == member->GetID())
 		{
 			member = nullptr;
 
-			if (0 < result)
+			if (0 < count)
 			{
-				--result;
+				--count;
 			}
 
 			isMemberUpdated = true;
-			break;
+			return true;
 		}
 	}
 
-	membersCount.store(result, std::memory_order_release);
-	return std::move(lock);
+	return false;
 }
 
-std::unique_lock<iconer::util::SharedMutex>
+bool
 iconer::app::Room::RemoveMember(const IdType& id, const iconer::app::Room::MemberRemover& predicate)
 {
 	std::unique_lock lock{ myLock };
 
-	size_t result = membersCount.load(std::memory_order_acquire);
-	for (auto& member : myMembers)
+	iconer::util::AtomicSwitcher capture{ membersCount };
+	auto& count = capture.GetValue();
+
+	if (0 < count)
 	{
-		if (nullptr != member and id == member->GetID())
+		for (iconer::app::User*& member : myMembers)
 		{
-			member = nullptr;
-
-			if (0 < result)
+			if (nullptr == member)
 			{
-				std::invoke(predicate, *this, --result);
-			}
+				member = nullptr;
 
-			isMemberUpdated = true;
-			break;
+				if (0 < count)
+				{
+					--count;
+				}
+
+				std::invoke(std::as_const(predicate), *this, count);
+
+				isMemberUpdated = true;
+				return true;
+			}
 		}
 	}
 
-	membersCount.store(result, std::memory_order_release);
-	return std::move(lock);
+	return false;
 }
 
-std::unique_lock<iconer::util::SharedMutex>
+bool
 iconer::app::Room::RemoveMember(const IdType& id, iconer::app::Room::MemberRemover&& predicate)
 {
 	std::unique_lock lock{ myLock };
 
-	size_t result = membersCount.load(std::memory_order_acquire);
-	for (auto& member : myMembers)
+	iconer::util::AtomicSwitcher capture{ membersCount };
+	auto& count = capture.GetValue();
+
+	if (0 < count)
 	{
-		if (nullptr != member and id == member->GetID())
+		for (iconer::app::User*& member : myMembers)
 		{
-			member = nullptr;
-
-			if (0 < result)
+			if (nullptr == member)
 			{
-				std::invoke(predicate, *this, --result);
-			}
+				member = nullptr;
 
-			isMemberUpdated = true;
-			break;
+				if (0 < count)
+				{
+					--count;
+				}
+
+				std::invoke(std::move(predicate), *this, count);
+
+				isMemberUpdated = true;
+				return true;
+			}
 		}
 	}
 
-	membersCount.store(result, std::memory_order_release);
-	return std::move(lock);
+	return false;
+}
+
+bool
+iconer::app::Room::RemoveMember(const IdType& id, LockerType& owned_lock) noexcept
+{
+	std::unique_lock lock{ myLock };
+
+	iconer::util::AtomicSwitcher capture{ membersCount };
+	auto& count = capture.GetValue();
+
+	if (0 < count)
+	{
+		for (iconer::app::User*& member : myMembers)
+		{
+			if (nullptr == member)
+			{
+				member = nullptr;
+
+				if (0 < count)
+				{
+					--count;
+				}
+
+				isMemberUpdated = true;
+				return true;
+			}
+		}
+	}
+	owned_lock = std::move(lock);
+
+	return false;
+}
+
+bool
+iconer::app::Room::RemoveMember(const IdType& id, const MemberRemover& predicate, LockerType& owned_lock)
+{
+	std::unique_lock lock{ myLock };
+
+	iconer::util::AtomicSwitcher capture{ membersCount };
+	auto& count = capture.GetValue();
+
+	if (0 < count)
+	{
+		for (iconer::app::User*& member : myMembers)
+		{
+			if (nullptr == member)
+			{
+				member = nullptr;
+
+				if (0 < count)
+				{
+					--count;
+				}
+
+				std::invoke(std::as_const(predicate), *this, count);
+
+				isMemberUpdated = true;
+				return true;
+			}
+		}
+	}
+	owned_lock = std::move(lock);
+
+	return false;
+}
+
+bool
+iconer::app::Room::RemoveMember(const IdType& id, MemberRemover&& predicate, LockerType& owned_lock)
+{
+	std::unique_lock lock{ myLock };
+
+	iconer::util::AtomicSwitcher capture{ membersCount };
+	auto& count = capture.GetValue();
+
+	if (0 < count)
+	{
+		for (iconer::app::User*& member : myMembers)
+		{
+			if (nullptr == member)
+			{
+				member = nullptr;
+
+				if (0 < count)
+				{
+					--count;
+				}
+
+				std::invoke(std::move(predicate), *this, count);
+
+				isMemberUpdated = true;
+				return true;
+			}
+		}
+	}
+	owned_lock = std::move(lock);
+
+	return false;
 }
 
 size_t
