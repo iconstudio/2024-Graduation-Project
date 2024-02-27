@@ -1,9 +1,10 @@
 module;
+#include <cstddef>
+#include <utility>
+
 export module Iconer.Application.BasicPacket;
 export import :Protocol;
 export import Iconer.Utility.Serializer;
-import <cstddef>;
-import <utility>;
 export import <span>;
 
 export namespace iconer::app

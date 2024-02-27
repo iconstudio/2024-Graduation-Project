@@ -1,10 +1,12 @@
+module;
+#include <cstddef>
+#include <utility>
+#include <algorithm>
+
 export module Iconer.Application.Packet:ClientToServerPackets;
 import Iconer.Utility.Serializer;
 export import Iconer.Application.BasicPacket;
 export import Iconer.Application.RoomContract;
-import <cstddef>;
-import <utility>;
-import <algorithm>;
 
 export namespace iconer::app::packets::inline cs
 {
