@@ -68,6 +68,33 @@ export namespace iconer::app
 			membersCount = 0;
 		}
 
+		template<invocables<User&> Predicate>
+		void ForEach(Predicate&& predicate) const
+		{
+			auto list = AcquireMemberList();
+
+			for (auto& member : list)
+			{
+				if (nullptr != member)
+				{
+					std::invoke(std::forwad<Predicate>(predicate), *member);
+				}
+			}
+		}
+
+		size_t Broadcast(const std::byte* buffer, size_t size) const
+		{
+			size_t result{};
+			ForEach([&](User& user) noexcept {
+				if (user.GetState() != UserStates::None)
+				{
+					user.SendGeneralData(nullptr, buffer, size);
+				}
+			});
+
+			return result;
+		}
+
 		bool TryReserveContract() volatile noexcept
 		{
 			return TryChangeState(RoomStates::None, RoomStates::Reserved);
