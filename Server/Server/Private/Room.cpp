@@ -2,6 +2,7 @@ module;
 #include <mutex>
 
 module Iconer.Application.Room;
+import Iconer.Application.User;
 import Iconer.Application.Packet;
 
 void
