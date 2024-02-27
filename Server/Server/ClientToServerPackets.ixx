@@ -136,6 +136,37 @@ export namespace iconer::app::packets::inline cs
 		}
 	};
 	/// <summary>
+	/// Notifying game's loading is done packet for client
+	/// </summary>
+	/// <remarks>Client would send it to the server</remarks>
+	struct [[nodiscard]] CS_GameLoadedPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize();
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return Super::SignedMinSize();
+		}
+
+		constexpr CS_GameLoadedPacket() noexcept
+			: Super(PacketProtocol::CS_GAME_LOADED, SignedWannabeSize())
+		{
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize);
+		}
+	};
+	/// <summary>
 	/// Room create packet for client
 	/// </summary>
 	/// <param name="roomTitle">Title of the new room</param>
