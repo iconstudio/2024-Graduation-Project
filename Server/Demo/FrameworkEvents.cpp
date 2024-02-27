@@ -36,7 +36,8 @@ void RemoveRoomMember(demo::Framework& framework, iconer::app::Room& room, const
 		demo::Framework& myFramework;
 	};
 
-	auto legacy_lock = room.RemoveMember(user_id, Remover{ framework });
+	iconer::app::Room::LockerType legacy_lock{};
+	room.RemoveMember(user_id, Remover{ framework }, legacy_lock);
 	// `room` would be unlocked here
 }
 
@@ -490,7 +491,7 @@ demo::Framework::OnRespondRoomsList(iconer::app::User& user)
 
 
 	user.roomContext.SetOperation(iconer::app::AsyncOperations::OpNotifyMember);
-	std::span<std::byte> members = room.SerializeMembers();
+	std::span<std::byte> members;
 	auto smr = user.SendGeneralData(std::addressof(user.roomContext), members.data(), members.size());
 	if (not smr)
 	{
@@ -543,7 +544,8 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 
 			if (auto room = FindRoom(room_id); nullptr != room)
 			{
-				auto legacy_lock = room->RemoveMember(user.GetID(), remover);
+				iconer::app::Room::LockerType legacy_lock{};
+				room->RemoveMember(user.GetID(), remover, legacy_lock);
 				// `room` would be unlocked here
 			}
 		}
