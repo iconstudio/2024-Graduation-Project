@@ -46,7 +46,8 @@ export namespace iconer::app
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
 			, preSignInPacket(), preRoomCreationPacket()
-			, roomContext(), myRoomId(-1), myTransform()
+			, roomContext(), myRoomId(-1), isReady()
+			, myTransform()
 		{
 		}
 
@@ -57,7 +58,8 @@ export namespace iconer::app
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
 			, preSignInPacket(), preRoomCreationPacket()
-			, roomContext(), myRoomId(-1), myTransform()
+			, roomContext(), myRoomId(-1), isReady()
+			, myTransform()
 		{
 		}
 
@@ -110,6 +112,12 @@ export namespace iconer::app
 			myName.clear();
 			recvOffset = 0;
 			myRoomId = -1;
+			isReady = false;
+		}
+
+		void SetReady(bool flag) volatile noexcept
+		{
+			isReady = flag;
 		}
 
 		template<size_t Size>
@@ -436,6 +444,7 @@ export namespace iconer::app
 
 		IContext roomContext;
 		iconer::util::MovableAtomic<IdType> myRoomId;
+		iconer::util::MovableAtomic<bool> isReady;
 
 	private:
 		User(const User&) = delete;
