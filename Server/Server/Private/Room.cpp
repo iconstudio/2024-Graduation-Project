@@ -1,5 +1,4 @@
 module;
-#include <memory>
 #include <mutex>
 
 module Iconer.Application.Room;
