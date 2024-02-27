@@ -10,21 +10,33 @@ import Demo.PacketProcessor;
 
 void RemoveRoomMember(demo::Framework& framework, iconer::app::Room& room, const iconer::app::User::IdType& user_id) noexcept
 {
-	room.RemoveMember(user_id
-		, [&](const size_t& members_count) noexcept {
-		if (0 == members_count)
+	struct Remover final : public iconer::app::Room::MemberRemover
+	{
+		constexpr Remover(demo::Framework& framework) noexcept
+			: iconer::app::Room::MemberRemover(), myFramework(framework)
 		{
-			if (room.TryBeginClose(iconer::app::RoomStates::Idle))
-			{
-				room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
+		}
 
-				if (not framework.Schedule(room, room.GetID()))
+		void operator()(iconer::app::Room& room, const size_t& members_count) const noexcept override
+		{
+			if (0 == members_count)
+			{
+				if (room.TryBeginClose(iconer::app::RoomStates::Idle))
 				{
-					room.Cleanup();
+					room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
+
+					if (not myFramework.Schedule(room, room.GetID()))
+					{
+						room.Cleanup();
+					}
 				}
 			}
 		}
-	});
+
+		demo::Framework& myFramework;
+	};
+
+	room.RemoveMember(user_id, Remover{ framework });
 }
 
 demo::Framework::AcceptResult
@@ -440,6 +452,32 @@ demo::Framework::OnClosingRoom(iconer::app::Room& room)
 demo::Framework::AcceptResult
 demo::Framework::OnUserDisconnected(iconer::app::User& user)
 {
+	struct EndToEndRemover final : public iconer::app::Room::MemberRemover
+	{
+		constexpr EndToEndRemover(demo::Framework& framework) noexcept
+			: iconer::app::Room::MemberRemover(), myFramework(framework)
+		{
+		}
+
+		void operator()(iconer::app::Room& room, const size_t& members_count) const noexcept override
+		{
+			if (0 == members_count)
+			{
+				room.BeginClose();
+				room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
+
+				if (not myFramework.Schedule(room, room.GetID()))
+				{
+					room.Cleanup();
+				}
+			}
+		}
+
+		demo::Framework& myFramework;
+	};
+
+	static EndToEndRemover remover{ *this };
+
 	// Reserve the user again
 	if (user.EndClose())
 	{
@@ -450,19 +488,7 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 
 			if (auto room = FindRoom(room_id); nullptr != room)
 			{
-				room->RemoveMember(user.GetID()
-					, [&](const size_t& members_count) noexcept {
-					if (0 == members_count)
-					{
-						room->BeginClose();
-						room->SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
-
-						if (not Schedule(room, room_id))
-						{
-							room->Cleanup();
-						}
-					}
-				});
+				room->RemoveMember(user.GetID(), remover);
 			}
 		}
 
