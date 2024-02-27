@@ -44,10 +44,10 @@ export namespace iconer::app
 			: Super(id)
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
-			, preSignInPacket(), preRoomCreationPacket()
 			, roomContext(), myRoomId(-1), isReady()
 			, requestContext(AsyncOperations::OpNotifyRoom)
 			, myTransform()
+			, preSignInPacket(), preRoomCreationPacket()
 		{
 		}
 
@@ -57,10 +57,10 @@ export namespace iconer::app
 			: Super(std::move(id))
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
-			, preSignInPacket(), preRoomCreationPacket()
 			, roomContext(), myRoomId(-1), isReady()
 			, requestContext(AsyncOperations::OpNotifyRoom)
 			, myTransform()
+			, preSignInPacket(), preRoomCreationPacket()
 		{
 		}
 
@@ -438,14 +438,13 @@ export namespace iconer::app
 		iconer::net::Socket mySocket;
 		volatile ptrdiff_t recvOffset;
 
-		std::unique_ptr<std::byte[]> preSignInPacket;
-		std::unique_ptr<std::byte[]> preRoomCreationPacket;
-
-		glm::mat4 myTransform;
-
 		IContext roomContext, requestContext;
 		iconer::util::MovableAtomic<IdType> myRoomId;
 		iconer::util::MovableAtomic<bool> isReady;
+		glm::mat4 myTransform;
+
+		std::unique_ptr<std::byte[]> preSignInPacket;
+		std::unique_ptr<std::byte[]> preRoomCreationPacket;
 
 	private:
 		User(const User&) = delete;
