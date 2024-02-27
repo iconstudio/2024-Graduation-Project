@@ -28,7 +28,7 @@ export namespace iconer::app
 		OpReserveRoom, OpCreateRoom, OpEnterRoom, OpLeaveRoom, OpCloseRoom,
 
 		/// <summary>Phase 6 ~ </summary>
-		OpNotifyMember,
+		OpNotifyMember, OpNotifyRoom,
 
 		/// <summary>Phase 7 ~ </summary>
 		OpCreateGame, OpReadyGame, OpStartGame, OpLeaveGame,
