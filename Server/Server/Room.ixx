@@ -1,7 +1,6 @@
 module;
 #include <utility>
 #include <atomic>
-#include <array>
 #include <vector>
 #include <mutex>
 
