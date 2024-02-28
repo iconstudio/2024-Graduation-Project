@@ -452,7 +452,7 @@ noexcept
 demo::Framework::IoResult
 demo::Framework::OnRespondRoomsList(iconer::app::User& user)
 {
-	if (haveRoomUpdated)
+	if (GetRoomModifiedFlag())
 	{
 		static iconer::app::packets::SC_RespondRoomsPacket pk{};
 
@@ -467,7 +467,7 @@ demo::Framework::OnRespondRoomsList(iconer::app::User& user)
 		pk.Write(serializedRoomsBuffer.get());
 		serializedRoomsBufferSize = pk.WannabeSize();
 
-		haveRoomUpdated = false;
+		SetRoomModifiedFlag();
 	}
 
 	auto sender = new iconer::app::BorrowedSendContext{};
@@ -524,7 +524,7 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 				iconer::app::Room::LockerType legacy_lock{};
 				if (room->RemoveMember(user.GetID(), remover, legacy_lock))
 				{
-					haveRoomUpdated = true;
+					SetRoomModifiedFlag();
 				}
 				// `room` would be unlocked here
 			}
