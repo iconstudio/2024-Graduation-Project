@@ -20,9 +20,9 @@ struct [[nodiscard]] name : public BasicPacket \
 	return iconer::util::Serializes(myProtocol, mySize, __VA_ARGS__); \
 }
 
-#define ICONER_CONDITIONAL_false(expr) 
-#define ICONER_CONDITIONAL_true(expr) expr
-#define ICONER_CONDITIONAL(flag, expr) ICONER_CONDITIONAL_##flag(expr)
+#define ICONER_CONDITIONAL_false(...) 
+#define ICONER_CONDITIONAL_true(...) __VA_ARGS__
+#define ICONER_CONDITIONAL(flag, ...) ICONER_CONDITIONAL_##flag(__VA_ARGS__)
 
 #pragma region 1 Field
 #define MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, var1_default_value, serializer_method) \
