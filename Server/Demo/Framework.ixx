@@ -244,7 +244,8 @@ export namespace demo
 		iconer::net::Socket gameListener;
 		iconer::net::IoCompletionPort ioCompletionPort;
 
-		//iconer::collection::ConcurrentQueue<iconer::app::BorrowedSendContext> sendContextPool{ initSendContextsNumber };
+		std::unique_ptr<iconer::app::BorrowedSendContext[]> sendContextPool;
+		size_t sendContextPoolSize;
 		std::atomic_bool haveRoomUpdated;
 	};
 
