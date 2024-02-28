@@ -147,6 +147,84 @@ export namespace iconer::app::packets::inline sc
 		int errCause;
 	};
 	/// <summary>
+	/// Creating a client packet for server
+	/// </summary>
+	/// <param name="clientId">An id of client</param>
+	/// <param name="roomId"/>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_RespondVersionPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		static inline constexpr size_t versionLength = 10;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(gameVersion);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(WannabeSize());
+		}
+
+		constexpr SC_RespondVersionPacket() noexcept
+			: Super(PacketProtocol::CS_SIGNIN, SignedWannabeSize())
+			, gameVersion()
+		{
+		}
+
+		explicit constexpr SC_RespondVersionPacket(const wchar_t* begin, const wchar_t* end)
+			: Super(PacketProtocol::CS_SIGNIN, SignedWannabeSize())
+			, gameVersion()
+		{
+			std::copy(begin, end, gameVersion);
+		}
+
+		explicit constexpr SC_RespondVersionPacket(const wchar_t* nts, const size_t length)
+			: Super(PacketProtocol::CS_SIGNIN, SignedWannabeSize())
+			, gameVersion()
+		{
+			std::copy_n(nts, std::min(length, versionLength), gameVersion);
+		}
+
+		template<size_t Length>
+		explicit constexpr SC_RespondVersionPacket(const wchar_t(&str)[Length])
+			: Super(PacketProtocol::CS_SIGNIN, SignedWannabeSize())
+			, gameVersion()
+		{
+			std::copy_n(str, std::min(Length, versionLength), gameVersion);
+		}
+
+		template<size_t Length>
+		explicit constexpr SC_RespondVersionPacket(wchar_t(&& str)[Length])
+			: Super(PacketProtocol::CS_SIGNIN, SignedWannabeSize())
+			, gameVersion()
+		{
+			std::move(str, str + std::min(Length, versionLength), gameVersion);
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			return iconer::util::Serializes(myProtocol, mySize, std::wstring_view{ gameVersion, versionLength });
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			return iconer::util::Serialize(Super::Write(buffer), std::wstring_view{ gameVersion, versionLength });
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer, const size_t& buffer_length)
+		{
+			return iconer::util::Deserialize(Super::Read(buffer), versionLength, gameVersion);
+		}
+
+		wchar_t gameVersion[versionLength];
+	};
+	/// <summary>
 	/// Show rooms response packet for server
 	/// </summary>
 	/// <param name="serializedRooms">Serialized every room</param>
