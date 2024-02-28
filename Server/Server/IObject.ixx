@@ -146,29 +146,25 @@ export namespace iconer::app
 			SetState(std::move(state), std::memory_order_release);
 		}
 
-		[[nodiscard]]
-		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
+		bool TryChangeState(const StatusType& from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
 			requires movable<StatusType>
 		{
 			return myState.CompareAndSet(from_state, std::move(to_state), order);
 		}
 
-		[[nodiscard]]
-		bool TryChangeState(StatusType from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
+		bool TryChangeState(const StatusType& from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
 			requires copyable<StatusType>
 		{
 			return myState.CompareAndSet(from_state, to_state, order);
 		}
 
-		[[nodiscard]]
-		bool TryChangeState(StatusType from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
+		bool TryChangeState(const StatusType& from_state, StatusType&& to_state, std::memory_order order = std::memory_order_relaxed) noexcept
 			requires movable<StatusType>
 		{
 			return myState.CompareAndSet(from_state, std::move(to_state), order);
 		}
 
-		[[nodiscard]]
-		bool TryChangeState(StatusType from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
+		bool TryChangeState(const StatusType& from_state, const StatusType& to_state, std::memory_order order = std::memory_order_relaxed) volatile noexcept
 			requires copyable<StatusType>
 		{
 			return myState.CompareAndSet(from_state, to_state, order);
