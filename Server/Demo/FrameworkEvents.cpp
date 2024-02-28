@@ -363,12 +363,6 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 			return iconer::app::RoomContract::InvalidOperation;
 		}
 
-		auto sjr = user.SendRoomJoinedPacket(user.GetID(), room_id);
-		if (not sjr.first)
-		{
-			delete sjr.second;
-		}
-
 		SetRoomModifiedFlag();
 
 		user.roomContext.SetOperation(iconer::app::AsyncOperations::OpNotifyMember);
