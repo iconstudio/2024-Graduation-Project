@@ -86,11 +86,15 @@ iconer::app::User::SendRoomJoinFailedPacket(iconer::app::RoomContract reason)
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
-iconer::app::User::SendRoomLeftPacket(IdType who)
+iconer::app::User::SendRoomLeftPacket(IdType who, bool is_self)
 {
 	const iconer::app::packets::SC_RoomLeftPacket pk{ who };
 	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
-	ctx->SetOperation(AsyncOperations::OpLeaveRoom);
+
+	if (is_self)
+	{
+		ctx->SetOperation(AsyncOperations::OpLeaveRoom);
+	}
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }

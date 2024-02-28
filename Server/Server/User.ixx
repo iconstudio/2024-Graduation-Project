@@ -145,7 +145,7 @@ export namespace iconer::app
 		std::pair<IoResult, BlobSendContext*> SendRoomJoinedPacket(IdType who, IdType room_id);
 		std::pair<IoResult, BlobSendContext*> SendRoomJoinFailedPacket(RoomContract reason);
 		/// <param name="who">- Not only local client</param>
-		std::pair<IoResult, BlobSendContext*> SendRoomLeftPacket(IdType who);
+		std::pair<IoResult, BlobSendContext*> SendRoomLeftPacket(IdType who, bool is_self);
 		std::pair<IoResult, BlobSendContext*> SendCannotStartGamePacket(int reason);
 		std::pair<IoResult, BlobSendContext*> SendMakeGameReadyPacket();
 		std::pair<IoResult, BlobSendContext*> SendGameJustStartedPacket();
