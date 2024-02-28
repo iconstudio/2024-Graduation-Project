@@ -1,5 +1,6 @@
 ﻿module;
 #pragma comment(lib, "Server.lib")
+#include <cstdlib>
 #include <print>
 
 module TestClient;
@@ -129,13 +130,36 @@ test::Receiver()
 						}
 						break;
 
-						case iconer::app::PacketProtocol::SC_RESPOND_USERS:
+						case iconer::app::PacketProtocol::SC_RESPOND_VERSION:
+						{
+							iconer::app::packets::SC_RespondVersionPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::fwprintf(stdout, L"Version: %s", pk.gameVersion);
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_RESPOND_ROOMS:
 						{
 							iconer::app::packets::SC_RespondMembersPacket pk{};
 							auto offset = pk.Read(recv_space);
 
 							auto& members = pk.serializedMembers;
-							std::println("Members: {}", members.size());
+							std::println("Rooms: {}", members.size());
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_RESPOND_USERS:
+						{
+							iconer::app::packets::SC_RespondRoomsPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							auto& every_room = pk.serializedRooms;
+							std::println("Members: {}", every_room.size());
 
 							PullReceiveBuffer(offset);
 						}
