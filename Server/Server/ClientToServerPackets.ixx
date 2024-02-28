@@ -8,6 +8,8 @@ import Iconer.Utility.Serializer;
 export import Iconer.Application.BasicPacket;
 export import Iconer.Application.RoomContract;
 
+#include "PacketHelper.inl"
+
 export namespace iconer::app::packets::inline cs
 {
 #pragma pack(push, 1)
@@ -15,157 +17,27 @@ export namespace iconer::app::packets::inline cs
 	/// Requesting game version packet for client
 	/// </summary>
 	/// <remarks>Client would send it to the server</remarks>
-	struct [[nodiscard]] CS_RequestVersionPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize();
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return Super::SignedMinSize();
-		}
-
-		constexpr CS_RequestVersionPacket() noexcept
-			: Super(PacketProtocol::CS_REQUEST_VERSION, SignedWannabeSize())
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize);
-		}
-	};
+	MAKE_EMPTY_PACKET(CS_RequestVersionPacket, PacketProtocol::CS_REQUEST_VERSION);
 	/// <summary>
 	/// Requesting every room packet for client
 	/// </summary>
 	/// <remarks>Client would send it to the server</remarks>
-	struct [[nodiscard]] CS_RequestRoomsPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize();
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return Super::SignedMinSize();
-		}
-
-		constexpr CS_RequestRoomsPacket() noexcept
-			: Super(PacketProtocol::CS_REQUEST_ROOMS, SignedWannabeSize())
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize);
-		}
-	};
+	MAKE_EMPTY_PACKET(CS_RequestRoomsPacket, PacketProtocol::CS_REQUEST_ROOMS);
 	/// <summary>
 	/// Requesting users in the room packet for client
 	/// </summary>
 	/// <remarks>Client would send it to the server</remarks>
-	struct [[nodiscard]] CS_RequestMembersPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize();
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return Super::SignedMinSize();
-		}
-
-		constexpr CS_RequestMembersPacket() noexcept
-			: Super(PacketProtocol::CS_REQUEST_USERS, SignedWannabeSize())
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize);
-		}
-	};
+	MAKE_EMPTY_PACKET(CS_RequestMembersPacket, PacketProtocol::CS_REQUEST_USERS);
 	/// <summary>
 	/// Game initiating packet for client
 	/// </summary>
 	/// <remarks>Client would send it to the server</remarks>
-	struct [[nodiscard]] CS_GameStartPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize();
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return Super::SignedMinSize();
-		}
-
-		constexpr CS_GameStartPacket() noexcept
-			: Super(PacketProtocol::CS_GAME_START, SignedWannabeSize())
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize);
-		}
-	};
+	MAKE_EMPTY_PACKET(CS_GameStartPacket, PacketProtocol::CS_GAME_START);
 	/// <summary>
 	/// Notifying game's loading is done packet for client
 	/// </summary>
 	/// <remarks>Client would send it to the server</remarks>
-	struct [[nodiscard]] CS_GameLoadedPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize();
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return Super::SignedMinSize();
-		}
-
-		constexpr CS_GameLoadedPacket() noexcept
-			: Super(PacketProtocol::CS_GAME_LOADED, SignedWannabeSize())
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize);
-		}
-	};
+	MAKE_EMPTY_PACKET(CS_GameLoadedPacket, PacketProtocol::CS_GAME_LOADED);
 	/// <summary>
 	/// Room create packet for client
 	/// </summary>
@@ -297,33 +169,7 @@ export namespace iconer::app::packets::inline cs
 	/// Room leaving packet for client
 	/// </summary>
 	/// <remarks>Client would send it to the server</remarks>
-	struct [[nodiscard]] CS_LeaveRoomPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize();
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return Super::SignedMinSize();
-		}
-
-		constexpr CS_LeaveRoomPacket() noexcept
-			: Super(PacketProtocol::CS_ROOM_LEAVE, SignedWannabeSize())
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize);
-		}
-	};
+	MAKE_EMPTY_PACKET(CS_LeaveRoomPacket, PacketProtocol::CS_ROOM_LEAVE);
 	/// <summary>
 	/// Position packet for client
 	/// </summary>
