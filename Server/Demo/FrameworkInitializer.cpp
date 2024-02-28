@@ -87,6 +87,7 @@ demo::Framework::Awake()
 
 	iconer::app::packets::SC_RespondRoomsPacket rooms_pk{};
 	rooms_pk.Write(serializedRoomsBuffer.get());
+	serializedRoomsBufferSize = rooms_pk.WannabeSize();
 
 	myLogger.Log(L"\tallocating space of objects...\n");
 	userManager->Reserve(maxUsersNumber);
