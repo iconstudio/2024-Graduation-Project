@@ -143,11 +143,11 @@ test::Receiver()
 
 						case iconer::app::PacketProtocol::SC_RESPOND_ROOMS:
 						{
-							iconer::app::packets::SC_RespondMembersPacket pk{};
+							iconer::app::packets::SC_RespondRoomsPacket pk{};
 							auto offset = pk.Read(recv_space);
 
-							auto& members = pk.serializedMembers;
-							std::println("Rooms: {}", members.size());
+							auto& every_room = pk.serializedRooms;
+							std::println("Rooms: {}", every_room.size());
 
 							PullReceiveBuffer(offset);
 						}
@@ -155,11 +155,11 @@ test::Receiver()
 
 						case iconer::app::PacketProtocol::SC_RESPOND_USERS:
 						{
-							iconer::app::packets::SC_RespondRoomsPacket pk{};
+							iconer::app::packets::SC_RespondMembersPacket pk{};
 							auto offset = pk.Read(recv_space);
 
-							auto& every_room = pk.serializedRooms;
-							std::println("Members: {}", every_room.size());
+							auto& members = pk.serializedMembers;
+							std::println("Members: {}", members.size());
 
 							PullReceiveBuffer(offset);
 						}
