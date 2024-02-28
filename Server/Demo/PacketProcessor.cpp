@@ -29,12 +29,22 @@ demo::OnSignOut(iconer::app::User& user)
 }
 
 void
+demo::OnRequestVersion(Framework& framework, iconer::app::User& user)
+{
+}
+
+void
 demo::OnRequestRoomList(Framework& framework, iconer::app::User& user)
 {
 	if (user.GetState() != iconer::app::UserStates::None and user.GetState() != iconer::app::UserStates::Reserved)
 	{
 		framework.Schedule(user.requestContext, user.GetID());
 	}
+}
+
+void
+demo::OnRequestMemberList(Framework& framework, iconer::app::User& user)
+{
 }
 
 void
@@ -141,7 +151,8 @@ demo::OnLeaveRoom(demo::Framework& framework, iconer::app::User& user)
 {
 	if (user.myRoomId != -1)
 	{
-		SEND(user, SendRoomLeftPacket, user.GetID());
+		// Send the packet and produce a event
+		SEND(user, SendRoomLeftPacket, user.GetID(), true);
 	}
 }
 

@@ -21,7 +21,9 @@ export namespace demo
 	ptrdiff_t PacketProcessor(Framework& framework, iconer::app::User& user, std::span<std::byte> packet_data, ptrdiff_t last_offset);
 
 	void OnSignOut(iconer::app::User& user);
+	void OnRequestVersion(Framework& framework, iconer::app::User& user);
 	void OnRequestRoomList(Framework& framework, iconer::app::User& user);
+	void OnRequestMemberList(Framework& framework, iconer::app::User& user);
 	void OnCreateRoom(Framework& framework, iconer::app::User& user, const wchar_t (&room_title)[16]);
 	void OnJoinRoom(Framework& framework, iconer::app::User& user, const std::int32_t& room_id);
 	void OnLeaveRoom(Framework& framework, iconer::app::User& user);
@@ -85,6 +87,7 @@ demo::PacketProcessor(demo::Framework& framework
 			case iconer::app::PacketProtocol::CS_REQUEST_VERSION:
 			{
 				// Empty packet
+				OnRequestVersion(framework, user);
 			}
 			break;
 
@@ -98,6 +101,7 @@ demo::PacketProcessor(demo::Framework& framework
 			case iconer::app::PacketProtocol::CS_REQUEST_USERS:
 			{
 				// Empty packet
+				OnRequestMemberList(framework, user);
 			}
 			break;
 
