@@ -85,6 +85,9 @@ demo::Framework::Awake()
 	userSpace = std::make_unique<app::User[]>(maxUsersNumber);
 	serializedRoomsBuffer = std::make_unique<std::byte[]>(iconer::app::packets::SC_RespondRoomsPacket::MaxSize());
 
+	iconer::app::packets::SC_RespondRoomsPacket rooms_pk{};
+	rooms_pk.Write(serializedRoomsBuffer.get());
+
 	myLogger.Log(L"\tallocating space of objects...\n");
 	userManager->Reserve(maxUsersNumber);
 	serverWorkers.reserve(workersCount);
