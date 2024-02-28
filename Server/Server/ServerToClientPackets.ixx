@@ -184,22 +184,17 @@ export namespace iconer::app::packets::inline sc
 		constexpr auto Serialize() const
 		{
 			std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(WannabeSize());
-			auto seek = Super::Write(buffer.get());
 
-			seek = iconer::util::Serialize(seek, serializedRooms.size());
-			for (auto& room : serializedRooms)
-			{
-				seek = iconer::util::Serialize(seek, room.id);
-				seek = iconer::util::Serialize(seek, std::wstring_view{ room.title, room.nameLength });
-				seek = iconer::util::Serialize(seek, room.members);
-			}
+			Write(buffer.get());
 
 			return std::move(buffer);
 		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
-			auto seek = iconer::util::Serialize(Super::Write(buffer), serializedRooms.size());
+			auto seek = iconer::util::Serialize(iconer::util::Serialize(buffer, myProtocol), static_cast<std::int16_t>(WannabeSize()));
+
+			seek = iconer::util::Serialize(seek, serializedRooms.size());
 
 			for (auto& room : serializedRooms)
 			{
@@ -289,21 +284,17 @@ export namespace iconer::app::packets::inline sc
 		constexpr auto Serialize() const
 		{
 			std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(WannabeSize());
-			auto seek = Super::Write(buffer.get());
 
-			seek = iconer::util::Serialize(seek, serializedMembers.size());
-			for (auto& member : serializedMembers)
-			{
-				seek = iconer::util::Serialize(seek, member.id);
-				seek = iconer::util::Serialize(seek, std::wstring_view{ member.nickname, member.nameLength });
-			}
+			Write(buffer.get());
 
 			return std::move(buffer);
 		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
-			auto seek = iconer::util::Serialize(Super::Write(buffer), serializedMembers.size());
+			auto seek = iconer::util::Serialize(iconer::util::Serialize(buffer, myProtocol), static_cast<std::int16_t>(WannabeSize()));
+
+			seek = iconer::util::Serialize(seek, serializedMembers.size());
 
 			for (auto& member : serializedMembers)
 			{
@@ -356,7 +347,7 @@ export namespace iconer::app::packets::inline sc
 	/// <param name="clientId">- An id of client</param>
 	/// <param name="roomId">- An id of the room</param>
 	/// <remarks>Server would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT(SC_RoomJoinedPacket, PacketProtocol::SC_ROOM_CREATE_FAILED, std::int32_t, clientId, user_id, -1, std::int32_t, roomId, room_id, -1);
+	MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT(SC_RoomJoinedPacket, PacketProtocol::SC_ROOM_JOINED, std::int32_t, clientId, user_id, -1, std::int32_t, roomId, room_id, -1);
 	/// <summary>
 	/// Failed to join to a room packet for server
 	/// </summary>
