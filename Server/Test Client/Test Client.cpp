@@ -43,8 +43,8 @@ test::Receiver()
 
 				if (basic_pk.mySize <= 0)
 				{
-					//throw "error!";
 					std::println("Packet's size is zero!");
+					throw "error!";
 				}
 				else if (const auto sz = static_cast<unsigned long>(basic_pk.mySize); sz <= received_bytes)
 				{
