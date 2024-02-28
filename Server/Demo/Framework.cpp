@@ -162,6 +162,11 @@ noexcept
 	haveRoomUpdated = true;
 }
 
+bool demo::Framework::GetRoomModifiedFlag() const noexcept
+{
+	return haveRoomUpdated;
+}
+
 void
 demo::Framework::LockPhase()
 noexcept
