@@ -1,5 +1,6 @@
 module;
 #include <vector>
+#include <span>
 #include <algorithm>
 #include <mutex>
 
