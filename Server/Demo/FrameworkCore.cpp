@@ -280,6 +280,17 @@ demo::Framework::RouteEvent(bool is_succeed
 			else
 			{
 				myLogger.Log(L"\tUser {} entered to room {}\n", user_id, room_id);
+
+				room->ForEach([&user, &room_id](iconer::app::User& member) {
+					if (member.GetID() != user->GetID())
+					{
+						auto sjr = member.SendRoomJoinedPacket(user->GetID(), room_id);
+						if (not sjr.first)
+						{
+							delete sjr.second;
+						}
+					}
+				});
 			}
 
 			ctx->Clear();
