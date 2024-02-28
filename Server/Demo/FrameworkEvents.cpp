@@ -532,8 +532,6 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 		// Make room out now
 		if (auto room_id = user.myRoomId.Exchange(-1); -1 != room_id)
 		{
-			user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
-
 			if (auto room = FindRoom(room_id); nullptr != room)
 			{
 				iconer::app::Room::LockerType legacy_lock{};
