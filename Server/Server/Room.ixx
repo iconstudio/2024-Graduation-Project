@@ -1,4 +1,5 @@
 module;
+#include <initializer_list>
 #include <memory>
 #include <vector>
 #include <mutex>
@@ -101,6 +102,7 @@ export namespace iconer::app
 			}
 		}
 		size_t Broadcast(std::span<IContext*> ctxes, const std::byte* buffer, size_t size) const;
+		size_t BroadcastExcept(std::span<IContext*> ctxes, const std::byte* buffer, size_t size, std::initializer_list<IdType> exceptions) const;
 
 		size_t ReadyMember(iconer::app::User& user) noexcept;
 

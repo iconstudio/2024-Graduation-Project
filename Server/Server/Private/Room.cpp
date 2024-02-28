@@ -1,4 +1,6 @@
 module;
+#include <vector>
+#include <algorithm>
 #include <mutex>
 
 module Iconer.Application.Room;
@@ -17,13 +19,84 @@ size_t
 iconer::app::Room::Broadcast(std::span<iconer::app::IContext*> ctxes, const std::byte* buffer, size_t size)
 const
 {
+	std::vector<iconer::app::User*> list = AcquireMemberList();
+
+	if (ctxes.size() < list.size() or size == 0)
+	{
+		return 0;
+	}
+
+	auto it = ctxes.begin();
+
 	size_t result{};
-	ForEach([&](User& user) noexcept {
-		if (user.GetState() != UserStates::None)
+	for (auto ptr : list)
+	{
+		if (nullptr != ptr)
 		{
-			user.SendGeneralData(nullptr, buffer, size);
+			iconer::app::User& user = *ptr;
+
+			if (user.GetState() != iconer::app::UserStates::None)
+			{
+				iconer::app::IContext*& ctx = *it;
+
+				if (not user.SendGeneralData(ctx, buffer, size))
+				{
+					delete std::exchange(ctx, nullptr);
+				}
+				else
+				{
+					(void)++result;
+				}
+			}
 		}
-	});
+	}
+
+	return result;
+}
+
+size_t
+iconer::app::Room::BroadcastExcept(std::span<iconer::app::IContext*> ctxes, const std::byte* buffer, size_t size, std::initializer_list<iconer::app::User::IdType> exceptions)
+const
+{
+	std::vector<iconer::app::User*> list = AcquireMemberList();
+
+	if (ctxes.size() < list.size() or size == 0)
+	{
+		return 0;
+	}
+
+	auto it = ctxes.begin();
+
+	size_t result{};
+	for (auto ptr : list)
+	{
+		if (nullptr != ptr)
+		{
+			iconer::app::User& user = *ptr;
+
+			if (exceptions.end() != std::find_if(exceptions.begin(), exceptions.end()
+				, [&user](const iconer::app::User::IdType& rhs) noexcept -> bool {
+				return user.GetID() == rhs;
+			}))
+			{
+				continue;
+			}
+
+			if (user.GetState() != iconer::app::UserStates::None)
+			{
+				iconer::app::IContext*& ctx = *it;
+
+				if (not user.SendGeneralData(ctx, buffer, size))
+				{
+					delete std::exchange(ctx, nullptr);
+				}
+				else
+				{
+					(void)++result;
+				}
+			}
+		}
+	}
 
 	return result;
 }
@@ -34,8 +107,8 @@ noexcept
 {
 	std::unique_lock lock{ myLock };
 
-	iconer::util::AtomicSwitcher capture{ membersCount };
-	auto& count = capture.GetValue();
+	iconer::util::AtomicSwitcher<std::atomic<unsigned long long>> capture{ membersCount };
+	unsigned long long& count = capture.GetValue();
 
 	if (count < maxUsersNumberInRoom)
 	{
@@ -62,8 +135,8 @@ noexcept
 {
 	std::unique_lock lock{ myLock };
 
-	iconer::util::AtomicSwitcher capture{ membersCount };
-	auto& count = capture.GetValue();
+	iconer::util::AtomicSwitcher<std::atomic<unsigned long long>> capture{ membersCount };
+	unsigned long long& count = capture.GetValue();
 
 	for (auto it = myMembers.begin(); it != myMembers.end(); ++it)
 	{
@@ -86,12 +159,13 @@ noexcept
 }
 
 bool
-iconer::app::Room::RemoveMember(const IdType& id, const iconer::app::Room::MemberRemover& predicate)
+iconer::app::Room::RemoveMember(const iconer::app::Room::IdType& id
+	, const iconer::app::Room::MemberRemover& predicate)
 {
 	std::unique_lock lock{ myLock };
 
-	iconer::util::AtomicSwitcher capture{ membersCount };
-	auto& count = capture.GetValue();
+	iconer::util::AtomicSwitcher<std::atomic<unsigned long long>> capture{ membersCount };
+	unsigned long long& count = capture.GetValue();
 
 	if (0 < count)
 	{
@@ -118,12 +192,13 @@ iconer::app::Room::RemoveMember(const IdType& id, const iconer::app::Room::Membe
 }
 
 bool
-iconer::app::Room::RemoveMember(const IdType& id, iconer::app::Room::MemberRemover&& predicate)
+iconer::app::Room::RemoveMember(const iconer::app::Room::IdType& id
+	, iconer::app::Room::MemberRemover&& predicate)
 {
 	std::unique_lock lock{ myLock };
 
-	iconer::util::AtomicSwitcher capture{ membersCount };
-	auto& count = capture.GetValue();
+	iconer::util::AtomicSwitcher<std::atomic<unsigned long long>> capture{ membersCount };
+	unsigned long long& count = capture.GetValue();
 
 	if (0 < count)
 	{
@@ -154,8 +229,8 @@ iconer::app::Room::RemoveMember(const IdType& id, LockerType& owned_lock) noexce
 {
 	std::unique_lock lock{ myLock };
 
-	iconer::util::AtomicSwitcher capture{ membersCount };
-	auto& count = capture.GetValue();
+	iconer::util::AtomicSwitcher<std::atomic<unsigned long long>> capture{ membersCount };
+	unsigned long long& count = capture.GetValue();
 
 	if (0 < count)
 	{
@@ -181,12 +256,14 @@ iconer::app::Room::RemoveMember(const IdType& id, LockerType& owned_lock) noexce
 }
 
 bool
-iconer::app::Room::RemoveMember(const IdType& id, const MemberRemover& predicate, LockerType& owned_lock)
+iconer::app::Room::RemoveMember(const iconer::app::Room::IdType& id
+	, const iconer::app::Room::MemberRemover& predicate
+	, iconer::app::Room::LockerType& owned_lock)
 {
 	std::unique_lock lock{ myLock };
 
-	iconer::util::AtomicSwitcher capture{ membersCount };
-	auto& count = capture.GetValue();
+	iconer::util::AtomicSwitcher<std::atomic<unsigned long long>> capture{ membersCount };
+	unsigned long long& count = capture.GetValue();
 
 	if (0 < count)
 	{
@@ -214,12 +291,14 @@ iconer::app::Room::RemoveMember(const IdType& id, const MemberRemover& predicate
 }
 
 bool
-iconer::app::Room::RemoveMember(const IdType& id, MemberRemover&& predicate, LockerType& owned_lock)
+iconer::app::Room::RemoveMember(const iconer::app::Room::IdType& id
+	, iconer::app::Room::MemberRemover&& predicate
+	, iconer::app::Room::LockerType& owned_lock)
 {
 	std::unique_lock lock{ myLock };
 
-	iconer::util::AtomicSwitcher capture{ membersCount };
-	auto& count = capture.GetValue();
+	iconer::util::AtomicSwitcher<std::atomic<unsigned long long>> capture{ membersCount };
+	unsigned long long& count = capture.GetValue();
 
 	if (0 < count)
 	{
