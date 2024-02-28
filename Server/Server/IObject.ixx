@@ -1,3 +1,9 @@
+module;
+#include <concepts>
+#include <memory>
+#include <string>
+#include <string_view>
+
 export module Iconer.Application.IObject;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.Handler;
@@ -5,10 +11,6 @@ import Iconer.Utility.NamedObject;
 import Iconer.Utility.Property;
 import Iconer.Utility.Atomic;
 import Iconer.Utility.MovableAtomic;
-import <concepts>;
-import <memory>;
-import <string>;
-import <string_view>;
 
 export namespace iconer::app
 {
