@@ -31,12 +31,9 @@ demo::OnSignOut(iconer::app::User& user)
 void
 demo::OnRequestRoomList(Framework& framework, iconer::app::User& user)
 {
-	if (std::int32_t room_id = user.myRoomId; -1 != room_id)
+	if (user.GetState() != iconer::app::UserStates::None and user.GetState() != iconer::app::UserStates::Reserved)
 	{
-		if (auto room = framework.FindRoom(room_id); nullptr != room)
-		{
-			framework.Schedule(user.requestContext, user.GetID());
-		}
+		framework.Schedule(user.requestContext, user.GetID());
 	}
 }
 
