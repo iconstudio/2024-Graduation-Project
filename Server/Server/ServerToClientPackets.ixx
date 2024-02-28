@@ -49,57 +49,13 @@ export namespace iconer::app::packets::inline sc
 	/// <summary>
 	/// Failed to start game notification packet for server
 	/// </summary>
-	/// <param name="errCause">Cause of the failure</param>
+	/// <param name="errCause">- Cause of the failure</param>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_FailedGameStartingPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize() + sizeof(errCause);
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(errCause));
-		}
-
-		constexpr SC_FailedGameStartingPacket() noexcept
-			: SC_FailedGameStartingPacket(0)
-		{
-		}
-
-		constexpr SC_FailedGameStartingPacket(int reason) noexcept
-			: Super(PacketProtocol::SC_FAILED_GAME_START, SignedWannabeSize())
-			, errCause(reason)
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize, errCause);
-		}
-
-		constexpr std::byte* Write(std::byte* buffer) const
-		{
-			return iconer::util::Serialize(Super::Write(buffer), errCause);
-		}
-
-		constexpr const std::byte* Read(const std::byte* buffer)
-		{
-			return iconer::util::Deserialize(Super::Read(buffer), errCause);
-		}
-
-		int errCause;
-	};
+	MAKE_EMPTY_PACKET_1VAR(SC_FailedGameStartingPacket, PacketProtocol::SC_FAILED_GAME_START, int, errCause, error, false);
 	/// <summary>
 	/// Creating a client packet for server
 	/// </summary>
-	/// <param name="clientId">An id of client</param>
+	/// <param name="clientId">- An id of client</param>
 	/// <param name="roomId"/>
 	/// <remarks>Server would send it to the client</remarks>
 	struct [[nodiscard]] SC_RespondVersionPacket : public BasicPacket
@@ -177,7 +133,7 @@ export namespace iconer::app::packets::inline sc
 	/// <summary>
 	/// Show rooms response packet for server
 	/// </summary>
-	/// <param name="serializedRooms">Serialized every room</param>
+	/// <param name="serializedRooms">- Serialized every room</param>
 	/// <remarks>Server would send it to the client</remarks>
 	struct [[nodiscard]] SC_RespondRoomsPacket : public BasicPacket
 	{
@@ -283,7 +239,7 @@ export namespace iconer::app::packets::inline sc
 	/// <summary>
 	/// Room members response packet for server
 	/// </summary>
-	/// <param name="serializedMembers">Serialized members in the room</param>
+	/// <param name="serializedMembers">- Serialized members in the room</param>
 	/// <remarks>Server would send it to the client</remarks>
 	struct [[nodiscard]] SC_RespondMembersPacket : public BasicPacket
 	{
@@ -385,259 +341,38 @@ export namespace iconer::app::packets::inline sc
 	/// <summary>
 	/// Room created notification packet for server
 	/// </summary>
-	/// <param name="roomId">An id of the created room</param>
+	/// <param name="roomId">- An id of the created room</param>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_RoomCreatedPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize() + sizeof(roomId);
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(roomId));
-		}
-
-		constexpr SC_RoomCreatedPacket() noexcept
-			: SC_RoomCreatedPacket(-1)
-		{
-		}
-
-		constexpr SC_RoomCreatedPacket(std::int32_t room_id) noexcept
-			: Super(PacketProtocol::SC_ROOM_CREATED, SignedWannabeSize())
-			, roomId(room_id)
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize, roomId);
-		}
-
-		constexpr std::byte* Write(std::byte* buffer) const
-		{
-			return iconer::util::Serialize(Super::Write(buffer), roomId);
-		}
-
-		constexpr const std::byte* Read(const std::byte* buffer)
-		{
-			return iconer::util::Deserialize(Super::Read(buffer), roomId);
-		}
-
-		std::int32_t roomId;
-	};
+	MAKE_EMPTY_PACKET_1VAR(SC_RoomCreatedPacket, PacketProtocol::SC_ROOM_CREATED, std::int32_t, roomId, room_id, false);
 	/// <summary>
 	/// Failed to join to a room packet for server
 	/// </summary>
 	/// <param name="errCause">Reason of couldn't join to the room</param>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_RoomCreationFailedPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize() + sizeof(errCause);
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(errCause));
-		}
-
-		constexpr SC_RoomCreationFailedPacket() noexcept
-			: SC_RoomCreationFailedPacket(RoomContract::Success)
-		{
-		}
-
-		constexpr SC_RoomCreationFailedPacket(RoomContract cause) noexcept
-			: Super(PacketProtocol::SC_ROOM_CREATE_FAILED, SignedWannabeSize())
-			, errCause(cause)
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize, errCause);
-		}
-
-		constexpr std::byte* Write(std::byte* buffer) const
-		{
-			return iconer::util::Serialize(Super::Write(buffer), errCause);
-		}
-
-		constexpr const std::byte* Read(const std::byte* buffer)
-		{
-			return iconer::util::Deserialize(Super::Read(buffer), errCause);
-		}
-
-		RoomContract errCause;
-	};
+	MAKE_EMPTY_PACKET_1VAR(SC_RoomCreationFailedPacket, PacketProtocol::SC_ROOM_CREATE_FAILED, RoomContract, errCause, cause, false);
 	/// <summary>
 	/// Joined to a room packet for server
 	/// </summary>
-	/// <param name="clientId">An id of client</param>
-	/// <param name="roomId">An id of the room</param>
+	/// <param name="clientId">- An id of client</param>
+	/// <param name="roomId">- An id of the room</param>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_RoomJoinedPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize() + sizeof(clientId) + sizeof(roomId);
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(clientId) + sizeof(roomId));
-		}
-
-		constexpr SC_RoomJoinedPacket() noexcept
-			: SC_RoomJoinedPacket(-1, -1)
-		{
-		}
-
-		constexpr SC_RoomJoinedPacket(std::int32_t user_id, std::int32_t room_id) noexcept
-			: Super(PacketProtocol::SC_ROOM_JOINED, SignedWannabeSize())
-			, clientId(user_id), roomId(room_id)
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize, clientId, roomId);
-		}
-
-		constexpr std::byte* Write(std::byte* buffer) const
-		{
-			return iconer::util::Serializes(Super::Write(buffer), clientId, roomId);
-		}
-
-		constexpr const std::byte* Read(const std::byte* buffer)
-		{
-			return iconer::util::Deserialize(iconer::util::Deserialize(Super::Read(buffer), clientId), roomId);
-		}
-
-		std::int32_t clientId;
-		std::int32_t roomId;
-	};
+	MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT(SC_RoomJoinedPacket, PacketProtocol::SC_ROOM_CREATE_FAILED, std::int32_t, clientId, user_id, -1, std::int32_t, roomId, room_id, -1);
 	/// <summary>
 	/// Failed to join to a room packet for server
 	/// </summary>
-	/// <param name="errCause">Reason of couldn't join to the room</param>
+	/// <param name="errCause">- Reason of couldn't join to the room</param>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_RoomJoinFailedPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize() + sizeof(errCause);
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(errCause));
-		}
-
-		constexpr SC_RoomJoinFailedPacket() noexcept
-			: SC_RoomJoinFailedPacket(RoomContract::Success)
-		{
-		}
-
-		constexpr SC_RoomJoinFailedPacket(RoomContract cause) noexcept
-			: Super(PacketProtocol::SC_ROOM_JOIN_FAILED, SignedWannabeSize())
-			, errCause(cause)
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize, errCause);
-		}
-
-		constexpr std::byte* Write(std::byte* buffer) const
-		{
-			return iconer::util::Serialize(Super::Write(buffer), errCause);
-		}
-
-		constexpr const std::byte* Read(const std::byte* buffer)
-		{
-			return iconer::util::Deserialize(Super::Read(buffer), errCause);
-		}
-
-		RoomContract errCause;
-	};
+	MAKE_EMPTY_PACKET_1VAR(SC_RoomJoinFailedPacket, PacketProtocol::SC_ROOM_JOIN_FAILED, RoomContract, errCause, cause, false);
 	/// <summary>
 	/// Room left packet for server
 	/// </summary>
-	/// <param name="clientId">An id of client</param>
+	/// <param name="clientId">- An id of client</param>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_RoomLeftPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize() + sizeof(clientId);
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(clientId));
-		}
-
-		constexpr SC_RoomLeftPacket() noexcept
-			: SC_RoomLeftPacket(-1)
-		{
-		}
-
-		constexpr SC_RoomLeftPacket(std::int32_t user_id) noexcept
-			: Super(PacketProtocol::SC_ROOM_LEFT, SignedWannabeSize())
-			, clientId(user_id)
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize, clientId);
-		}
-
-		constexpr std::byte* Write(std::byte* buffer) const
-		{
-			return iconer::util::Serialize(Super::Write(buffer), clientId);
-		}
-
-		constexpr const std::byte* Read(const std::byte* buffer)
-		{
-			return iconer::util::Deserialize(Super::Read(buffer), clientId);
-		}
-
-		std::int32_t clientId;
-	};
+	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(SC_RoomLeftPacket, PacketProtocol::SC_ROOM_LEFT, std::int32_t, clientId, user_id, -1);
 	/// <summary>
 	/// Creating a client packet for server
 	/// </summary>
-	/// <param name="clientId">An id of client</param>
+	/// <param name="clientId">- An id of client</param>
 	/// <param name="roomId"/>
 	/// <remarks>Server would send it to the client</remarks>
 	struct [[nodiscard]] SC_CreatePlayerPacket : public BasicPacket
@@ -691,153 +426,21 @@ export namespace iconer::app::packets::inline sc
 	/// <summary>
 	/// Remove a certain client packet for server
 	/// </summary>
-	/// <param name="clientId">An id of client</param>
+	/// <param name="clientId">- An id of client</param>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_DestroyPlayerPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize() + sizeof(clientId);
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(clientId));
-		}
-
-		constexpr SC_DestroyPlayerPacket() noexcept
-			: SC_DestroyPlayerPacket(-1)
-		{
-		}
-
-		constexpr SC_DestroyPlayerPacket(std::int32_t id) noexcept
-			: Super(PacketProtocol::SC_REMOVE_PLAYER, SignedWannabeSize())
-			, clientId(id)
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize, clientId);
-		}
-
-		constexpr std::byte* Write(std::byte* buffer) const
-		{
-			return iconer::util::Serialize(Super::Write(buffer), clientId);
-		}
-
-		constexpr const std::byte* Read(const std::byte* buffer)
-		{
-			return iconer::util::Deserialize(Super::Read(buffer), clientId);
-		}
-
-		std::int32_t clientId;
-	};
+	MAKE_EMPTY_PACKET_1VAR(SC_DestroyPlayerPacket, PacketProtocol::SC_REMOVE_PLAYER, std::int32_t, clientId, user_id, false);
 	/// <summary>
 	/// Assigning ID to client packet for server
 	/// </summary>
-	/// <param name="clientId">An id of client</param>
+	/// <param name="clientId">- An id of client</param>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_SucceedSignInPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize() + sizeof(clientId);
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(clientId));
-		}
-
-		constexpr SC_SucceedSignInPacket() noexcept
-			: SC_SucceedSignInPacket(-1)
-		{
-		}
-
-		constexpr SC_SucceedSignInPacket(std::int32_t id) noexcept
-			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, SignedWannabeSize())
-			, clientId(id)
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize, clientId);
-		}
-
-		constexpr std::byte* Write(std::byte* buffer) const
-		{
-			return iconer::util::Serialize(Super::Write(buffer), clientId);
-		}
-
-		constexpr const std::byte* Read(const std::byte* buffer)
-		{
-			return iconer::util::Deserialize(Super::Read(buffer), clientId);
-		}
-
-		std::int32_t clientId;
-	};
+	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(SC_SucceedSignInPacket, PacketProtocol::SC_SIGNIN_SUCCESS, std::int32_t, clientId, user_id, -1);
 	/// <summary>
 	/// Assigning ID to client packet for server
 	/// </summary>
-	/// <param name="errCause">Cause of the failure</param>
+	/// <param name="errCause">- Cause of the failure</param>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_FailedSignInPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize() + sizeof(errCause);
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(errCause));
-		}
-
-		constexpr SC_FailedSignInPacket() noexcept
-			: SC_FailedSignInPacket(0)
-		{
-		}
-
-		constexpr SC_FailedSignInPacket(int reason) noexcept
-			: Super(PacketProtocol::SC_SIGNIN_SUCCESS, SignedWannabeSize())
-			, errCause(reason)
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize, errCause);
-		}
-
-		constexpr std::byte* Write(std::byte* buffer) const
-		{
-			return iconer::util::Serialize(Super::Write(buffer), errCause);
-		}
-
-		constexpr const std::byte* Read(const std::byte* buffer)
-		{
-			return iconer::util::Deserialize(Super::Read(buffer), errCause);
-		}
-
-		int errCause;
-	};
+	MAKE_EMPTY_PACKET_1VAR(SC_FailedSignInPacket, PacketProtocol::SC_SIGNIN_FAILURE, int, errCause, cause, false);
 	/// <summary>
 	/// Position packet for server
 	/// </summary>
