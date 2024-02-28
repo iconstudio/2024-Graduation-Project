@@ -217,7 +217,7 @@ export namespace iconer::app::packets::inline sc
 			return iconer::util::Serialize(Super::Write(buffer), std::wstring_view{ gameVersion, versionLength });
 		}
 
-		constexpr const std::byte* Read(const std::byte* buffer, const size_t& buffer_length)
+		constexpr const std::byte* Read(const std::byte* buffer)
 		{
 			return iconer::util::Deserialize(Super::Read(buffer), versionLength, gameVersion);
 		}
@@ -252,7 +252,7 @@ export namespace iconer::app::packets::inline sc
 		}
 
 		constexpr SC_RespondRoomsPacket() noexcept
-			: Super(PacketProtocol::SC_RESPOND_ROOMS, SignedWannabeSize())
+			: Super(PacketProtocol::SC_RESPOND_ROOMS, static_cast<std::int16_t>(SignedWannabeSize()))
 			, serializedRooms()
 		{
 		}
@@ -358,7 +358,7 @@ export namespace iconer::app::packets::inline sc
 		}
 
 		constexpr SC_RespondMembersPacket() noexcept
-			: Super(PacketProtocol::SC_RESPOND_USERS, SignedWannabeSize())
+			: Super(PacketProtocol::SC_RESPOND_USERS, static_cast<std::int16_t>(SignedWannabeSize()))
 			, serializedMembers()
 		{
 		}
