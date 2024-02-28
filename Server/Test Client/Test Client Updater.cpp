@@ -9,10 +9,13 @@ test::Update()
 {
 	std::println("Starting receiving...");
 
-	std::thread th{ Receiver };
+	std::jthread th{ Receiver };
+	th.detach();
 
 	char commands[256]{};
-	constexpr unsigned cmd_size = sizeof(commands);
+	static constexpr unsigned cmd_size = sizeof(commands);
+
+	static constexpr std::int32_t test_room_id = 22;
 
 	while (true)
 	{
@@ -29,30 +32,58 @@ test::Update()
 				else if (cmd == 'g') // send game start message (by room master)
 				{
 					// CS_GAME_START
-					if (auto sr = SendCreateRoomPacket(L"Test Room"); not sr.has_value())
+					if (auto sr = SendGameStartPacket(); not sr.has_value())
 					{
+						std::println("`SendGameStartPacket` error: {}", sr.error());
 						return 4;
 					}
 				}
 				else if (cmd == 'r') // send game ready message (by everyone)
 				{
 					// CS_GAME_LOADED
-					if (auto sr = SendCreateRoomPacket(L"Test Room"); not sr.has_value())
+					if (auto sr = SendGameIsLoadedPacket(); not sr.has_value())
 					{
+						std::println("`SendGameIsLoadedPacket` error: {}", sr.error());
 						return 4;
+					}
+				}
+				else if (cmd == 'v') // request game's version
+				{
+					if (auto sr = SendRequestVersionPacket(); not sr.has_value())
+					{
+						std::println("`SendRequestVersionPacket` error: {}", sr.error());
+						return 5;
+					}
+				}
+				else if (cmd == 'o') // request list of rooms
+				{
+					if (auto sr = SendRequestRoomsPacket(); not sr.has_value())
+					{
+						std::println("`SendRequestRoomsPacket` error: {}", sr.error());
+						return 5;
+					}
+				}
+				else if (cmd == 'm') // request room's list of members
+				{
+					if (auto sr = SendRequestMembersPacket(); not sr.has_value())
+					{
+						std::println("`SendRequestMembersPacket` error: {}", sr.error());
+						return 5;
 					}
 				}
 				else if (cmd == 'c') // create a room
 				{
 					if (auto sr = SendCreateRoomPacket(L"Test Room"); not sr.has_value())
 					{
+						std::println("`SendCreateRoomPacket` error: {}", sr.error());
 						return 3;
 					}
 				}
 				else if (cmd == 'j') // join a room
 				{
-					if (auto sr = SendJoinRoomPacket(22); not sr.has_value())
+					if (auto sr = SendJoinRoomPacket(test_room_id); not sr.has_value())
 					{
+						std::println("`SendJoinRoomPacket` error: {}", sr.error());
 						return 3;
 					}
 				}
@@ -60,6 +91,7 @@ test::Update()
 				{
 					if (auto sr = SendLeaveRoomPacket(); not sr.has_value())
 					{
+						std::println("`SendLeaveRoomPacket` error: {}", sr.error());
 						return 3;
 					}
 				}
@@ -135,7 +167,8 @@ test::Update()
 		}
 	}
 
-	th.join();
+	app_socket.Close();
+	th.request_stop();
 
 	return 0;
 }
