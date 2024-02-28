@@ -10,6 +10,8 @@ import Iconer.Utility.Serializer;
 export import Iconer.Application.BasicPacket;
 export import Iconer.Application.RoomContract;
 
+#include "PacketHelper.inl"
+
 export namespace iconer::app::packets::datagrams
 {
 #pragma pack(push, 1)
@@ -38,64 +40,12 @@ export namespace iconer::app::packets::inline sc
 	/// Getting game ready notification packet for server
 	/// </summary>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_ReadyForGamePacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize();
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return Super::SignedMinSize();
-		}
-
-		constexpr SC_ReadyForGamePacket() noexcept
-			: Super(PacketProtocol::SC_GAME_GETTING_READY, SignedWannabeSize())
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize);
-		}
-	};
+	MAKE_EMPTY_PACKET(SC_ReadyForGamePacket, PacketProtocol::SC_GAME_GETTING_READY);
 	/// <summary>
 	/// Game starting notification packet for server
 	/// </summary>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_GameStartPacket : public BasicPacket
-	{
-		using Super = BasicPacket;
-
-		[[nodiscard]]
-		static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize();
-		}
-
-		[[nodiscard]]
-		static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return Super::SignedMinSize();
-		}
-
-		constexpr SC_GameStartPacket() noexcept
-			: Super(PacketProtocol::SC_GAME_START, SignedWannabeSize())
-		{
-		}
-
-		[[nodiscard]]
-		constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize);
-		}
-	};
+	MAKE_EMPTY_PACKET(SC_GameStartPacket, PacketProtocol::SC_GAME_START);
 	/// <summary>
 	/// Failed to start game notification packet for server
 	/// </summary>
