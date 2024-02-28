@@ -36,7 +36,7 @@ test::Receiver()
 
 			received_bytes += bytes;
 
-			if (iconer::app::BasicPacket::MinSize() <= received_bytes)
+			while (iconer::app::BasicPacket::MinSize() <= received_bytes)
 			{
 				iconer::app::BasicPacket basic_pk{};
 				const auto seek = basic_pk.Read(recv_space);
@@ -78,7 +78,7 @@ test::Receiver()
 							PullReceiveBuffer(offset);
 						}
 						break;
-						
+
 						case iconer::app::PacketProtocol::SC_ROOM_CREATE_FAILED:
 						{
 							iconer::app::RoomContract error{};
@@ -175,7 +175,7 @@ test::Receiver()
 							PullReceiveBuffer(offset);
 						}
 						break;
-						
+
 						case iconer::app::PacketProtocol::SC_GAME_GETTING_READY:
 						{
 							iconer::app::packets::SC_ReadyForGamePacket pk{};
@@ -186,7 +186,7 @@ test::Receiver()
 							PullReceiveBuffer(offset);
 						}
 						break;
-						
+
 						case iconer::app::PacketProtocol::SC_GAME_START:
 						{
 							iconer::app::packets::SC_GameStartPacket pk{};
@@ -240,7 +240,11 @@ test::Receiver()
 						break;
 					}
 				}
-			}
+				else
+				{
+					break;
+				}
+			} // while
 		}
 
 		recv_ctx.Clear();
