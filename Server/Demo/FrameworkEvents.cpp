@@ -408,9 +408,24 @@ demo::Framework::OnLeavingRoom(iconer::app::User& user)
 			if (::RemoveRoomMember(*this, *room, user.GetID()))
 			{
 				SetRoomModifiedFlag();
-			}
 
-			return true;
+				room->ForEach([&user, &room_id](iconer::app::User& member) {
+					if (int(iconer::app::UserStates::Idle) <= int(user.GetState()))
+					{
+						if (member.GetID() != user.GetID()) // `user` already have sent a packet
+						{
+							// just send the packet
+							auto sjr = member.SendRoomLeftPacket(user.GetID(), false);
+							if (not sjr.first)
+							{
+								delete sjr.second;
+							}
+						}
+					}
+				});
+
+				return true;
+			}
 		}
 	}
 
