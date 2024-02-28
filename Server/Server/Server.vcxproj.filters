@@ -348,5 +348,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="PacketHelper.inl">
+      <Filter>Application</Filter>
+    </None>
   </ItemGroup>
 </Project>
