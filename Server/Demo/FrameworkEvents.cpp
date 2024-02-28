@@ -465,7 +465,7 @@ demo::Framework::OnRespondRoomsList(iconer::app::User& user)
 		pk.serializedRooms.clear();
 		for (auto room : everyRoom)
 		{
-			if (nullptr != room)
+			if (nullptr != room and 0 < room->GetMembersCount())
 			{
 				pk.AddMember(room->GetID(), room->GetName(), room->GetMembersCount());
 			}
@@ -476,7 +476,14 @@ demo::Framework::OnRespondRoomsList(iconer::app::User& user)
 		haveRoomUpdated = false;
 	}
 
-	return user.SendGeneralData(std::addressof(user.requestContext), serializedRoomsBuffer.get(), serializedRoomsBufferSize);
+	auto sender = new iconer::app::BorrowedSendContext{};
+	auto sr = user.SendGeneralData(sender, serializedRoomsBuffer.get(), serializedRoomsBufferSize);
+	if (not sr.has_value())
+	{
+		delete sender;
+	}
+
+	return std::move(sr);
 }
 
 struct EndToEndRemover final : public iconer::app::Room::MemberRemover
