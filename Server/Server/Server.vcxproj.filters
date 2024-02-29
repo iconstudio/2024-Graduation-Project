@@ -342,6 +342,12 @@
     <ClCompile Include="GameContract.ixx">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="SendContextPool.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\SendContextPool.cpp">
+      <Filter>Application\Implementain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\Server.natvis" />
