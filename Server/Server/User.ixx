@@ -138,6 +138,9 @@ export namespace iconer::app
 		std::pair<IoResult, BlobSendContext*> SendGeneralData(std::unique_ptr<std::byte[]> buffer, size_t size) const noexcept;
 		IoResult SendGeneralData(IContext* ctx, const std::byte* static_buffer, size_t size) const noexcept;
 		IoResult SendSignInPacket();
+		std::pair<IoResult, BlobSendContext*> SendRespondVersionPacket() const;
+		std::pair<IoResult, BlobSendContext*> SendRespondRoomsPacket(std::span<const std::byte> buffer) const;
+		std::pair<IoResult, BlobSendContext*> SendRespondMembersPacket(std::span<const std::byte> buffer) const;
 		std::pair<IoResult, BlobSendContext*> SendPositionPacket(IdType id, float x, float y, float z);
 		IoResult SendRoomCreatedPacket(IContext* room, IdType room_id);
 		std::pair<IoResult, BlobSendContext*> SendRoomCreationFailedPacket(RoomContract reason);
