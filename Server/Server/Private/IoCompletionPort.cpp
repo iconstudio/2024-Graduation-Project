@@ -136,13 +136,53 @@ noexcept
 }
 
 bool
-net::IoCompletionPort::Schedule(net::IoContext* context, std::uintptr_t id, unsigned long&& infobytes)
+net::IoCompletionPort::Schedule(net::IoContext* const context, std::uintptr_t id, unsigned long&& infobytes)
 noexcept
 {
 	return 0 != ::PostQueuedCompletionStatus(GetHandle()
 		, std::move(infobytes)
 		, std::move(id)
 		, static_cast<::WSAOVERLAPPED*>(context));
+}
+
+bool
+net::IoCompletionPort::Schedule(volatile net::IoContext& context, std::uintptr_t id, const unsigned long& infobytes)
+noexcept
+{
+	return 0 != ::PostQueuedCompletionStatus(GetHandle()
+		, infobytes
+		, std::move(id)
+		, const_cast<::WSAOVERLAPPED*>(static_cast<volatile ::WSAOVERLAPPED*>(std::addressof(context))));
+}
+
+bool
+net::IoCompletionPort::Schedule(volatile net::IoContext* context, std::uintptr_t id, const unsigned long& infobytes)
+noexcept
+{
+	return 0 != ::PostQueuedCompletionStatus(GetHandle()
+		, infobytes
+		, std::move(id)
+		, const_cast<::WSAOVERLAPPED*>(static_cast<volatile ::WSAOVERLAPPED*>(context)));
+}
+
+bool
+net::IoCompletionPort::Schedule(volatile net::IoContext& context, std::uintptr_t id, unsigned long&& infobytes)
+noexcept
+{
+	return 0 != ::PostQueuedCompletionStatus(GetHandle()
+		, std::move(infobytes)
+		, std::move(id)
+		, const_cast<::WSAOVERLAPPED*>(static_cast<volatile ::WSAOVERLAPPED*>(std::addressof(context))));
+}
+
+bool
+net::IoCompletionPort::Schedule(volatile net::IoContext* const context, std::uintptr_t id, unsigned long&& infobytes)
+noexcept
+{
+	return 0 != ::PostQueuedCompletionStatus(GetHandle()
+		, std::move(infobytes)
+		, std::move(id)
+		, const_cast<::WSAOVERLAPPED*>(static_cast<volatile ::WSAOVERLAPPED*>(context)));
 }
 
 net::IoEvent
