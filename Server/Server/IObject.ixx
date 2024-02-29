@@ -177,7 +177,19 @@ export namespace iconer::app
 		}
 		
 		[[nodiscard]]
+		constexpr const IdType& GetID() const volatile& noexcept
+		{
+			return Super::GetHandle();
+		}
+		
+		[[nodiscard]]
 		constexpr IdType&& GetID() && noexcept
+		{
+			return std::move(*this).Super::GetHandle();
+		}
+		
+		[[nodiscard]]
+		constexpr IdType&& GetID() volatile&& noexcept
 		{
 			return std::move(*this).Super::GetHandle();
 		}
