@@ -41,6 +41,24 @@ iconer::app::User::SendSignInPacket()
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+iconer::app::User::SendRespondVersionPacket() const
+{
+	return std::pair<IoResult, BlobSendContext*>();
+}
+
+std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+iconer::app::User::SendRespondRoomsPacket(std::span<const std::byte> buffer) const
+{
+	return std::pair<IoResult, BlobSendContext*>();
+}
+
+std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+iconer::app::User::SendRespondMembersPacket(std::span<const std::byte> buffer) const
+{
+	return std::pair<IoResult, BlobSendContext*>();
+}
+
+std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
 iconer::app::User::SendPositionPacket(iconer::app::User::IdType id, float x, float y, float z)
 {
 	const iconer::app::packets::SC_UpdatePositionPacket pk{ id, x, y, z };
@@ -111,8 +129,11 @@ iconer::app::User::SendCannotStartGamePacket(int reason)
 std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
 iconer::app::User::SendMakeGameReadyPacket()
 {
-	const iconer::app::packets::SC_ReadyForGamePacket pk{};
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+	static constinit packets::SC_ReadyForGamePacket pk{};
+	static const auto buffer = pk.Serialize();
+	static constexpr auto size = packets::SC_ReadyForGamePacket::WannabeSize();
+
+	iconer::app::BlobSendContext* ctx = new BlobSendContext{ buffer, size };
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
