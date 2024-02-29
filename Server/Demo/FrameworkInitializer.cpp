@@ -105,7 +105,7 @@ demo::Framework::Awake()
 		throw room_create_error;
 	}
 
-	myLogger.Log(L"\tcreating {} contexts...\n", initSendContextsNumber);
+	myLogger.Log(L"\tcreating send contexts...\n");
 	CacheSendContexts();
 
 	myLogger.Log(L"\tgenerating {} workers...\n", workersCount);
