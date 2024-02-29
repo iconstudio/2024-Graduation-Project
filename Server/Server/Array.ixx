@@ -128,7 +128,7 @@ export namespace iconer::collection
 		explicit constexpr Array(std::from_range_t, R&& range)
 			: Array(std::in_place)
 		{
-			for (auto it = begin(); auto&& item : std::forward<R>(range))
+			for (auto it = begin(); auto && item : std::forward<R>(range))
 			{
 				if (it == end()) break;
 
