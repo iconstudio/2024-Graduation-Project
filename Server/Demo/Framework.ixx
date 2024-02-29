@@ -85,6 +85,18 @@ export namespace demo
 		{
 			return ioCompletionPort.Schedule(context, static_cast<std::uintptr_t>(id), std::move(info_bytes));
 		}
+		
+		[[nodiscard]]
+		bool Schedule(volatile iconer::net::IoContext& context, const IdType id, unsigned long info_bytes = 0) noexcept
+		{
+			return ioCompletionPort.Schedule(context, static_cast<std::uintptr_t>(id), std::move(info_bytes));
+		}
+
+		[[nodiscard]]
+		bool Schedule(volatile iconer::net::IoContext* const context, const IdType id, unsigned long info_bytes = 0) noexcept
+		{
+			return ioCompletionPort.Schedule(context, static_cast<std::uintptr_t>(id), std::move(info_bytes));
+		}
 
 		[[nodiscard]]
 		auto WaitForIoResult() noexcept
