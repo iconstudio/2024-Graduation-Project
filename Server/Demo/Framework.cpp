@@ -8,6 +8,7 @@ import Iconer.Net.EndPoint;
 import Iconer.Net.InternetProtocol;
 import Iconer.Net.Socket;
 import Iconer.Application.IObject;
+import Iconer.Application.SendContextPool;
 
 bool
 demo::Framework::CreateListenerSockets()
@@ -133,10 +134,7 @@ demo::Framework::InitializeRooms()
 void
 demo::Framework::CacheSendContexts()
 {
-	for (size_t i = 0; i < initSendContextsNumber; ++i)
-	{
-		//while (not sendContextPool.try_enqueue(iconer::app::BorrowedSendContext{}));
-	}
+	iconer::app::SendContextPool::Awake();
 }
 
 bool
