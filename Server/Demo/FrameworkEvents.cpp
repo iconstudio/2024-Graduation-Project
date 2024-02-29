@@ -505,7 +505,7 @@ struct EndToEndRemover final : public iconer::app::Room::MemberRemover
 	{
 	}
 
-	void operator()(iconer::app::Room& room, const size_t& members_count) const noexcept override
+	void operator()(volatile iconer::app::Room& room, const size_t& members_count) const noexcept override
 	{
 		if (0 == members_count)
 		{
@@ -535,12 +535,10 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 		{
 			if (auto room = FindRoom(room_id); nullptr != room)
 			{
-				iconer::app::Room::LockerType legacy_lock{};
-				if (room->RemoveMember(user.GetID(), remover, legacy_lock))
+				if (room->RemoveMember(user.GetID(), remover))
 				{
 					SetRoomModifiedFlag();
 				}
-				// `room` would be unlocked here
 			}
 		}
 
@@ -569,7 +567,7 @@ noexcept
 		{
 		}
 
-		void operator()(iconer::app::Room& room, const size_t& members_count) const noexcept override
+		void operator()(volatile iconer::app::Room& room, const size_t& members_count) const noexcept override
 		{
 			if (0 == members_count)
 			{
@@ -588,8 +586,7 @@ noexcept
 		demo::Framework& myFramework;
 	};
 
-	iconer::app::Room::LockerType legacy_lock{};
-	if (auto r = room.RemoveMember(user_id, Remover{ framework }, legacy_lock); r)
+	if (auto r = room.RemoveMember(user_id, Remover{ framework }); r)
 	{
 		framework.SetRoomModifiedFlag();
 		return true;
@@ -598,5 +595,4 @@ noexcept
 	{
 		return false;
 	}
-	// `room` would be unlocked here
 }
