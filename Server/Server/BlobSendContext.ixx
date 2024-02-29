@@ -11,6 +11,9 @@ export namespace iconer::app
 	public:
 		using Super = IContext;
 
+		[[nodiscard]] explicit constexpr BlobSendContext() noexcept = default;
+		constexpr ~BlobSendContext() noexcept = default;
+
 		explicit constexpr BlobSendContext(std::unique_ptr<std::byte[]>&& ptr, const size_t& size) noexcept
 			: Super(AsyncOperations::OpSend)
 			, myBlob(std::exchange(ptr, nullptr)), mySize(size)
