@@ -2,7 +2,6 @@ export module Iconer.Application.IContext;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.AtomicSwitcher;
 import Iconer.Net.IoContext;
-import <utility>;
 export import Iconer.Application.AsyncOperation;
 
 export namespace iconer::app
@@ -21,7 +20,7 @@ export namespace iconer::app
 		}
 
 		explicit constexpr IContext(AsyncOperations&& op) noexcept
-			: Super(), lastOperation(std::move(op))
+			: Super(), lastOperation(static_cast<AsyncOperations&&>(op))
 		{
 		}
 
@@ -32,7 +31,7 @@ export namespace iconer::app
 
 		constexpr void SetOperation(AsyncOperations&& op) noexcept
 		{
-			lastOperation = std::move(op);
+			lastOperation = static_cast<AsyncOperations&&>(op);
 		}
 
 		constexpr void SetOperation(const AsyncOperations& op) volatile noexcept
@@ -42,7 +41,7 @@ export namespace iconer::app
 
 		constexpr void SetOperation(AsyncOperations&& op) volatile noexcept
 		{
-			lastOperation = std::move(op);
+			lastOperation = static_cast<AsyncOperations&&>(op);
 		}
 
 		[[nodiscard]]
@@ -54,7 +53,7 @@ export namespace iconer::app
 		[[nodiscard]]
 		constexpr AsyncOperations&& GetOperation() && noexcept
 		{
-			return std::move(lastOperation);
+			return static_cast<AsyncOperations&&>(lastOperation);
 		}
 
 		[[nodiscard]]
@@ -66,7 +65,7 @@ export namespace iconer::app
 		[[nodiscard]]
 		constexpr volatile AsyncOperations&& GetOperation() volatile&& noexcept
 		{
-			return std::move(lastOperation);
+			return static_cast<volatile AsyncOperations&&>(lastOperation);
 		}
 
 		IContext(IContext&&) noexcept = default;
