@@ -63,12 +63,6 @@ export namespace iconer::app
 		}
 
 	protected:
-		explicit constexpr BlobSendContext() noexcept
-			: Super(AsyncOperations::OpSend)
-			, myBlob(), mySize(0)
-		{
-		}
-
 		std::unique_ptr<std::byte[]> myBlob;
 		size_t mySize;
 	};
