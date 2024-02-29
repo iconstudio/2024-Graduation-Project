@@ -62,8 +62,15 @@ export namespace iconer::app
 			return static_cast<ptrdiff_t>(mySize);
 		}
 
+		constexpr BlobSendContext(BlobSendContext&&) noexcept = default;
+		constexpr BlobSendContext& operator=(BlobSendContext&&) noexcept = default;
+
 	protected:
 		std::unique_ptr<std::byte[]> myBlob;
 		size_t mySize;
+
+	private:
+		BlobSendContext(const BlobSendContext&) = delete;
+		BlobSendContext& operator=(const BlobSendContext&) = delete;
 	};
 }
