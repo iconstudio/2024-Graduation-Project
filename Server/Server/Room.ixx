@@ -2,12 +2,10 @@ module;
 #include <initializer_list>
 #include <memory>
 #include <vector>
-#include <mutex>
 #include <span>
 
 export module Iconer.Application.Room;
 import Iconer.Utility.Constraints;
-import Iconer.Utility.Concurrency.SharedMutex;
 import Iconer.Collection.Array;
 import Iconer.Application.ISession;
 
@@ -38,18 +36,16 @@ export namespace iconer::app
 			constexpr MemberRemover() noexcept = default;
 			virtual constexpr ~MemberRemover() noexcept = default;
 
-			virtual void operator()(Room& room, const size_t& member_count) const = 0;
+			virtual void operator()(volatile Room& room, const size_t& member_count) const = 0;
 		};
 
 		using Super = ISession<RoomStates>;
 		using Super::IdType;
 		using MemberStorageType = iconer::collection::Array<User*, maxUsersNumberInRoom>;
-		using LockerType = std::unique_lock<iconer::util::SharedMutex>;
 
 		explicit constexpr Room(const IdType& id)
 			noexcept(nothrow_constructible<Super, const IdType&>)
 			: Super(id)
-			, myLock()
 			, myMembers(), membersCount(), readyCount()
 			, preRespondMembersPacket()
 		{
@@ -58,7 +54,6 @@ export namespace iconer::app
 		explicit constexpr Room(IdType&& id)
 			noexcept(nothrow_constructible<Super, IdType&&>)
 			: Super(std::move(id))
-			, myLock()
 			, myMembers(), membersCount(), readyCount()
 			, preRespondMembersPacket()
 		{
@@ -75,17 +70,20 @@ export namespace iconer::app
 			membersCount = 0;
 		}
 
-		bool TryAddMember(iconer::app::User& user) noexcept;
-		bool RemoveMember(const IdType& id) noexcept;
-		bool RemoveMember(const IdType& id, const MemberRemover& predicate);
-		bool RemoveMember(const IdType& id, MemberRemover&& predicate);
-		[[nodiscard]]
-		bool RemoveMember(const IdType& id, LockerType& owned_lock) noexcept;
-		[[nodiscard]]
-		bool RemoveMember(const IdType& id, const MemberRemover& predicate, LockerType& owned_lock);
-		[[nodiscard]]
-		bool RemoveMember(const IdType& id, MemberRemover&& predicate, LockerType& owned_lock);
-		void ClearMembers() noexcept;
+		void Cleanup() volatile noexcept
+		{
+			Clear();
+			SetState(RoomStates::None);
+			SetOperation(AsyncOperations::None);
+			ClearMembers();
+			membersCount = 0;
+		}
+
+		bool TryAddMember(iconer::app::User& user) volatile noexcept;
+		bool RemoveMember(const IdType& id) volatile noexcept;
+		bool RemoveMember(const IdType& id, const MemberRemover& predicate) volatile;
+		bool RemoveMember(const IdType& id, MemberRemover&& predicate) volatile;
+		void ClearMembers() volatile noexcept;
 
 		template<invocables<User&> Predicate>
 		void ForEach(Predicate&& predicate) const
@@ -103,7 +101,7 @@ export namespace iconer::app
 		size_t Broadcast(std::span<IContext*> ctxes, const std::byte* buffer, size_t size) const;
 		size_t BroadcastExcept(std::span<IContext*> ctxes, const std::byte* buffer, size_t size, std::initializer_list<IdType> exceptions) const;
 
-		size_t ReadyMember(iconer::app::User& user) noexcept;
+		size_t ReadyMember(iconer::app::User& user) volatile noexcept;
 
 		bool TryReserveContract() volatile noexcept
 		{
@@ -150,19 +148,17 @@ export namespace iconer::app
 			return TryChangeState(RoomStates::Closing, next_state);
 		}
 
-		[[nodiscard]] std::vector<User*> AcquireMemberList() const;
-		[[nodiscard]] std::span<std::byte> SerializeMembers();
+		[[nodiscard]] std::vector<User*> AcquireMemberList() const volatile;
+		[[nodiscard]] std::span<std::byte> SerializeMembers() volatile;
 
-		[[nodiscard]] size_t GetMembersCount() const noexcept;
+		[[nodiscard]] size_t GetMembersCount() const volatile noexcept;
 
-		[[nodiscard]] bool HasMember(const IdType& id) const noexcept;
-		[[nodiscard]] bool IsEmpty() const noexcept;
-		[[nodiscard]] bool IsFull() const noexcept;
-		[[nodiscard]] bool CanStartGame() const noexcept;
+		[[nodiscard]] bool HasMember(const IdType& id) const volatile noexcept;
+		[[nodiscard]] bool IsEmpty() const volatile noexcept;
+		[[nodiscard]] bool IsFull() const volatile noexcept;
+		[[nodiscard]] bool CanStartGame() const volatile noexcept;
 
 	private:
-		mutable iconer::util::SharedMutex myLock;
-
 		MemberStorageType myMembers;
 		std::atomic_size_t membersCount;
 		std::atomic_size_t readyCount;
