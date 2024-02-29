@@ -41,11 +41,17 @@ export namespace iconer::net
 			return *this;
 		}
 
-		void Clear() noexcept
+		constexpr void Clear() noexcept
 		{
 			Internal = 0;
 			InternalHigh = 0;
-			memset(std::addressof(Offset), 0, sizeof(void*));
+			hEvent = nullptr;
+		}
+
+		constexpr void Clear() volatile noexcept
+		{
+			Internal = 0;
+			InternalHigh = 0;
 			hEvent = nullptr;
 		}
 
