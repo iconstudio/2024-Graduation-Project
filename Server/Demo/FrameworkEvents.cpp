@@ -3,6 +3,7 @@ module;
 #include <stdexcept>
 
 module Demo.Framework;
+import Iconer.Application.BorrowedSendContext;
 import Iconer.Application.BasicPacket;
 import Iconer.Application.Packet;
 import Iconer.Application.Resources.String;

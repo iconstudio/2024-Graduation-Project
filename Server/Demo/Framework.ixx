@@ -8,7 +8,6 @@ module;
 export module Demo.Framework;
 import Iconer.Utility.Logger;
 import Iconer.Utility.ColourfulConsole;
-//import Iconer.Collection.Concurrent.Queue;
 import Iconer.Collection.FixedString;
 import Iconer.Net.ErrorCode;
 import Iconer.Net.IoContext;
@@ -19,7 +18,6 @@ import Iconer.Application.User;
 import Iconer.Application.Room;
 import Iconer.Application.ISessionManager;
 import Iconer.Application.RoomContract;
-import Iconer.Application.BorrowedSendContext;
 export import <memory>;
 export import <expected>;
 import <span>;
@@ -59,8 +57,6 @@ export namespace demo
 		static inline constexpr size_t maxUsersNumber = 20;
 		static inline constexpr size_t maxUsersInRoomNumber = 6;
 		static inline constexpr size_t maxRoomsNumber = maxUsersNumber;
-		static inline constexpr size_t initSendContextsNumber = 100000;
-		static inline constexpr size_t maxSendContextsNumber = 200000;
 		static inline constexpr IdType lobbyServerID = 0;
 		static inline constexpr IdType gameServerID = 1;
 		static inline constexpr IdType beginUserID = 2;
@@ -244,8 +240,6 @@ export namespace demo
 		iconer::net::Socket gameListener;
 		iconer::net::IoCompletionPort ioCompletionPort;
 
-		std::unique_ptr<iconer::app::BorrowedSendContext[]> sendContextPool;
-		size_t sendContextPoolSize;
 		std::atomic_bool haveRoomUpdated;
 	};
 
