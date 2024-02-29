@@ -6,12 +6,6 @@ export module Iconer.Collection.Array;
 import Iconer.Utility.Constraints;
 export import <initializer_list>;
 
-namespace
-{
-	struct uninitialize_tag_t { explicit uninitialize_tag_t() noexcept = default; };
-	inline constexpr uninitialize_tag_t uninitialize_tag{};
-}
-
 export namespace iconer::collection
 {
 	template<typename T, size_t Size, typename Alloc = std::allocator<T>>
@@ -45,14 +39,19 @@ export namespace iconer::collection
 		using reverse_iterator = std::reverse_iterator<iterator>;
 		using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
+		static inline constexpr bool IsCopyConstructible = copy_constructibles<value_type>;
+		static inline constexpr bool IsCopyAssignable = copy_assignables<value_type>;
+		static inline constexpr bool IsMoveConstructible = move_constructibles<value_type>;
+		static inline constexpr bool IsMoveAssignable = move_assignables<value_type>;
+
 	private:
-		constexpr Array(uninitialize_tag_t)
+		explicit constexpr Array(std::in_place_t)
 			: myData(nullptr), myAllocator()
 		{
 			myData = myAllocator.allocate(max_size());
 		}
 
-		constexpr Array(uninitialize_tag_t, const allocator_type& allocator)
+		explicit constexpr Array(std::in_place_t, const allocator_type& allocator)
 			: myData(nullptr), myAllocator(allocator)
 		{
 			myData = myAllocator.allocate(max_size());
@@ -60,7 +59,7 @@ export namespace iconer::collection
 
 	public:
 		constexpr Array()
-			: Array(uninitialize_tag)
+			: Array(std::in_place)
 		{
 			for (auto it = begin(); it != end(); ++it)
 			{
@@ -69,7 +68,7 @@ export namespace iconer::collection
 		}
 
 		constexpr Array(const allocator_type& allocator)
-			: Array(uninitialize_tag)
+			: Array(std::in_place)
 		{
 			for (auto it = begin(); it != end(); ++it)
 			{
@@ -88,7 +87,7 @@ export namespace iconer::collection
 		}
 
 		explicit constexpr Array(std::initializer_list<value_type> list) requires copyable<value_type>
-			: Array(uninitialize_tag)
+			: Array(std::in_place)
 		{
 			for (auto it = begin(); const value_type & item : list)
 			{
@@ -101,7 +100,7 @@ export namespace iconer::collection
 
 		template<typename U, size_t L>
 		explicit constexpr Array(const U(&array)[L]) requires copyable<value_type> and copyable<U>
-			: Array(uninitialize_tag)
+			: Array(std::in_place)
 		{
 			for (auto it = begin(); const U & item : array)
 			{
@@ -114,7 +113,7 @@ export namespace iconer::collection
 
 		template<typename U, size_t L>
 		explicit constexpr Array(U(&& array)[L]) requires movable<value_type> and movable<U>
-			: Array(uninitialize_tag)
+			: Array(std::in_place)
 		{
 			for (auto it = begin(); U & item : array)
 			{
@@ -127,7 +126,7 @@ export namespace iconer::collection
 
 		template<std::ranges::range R>
 		explicit constexpr Array(std::from_range_t, R&& range)
-			: Array(uninitialize_tag)
+			: Array(std::in_place)
 		{
 			for (auto it = begin(); auto&& item : std::forward<R>(range))
 			{
@@ -140,7 +139,7 @@ export namespace iconer::collection
 
 		template<std::input_iterator It, std::sentinel_for<It> Sentinel>
 		explicit constexpr Array(It it, const Sentinel sentinel)
-			: Array(uninitialize_tag)
+			: Array(std::in_place)
 		{
 			auto mit = begin();
 			for (; it != sentinel; ++it)
@@ -152,8 +151,8 @@ export namespace iconer::collection
 			}
 		}
 
-		constexpr Array(const Array& other, allocator_type allocator = {}) requires copy_constructibles<value_type>
-			: Array(uninitialize_tag, allocator)
+		constexpr Array(const Array& other, allocator_type allocator = {}) requires IsCopyConstructible
+			: Array(std::in_place, allocator)
 		{
 			auto mit = begin();
 			for (auto it = other.cbegin(); it != other.cend(); ++it)
@@ -165,8 +164,8 @@ export namespace iconer::collection
 			}
 		}
 
-		constexpr Array(const volatile Array& other, allocator_type allocator = {}) requires copy_constructibles<value_type>
-			: Array(uninitialize_tag, allocator)
+		constexpr Array(const volatile Array& other, allocator_type allocator = {}) requires IsCopyConstructible
+			: Array(std::in_place, allocator)
 		{
 			auto mit = begin();
 			for (auto it = other.cbegin(); it != other.cend(); ++it)
@@ -179,7 +178,7 @@ export namespace iconer::collection
 		}
 
 		constexpr Array& operator=(const Array& other)
-			requires copy_assignables<value_type>
+			requires IsCopyAssignable
 		{
 			auto mit = begin();
 			for (auto it = other.cbegin(); it != other.cend(); ++it)
@@ -194,7 +193,7 @@ export namespace iconer::collection
 		}
 
 		constexpr Array& operator=(const volatile Array& other)
-			requires copy_assignables<value_type>
+			requires IsCopyAssignable
 		{
 			auto mit = begin();
 			for (auto it = other.cbegin(); it != other.cend(); ++it)
@@ -209,7 +208,7 @@ export namespace iconer::collection
 		}
 
 		constexpr volatile Array& operator=(const Array& other)
-			volatile requires copy_assignables<value_type>
+			volatile requires IsCopyAssignable
 		{
 			auto mit = begin();
 			for (auto it = other.cbegin(); it != other.cend(); ++it)
@@ -224,7 +223,7 @@ export namespace iconer::collection
 		}
 
 		constexpr volatile Array& operator=(const volatile Array& other)
-			volatile requires copy_assignables<value_type>
+			volatile requires IsCopyAssignable
 		{
 			auto mit = begin();
 			for (auto it = other.cbegin(); it != other.cend(); ++it)
