@@ -185,6 +185,7 @@ export namespace demo
 		[[nodiscard]]
 		bool InitializeRooms();
 		/// <summary>On Awake()</summary>
+		void InitializeSendContextPool();
 		void CacheSendContexts();
 		/// <summary>On Start()</summary>
 		[[nodiscard]]
