@@ -5,6 +5,7 @@ module;
 module Demo.Framework;
 import Iconer.Application.IContext;
 import Iconer.Application.BlobSendContext;
+import Iconer.Application.SendContextPool;
 
 bool
 demo::Framework::RouteEvent(bool is_succeed
@@ -170,7 +171,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			}
 
 			auto sender = static_cast<iconer::app::BlobSendContext*>(ctx);
-			
+
 			delete sender;
 		}
 		break;
@@ -178,7 +179,10 @@ demo::Framework::RouteEvent(bool is_succeed
 		// Phase 4~
 		case iconer::app::AsyncOperations::OpSendBorrowed:
 		{
-			delete ctx;
+			auto sender = static_cast<iconer::app::BorrowedSendContext*>(ctx);
+			sender->Destroy();
+
+			iconer::app::SendContextPool::Add(sender);
 		}
 		break;
 
