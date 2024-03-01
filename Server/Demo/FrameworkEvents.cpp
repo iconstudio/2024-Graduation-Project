@@ -3,9 +3,10 @@ module;
 #include <stdexcept>
 
 module Demo.Framework;
-import Iconer.Application.BorrowedSendContext;
 import Iconer.Application.BasicPacket;
 import Iconer.Application.Packet;
+import Iconer.Application.BorrowedSendContext;
+import Iconer.Application.SendContextPool;
 import Iconer.Application.Resources.String;
 import Demo.PacketProcessor;
 
@@ -267,7 +268,9 @@ demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::Use
 	auto sent_r = user.SendRoomCreationFailedPacket(reason);
 	if (not sent_r.first)
 	{
-		delete sent_r.second;
+		sent_r.second->Destroy();
+
+		iconer::app::SendContextPool::Add(sent_r.second);
 	}
 }
 
@@ -306,7 +309,9 @@ demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User
 	auto sent_r = user.SendRoomCreationFailedPacket(reason);
 	if (not sent_r.first)
 	{
-		delete sent_r.second;
+		sent_r.second->Destroy();
+
+		iconer::app::SendContextPool::Add(sent_r.second);
 	}
 }
 
@@ -390,10 +395,12 @@ demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& 
 		SetRoomModifiedFlag();
 	}
 
-	auto r = user.SendRoomJoinFailedPacket(reason);
-	if (not r.first)
+	auto sent_r = user.SendRoomJoinFailedPacket(reason);
+	if (not sent_r.first)
 	{
-		delete r.second;
+		sent_r.second->Destroy();
+
+		iconer::app::SendContextPool::Add(sent_r.second);
 	}
 }
 
@@ -416,10 +423,12 @@ demo::Framework::OnLeavingRoom(iconer::app::User& user)
 						if (member.GetID() != user.GetID()) // `user` already have sent a packet
 						{
 							// just send the packet
-							auto sjr = member.SendRoomLeftPacket(user.GetID(), false);
-							if (not sjr.first)
+							auto sent_r = member.SendRoomLeftPacket(user.GetID(), false);
+							if (not sent_r.first)
 							{
-								delete sjr.second;
+								sent_r.second->Destroy();
+
+								iconer::app::SendContextPool::Add(sent_r.second);
 							}
 						}
 					}
@@ -486,14 +495,17 @@ demo::Framework::OnRespondRoomsList(iconer::app::User& user)
 		SetRoomModifiedFlag();
 	}
 
-	auto sender = new iconer::app::BorrowedSendContext{};
-	auto sr = user.SendGeneralData(sender, serializedRoomsBuffer.get(), serializedRoomsBufferSize);
-	if (not sr.has_value())
+	auto sender = iconer::app::SendContextPool::Pop();
+	auto sent_r = user.SendGeneralData(sender, serializedRoomsBuffer.get(), serializedRoomsBufferSize);
+
+	if (not sent_r.has_value())
 	{
-		delete sender;
+		sender->Destroy();
+
+		iconer::app::SendContextPool::Add(sender);
 	}
 
-	return std::move(sr);
+	return std::move(sent_r);
 }
 
 struct EndToEndRemover final : public iconer::app::Room::MemberRemover

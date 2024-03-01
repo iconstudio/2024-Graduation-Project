@@ -13,6 +13,7 @@ import Iconer.Application.IContext;
 import Iconer.Application.ISession;
 import Iconer.Application.BlobSendContext;
 import Iconer.Application.RoomContract;
+import Iconer.Application.BorrowedSendContext;
 import <span>;
 
 export namespace iconer::app
@@ -135,23 +136,24 @@ export namespace iconer::app
 			}
 		}
 
-		std::pair<IoResult, BlobSendContext*> SendGeneralData(std::unique_ptr<std::byte[]> buffer, size_t size) const noexcept;
+		std::pair<IoResult, BorrowedSendContext*> SendGeneralData(std::unique_ptr<std::byte[]> buffer, size_t size) const noexcept;
 		IoResult SendGeneralData(IContext* ctx, const std::byte* static_buffer, size_t size) const noexcept;
 		IoResult SendSignInPacket();
-		std::pair<IoResult, BlobSendContext*> SendRespondVersionPacket() const;
-		std::pair<IoResult, BlobSendContext*> SendRespondRoomsPacket(std::span<const std::byte> buffer) const;
-		std::pair<IoResult, BlobSendContext*> SendRespondMembersPacket(std::span<const std::byte> buffer) const;
-		std::pair<IoResult, BlobSendContext*> SendPositionPacket(IdType id, float x, float y, float z);
-		IoResult SendRoomCreatedPacket(IContext* room, IdType room_id);
-		std::pair<IoResult, BlobSendContext*> SendRoomCreationFailedPacket(RoomContract reason);
+
+		std::pair<IoResult, BorrowedSendContext*> SendRespondVersionPacket() const;
+		std::pair<IoResult, BorrowedSendContext*> SendRespondRoomsPacket(std::span<const std::byte> buffer) const;
+		std::pair<IoResult, BorrowedSendContext*> SendRespondMembersPacket(std::span<const std::byte> buffer) const;
+		std::pair<IoResult, BorrowedSendContext*> SendPositionPacket(IdType id, float x, float y, float z);
+		IoResult SendRoomCreatedPacket(IContext* room, IdType room_id) const;
+		std::pair<IoResult, BorrowedSendContext*> SendRoomCreationFailedPacket(RoomContract reason);
 		/// <param name="who">- Not only local client</param>
-		std::pair<IoResult, BlobSendContext*> SendRoomJoinedPacket(IdType who, IdType room_id);
-		std::pair<IoResult, BlobSendContext*> SendRoomJoinFailedPacket(RoomContract reason);
+		std::pair<IoResult, BorrowedSendContext*> SendRoomJoinedPacket(IdType who, IdType room_id);
+		std::pair<IoResult, BorrowedSendContext*> SendRoomJoinFailedPacket(RoomContract reason);
 		/// <param name="who">- Not only local client</param>
-		std::pair<IoResult, BlobSendContext*> SendRoomLeftPacket(IdType who, bool is_self);
-		std::pair<IoResult, BlobSendContext*> SendCannotStartGamePacket(int reason);
-		std::pair<IoResult, BlobSendContext*> SendMakeGameReadyPacket();
-		std::pair<IoResult, BlobSendContext*> SendGameJustStartedPacket();
+		std::pair<IoResult, BorrowedSendContext*> SendRoomLeftPacket(IdType who, bool is_self);
+		std::pair<IoResult, BorrowedSendContext*> SendCannotStartGamePacket(int reason);
+		std::pair<IoResult, BorrowedSendContext*> SendMakeGameReadyPacket();
+		std::pair<IoResult, BorrowedSendContext*> SendGameJustStartedPacket();
 
 		constexpr User& PositionX(const float& v) noexcept
 		{

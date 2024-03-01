@@ -1,6 +1,7 @@
 module;
 module Iconer.Application.User;
 import Iconer.Application.Packet;
+import Iconer.Application.SendContextPool;
 
 void
 iconer::app::User::Awake()
@@ -18,13 +19,13 @@ iconer::app::User::Awake()
 	signin_pk.Write(preSignInPacket.get());
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendGeneralData(std::unique_ptr<std::byte[]> buffer, size_t size)
 const noexcept
 {
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{ std::move(buffer), size };
+	auto ctx = SendContextPool::Pop();
 
-	return { mySocket.Send(*ctx, ctx->GetBlob().get(), size), ctx };
+	return { mySocket.Send(*ctx, buffer.release(), size), ctx };
 }
 
 iconer::app::User::IoResult
@@ -40,35 +41,39 @@ iconer::app::User::SendSignInPacket()
 	return mySocket.Send(*this, preSignInPacket.get(), packets::SC_SucceedSignInPacket::WannabeSize());
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendRespondVersionPacket() const
 {
-	return std::pair<IoResult, BlobSendContext*>();
+	return std::pair<IoResult, BorrowedSendContext*>();
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendRespondRoomsPacket(std::span<const std::byte> buffer) const
 {
-	return std::pair<IoResult, BlobSendContext*>();
+	return std::pair<IoResult, BorrowedSendContext*>();
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendRespondMembersPacket(std::span<const std::byte> buffer) const
 {
-	return std::pair<IoResult, BlobSendContext*>();
+	return std::pair<IoResult, BorrowedSendContext*>();
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendPositionPacket(iconer::app::User::IdType id, float x, float y, float z)
 {
 	const iconer::app::packets::SC_UpdatePositionPacket pk{ id, x, y, z };
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+
+	auto ctx = SendContextPool::Pop();
+	ctx->SetBlob(pk.Serialize());
+	ctx->SetSize(pk.WannabeSize());
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
 
 iconer::app::User::IoResult
 iconer::app::User::SendRoomCreatedPacket(iconer::app::IContext* room, iconer::app::User::IdType room_id)
+const
 {
 	const packets::SC_RoomCreatedPacket pk{ room_id };
 	pk.Write(preRoomCreationPacket.get());
@@ -76,38 +81,50 @@ iconer::app::User::SendRoomCreatedPacket(iconer::app::IContext* room, iconer::ap
 	return mySocket.Send(*room, preRoomCreationPacket.get(), pk.WannabeSize());
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendRoomCreationFailedPacket(iconer::app::RoomContract reason)
 {
 	const iconer::app::packets::SC_RoomCreationFailedPacket pk{ reason };
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+
+	auto ctx = SendContextPool::Pop();
+	ctx->SetBlob(pk.Serialize());
+	ctx->SetSize(pk.WannabeSize());
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendRoomJoinedPacket(iconer::app::User::IdType who, iconer::app::User::IdType room_id)
 {
 	const iconer::app::packets::SC_RoomJoinedPacket pk{ who, room_id };
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+
+	auto ctx = SendContextPool::Pop();
+	ctx->SetBlob(pk.Serialize());
+	ctx->SetSize(pk.WannabeSize());
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendRoomJoinFailedPacket(iconer::app::RoomContract reason)
 {
 	const iconer::app::packets::SC_RoomJoinFailedPacket pk{ reason };
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+
+	auto ctx = SendContextPool::Pop();
+	ctx->SetBlob(pk.Serialize());
+	ctx->SetSize(pk.WannabeSize());
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendRoomLeftPacket(IdType who, bool is_self)
 {
 	const iconer::app::packets::SC_RoomLeftPacket pk{ who };
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+
+	auto ctx = SendContextPool::Pop();
+	ctx->SetBlob(pk.Serialize());
+	ctx->SetSize(pk.WannabeSize());
 
 	if (is_self)
 	{
@@ -117,33 +134,40 @@ iconer::app::User::SendRoomLeftPacket(IdType who, bool is_self)
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendCannotStartGamePacket(int reason)
 {
 	const iconer::app::packets::SC_FailedGameStartingPacket pk{ reason };
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+
+	auto ctx = SendContextPool::Pop();
+	ctx->SetBlob(pk.Serialize());
+	ctx->SetSize(pk.WannabeSize());
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendMakeGameReadyPacket()
 {
 	static constinit packets::SC_ReadyForGamePacket pk{};
 	static const auto buffer = pk.Serialize();
 	static constexpr auto size = packets::SC_ReadyForGamePacket::WannabeSize();
 
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{};
-	ctx->SetOperation(AsyncOperations::OpSendBorrowed);
+	auto ctx = SendContextPool::Pop();
+	ctx->SetBlob(pk.Serialize());
+	ctx->SetSize(pk.WannabeSize());
 
 	return { mySocket.Send(*ctx, buffer.get(), size), ctx };
 }
 
-std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
+std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendGameJustStartedPacket()
 {
 	const iconer::app::packets::SC_GameStartPacket pk{};
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{ pk.Serialize(), pk.WannabeSize() };
+
+	auto ctx = SendContextPool::Pop();
+	ctx->SetBlob(pk.Serialize());
+	ctx->SetSize(pk.WannabeSize());
 
 	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
 }

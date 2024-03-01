@@ -1,15 +1,18 @@
 module;
 module Demo.PacketProcessor;
 import Iconer.Utility.Chronograph;
+import Iconer.Application.BorrowedSendContext;
+import Iconer.Application.SendContextPool;
 import Iconer.Application.RoomContract;
 import Iconer.Application.User;
 import Demo.Framework;
 
 #define SEND(user_var, method, ...)\
-auto sr = ((user_var).method)(__VA_ARGS__);\
-if (not sr.first)\
+auto __sent_r = ((user_var).method)(__VA_ARGS__);\
+if (not __sent_r.first)\
 {\
-	delete sr.second;\
+	__sent_r.second->Destroy(); \
+	iconer::app::SendContextPool::Add(__sent_r.second); \
 }
 
 #define IGNORE_DISCARDED_BEGIN \
@@ -208,10 +211,11 @@ demo::OnReceivePosition(iconer::app::User& user, float x, float y, float z)
 	user.PositionY(y);
 	user.PositionZ(z);
 
-	auto r = user.SendPositionPacket(user.GetID(), x, y, z);
-	if (not r.first)
+	auto sent_r = user.SendPositionPacket(user.GetID(), x, y, z);
+	if (not sent_r.first)
 	{
-		delete r.second;
+		sent_r.second->Destroy();
+		iconer::app::SendContextPool::Add(sent_r.second);
 	}
 }
 
