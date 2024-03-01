@@ -22,5 +22,17 @@ export namespace iconer::app
 		{
 			SetOperation(AsyncOperations::OpSendBorrowed);
 		}
+
+		[[nodiscard]]
+		constexpr void SetBlob(std::unique_ptr<std::byte[]>&& buffer) noexcept
+		{
+			myBlob = std::move(buffer);
+		}
+
+		[[nodiscard]]
+		constexpr void SetSize(size_t size)noexcept
+		{
+			mySize = size;
+		}
 	};
 }
