@@ -4,25 +4,24 @@ module;
 #include <utility>
 #include <unordered_map>
 #include <thread>
+#include <concurrent_queue.h>
 module Iconer.Application.SendContextPool;
 
 namespace
 {
-	inline constexpr size_t pageCount = 6;
-
-	thread_local auto currentPage = iconer::app::SendContextPool::CreatePage();
-	thread_local std::thread::id threadId;
+	using queue_type = Concurrency::concurrent_queue<iconer::app::BorrowedSendContext*>;
+	constinit queue_type* queue;
 }
 
 void
 iconer::app::SendContextPool::Awake()
 {
-	allocator_type allocator{};
-
 	auto& inst = SendContextPool::Instance();
 	const auto address = std::addressof(inst);
 
+	allocator_type allocator{};
 	auto init_memory = allocator.allocate(initSendContextsNumber);
+
 	auto build = [=](size_t index) noexcept -> pointer {
 		return new (init_memory + index) value_type{};
 	};
@@ -32,229 +31,41 @@ iconer::app::SendContextPool::Awake()
 		build(i);
 	}
 
-	std::allocator<Node> node_allocator{};
+
+	std::allocator<pointer> node_allocator{};
 	auto node_memory = node_allocator.allocate(initSendContextsNumber);
-
-	//inst.head = node_memory;
-	//inst.tail = node_memory + (initSendContextsNumber - 1);
-	inst.head = inst.tail = new Node{};
-
-	//auto build_node = [=](size_t index) noexcept -> Node* {
-	//	return new (node_memory + index) Node
-	//	{
-	//		.sendContext = init_memory + index,
-	//		.myNext = node_memory + index + 1
-	//	};
-	//};
 
 	for (size_t i = 0; i < initSendContextsNumber; ++i)
 	{
-		//build_node(i);
-		SendContextPool::Add(init_memory + i);
+		node_memory[i] = init_memory + i;
 	}
+
+	queue = new queue_type{ node_memory, node_memory + initSendContextsNumber };
 }
 
 void
 iconer::app::SendContextPool::ReservePage()
 {
-	(void)GetLastEpoch();
 }
 
 void
 iconer::app::SendContextPool::Add(pointer context)
 {
-	auto& inst = SendContextPool::Instance();
-
-	Node* e = currentPage.CreateNode(context);
-	while (true)
-	{
-		Node* last = inst.tail;
-		Node* next = last->myNext;
-
-		if (last != inst.tail) continue;
-
-		if (nullptr == next)
-		{
-			if (true == CAS(&last->myNext, nullptr, e))
-			{
-				CAS(inst.tail, last, e);
-				currentPage.UpdateEpoch();
-				return;
-			}
-		}
-		else
-		{
-			CAS(inst.tail, last, next);
-		}
-	}
+	queue->push(context);
 }
 
 iconer::app::SendContextPool::pointer
 iconer::app::SendContextPool::Pop()
 {
-	auto& inst = SendContextPool::Instance();
-
-	while (true)
-	{
-		Node* first = inst.head;
-		Node* last = inst.tail;
-		if (first != inst.head) continue;
-
-		Node* next = first->myNext;
-		if (nullptr == next)
-		{
-			currentPage.UpdateEpoch();
-			return nullptr; // EMPTY
-		}
-
-		if (first == last)
-		{
-			CAS(inst.tail, last, next);
-			continue;
-		}
-
-		auto& value = next->sendContext;
-		if (false == CAS(inst.head, first, next))
-		{
-			continue;
-		}
-
-		currentPage.RetireNode(first);
-		currentPage.UpdateEpoch();
-
-		return value;
-	}
+	pointer out = nullptr;
+	while (not queue->try_pop(out));
+	return out;
 }
 
 bool
 iconer::app::SendContextPool::TryPop(iconer::app::SendContextPool::pointer& out)
 {
-	return false;
-}
-
-iconer::app::SendContextPool::Page
-iconer::app::SendContextPool::CreatePage()
-noexcept
-{
-	return {};
-}
-
-long long
-iconer::app::SendContextPool::GetLastEpoch()
-noexcept
-{
-	static std::unordered_map<std::thread::id, iconer::app::SendContextPool::Page*> everyPage{ std::thread::hardware_concurrency() };
-	static auto& inst = SendContextPool::Instance();
-
-	threadId = std::this_thread::get_id();
-	if (not everyPage.contains(threadId))
-	{
-		everyPage.insert(std::make_pair(threadId, std::addressof(currentPage)));
-	}
-
-	long long oldest_epoch = INT_MAX;
-
-	for (auto& [id, page] : everyPage)
-	{
-		if (const auto epoch = page->GetEpoch(); epoch < oldest_epoch)
-		{
-			oldest_epoch = epoch;
-		}
-	}
-
-	return oldest_epoch;
-}
-
-long long
-iconer::app::SendContextPool::FetchEpoch()
-noexcept
-{
-	static constinit long long poolEpoch = 0;
-
-	return poolEpoch++;
-}
-
-iconer::app::SendContextPool::Node*
-iconer::app::SendContextPool::Page::CreateNode(pointer ctx)
-volatile
-{
-	if (localTail != localHead)
-	{
-		if (localHead->myEpoch < GetLastEpoch())
-		{
-			Node* e = localHead;
-			localHead = e->myNext;
-
-			e->sendContext = ctx;
-			e->myNext = nullptr;
-			e->myEpoch = localEpoch;
-			return e;
-		}
-	}
-
-	return new Node
-	{
-		.sendContext = ctx
-	};
-}
-
-void
-iconer::app::SendContextPool::Page::RetireNode(iconer::app::SendContextPool::Node* volatile ptr)
-volatile noexcept
-{
-	ptr->myEpoch = localEpoch;
-	if (nullptr != localTail)
-	{
-		localTail->myNext = ptr;
-	}
-
-	localTail = ptr;
-	if (nullptr == localHead)
-	{
-		localHead = localTail;
-	}
-}
-
-iconer::app::SendContextPool::Page::~Page()
-{
-	/*
-	if (nullptr == localTail) return;
-
-	while (localTail != localHead)
-	{
-		Node* t = localHead;
-		localHead = localHead->myNext;
-		delete t;
-	}
-
-	delete localHead;*/
-}
-
-void
-iconer::app::SendContextPool::Node::Return()
-{
-	SendContextPool::Add(sendContext);
-}
-
-bool iconer::app::SendContextPool::CAS(volatile std::atomic<iconer::app::SendContextPool::Node*>& next, iconer::app::SendContextPool::Node* o_node, iconer::app::SendContextPool::Node* n_node)
-noexcept
-{
-	return std::atomic_compare_exchange_strong(
-		reinterpret_cast<volatile std::atomic_uintptr_t*>(&next),
-		reinterpret_cast<uintptr_t*>(&o_node),
-		reinterpret_cast<uintptr_t>(n_node)
-	);
-}
-
-bool
-iconer::app::SendContextPool::CAS(iconer::app::SendContextPool::Node* volatile* next, iconer::app::SendContextPool::Node* o_node, iconer::app::SendContextPool::Node* n_node)
-noexcept
-{
-	return std::atomic_compare_exchange_strong(
-		reinterpret_cast<volatile std::atomic_uintptr_t*>(next),
-		reinterpret_cast<uintptr_t*>(&o_node),
-		reinterpret_cast<uintptr_t>(n_node)
-	);
+	return queue->try_pop(out);
 }
 
 #if false
