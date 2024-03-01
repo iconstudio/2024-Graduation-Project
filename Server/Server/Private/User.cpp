@@ -133,9 +133,10 @@ iconer::app::User::SendMakeGameReadyPacket()
 	static const auto buffer = pk.Serialize();
 	static constexpr auto size = packets::SC_ReadyForGamePacket::WannabeSize();
 
-	iconer::app::BlobSendContext* ctx = new BlobSendContext{ buffer, size };
+	iconer::app::BlobSendContext* ctx = new BlobSendContext{};
+	ctx->SetOperation(AsyncOperations::OpSendBorrowed);
 
-	return { mySocket.Send(*ctx, ctx->GetBlob().get(), pk.WannabeSize()), ctx };
+	return { mySocket.Send(*ctx, buffer.get(), size), ctx };
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BlobSendContext*>
