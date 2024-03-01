@@ -291,7 +291,10 @@ demo::Framework::RouteEvent(bool is_succeed
 						auto sjr = member.SendRoomJoinedPacket(user->GetID(), room_id);
 						if (not sjr.first)
 						{
-							delete sjr.second;
+							//delete sjr.second;
+							sjr.second->Destroy();
+
+							iconer::app::SendContextPool::Add(sjr.second);
 						}
 					}
 				});
@@ -320,8 +323,10 @@ demo::Framework::RouteEvent(bool is_succeed
 				myLogger.Log(L"\tUser {} has been left from the room\n", user_id);
 			}
 
-			auto sender = static_cast<iconer::app::BlobSendContext*>(ctx);
-			delete sender;
+			auto sender = static_cast<iconer::app::BorrowedSendContext*>(ctx);
+			sender->Destroy();
+
+			iconer::app::SendContextPool::Add(sender);
 		}
 		break;
 

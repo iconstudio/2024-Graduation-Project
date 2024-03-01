@@ -106,6 +106,7 @@ demo::Framework::Awake()
 	}
 
 	myLogger.Log(L"\tcreating send contexts...\n");
+	InitializeSendContextPool();
 	CacheSendContexts();
 
 	myLogger.Log(L"\tgenerating {} workers...\n", workersCount);
