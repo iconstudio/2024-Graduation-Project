@@ -5,22 +5,14 @@ module;
 
 export module Iconer.Application.SendContextPool;
 import Iconer.Application.IContext;
-import Iconer.Application.BlobSendContext;
+import Iconer.Application.BorrowedSendContext;
 
 export namespace iconer::app
 {
-	class [[nodiscard]] SendContext final : public BlobSendContext
-	{
-	public:
-		using Super = BlobSendContext;
-
-		using Super::Super;
-	};
-
 	class [[nodiscard]] SendContextPool final
 	{
 	public:
-		using allocator_type = std::allocator<SendContext>;
+		using allocator_type = std::allocator<BorrowedSendContext>;
 		using allocator_traits = std::allocator_traits<allocator_type>;
 		using value_type = allocator_traits::value_type;
 		using pointer = allocator_traits::pointer;
@@ -94,8 +86,8 @@ export namespace iconer::app
 		static void Awake();
 		static void ReservePage();
 		static void Add(pointer context);
-		static [[nodiscard]] SendContext* Pop();
-		static [[nodiscard]] bool TryPop(SendContext*& out);
+		static [[nodiscard]] pointer Pop();
+		static [[nodiscard]] bool TryPop(pointer& out);
 
 		[[nodiscard]]
 		static Page CreatePage() noexcept;
