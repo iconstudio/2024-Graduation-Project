@@ -55,6 +55,12 @@ iconer::app::SendContextPool::Awake()
 }
 
 void
+iconer::app::SendContextPool::ReservePage()
+{
+	(void)GetLastEpoch();
+}
+
+void
 iconer::app::SendContextPool::Add(pointer context)
 {
 	auto& inst = SendContextPool::Instance();
