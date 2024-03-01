@@ -132,9 +132,17 @@ demo::Framework::InitializeRooms()
 }
 
 void
+demo::Framework::InitializeSendContextPool()
+{
+	using SendContextPool = iconer::app::SendContextPool;
+
+	SendContextPool::Awake();
+}
+
+void
 demo::Framework::CacheSendContexts()
 {
-	iconer::app::SendContextPool::Awake();
+
 }
 
 bool
