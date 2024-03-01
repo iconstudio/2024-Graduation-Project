@@ -1,7 +1,8 @@
+module;
+#include <memory>
+
 export module Iconer.Application.BorrowedSendContext;
-import Iconer.Application.IContext;
 import Iconer.Application.BlobSendContext;
-import <utility>;
 
 export namespace iconer::app
 {
@@ -10,6 +11,16 @@ export namespace iconer::app
 	public:
 		using Super = BlobSendContext;
 
-		using Super::Super;
+		explicit constexpr BorrowedSendContext() noexcept
+			: Super()
+		{
+			SetOperation(AsyncOperations::OpSendBorrowed);
+		}
+
+		explicit constexpr BorrowedSendContext(std::unique_ptr<std::byte[]>&& ptr, const size_t& size) noexcept
+			: Super(std::move(ptr), size)
+		{
+			SetOperation(AsyncOperations::OpSendBorrowed);
+		}
 	};
 }
