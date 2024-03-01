@@ -260,6 +260,13 @@ volatile noexcept
 
 std::vector<iconer::app::User*>
 iconer::app::Room::AcquireMemberList()
+const
+{
+	return std::vector<User*>{ std::from_range, myMembers };
+}
+
+std::vector<iconer::app::User*>
+iconer::app::Room::AcquireMemberList()
 const volatile
 {
 	return std::vector<User*>{ std::from_range, myMembers };

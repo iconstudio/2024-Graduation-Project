@@ -148,6 +148,7 @@ export namespace iconer::app
 			return TryChangeState(RoomStates::Closing, next_state);
 		}
 
+		[[nodiscard]] std::vector<User*> AcquireMemberList() const;
 		[[nodiscard]] std::vector<User*> AcquireMemberList() const volatile;
 		[[nodiscard]] std::span<std::byte> SerializeMembers() volatile;
 
