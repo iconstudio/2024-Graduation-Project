@@ -8,6 +8,8 @@ demo::Worker(demo::Framework& framework, size_t nth)
 {
 	auto& logger = framework.myLogger;
 
+	framework.CacheSendContexts();
+
 	logger.Log(iconer::app::GetResourceString<0>(), nth);
 	framework.workerAwakens.arrive_and_wait();
 

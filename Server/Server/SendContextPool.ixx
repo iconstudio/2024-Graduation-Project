@@ -92,6 +92,7 @@ export namespace iconer::app
 
 	public:
 		static void Awake();
+		static void ReservePage();
 		static void Add(pointer context);
 		static [[nodiscard]] SendContext* Pop();
 		static [[nodiscard]] bool TryPop(SendContext*& out);
