@@ -23,8 +23,8 @@ iconer::app::SendContextPool::Awake()
 	const auto address = std::addressof(inst);
 
 	auto init_memory = allocator.allocate(initSendContextsNumber);
-	auto build = [=](size_t index) noexcept -> SendContext* {
-		return new (init_memory + index) SendContext{};
+	auto build = [=](size_t index) noexcept -> pointer {
+		return new (init_memory + index) value_type{};
 	};
 
 	for (size_t i = 0; i < initSendContextsNumber; ++i)
@@ -89,7 +89,7 @@ iconer::app::SendContextPool::Add(pointer context)
 	}
 }
 
-iconer::app::SendContext*
+iconer::app::SendContextPool::pointer
 iconer::app::SendContextPool::Pop()
 {
 	auto& inst = SendContextPool::Instance();
@@ -127,7 +127,7 @@ iconer::app::SendContextPool::Pop()
 }
 
 bool
-iconer::app::SendContextPool::TryPop(iconer::app::SendContext*& out)
+iconer::app::SendContextPool::TryPop(iconer::app::SendContextPool::pointer& out)
 {
 	return false;
 }
