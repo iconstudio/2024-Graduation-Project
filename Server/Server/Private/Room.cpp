@@ -277,7 +277,7 @@ iconer::app::Room::SerializeMembers()
 volatile
 {
 	thread_local static packets::SC_RespondMembersPacket pk{};
-	auto ptr = preRespondMembersPacket.get();
+	auto ptr = const_cast<Room*>(this)->preRespondMembersPacket.get();
 
 	if (isMemberUpdated)
 	{
