@@ -41,6 +41,8 @@ export namespace iconer::app
 	class [[nodiscard]] Borrower
 	{
 	public:
+		constexpr Borrower() noexcept = default;
+
 		constexpr Borrower(BorrowedSendContext& ctx) noexcept
 			: borrowedContext(std::addressof(ctx))
 		{
@@ -48,7 +50,10 @@ export namespace iconer::app
 
 		~Borrower()
 		{
-			borrowedContext->ReturnToBase();
+			if (borrowedContext)
+			{
+				borrowedContext->ReturnToBase();
+			}
 		}
 
 		operator BorrowedSendContext*() const noexcept
