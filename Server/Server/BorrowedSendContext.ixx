@@ -75,7 +75,7 @@ export namespace iconer::app
 		{
 			return *borrowedContext;
 		}
-		
+
 		constexpr const BorrowedSendContext& operator*() const noexcept
 		{
 			return *borrowedContext;
@@ -85,7 +85,7 @@ export namespace iconer::app
 		{
 			return *borrowedContext;
 		}
-		
+
 		constexpr const volatile BorrowedSendContext& operator*() const volatile noexcept
 		{
 			return *borrowedContext;
@@ -101,7 +101,13 @@ export namespace iconer::app
 			return borrowedContext;
 		}
 
+		constexpr Borrower(Borrower&&) noexcept = default;
+		constexpr Borrower& operator=(Borrower&&) noexcept = default;
+
 	private:
+		Borrower(const Borrower&) = delete;
+		Borrower& operator=(const Borrower&) = delete;
+
 		BorrowedSendContext* borrowedContext;
 	};
 }
