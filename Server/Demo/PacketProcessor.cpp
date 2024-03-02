@@ -10,7 +10,7 @@ import Demo.Framework;
 auto [io, ctx] = ((user_var).method)(__VA_ARGS__);\
 if (not io)\
 {\
-	ctx->ReturnToBase(); \
+	ctx.Complete(); \
 }
 
 #define IGNORE_DISCARDED_BEGIN \
@@ -216,7 +216,7 @@ demo::OnReceivePosition(iconer::app::User& user, float x, float y, float z)
 	auto [io, ctx] = user.SendPositionPacket(user.GetID(), x, y, z);
 	if (not io)
 	{
-		ctx->ReturnToBase();
+		ctx.Complete();
 	}
 }
 

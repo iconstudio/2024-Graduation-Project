@@ -288,7 +288,7 @@ demo::Framework::RouteEvent(bool is_succeed
 						auto [io, ctx] = member.SendRoomJoinedPacket(user->GetID(), room_id);
 						if (not io)
 						{
-							ctx->ReturnToBase();
+							ctx.Complete();
 						}
 					}
 				});

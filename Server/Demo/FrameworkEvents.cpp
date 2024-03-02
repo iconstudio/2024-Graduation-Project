@@ -267,7 +267,7 @@ demo::Framework::OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::Use
 	auto [io, ctx] = user.SendRoomCreationFailedPacket(reason);
 	if (not io)
 	{
-		ctx->ReturnToBase();
+		ctx.Complete();
 	}
 }
 
@@ -306,7 +306,7 @@ demo::Framework::OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User
 	auto [io, ctx] = user.SendRoomCreationFailedPacket(reason);
 	if (not io)
 	{
-		ctx->ReturnToBase();
+		ctx.Complete();
 	}
 }
 
@@ -393,7 +393,7 @@ demo::Framework::OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& 
 	auto [io, ctx] = user.SendRoomJoinFailedPacket(reason);
 	if (not io)
 	{
-		ctx->ReturnToBase();
+		ctx.Complete();
 	}
 }
 
@@ -419,7 +419,7 @@ demo::Framework::OnLeavingRoom(iconer::app::User& user)
 							auto [io, ctx] = member.SendRoomLeftPacket(user.GetID(), false);
 							if (not io)
 							{
-								ctx->ReturnToBase();
+								ctx.Complete();
 							}
 						}
 					}
