@@ -43,6 +43,10 @@ export namespace iconer::app
 	public:
 		constexpr Borrower() noexcept = default;
 
+		constexpr Borrower(Borrower&& other) noexcept
+			: borrowedContext(std::exchange(other.borrowedContext, nullptr))
+		{}
+
 		explicit constexpr Borrower(BorrowedSendContext& ctx) noexcept
 			: borrowedContext(std::addressof(ctx))
 		{
@@ -82,6 +86,12 @@ export namespace iconer::app
 			{
 				Release()->ReturnToBase();
 			}
+		}
+
+		constexpr Borrower& operator=(Borrower&& other) noexcept
+		{
+			borrowedContext = std::exchange(other.borrowedContext, nullptr);
+			return *this;
 		}
 
 		constexpr Borrower& operator=(nullptr_t) noexcept
@@ -135,9 +145,6 @@ export namespace iconer::app
 		{
 			return borrowedContext;
 		}
-
-		constexpr Borrower(Borrower&&) noexcept = default;
-		constexpr Borrower& operator=(Borrower&&) noexcept = default;
 
 	private:
 		Borrower(const Borrower&) = delete;
