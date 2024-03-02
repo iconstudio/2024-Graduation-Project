@@ -153,9 +153,8 @@ iconer::app::User::SendMakeGameReadyPacket()
 	static const auto buffer = pk.Serialize();
 	static constexpr auto size = packets::SC_ReadyForGamePacket::WannabeSize();
 
+	// Preserve the serialized packet
 	auto ctx = SendContextPool::Pop();
-	ctx->SetBlob(pk.Serialize());
-	ctx->SetSize(pk.WannabeSize());
 
 	return { mySocket.Send(*ctx, buffer.get(), size), ctx };
 }
