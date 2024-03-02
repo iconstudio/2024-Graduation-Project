@@ -30,11 +30,32 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
-		constexpr void SetSize(size_t size)noexcept
+		constexpr void SetSize(size_t size) noexcept
 		{
 			mySize = size;
 		}
 
 		void ReturnToBase();
+	};
+
+	class [[nodiscard]] Borrower
+	{
+	public:
+		constexpr Borrower(BorrowedSendContext& ctx) noexcept
+			: borrowedContext(std::addressof(ctx))
+		{
+		}
+
+		~Borrower()
+		{
+			borrowedContext->ReturnToBase();
+		}
+
+		operator BorrowedSendContext*() const noexcept
+		{
+			return borrowedContext;
+		}
+
+		BorrowedSendContext* borrowedContext;
 	};
 }
