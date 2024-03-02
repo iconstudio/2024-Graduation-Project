@@ -20,7 +20,6 @@ export namespace iconer::app
 		static inline constexpr size_t maxSendContextsNumber = 200000;
 
 		static void Awake();
-		static void ReservePage();
 		static void Add(pointer context);
 		static [[nodiscard]] pointer Pop();
 		static [[nodiscard]] bool TryPop(pointer& out);
