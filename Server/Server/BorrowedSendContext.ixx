@@ -61,7 +61,22 @@ export namespace iconer::app
 			}
 		}
 
-		operator BorrowedSendContext*() const noexcept
+		constexpr BorrowedSendContext* operator->() const noexcept
+		{
+			return borrowedContext;
+		}
+
+		constexpr operator BorrowedSendContext* () const noexcept
+		{
+			return borrowedContext;
+		}
+		
+		constexpr volatile BorrowedSendContext* operator->() const volatile noexcept
+		{
+			return borrowedContext;
+		}
+
+		constexpr operator volatile BorrowedSendContext* () const volatile noexcept
 		{
 			return borrowedContext;
 		}
