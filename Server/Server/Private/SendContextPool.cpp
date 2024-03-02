@@ -27,7 +27,6 @@ iconer::app::SendContextPool::Awake()
 		build(i);
 	}
 
-
 	std::allocator<pointer> node_allocator{};
 	auto node_memory = node_allocator.allocate(initSendContextsNumber);
 
@@ -37,11 +36,6 @@ iconer::app::SendContextPool::Awake()
 	}
 
 	queue = new queue_type{ node_memory, node_memory + initSendContextsNumber };
-}
-
-void
-iconer::app::SendContextPool::ReservePage()
-{
 }
 
 void
