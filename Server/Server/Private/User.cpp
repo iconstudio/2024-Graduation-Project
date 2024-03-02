@@ -44,19 +44,32 @@ iconer::app::User::SendSignInPacket()
 std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendRespondVersionPacket() const
 {
-	return std::pair<IoResult, BorrowedSendContext*>();
+	static constinit packets::SC_RespondVersionPacket pk{};
+	static const auto buffer = pk.Serialize();
+	static constexpr auto size = packets::SC_ReadyForGamePacket::WannabeSize();
+
+	// Preserve the serialized packet
+	auto ctx = SendContextPool::Pop();
+
+	return { mySocket.Send(*ctx, buffer.get(), size), ctx };
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendRespondRoomsPacket(std::span<const std::byte> buffer) const
 {
-	return std::pair<IoResult, BorrowedSendContext*>();
+	// Preserve the serialized packet
+	auto ctx = SendContextPool::Pop();
+
+	return { mySocket.Send(*ctx, buffer.data(), buffer.size_bytes()), ctx };
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
 iconer::app::User::SendRespondMembersPacket(std::span<const std::byte> buffer) const
 {
-	return std::pair<IoResult, BorrowedSendContext*>();
+	// Preserve the serialized packet
+	auto ctx = SendContextPool::Pop();
+
+	return { mySocket.Send(*ctx, buffer.data(), buffer.size_bytes()), ctx };
 }
 
 std::pair<iconer::app::User::IoResult, iconer::app::BorrowedSendContext*>
