@@ -34,6 +34,7 @@ export namespace iconer::app
 		using Super = ISession<UserStates>;
 		using Super::IdType;
 		using IoResult = iconer::net::Socket::AsyncResult;
+		using BorrowedIoResult = std::pair<IoResult, Borrower>;
 
 		static inline constexpr size_t nicknameLength = 16;
 
@@ -136,24 +137,26 @@ export namespace iconer::app
 			}
 		}
 
-		std::pair<IoResult, BorrowedSendContext*> SendGeneralData(std::unique_ptr<std::byte[]> buffer, size_t size) const noexcept;
+		IoResult SendGeneralData(IContext* ctx, const std::byte* static_buffer, size_t size) noexcept;
 		IoResult SendGeneralData(IContext* ctx, const std::byte* static_buffer, size_t size) const noexcept;
-		IoResult SendSignInPacket();
+		BorrowedIoResult SendGeneralData(const std::byte* static_buffer, size_t size) const;
+		BorrowedIoResult SendGeneralData(std::unique_ptr<std::byte[]>&& buffer, size_t size) const;
 
-		std::pair<IoResult, BorrowedSendContext*> SendRespondVersionPacket() const;
-		std::pair<IoResult, BorrowedSendContext*> SendRespondRoomsPacket(std::span<const std::byte> buffer) const;
-		std::pair<IoResult, BorrowedSendContext*> SendRespondMembersPacket(std::span<const std::byte> buffer) const;
-		std::pair<IoResult, BorrowedSendContext*> SendPositionPacket(IdType id, float x, float y, float z);
+		IoResult SendSignInPacket() noexcept;
+		BorrowedIoResult SendRespondVersionPacket() const;
+		BorrowedIoResult SendRespondRoomsPacket(std::span<const std::byte> buffer) const;
+		BorrowedIoResult SendRespondMembersPacket(std::span<const std::byte> buffer) const;
+		BorrowedIoResult SendPositionPacket(IdType id, float x, float y, float z) const;
 		IoResult SendRoomCreatedPacket(IContext* room, IdType room_id) const;
-		std::pair<IoResult, BorrowedSendContext*> SendRoomCreationFailedPacket(RoomContract reason);
+		BorrowedIoResult SendRoomCreationFailedPacket(RoomContract reason) const;
 		/// <param name="who">- Not only local client</param>
-		std::pair<IoResult, BorrowedSendContext*> SendRoomJoinedPacket(IdType who, IdType room_id);
-		std::pair<IoResult, BorrowedSendContext*> SendRoomJoinFailedPacket(RoomContract reason);
+		BorrowedIoResult SendRoomJoinedPacket(IdType who, IdType room_id) const;
+		BorrowedIoResult SendRoomJoinFailedPacket(RoomContract reason) const;
 		/// <param name="who">- Not only local client</param>
-		std::pair<IoResult, BorrowedSendContext*> SendRoomLeftPacket(IdType who, bool is_self);
-		std::pair<IoResult, BorrowedSendContext*> SendCannotStartGamePacket(int reason);
-		std::pair<IoResult, BorrowedSendContext*> SendMakeGameReadyPacket();
-		std::pair<IoResult, BorrowedSendContext*> SendGameJustStartedPacket();
+		BorrowedIoResult SendRoomLeftPacket(IdType who, bool is_self) const;
+		BorrowedIoResult SendCannotStartGamePacket(int reason) const;
+		BorrowedIoResult SendMakeGameReadyPacket() const;
+		BorrowedIoResult SendGameJustStartedPacket() const;
 
 		constexpr User& PositionX(const float& v) noexcept
 		{
