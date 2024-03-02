@@ -18,6 +18,7 @@ import Iconer.Application.User;
 import Iconer.Application.Room;
 import Iconer.Application.ISessionManager;
 import Iconer.Application.RoomContract;
+import Iconer.Application.BorrowedSendContext;
 export import <memory>;
 export import <expected>;
 import <span>;
@@ -72,7 +73,13 @@ export namespace demo
 		void Start();
 		void Update();
 		void Destroy();
+		void CancelWorkers() noexcept;
 		void Cleanup();
+
+		[[nodiscard]]
+		iconer::app::Borrower AcquireSendContext();
+		[[nodiscard]]
+		iconer::app::Borrower AcquireSendContext(std::unique_ptr<std::byte[]>&& buffer, size_t size);
 
 		[[nodiscard]]
 		bool Schedule(iconer::net::IoContext& context, const IdType id, unsigned long info_bytes = 0) noexcept
@@ -103,8 +110,6 @@ export namespace demo
 		{
 			return ioCompletionPort.WaitForIoResult();
 		}
-
-		void CancelWorkers() noexcept;
 
 		[[nodiscard]]
 		iconer::app::User* FindUser(const IdType& id) const noexcept
