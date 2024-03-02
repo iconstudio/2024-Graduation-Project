@@ -5,7 +5,6 @@ module;
 module Demo.Framework;
 import Iconer.Application.IContext;
 import Iconer.Application.BlobSendContext;
-import Iconer.Application.SendContextPool;
 
 bool
 demo::Framework::RouteEvent(bool is_succeed
@@ -180,9 +179,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		case iconer::app::AsyncOperations::OpSendBorrowed:
 		{
 			auto sender = static_cast<iconer::app::BorrowedSendContext*>(ctx);
-			sender->Destroy();
-
-			iconer::app::SendContextPool::Add(sender);
+			sender->ReturnToBase();
 		}
 		break;
 
@@ -288,13 +285,10 @@ demo::Framework::RouteEvent(bool is_succeed
 				room->ForEach([&user, &room_id](iconer::app::User& member) {
 					if (member.GetID() != user->GetID())
 					{
-						auto sjr = member.SendRoomJoinedPacket(user->GetID(), room_id);
-						if (not sjr.first)
+						auto [io, ctx] = member.SendRoomJoinedPacket(user->GetID(), room_id);
+						if (not io)
 						{
-							//delete sjr.second;
-							sjr.second->Destroy();
-
-							iconer::app::SendContextPool::Add(sjr.second);
+							ctx->ReturnToBase();
 						}
 					}
 				});
@@ -324,9 +318,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			}
 
 			auto sender = static_cast<iconer::app::BorrowedSendContext*>(ctx);
-			sender->Destroy();
-
-			iconer::app::SendContextPool::Add(sender);
+			sender->ReturnToBase();
 		}
 		break;
 
