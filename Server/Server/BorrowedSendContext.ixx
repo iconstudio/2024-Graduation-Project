@@ -34,5 +34,7 @@ export namespace iconer::app
 		{
 			mySize = size;
 		}
+
+		void ReturnToBase();
 	};
 }
