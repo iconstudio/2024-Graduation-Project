@@ -38,7 +38,7 @@ export namespace iconer::app
 		void ReturnToBase();
 	};
 
-	class [[nodiscard]] Borrower
+	class [[nodiscard]] Borrower final
 	{
 	public:
 		constexpr Borrower() noexcept = default;
@@ -66,21 +66,42 @@ export namespace iconer::app
 			return borrowedContext;
 		}
 
+		constexpr BorrowedSendContext* operator->() const volatile noexcept
+		{
+			return borrowedContext;
+		}
+
+		constexpr BorrowedSendContext& operator*() noexcept
+		{
+			return *borrowedContext;
+		}
+		
+		constexpr const BorrowedSendContext& operator*() const noexcept
+		{
+			return *borrowedContext;
+		}
+
+		constexpr volatile BorrowedSendContext& operator*() volatile noexcept
+		{
+			return *borrowedContext;
+		}
+		
+		constexpr const volatile BorrowedSendContext& operator*() const volatile noexcept
+		{
+			return *borrowedContext;
+		}
+
 		constexpr operator BorrowedSendContext* () const noexcept
 		{
 			return borrowedContext;
 		}
-		
-		constexpr volatile BorrowedSendContext* operator->() const volatile noexcept
+
+		constexpr operator BorrowedSendContext* () const volatile noexcept
 		{
 			return borrowedContext;
 		}
 
-		constexpr operator volatile BorrowedSendContext* () const volatile noexcept
-		{
-			return borrowedContext;
-		}
-
+	private:
 		BorrowedSendContext* borrowedContext;
 	};
 }
