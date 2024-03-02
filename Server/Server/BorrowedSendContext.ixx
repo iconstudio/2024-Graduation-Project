@@ -55,10 +55,22 @@ export namespace iconer::app
 
 		~Borrower()
 		{
-			if (borrowedContext)
+			if (nullptr != borrowedContext)
 			{
 				borrowedContext->ReturnToBase();
 			}
+		}
+
+		constexpr Borrower& operator=(nullptr_t) noexcept
+		{
+			borrowedContext = nullptr;
+			return *this;
+		}
+		
+		constexpr Borrower& operator=(BorrowedSendContext* const& ptr) noexcept
+		{
+			borrowedContext = ptr;
+			return *this;
 		}
 
 		constexpr BorrowedSendContext* operator->() const noexcept
