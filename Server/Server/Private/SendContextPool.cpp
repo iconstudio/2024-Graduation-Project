@@ -58,6 +58,13 @@ iconer::app::SendContextPool::TryPop(iconer::app::SendContextPool::pointer& out)
 	return queue->try_pop(out);
 }
 
+void
+iconer::app::BorrowedSendContext::ReturnToBase()
+{
+	Destroy();
+	queue->push(this);
+}
+
 #if false
 class EBRMANAGER;
 
