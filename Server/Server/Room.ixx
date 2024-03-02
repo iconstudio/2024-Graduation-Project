@@ -102,6 +102,7 @@ export namespace iconer::app
 		size_t BroadcastExcept(std::span<IContext*> ctxes, const std::byte* buffer, size_t size, std::initializer_list<IdType> exceptions) const;
 
 		size_t ReadyMember(iconer::app::User& user) volatile noexcept;
+		size_t UnreadyMember(iconer::app::User& user) volatile noexcept;
 
 		bool TryReserveContract() volatile noexcept
 		{
@@ -160,6 +161,26 @@ export namespace iconer::app
 		[[nodiscard]] bool CanStartGame() const volatile noexcept;
 
 	private:
+		size_t IncreaseReadies() noexcept
+		{
+			return readyCount.fetch_add(1);
+		}
+
+		size_t DecreaseReadies() noexcept
+		{
+			return readyCount.fetch_sub(1);
+		}
+
+		size_t IncreaseReadies() volatile noexcept
+		{
+			return readyCount.fetch_add(1);
+		}
+
+		size_t DecreaseReadies() volatile noexcept
+		{
+			return readyCount.fetch_sub(1);
+		}
+
 		MemberStorageType myMembers;
 		std::atomic_size_t membersCount;
 		std::atomic_size_t readyCount;
