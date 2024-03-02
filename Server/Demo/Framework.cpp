@@ -131,18 +131,17 @@ demo::Framework::InitializeRooms()
 	return true;
 }
 
+using SendContextPool = iconer::app::SendContextPool;
+
 void
 demo::Framework::InitializeSendContextPool()
 {
-	using SendContextPool = iconer::app::SendContextPool;
-
 	SendContextPool::Awake();
 }
 
 void
 demo::Framework::CacheSendContexts()
 {
-
 }
 
 bool
@@ -159,6 +158,22 @@ demo::Framework::StartAccepts()
 	}
 
 	return true;
+}
+
+iconer::app::Borrower
+demo::Framework::AcquireSendContext()
+{
+	return SendContextPool::Pop();
+}
+
+iconer::app::Borrower
+demo::Framework::AcquireSendContext(std::unique_ptr<std::byte[]>&& buffer, size_t size)
+{
+	auto borrower = SendContextPool::Pop();
+	borrower->SetBlob(std::move(buffer));
+	borrower->SetSize(size);
+
+	return std::move(borrower);
 }
 
 void
