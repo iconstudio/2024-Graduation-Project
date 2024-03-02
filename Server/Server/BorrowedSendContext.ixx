@@ -61,6 +61,14 @@ export namespace iconer::app
 			}
 		}
 
+		void Complete()
+		{
+			if (nullptr != borrowedContext)
+			{
+				borrowedContext->ReturnToBase();
+			}
+		}
+
 		constexpr Borrower& operator=(nullptr_t) noexcept
 		{
 			borrowedContext = nullptr;
