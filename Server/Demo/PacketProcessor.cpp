@@ -2,17 +2,15 @@ module;
 module Demo.PacketProcessor;
 import Iconer.Utility.Chronograph;
 import Iconer.Application.BorrowedSendContext;
-import Iconer.Application.SendContextPool;
 import Iconer.Application.RoomContract;
 import Iconer.Application.User;
 import Demo.Framework;
 
 #define SEND(user_var, method, ...)\
-auto __sent_r = ((user_var).method)(__VA_ARGS__);\
-if (not __sent_r.first)\
+auto [io, ctx] = ((user_var).method)(__VA_ARGS__);\
+if (not io)\
 {\
-	__sent_r.second->Destroy(); \
-	iconer::app::SendContextPool::Add(__sent_r.second); \
+	ctx->ReturnToBase(); \
 }
 
 #define IGNORE_DISCARDED_BEGIN \
@@ -34,12 +32,16 @@ demo::OnSignOut(iconer::app::User& user)
 void
 demo::OnRequestVersion(Framework& framework, iconer::app::User& user)
 {
+	if (user.GetState() != iconer::app::UserStates::None)
+	{
+		SEND(user, SendRespondVersionPacket);
+	}
 }
 
 void
 demo::OnRequestRoomList(Framework& framework, iconer::app::User& user)
 {
-	if (user.GetState() != iconer::app::UserStates::None and user.GetState() != iconer::app::UserStates::Reserved)
+	if (user.GetState() != iconer::app::UserStates::None)
 	{
 		framework.Schedule(user.requestContext, user.GetID());
 	}
@@ -211,11 +213,10 @@ demo::OnReceivePosition(iconer::app::User& user, float x, float y, float z)
 	user.PositionY(y);
 	user.PositionZ(z);
 
-	auto sent_r = user.SendPositionPacket(user.GetID(), x, y, z);
-	if (not sent_r.first)
+	auto [io, ctx] = user.SendPositionPacket(user.GetID(), x, y, z);
+	if (not io)
 	{
-		sent_r.second->Destroy();
-		iconer::app::SendContextPool::Add(sent_r.second);
+		ctx->ReturnToBase();
 	}
 }
 
