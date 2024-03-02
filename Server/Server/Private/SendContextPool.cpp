@@ -55,7 +55,10 @@ iconer::app::SendContextPool::Pop()
 bool
 iconer::app::SendContextPool::TryPop(iconer::app::Borrower& out)
 {
-	return queue->try_pop(out.borrowedContext);
+	pointer outro = nullptr;
+	const auto result = queue->try_pop(outro);
+	out = outro;
+	return result;
 }
 
 void
