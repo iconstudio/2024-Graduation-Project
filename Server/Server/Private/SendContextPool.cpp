@@ -1,9 +1,5 @@
 module;
-#include <atomic>
 #include <memory>
-#include <utility>
-#include <unordered_map>
-#include <thread>
 #include <concurrent_queue.h>
 module Iconer.Application.SendContextPool;
 
