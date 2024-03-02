@@ -43,8 +43,13 @@ export namespace iconer::app
 	public:
 		constexpr Borrower() noexcept = default;
 
-		constexpr Borrower(BorrowedSendContext& ctx) noexcept
+		explicit constexpr Borrower(BorrowedSendContext& ctx) noexcept
 			: borrowedContext(std::addressof(ctx))
+		{
+		}
+
+		constexpr Borrower(BorrowedSendContext* const& ctx) noexcept
+			: borrowedContext(ctx)
 		{
 		}
 
