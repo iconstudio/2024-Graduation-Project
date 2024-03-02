@@ -20,9 +20,9 @@ export namespace iconer::app
 		static inline constexpr size_t maxSendContextsNumber = 200000;
 
 		static void Awake();
-		static void Add(pointer context);
-		static [[nodiscard]] pointer Pop();
-		static [[nodiscard]] bool TryPop(pointer& out);
+		static void Add(Borrower&& context);
+		static [[nodiscard]] Borrower Pop();
+		static [[nodiscard]] bool TryPop(Borrower& out);
 
 		[[nodiscard]]
 		static constexpr SendContextPool& Instance() noexcept

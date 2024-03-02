@@ -39,23 +39,23 @@ iconer::app::SendContextPool::Awake()
 }
 
 void
-iconer::app::SendContextPool::Add(pointer context)
+iconer::app::SendContextPool::Add(iconer::app::Borrower&& context)
 {
-	queue->push(context);
+	queue->push(std::exchange(context, nullptr));
 }
 
-iconer::app::SendContextPool::pointer
+iconer::app::Borrower
 iconer::app::SendContextPool::Pop()
 {
 	pointer out = nullptr;
 	while (not queue->try_pop(out));
-	return out;
+	return Borrower{ out };
 }
 
 bool
-iconer::app::SendContextPool::TryPop(iconer::app::SendContextPool::pointer& out)
+iconer::app::SendContextPool::TryPop(iconer::app::Borrower& out)
 {
-	return queue->try_pop(out);
+	return queue->try_pop(out.borrowedContext);
 }
 
 void
