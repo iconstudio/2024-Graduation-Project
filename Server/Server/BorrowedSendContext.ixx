@@ -55,17 +55,32 @@ export namespace iconer::app
 
 		~Borrower()
 		{
-			if (nullptr != borrowedContext)
-			{
-				borrowedContext->ReturnToBase();
-			}
+			Complete();
+		}
+
+		BorrowedSendContext* Release() noexcept
+		{
+			return std::exchange(borrowedContext, nullptr);
+		}
+
+		BorrowedSendContext* Release() volatile noexcept
+		{
+			return std::exchange(borrowedContext, nullptr);
 		}
 
 		void Complete()
 		{
 			if (nullptr != borrowedContext)
 			{
-				borrowedContext->ReturnToBase();
+				Release()->ReturnToBase();
+			}
+		}
+		
+		void Complete() volatile
+		{
+			if (nullptr != borrowedContext)
+			{
+				Release()->ReturnToBase();
 			}
 		}
 
