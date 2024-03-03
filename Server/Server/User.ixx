@@ -48,6 +48,7 @@ export namespace iconer::app
 			, recvOffset(0)
 			, roomContext(), myRoomId(-1), isReady()
 			, requestContext(AsyncOperations::OpNotifyRoom)
+			, requestMemberContext(AsyncOperations::OpNotifyMember)
 			, myTransform()
 			, preSignInPacket(), preRoomCreationPacket()
 		{
@@ -61,6 +62,7 @@ export namespace iconer::app
 			, recvOffset(0)
 			, roomContext(), myRoomId(-1), isReady()
 			, requestContext(AsyncOperations::OpNotifyRoom)
+			, requestMemberContext(AsyncOperations::OpNotifyMember)
 			, myTransform()
 			, preSignInPacket(), preRoomCreationPacket()
 		{
@@ -446,7 +448,8 @@ export namespace iconer::app
 		iconer::net::Socket mySocket;
 		volatile ptrdiff_t recvOffset;
 
-		IContext roomContext, requestContext;
+		IContext roomContext;
+		IContext requestContext, requestMemberContext;
 		iconer::util::MovableAtomic<IdType> myRoomId;
 		iconer::util::MovableAtomic<bool> isReady;
 		glm::mat4 myTransform;
