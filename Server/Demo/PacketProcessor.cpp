@@ -50,6 +50,10 @@ demo::OnRequestRoomList(Framework& framework, iconer::app::User& user)
 void
 demo::OnRequestMemberList(Framework& framework, iconer::app::User& user)
 {
+	if (user.GetState() != iconer::app::UserStates::None)
+	{
+		framework.Schedule(user.requestMemberContext, user.GetID());
+	}
 }
 
 void
