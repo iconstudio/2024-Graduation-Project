@@ -1,6 +1,7 @@
 module;
 #include <stdexcept>
 #include <memory>
+#include <ranges>
 
 export module Iconer.Collection.Array;
 import Iconer.Utility.Constraints;
@@ -9,7 +10,21 @@ export import <initializer_list>;
 export namespace iconer::collection
 {
 	template<typename T, size_t Size, typename Alloc = std::allocator<T>>
-	class Array
+	class [[nodiscard]] Array;
+}
+
+export namespace std
+{
+	template<typename T, size_t Size, typename Alloc1, typename Alloc2>
+	constexpr void
+		swap(iconer::collection::Array<T, Size, Alloc1>& lhs, iconer::collection::Array<T, Size, Alloc2>& rhs)
+		noexcept;
+}
+
+export namespace iconer::collection
+{
+	template<typename T, size_t Size, typename Alloc>
+	class [[nodiscard]] Array
 	{
 	public:
 		static_assert(not std::is_reference_v<T>);
@@ -707,6 +722,9 @@ export namespace iconer::collection
 			return true;
 		}
 
+		template<typename T, size_t Size, typename Alloc1, typename Alloc2>
+		friend constexpr void std::swap(Array<T, Size, Alloc1>& lhs, Array<T, Size, Alloc2>& rhs) noexcept;
+
 	private:
 		[[noreturn]]
 		static void ThrowAccessError()
@@ -723,6 +741,21 @@ export namespace iconer::collection
 	template<typename T, size_t Size>
 	Array(std::array<T, Size>) -> Array<T, Size>;
 }
+
+export namespace std
+{
+	template<typename T, size_t Size, typename Alloc1, typename Alloc2>
+	constexpr void
+		swap(iconer::collection::Array<T, Size, Alloc1>& lhs, iconer::collection::Array<T, Size, Alloc2>& rhs)
+		noexcept
+	{
+		using ::std::swap;
+		swap(lhs.myData, rhs.myData);
+	}
+}
+
+template<typename T, size_t Size, typename Alloc>
+inline constexpr bool std::ranges::enable_borrowed_range<iconer::collection::Array<T, Size, Alloc>> = true;
 
 module :private;
 
