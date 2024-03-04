@@ -35,6 +35,7 @@ export namespace iconer::app
 		CS_CHAT,
 		CS_RPC,
 		CS_GAME_LOADED,
+		CS_READY,
 
 		SC_SIGNIN_SUCCESS = 120,
 		SC_SIGNIN_FAILURE,
