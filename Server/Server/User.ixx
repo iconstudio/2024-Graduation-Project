@@ -11,7 +11,6 @@ import Iconer.Utility.MovableAtomic;
 import Iconer.Net.Socket;
 import Iconer.Application.IContext;
 import Iconer.Application.ISession;
-import Iconer.Application.BlobSendContext;
 import Iconer.Application.RoomContract;
 import Iconer.Application.BorrowedSendContext;
 import <span>;
