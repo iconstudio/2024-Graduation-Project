@@ -460,6 +460,4 @@ export namespace iconer::app
 		User(const User&) = delete;
 		User& operator=(const User&) = delete;
 	};
-
-	class Room;
 }
