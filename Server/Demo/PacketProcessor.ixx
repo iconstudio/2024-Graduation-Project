@@ -28,6 +28,7 @@ export namespace demo
 	void OnJoinRoom(Framework& framework, iconer::app::User& user, const std::int32_t& room_id);
 	void OnLeaveRoom(Framework& framework, iconer::app::User& user);
 	void OnGameStartSignal(Framework& framework, iconer::app::User& user);
+	void OnGameLoadedSignal(Framework& framework, iconer::app::User& user);
 	void OnReceivePosition(iconer::app::User& user, float x, float y, float z);
 	void OnReceiveRotation(iconer::app::User& user, float roll, float yaw, float pitch);
 }
@@ -155,6 +156,7 @@ demo::PacketProcessor(demo::Framework& framework
 				// Empty packet
 
 				// now start game
+				OnGameLoadedSignal(framework, user);
 			}
 			break;
 

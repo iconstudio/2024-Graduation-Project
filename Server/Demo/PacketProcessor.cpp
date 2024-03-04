@@ -211,6 +211,11 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 }
 
 void
+demo::OnGameLoadedSignal(demo::Framework& framework, iconer::app::User& user)
+{
+}
+
+void
 demo::OnReceivePosition(iconer::app::User& user, float x, float y, float z)
 {
 	user.PositionX(x);
