@@ -14,7 +14,6 @@ public:
 	ASagaCharacterPlayer();
 	void InteractWithNPC();
 
-
 private:
 	int8 bIsRiding;
 
