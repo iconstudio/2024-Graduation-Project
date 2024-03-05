@@ -139,7 +139,7 @@ volatile noexcept
 
 	for (auto it = myMembers.begin(); it != myMembers.end(); ++it)
 	{
-		auto& [member, _] = *it;
+		auto& [member, is_ready] = *it;
 		if (nullptr != member and id == member->GetID())
 		{
 			member = nullptr;
@@ -149,7 +149,9 @@ volatile noexcept
 				--count;
 			}
 
+			is_ready.CompareAndSet(true, false);
 			isMemberUpdated = true;
+
 			return true;
 		}
 	}
@@ -166,7 +168,7 @@ volatile
 
 	if (0 < count)
 	{
-		for (auto& [member, _] : myMembers)
+		for (auto& [member, is_ready] : myMembers)
 		{
 			if (nullptr != member and id == member->GetID())
 			{
@@ -179,7 +181,9 @@ volatile
 
 				std::invoke(std::as_const(predicate), *this, count);
 
+				is_ready.CompareAndSet(true, false);
 				isMemberUpdated = true;
+
 				return true;
 			}
 		}
@@ -209,9 +213,10 @@ volatile
 				}
 
 				std::invoke(std::move(predicate), *this, count);
-				is_ready.Store(false, std::memory_order_relaxed);
 
+				is_ready.CompareAndSet(true, false);
 				isMemberUpdated = true;
+
 				return true;
 			}
 		}
@@ -225,23 +230,21 @@ iconer::app::Room::ReadyMember(iconer::app::User& user)
 volatile noexcept
 {
 	size_t result{};
-	for (auto& [member, _] : myMembers)
+	for (auto& [member, is_ready] : myMembers)
 	{
 		if (nullptr != member)
 		{
 			if (user.GetID() == member->GetID())
 			{
-				if (user.isReady.CompareAndSet(false, true))
+				if (is_ready.CompareAndSet(false, true))
 				{
 					++result;
 				}
 			}
-			else if (user.isReady)
-			{
-				++result;
-			}
-
-			break;
+		}
+		else if (is_ready)
+		{
+			++result;
 		}
 	}
 
@@ -252,9 +255,10 @@ void
 iconer::app::Room::ClearMembers()
 volatile noexcept
 {
-	for (auto& [member, _] : myMembers)
+	for (auto& [member, is_ready] : myMembers)
 	{
 		member = nullptr;
+		is_ready = false;
 	}
 
 	membersCount = 0;
@@ -267,8 +271,8 @@ const
 {
 	return std::vector<User*>{ std::from_range
 		, myMembers | std::views::transform([](auto& member) noexcept -> User* {
-			return member.myHandle;
-		})
+		return member.myHandle;
+	})
 	};
 }
 
@@ -313,13 +317,6 @@ volatile
 }
 
 bool
-iconer::app::Room::IsEveryMemberIsLoaded()
-const volatile noexcept
-{
-	return minUsersNumberForGame <= membersCount and minUsersNumberForGame <= loadCount;
-}
-
-bool
 iconer::app::Room::HasMember(const iconer::app::Room::IdType& id)
 const volatile noexcept
 {
@@ -360,4 +357,11 @@ iconer::app::detail::RoomBase::IsEmpty()
 const volatile noexcept
 {
 	return 0 == membersCount.load(std::memory_order_relaxed);
+}
+
+bool
+iconer::app::Room::IsEveryMemberIsLoaded()
+const volatile noexcept
+{
+	return minUsersNumberForGame <= membersCount and minUsersNumberForGame <= loadCount;
 }
