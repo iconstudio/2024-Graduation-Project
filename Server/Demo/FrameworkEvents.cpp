@@ -465,6 +465,15 @@ noexcept
 	user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
 }
 
+bool demo::Framework::OnCreateGame(iconer::app::User& user)
+{
+	return false;
+}
+
+void demo::Framework::OnFailedToCreateGame(iconer::app::User& user) noexcept
+{
+}
+
 demo::Framework::IoResult
 demo::Framework::OnRespondRoomsList(iconer::app::User& user)
 {
