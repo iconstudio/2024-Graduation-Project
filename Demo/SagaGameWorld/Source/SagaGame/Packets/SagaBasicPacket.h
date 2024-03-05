@@ -1,8 +1,8 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "SagaPacketProtocol.h"
-#include "Utility/Serializer.h"
-#include "Utility/Deserializer.h"
+#include "Serializer.h"
+#include "Deserializer.h"
 
 struct SAGAGAME_API FSagaBasicPacket
 {
