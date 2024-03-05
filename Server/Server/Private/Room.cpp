@@ -2,9 +2,11 @@ module;
 #include <vector>
 #include <span>
 #include <algorithm>
+#include <ranges>
 #include <mutex>
 
 module Iconer.Application.Room;
+import :RoomMember;
 import Iconer.Utility.AtomicSwitcher;
 import Iconer.Application.User;
 import Iconer.Application.Packet;
@@ -111,7 +113,7 @@ volatile noexcept
 
 	if (count < maxUsersNumberInRoom)
 	{
-		for (auto& member : myMembers)
+		for (auto& [member, _] : myMembers)
 		{
 			if (nullptr == member)
 			{
@@ -137,7 +139,7 @@ volatile noexcept
 
 	for (auto it = myMembers.begin(); it != myMembers.end(); ++it)
 	{
-		auto& member = *it;
+		auto& [member, _] = *it;
 		if (nullptr != member and id == member->GetID())
 		{
 			member = nullptr;
@@ -164,7 +166,7 @@ volatile
 
 	if (0 < count)
 	{
-		for (auto& member : myMembers)
+		for (auto& [member, _] : myMembers)
 		{
 			if (nullptr != member and id == member->GetID())
 			{
@@ -195,7 +197,7 @@ volatile
 
 	if (0 < count)
 	{
-		for (auto& member : myMembers)
+		for (auto& [member, is_ready] : myMembers)
 		{
 			if (nullptr != member and id == member->GetID())
 			{
@@ -207,6 +209,7 @@ volatile
 				}
 
 				std::invoke(std::move(predicate), *this, count);
+				is_ready.Store(false, std::memory_order_relaxed);
 
 				isMemberUpdated = true;
 				return true;
@@ -222,7 +225,7 @@ iconer::app::Room::ReadyMember(iconer::app::User& user)
 volatile noexcept
 {
 	size_t result{};
-	for (auto& member : myMembers)
+	for (auto& [member, _] : myMembers)
 	{
 		if (nullptr != member)
 		{
@@ -249,7 +252,7 @@ void
 iconer::app::Room::ClearMembers()
 volatile noexcept
 {
-	for (auto& member : myMembers)
+	for (auto& [member, _] : myMembers)
 	{
 		member = nullptr;
 	}
@@ -262,14 +265,22 @@ std::vector<iconer::app::User*>
 iconer::app::Room::AcquireMemberList()
 const
 {
-	return std::vector<User*>{ std::from_range, myMembers };
+	return std::vector<User*>{ std::from_range
+		, myMembers | std::views::transform([](auto& member) noexcept -> User* {
+			return member.myHandle;
+		})
+	};
 }
 
 std::vector<iconer::app::User*>
 iconer::app::Room::AcquireMemberList()
 const volatile
 {
-	return std::vector<User*>{ std::from_range, myMembers };
+	return std::vector<User*>{ std::from_range
+		, myMembers | std::views::transform([](auto& member) noexcept -> User* {
+		return member.myHandle;
+	})
+	};
 }
 
 std::span<std::byte>
@@ -282,7 +293,7 @@ volatile
 	if (isMemberUpdated)
 	{
 		pk.serializedMembers.clear();
-		for (auto& member : myMembers)
+		for (auto& [member, _] : myMembers)
 		{
 			if (nullptr != member)
 			{
@@ -305,14 +316,21 @@ bool
 iconer::app::Room::CanStartGame()
 const volatile noexcept
 {
-	return minUsersNumberForGame <= membersCount;
+	return GetState() == iconer::app::RoomStates::Idle and minUsersNumberForGame <= membersCount;
+}
+
+bool
+iconer::app::Room::IsEveryMemberIsLoaded()
+const volatile noexcept
+{
+	return minUsersNumberForGame <= membersCount and minUsersNumberForGame <= loadCount;
 }
 
 bool
 iconer::app::Room::HasMember(const iconer::app::Room::IdType& id)
 const volatile noexcept
 {
-	for (auto& member : myMembers)
+	for (auto& [member, _] : myMembers)
 	{
 		if (nullptr != member and id == member->GetID())
 		{

@@ -348,6 +348,9 @@
     <ClCompile Include="Private\SendContextPool.cpp">
       <Filter>Application\Implementain</Filter>
     </ClCompile>
+    <ClCompile Include="RoomMember.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
     <ClCompile Include="ArrayIterator.ixx">
       <Filter>Collection</Filter>
     </ClCompile>
