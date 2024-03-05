@@ -2,7 +2,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 
-#include "Network/SagaNetworkView.h"
+#include "SagaNetworkView.h"
 #include "SagaNetwork.generated.h"
 
 UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga/Network")
