@@ -4,14 +4,9 @@ module;
 #include <ranges>
 
 export module Iconer.Collection.Array;
+export import :ArrayIterator;
 import Iconer.Utility.Constraints;
 export import <initializer_list>;
-
-export namespace iconer::collection
-{
-	template<typename T, size_t Size, typename Alloc = std::allocator<T>>
-	class [[nodiscard]] Array;
-}
 
 export namespace std
 {
@@ -47,10 +42,10 @@ export namespace iconer::collection
 		using volatile_rvalue = add_rvalue_reference_t<add_volatile_t<value_type>>;
 		using const_volatile_rvalue = add_rvalue_reference_t<add_volatile_t<add_const_t<value_type>>>;
 
-		using iterator = T*;
-		using const_iterator = const T*;
-		using volatile_iterator = volatile T*;
-		using const_volatile_iterator = const volatile T*;
+		using const_iterator = ArrayConstIterator<T, Size>;
+		using iterator = ArrayIterator<T, Size>;
+		using volatile_iterator = ArrayIterator<T, Size>;
+		using const_volatile_iterator = ArrayConstIterator<T, Size>;
 		using reverse_iterator = std::reverse_iterator<iterator>;
 		using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
@@ -76,7 +71,7 @@ export namespace iconer::collection
 		constexpr Array()
 			: Array(std::in_place)
 		{
-			for (auto it = begin(); it != end(); ++it)
+			for (T* it = myData; it != myData + Size; ++it)
 			{
 				std::uninitialized_construct_using_allocator(it, myAllocator);
 			}
@@ -85,7 +80,7 @@ export namespace iconer::collection
 		constexpr Array(const allocator_type& allocator)
 			: Array(std::in_place)
 		{
-			for (auto it = begin(); it != end(); ++it)
+			for (T* it = myData; it != myData + Size; ++it)
 			{
 				std::uninitialized_construct_using_allocator(it, myAllocator);
 			}
@@ -93,7 +88,7 @@ export namespace iconer::collection
 
 		constexpr ~Array()
 		{
-			for (auto it = begin(); it != end(); ++it)
+			for (T* it = myData; it != myData + Size; ++it)
 			{
 				std::destroy_at(it);
 			}
@@ -539,73 +534,73 @@ export namespace iconer::collection
 		[[nodiscard]]
 		constexpr iterator begin() noexcept
 		{
-			return myData;
+			return { myData };
 		}
 
 		[[nodiscard]]
 		constexpr iterator end() noexcept
 		{
-			return myData + Size;
+			return { myData + Size };
 		}
 
 		[[nodiscard]]
 		constexpr const_iterator begin() const noexcept
 		{
-			return myData;
+			return { myData };
 		}
 
 		[[nodiscard]]
 		constexpr const_iterator end() const noexcept
 		{
-			return myData + Size;
+			return { myData + Size };
 		}
 
 		[[nodiscard]]
 		constexpr const_iterator cbegin() const noexcept
 		{
-			return myData;
+			return { myData };
 		}
 
 		[[nodiscard]]
 		constexpr const_iterator cend() const noexcept
 		{
-			return myData + Size;
+			return { myData + Size };
 		}
 
 		[[nodiscard]]
 		constexpr volatile_iterator begin() volatile noexcept
 		{
-			return myData;
+			return { myData };
 		}
 
 		[[nodiscard]]
 		constexpr volatile_iterator end() volatile noexcept
 		{
-			return myData + Size;
+			return { myData + Size };
 		}
 
 		[[nodiscard]]
 		constexpr const_volatile_iterator begin() const volatile noexcept
 		{
-			return myData;
+			return { myData };
 		}
 
 		[[nodiscard]]
 		constexpr const_volatile_iterator end() const volatile noexcept
 		{
-			return myData + Size;
+			return { myData + Size };
 		}
 
 		[[nodiscard]]
 		constexpr const_volatile_iterator cbegin() const volatile noexcept
 		{
-			return myData;
+			return { myData };
 		}
 
 		[[nodiscard]]
 		constexpr const_volatile_iterator cend() const volatile noexcept
 		{
-			return myData + Size;
+			return { myData + Size };
 		}
 
 		[[nodiscard]]
