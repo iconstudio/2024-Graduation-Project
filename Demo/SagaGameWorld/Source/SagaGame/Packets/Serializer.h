@@ -14,7 +14,7 @@
 #include <utility>
 #define ICONER_SERIALIZER_NODISCARD [[nodiscard("The serialized buffer has been lost!")]]
 
-namespace saga
+namespace saga::inline serializers
 {
 	/// <summary>Transfer a boolean value to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
@@ -604,7 +604,7 @@ namespace saga
 	}
 }
 
-export namespace saga
+namespace saga::inline deserializers
 {
 	/// <summary>Read a boolean value from the byte buffer</summary>
 	/// <returns>last buffer pointer after read dest</returns>
