@@ -1,6 +1,5 @@
 module;
 #include <initializer_list>
-#include <memory>
 #include <vector>
 #include <span>
 
@@ -9,6 +8,7 @@ import :RoomMember;
 import :RoomBase;
 export import :RoomStates;
 import Iconer.Utility.Constraints;
+import Iconer.Utility.AtomicSwitcher;
 import Iconer.Collection.Array;
 
 export namespace iconer::app
@@ -62,6 +62,8 @@ export namespace iconer::app
 
 		bool TryAddMember(iconer::app::User& user) volatile noexcept;
 		bool RemoveMember(const IdType& id) volatile noexcept;
+		bool RemoveMember(const IdType& id, function_t<void, volatile Room&, const size_t&> predicate) volatile;
+		bool RemoveMember(const IdType& id, nothrow_function_t<void, volatile Room&, const size_t&> predicate) volatile noexcept;
 		bool RemoveMember(const IdType& id, const MemberRemover& predicate) volatile;
 		bool RemoveMember(const IdType& id, MemberRemover&& predicate) volatile;
 		void ClearMembers() volatile noexcept;

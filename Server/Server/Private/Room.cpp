@@ -1,15 +1,53 @@
 module;
+#include <utility>
 #include <vector>
 #include <span>
-#include <algorithm>
 #include <ranges>
-#include <mutex>
 
 module Iconer.Application.Room;
 import :RoomMember;
-import Iconer.Utility.AtomicSwitcher;
+import Iconer.Utility.Constraints;
 import Iconer.Application.User;
 import Iconer.Application.Packet;
+
+namespace iconer::app
+{
+	template<typename Predicate>
+	bool Remover(volatile Room& room, const iconer::app::User::IdType& user_id, Predicate&& predicate)
+		noexcept(nothrow_invocables<Predicate, volatile Room&, size_t>)
+	{
+		auto capture = room.CaptureMemberCount();
+		unsigned long long& count = capture.GetValue();
+
+		auto it = room.begin();
+		auto end = room.end();
+
+		while (it != end)
+		{
+			auto& [member, is_ready] = *it;
+			if (nullptr != member and user_id == member->GetID())
+			{
+				member = nullptr;
+
+				if (0 < count)
+				{
+					--count;
+				}
+
+				std::invoke(std::forward<Predicate>(predicate), room, count);
+
+				is_ready.CompareAndSet(true, false);
+				room.Dirty(true);
+
+				return true;
+			}
+
+			(void)++it;
+		}
+
+		return false;
+	}
+}
 
 void
 iconer::app::Room::Awake()
@@ -108,7 +146,7 @@ bool
 iconer::app::Room::TryAddMember(iconer::app::User& user)
 volatile noexcept
 {
-	iconer::util::AtomicSwitcher capture{ membersCount };
+	auto capture = CaptureMemberCount();
 	unsigned long long& count = capture.GetValue();
 
 	if (count < maxUsersNumberInRoom)
@@ -134,95 +172,37 @@ bool
 iconer::app::Room::RemoveMember(const iconer::app::Room::IdType& id)
 volatile noexcept
 {
-	iconer::util::AtomicSwitcher capture{ membersCount };
-	unsigned long long& count = capture.GetValue();
+	static constexpr auto temp_pred = [](volatile Room&, size_t) noexcept {};
 
-	for (auto it = myMembers.begin(); it != myMembers.end(); ++it)
-	{
-		auto& [member, is_ready] = *it;
-		if (nullptr != member and id == member->GetID())
-		{
-			member = nullptr;
+	return Remover(*this, id, temp_pred);
+}
 
-			if (0 < count)
-			{
-				--count;
-			}
+bool
+iconer::app::Room::RemoveMember(const IdType& id, function_t<void, volatile Room&, const size_t&> predicate) 
+volatile
+{
+	return Remover(*this, id, predicate);
+}
 
-			is_ready.CompareAndSet(true, false);
-			isMemberUpdated = true;
-
-			return true;
-		}
-	}
-
-	return false;
+bool
+iconer::app::Room::RemoveMember(const IdType& id, nothrow_function_t<void, volatile Room&, const size_t&> predicate)
+volatile noexcept
+{
+	return Remover(*this, id, predicate);
 }
 
 bool
 iconer::app::Room::RemoveMember(const iconer::app::Room::IdType& id, const iconer::app::Room::MemberRemover& predicate)
 volatile
 {
-	iconer::util::AtomicSwitcher capture{ membersCount };
-	unsigned long long& count = capture.GetValue();
-
-	if (0 < count)
-	{
-		for (auto& [member, is_ready] : myMembers)
-		{
-			if (nullptr != member and id == member->GetID())
-			{
-				member = nullptr;
-
-				if (0 < count)
-				{
-					--count;
-				}
-
-				std::invoke(std::as_const(predicate), *this, count);
-
-				is_ready.CompareAndSet(true, false);
-				isMemberUpdated = true;
-
-				return true;
-			}
-		}
-	}
-
-	return false;
+	return Remover(*this, id, predicate);
 }
 
 bool
 iconer::app::Room::RemoveMember(const iconer::app::Room::IdType& id, iconer::app::Room::MemberRemover&& predicate)
 volatile
 {
-	iconer::util::AtomicSwitcher capture{ membersCount };
-	unsigned long long& count = capture.GetValue();
-
-	if (0 < count)
-	{
-		for (auto& [member, is_ready] : myMembers)
-		{
-			if (nullptr != member and id == member->GetID())
-			{
-				member = nullptr;
-
-				if (0 < count)
-				{
-					--count;
-				}
-
-				std::invoke(std::move(predicate), *this, count);
-
-				is_ready.CompareAndSet(true, false);
-				isMemberUpdated = true;
-
-				return true;
-			}
-		}
-	}
-
-	return false;
+	return Remover(*this, id, std::move(predicate));
 }
 
 size_t
