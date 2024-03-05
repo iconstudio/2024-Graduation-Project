@@ -747,6 +747,118 @@ export namespace std
 		using ::std::swap;
 		swap(lhs.myData, rhs.myData);
 	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto begin(iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.begin();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto end(iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.end();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto cbegin(iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.begin();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto cend(iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.end();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto begin(const iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.begin();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto end(const iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.end();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto cbegin(const iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.begin();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto cend(const iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.end();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto begin(volatile iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.begin();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto end(volatile iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.end();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto cbegin(volatile iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.begin();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto cend(volatile iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.end();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto begin(const volatile iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.begin();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto end(const volatile iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.end();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto cbegin(const volatile iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.begin();
+	}
+
+	template<typename T, size_t Size, typename Alloc>
+	[[nodiscard]]
+	constexpr auto cend(const volatile iconer::collection::Array<T, Size, Alloc>& arr) noexcept
+	{
+		return arr.end();
+	}
 }
 
 template<typename T, size_t Size, typename Alloc>
