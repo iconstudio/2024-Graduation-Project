@@ -16,6 +16,19 @@ class SAGAGAME_API ASagaCharacterNPC : public ASagaCharacterBase
 public:
 	ASagaCharacterNPC();
 
+	void ShowInteractionPrompt(bool bShow);
+
+	void OnPlayerEnterRange();
+
+	void OnPlayerExitRange();
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	TSubclassOf<UUserWidget> NPCInteractionWidget;
+
+	UPROPERTY()
+	UUserWidget* NPCInteractionTEXTWidget;
+
 protected:
 	void SetDead() override;
 	virtual void BeginPlay() override;

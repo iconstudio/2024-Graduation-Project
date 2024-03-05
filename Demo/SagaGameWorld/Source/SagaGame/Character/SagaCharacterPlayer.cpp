@@ -160,11 +160,15 @@ void ASagaCharacterPlayer::UseItem(UItems* Item)
 	}
 }
 
+
 void ASagaCharacterPlayer::SetNearbyNPC(ASagaCharacterNPC* NPC)
 {
 	NearbyNPC = NPC;
 
 	UE_LOG(LogTemp, Warning, TEXT("상호작용 발생!"));
+
+	//// 상호작용 프롬프트 표시 (예: "F를 눌러 상호작용")
+	//ShowInteractionPrompt(true);
 }
 
 void ASagaCharacterPlayer::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
@@ -252,15 +256,15 @@ void ASagaCharacterPlayer::InteractWithNPC()
 	}
 }
 
-void ASagaCharacterPlayer::OnStartSprinting()
+void ASagaCharacterPlayer::OnStartSprinting() //Shift로 달리기
 {
-	UE_LOG(LogTemp, Warning, TEXT("Started Sprinting"));
+	//UE_LOG(LogTemp, Warning, TEXT("Started Sprinting"));
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 }
 
-void ASagaCharacterPlayer::OnStopSprinting()
+void ASagaCharacterPlayer::OnStopSprinting() //Shift 안누를시 달리기 해제
 {
-	UE_LOG(LogTemp, Warning, TEXT("Stopped Sprinting"));
+	//UE_LOG(LogTemp, Warning, TEXT("Stopped Sprinting"));
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }
 
