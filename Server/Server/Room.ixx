@@ -27,6 +27,8 @@ export namespace iconer::app
 		using Super = detail::RoomBase;
 		using Super::IdType;
 		using MemberStorageType = iconer::collection::Array<RoomMember, maxUsersNumberInRoom>;
+		using iterator = MemberStorageType::iterator;
+		using const_iterator = MemberStorageType::const_iterator;
 
 		explicit constexpr Room(const IdType& id)
 			noexcept(nothrow_constructible<Super, const IdType&>)
@@ -82,6 +84,84 @@ export namespace iconer::app
 
 		size_t ReadyMember(iconer::app::User& user) volatile noexcept;
 		size_t UnreadyMember(iconer::app::User& user) volatile noexcept;
+
+		[[nodiscard]]
+		constexpr iterator begin() noexcept
+		{
+			return myMembers.begin();
+		}
+		
+		[[nodiscard]]
+		constexpr iterator end() noexcept
+		{
+			return myMembers.end();
+		}
+		
+		[[nodiscard]]
+		constexpr const_iterator begin() const noexcept
+		{
+			return myMembers.begin();
+		}
+		
+		[[nodiscard]]
+		constexpr const_iterator end() const noexcept
+		{
+			return myMembers.end();
+		}
+		
+		[[nodiscard]]
+		constexpr const_iterator cbegin() const noexcept
+		{
+			return myMembers.cbegin();
+		}
+		
+		[[nodiscard]]
+		constexpr const_iterator cend() const noexcept
+		{
+			return myMembers.cend();
+		}
+		
+		[[nodiscard]]
+		constexpr iterator begin() volatile noexcept
+		{
+			return myMembers.begin();
+		}
+		
+		[[nodiscard]]
+		constexpr iterator end() volatile noexcept
+		{
+			return myMembers.end();
+		}
+		
+		[[nodiscard]]
+		constexpr const_iterator begin() const volatile noexcept
+		{
+			return myMembers.begin();
+		}
+		
+		[[nodiscard]]
+		constexpr const_iterator end() const volatile noexcept
+		{
+			return myMembers.end();
+		}
+		
+		[[nodiscard]]
+		constexpr const_iterator cbegin() const volatile noexcept
+		{
+			return myMembers.cbegin();
+		}
+		
+		[[nodiscard]]
+		constexpr const_iterator cend() const volatile noexcept
+		{
+			return myMembers.cend();
+		}
+
+		[[nodiscard]]
+		auto CaptureMemberCount() volatile noexcept
+		{
+			return iconer::util::AtomicSwitcher{ membersCount };
+		}
 
 		[[nodiscard]] std::vector<User*> AcquireMemberList() const;
 		[[nodiscard]] std::vector<User*> AcquireMemberList() const volatile;
