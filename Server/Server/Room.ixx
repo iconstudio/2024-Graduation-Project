@@ -5,6 +5,7 @@ module;
 #include <span>
 
 export module Iconer.Application.Room;
+import :RoomMember;
 import Iconer.Utility.Constraints;
 import Iconer.Collection.Array;
 import Iconer.Application.ISession;
@@ -41,12 +42,12 @@ export namespace iconer::app
 
 		using Super = ISession<RoomStates>;
 		using Super::IdType;
-		using MemberStorageType = iconer::collection::Array<User*, maxUsersNumberInRoom>;
+		using MemberStorageType = iconer::collection::Array<RoomMember, maxUsersNumberInRoom>;
 
 		explicit constexpr Room(const IdType& id)
 			noexcept(nothrow_constructible<Super, const IdType&>)
 			: Super(id)
-			, myMembers(), membersCount(), readyCount()
+			, myMembers(), membersCount(), loadCount()
 			, preRespondMembersPacket()
 		{
 		}
@@ -54,7 +55,7 @@ export namespace iconer::app
 		explicit constexpr Room(IdType&& id)
 			noexcept(nothrow_constructible<Super, IdType&&>)
 			: Super(std::move(id))
-			, myMembers(), membersCount(), readyCount()
+			, myMembers(), membersCount(), loadCount()
 			, preRespondMembersPacket()
 		{
 		}
@@ -67,7 +68,7 @@ export namespace iconer::app
 			SetState(RoomStates::None);
 			SetOperation(AsyncOperations::None);
 			ClearMembers();
-			membersCount = 0;
+			loadCount = 0;
 		}
 
 		void Cleanup() volatile noexcept
@@ -76,7 +77,7 @@ export namespace iconer::app
 			SetState(RoomStates::None);
 			SetOperation(AsyncOperations::None);
 			ClearMembers();
-			membersCount = 0;
+			loadCount = 0;
 		}
 
 		bool TryAddMember(iconer::app::User& user) volatile noexcept;
@@ -159,31 +160,22 @@ export namespace iconer::app
 		[[nodiscard]] bool IsEmpty() const volatile noexcept;
 		[[nodiscard]] bool IsFull() const volatile noexcept;
 		[[nodiscard]] bool CanStartGame() const volatile noexcept;
+		[[nodiscard]] bool IsEveryMemberIsLoaded() const volatile noexcept;
 
 	private:
-		size_t IncreaseReadies() noexcept
-		{
-			return readyCount.fetch_add(1);
-		}
-
-		size_t DecreaseReadies() noexcept
-		{
-			return readyCount.fetch_sub(1);
-		}
-
 		size_t IncreaseReadies() volatile noexcept
 		{
-			return readyCount.fetch_add(1);
+			return loadCount.fetch_add(1);
 		}
 
 		size_t DecreaseReadies() volatile noexcept
 		{
-			return readyCount.fetch_sub(1);
+			return loadCount.fetch_sub(1);
 		}
 
 		MemberStorageType myMembers;
 		std::atomic_size_t membersCount;
-		std::atomic_size_t readyCount;
+		std::atomic_size_t loadCount;
 		std::atomic_bool isMemberUpdated;
 
 		std::unique_ptr<std::byte[]> preRespondMembersPacket;
