@@ -42,6 +42,7 @@ public:
 
 protected:
 	FSocket* LocalSocket;
+	FThread* recvWorker;
 
 	/// <remarks>로컬 플레이어도 포함</remarks>
 	TArray<ISagaNetworkView*> EveryClients;

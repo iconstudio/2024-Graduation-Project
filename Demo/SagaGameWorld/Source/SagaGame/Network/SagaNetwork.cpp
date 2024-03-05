@@ -1,10 +1,10 @@
-#include "Network/System/SagaNetwork.h"
+#include "SagaNetwork.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 #include "Sockets.h"
-#include "Network/System/SagaNetworkSettings.h"
-#include "Network/Packets/SagaPredefinedPackets.h"
-#include "Network/SagaNetworkUtility.h"
-#include "Network/SagaLocalPlayer.h"
+#include "Settings/SagaNetworkSettings.h"
+#include "Packets/SagaPredefinedPackets.h"
+#include "SagaNetworkUtility.h"
+#include "SagaLocalPlayer.h"
 
 void
 USagaNetwork::Init()

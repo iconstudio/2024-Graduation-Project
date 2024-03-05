@@ -1,6 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "UI/SagaInitializationLevelUI.h"
 #include "SagaGameInitializationMode.generated.h"
 
 UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga/Game Modes")
@@ -15,9 +16,4 @@ public:
 	
 	virtual void BeginPlay() override;
 	virtual void BeginDestroy() override;
-
-private:
-	void GotoNextLevel();
-	
-	FTimerHandle initTimer;
 };
