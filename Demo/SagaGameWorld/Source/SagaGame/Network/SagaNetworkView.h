@@ -18,16 +18,16 @@ class SAGAGAME_API ISagaNetworkView
 public:
 	/// <summary>원격 플레이어 접속</summary>
 	/// <param name="NewbieID">들어온 플레이어의 ID</param>
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga/Network/Event")
+	UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Network/Event")
 	void OnPlayerConnected(const int32 NewbieID);
 	/// <summary>원격 플레이어 종료</summary>
 	/// <param name="PlayerID">나간 플레이어의 ID</param>
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga/Network/Event")
+	UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Network/Event")
 	void OnPlayerDisconnected(const int32 PlayerID);
 
 	/// <summary>플레이어 접속 성공</summary>
 	/// <param name="LocalID">부여된 나의 ID</param>
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga/Network/Event")
+	UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Network/Event")
 	void OnConnected(const int32 LocalID);
 
 	[[nodiscard]]
