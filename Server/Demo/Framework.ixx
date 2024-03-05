@@ -172,68 +172,50 @@ export namespace demo
 		}
 
 		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool CreateListenerSockets() noexcept;
+		[[nodiscard]] bool CreateListenerSockets() noexcept;
 		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool InitializeLobbyListener() noexcept;
+		[[nodiscard]] bool InitializeLobbyListener() noexcept;
 		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool InitializeGameListener() noexcept;
+		[[nodiscard]] bool InitializeGameListener() noexcept;
 		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool InitializeCompletionPort(iconer::net::ErrorCode& error_code) noexcept;
+		[[nodiscard]] bool InitializeCompletionPort(iconer::net::ErrorCode& error_code) noexcept;
 		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool InitializeUsers();
+		[[nodiscard]] bool InitializeUsers();
 		/// <summary>On Awake()</summary>
-		[[nodiscard]]
-		bool InitializeRooms();
+		[[nodiscard]] bool InitializeRooms();
 		/// <summary>On Awake()</summary>
 		void InitializeSendContextPool();
 		/// <summary>On Worker()</summary>
 		void CacheSendContexts();
 		/// <summary>On Start()</summary>
-		[[nodiscard]]
-		bool StartAccepts();
+		[[nodiscard]] bool StartAccepts();
 
-		[[nodiscard]]
-		bool RouteEvent(bool is_succeed, const std::uint64_t& io_id, const ptrdiff_t& io_bytes, iconer::app::IContext* ctx);
-		[[nodiscard]]
-		AcceptResult OnReserveAccept(iconer::app::User& user);
-		[[noreturn]]
-		void OnFailedReservingAccept();
-		[[nodiscard]]
-		IoResult OnUserConnected(iconer::app::User& user);
+		[[nodiscard]] bool RouteEvent(bool is_succeed, const std::uint64_t& io_id, const ptrdiff_t& io_bytes, iconer::app::IContext* ctx);
+		[[nodiscard]] AcceptResult OnReserveAccept(iconer::app::User& user);
+		[[noreturn]] void OnFailedReservingAccept();
+		[[nodiscard]] IoResult OnUserConnected(iconer::app::User& user);
 		void OnFailedUserConnect(iconer::app::User& user);
-		[[nodiscard]]
-		IoResult OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes);
+		[[nodiscard]] IoResult OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes);
 		void OnFailedUserSignIn(iconer::app::User& user);
-		[[nodiscard]]
-		IoResult OnNotifyUserId(iconer::app::User& user);
+		[[nodiscard]] IoResult OnNotifyUserId(iconer::app::User& user);
 		void OnFailedNotifyId(iconer::app::User& user);
 		[[nodiscard]]
 		IoResult OnReceived(iconer::app::User& user, const ptrdiff_t& bytes);
 		void OnFailedReceive(iconer::app::User& user);
-		[[nodiscard]]
-		iconer::app::RoomContract OnReservingRoom(iconer::app::Room& room, iconer::app::User& user);
+		[[nodiscard]] iconer::app::RoomContract OnReservingRoom(iconer::app::Room& room, iconer::app::User& user);
 		void OnFailedToReserveRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason);
-		[[nodiscard]]
-		iconer::app::RoomContract OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user);
+		[[nodiscard]] iconer::app::RoomContract OnCreatingRoom(iconer::app::Room& room, iconer::app::User& user);
 		void OnFailedToCreateRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason);
-		[[nodiscard]]
-		iconer::app::RoomContract OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user);
+		[[nodiscard]] iconer::app::RoomContract OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user);
 		void OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason);
 		bool OnLeavingRoom(iconer::app::User& user);
 		void OnClosingRoom(iconer::app::Room& room);
-		[[nodiscard]]
-		bool OnNotifyMemberOfRoom(iconer::app::User& user) noexcept;
+		[[nodiscard]] bool OnNotifyMemberOfRoom(iconer::app::User& user) noexcept;
 		void OnFailedNotifyRoomMember(iconer::app::User& user) noexcept;
+		[[nodiscard]] IoResult OnNotifyRoomsList(iconer::app::User& user);
 		[[nodiscard]]
 		bool OnCreateGame(iconer::app::User& user);
 		void OnFailedToCreateGame(iconer::app::User& user) noexcept;
-		[[nodiscard]]
-		IoResult OnRespondRoomsList(iconer::app::User& user);
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);
 
