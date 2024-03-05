@@ -135,3 +135,58 @@ demo::Framework::OnFailedNotifyId(iconer::app::User& user)
 		user.Cleanup();
 	}
 }
+
+demo::Framework::IoResult
+demo::Framework::OnNotifyRoomsList(iconer::app::User& user)
+{
+	if (GetRoomModifiedFlag())
+	{
+		static iconer::app::packets::SC_RespondRoomsPacket pk{};
+
+		pk.serializedRooms.clear();
+		for (auto room : everyRoom)
+		{
+			if (nullptr != room and 0 < room->GetMembersCount())
+			{
+				pk.AddMember(room->GetID(), room->GetName(), room->GetMembersCount());
+			}
+		}
+		pk.Write(serializedRoomsBuffer.get());
+		serializedRoomsBufferSize = pk.WannabeSize();
+
+		SetRoomModifiedFlag();
+	}
+
+	auto sender = AcquireSendContext();
+
+	auto io = user.SendGeneralData(sender, serializedRoomsBuffer.get(), serializedRoomsBufferSize);
+	if (not io)
+	{
+		sender->ReturnToBase();
+	}
+
+	return std::move(io);
+}
+
+bool
+demo::Framework::OnNotifyMemberOfRoom(iconer::app::User& user)
+noexcept
+{
+	if (user.myRoomId == -1)
+	{
+		return false;
+	}
+	else if (user.GetState() != iconer::app::UserStates::InRoom)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+void
+demo::Framework::OnFailedNotifyRoomMember(iconer::app::User& user)
+noexcept
+{
+	user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+}

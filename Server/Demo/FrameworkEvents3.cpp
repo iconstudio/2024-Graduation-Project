@@ -251,29 +251,6 @@ demo::Framework::OnClosingRoom(iconer::app::Room& room)
 }
 
 bool
-demo::Framework::OnNotifyMemberOfRoom(iconer::app::User& user)
-noexcept
-{
-	if (user.myRoomId == -1)
-	{
-		return false;
-	}
-	else if (user.GetState() != iconer::app::UserStates::InRoom)
-	{
-		return false;
-	}
-
-	return true;
-}
-
-void
-demo::Framework::OnFailedNotifyRoomMember(iconer::app::User& user)
-noexcept
-{
-	user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
-}
-
-bool
 RemoveRoomMember(demo::Framework& framework, iconer::app::Room& room, const iconer::app::User::IdType& user_id)
 noexcept
 {
