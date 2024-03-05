@@ -6,32 +6,16 @@ module;
 
 export module Iconer.Application.Room;
 import :RoomMember;
+import :RoomBase;
+export import :RoomStates;
 import Iconer.Utility.Constraints;
 import Iconer.Collection.Array;
-import Iconer.Application.ISession;
 
 export namespace iconer::app
 {
-	enum class [[nodiscard]] RoomStates
-	{
-		None
-		, Reserved, Creating // first phases: menu scene
-		, Closing // menu scene
-		, Idle // lobby scene
-		, Ready // loading scene
-		, InGame // game scene
-		, GameDone // game scene
-		, Cleanup // game scene, score scene
-	};
-
-	class User;
-
-	class [[nodiscard]] Room : public ISession<RoomStates>
+	class [[nodiscard]] Room : public detail::RoomBase
 	{
 	public:
-		static inline constexpr size_t maxUsersNumberInRoom = 6;
-		static inline constexpr size_t minUsersNumberForGame = 4;
-
 		struct [[nodiscard]] MemberRemover
 		{
 			constexpr MemberRemover() noexcept = default;
@@ -40,23 +24,21 @@ export namespace iconer::app
 			virtual void operator()(volatile Room& room, const size_t& member_count) const = 0;
 		};
 
-		using Super = ISession<RoomStates>;
+		using Super = detail::RoomBase;
 		using Super::IdType;
 		using MemberStorageType = iconer::collection::Array<RoomMember, maxUsersNumberInRoom>;
 
 		explicit constexpr Room(const IdType& id)
 			noexcept(nothrow_constructible<Super, const IdType&>)
 			: Super(id)
-			, myMembers(), membersCount(), loadCount()
-			, preRespondMembersPacket()
+			, myMembers()
 		{
 		}
 
 		explicit constexpr Room(IdType&& id)
 			noexcept(nothrow_constructible<Super, IdType&&>)
 			: Super(std::move(id))
-			, myMembers(), membersCount(), loadCount()
-			, preRespondMembersPacket()
+			, myMembers()
 		{
 		}
 
@@ -64,20 +46,16 @@ export namespace iconer::app
 
 		void Cleanup() noexcept
 		{
-			Clear();
-			SetState(RoomStates::None);
-			SetOperation(AsyncOperations::None);
 			ClearMembers();
-			loadCount = 0;
+			Clear();
+			Super::Cleanup();
 		}
 
 		void Cleanup() volatile noexcept
 		{
-			Clear();
-			SetState(RoomStates::None);
-			SetOperation(AsyncOperations::None);
 			ClearMembers();
-			loadCount = 0;
+			Clear();
+			Super::Cleanup();
 		}
 
 		bool TryAddMember(iconer::app::User& user) volatile noexcept;
@@ -105,79 +83,14 @@ export namespace iconer::app
 		size_t ReadyMember(iconer::app::User& user) volatile noexcept;
 		size_t UnreadyMember(iconer::app::User& user) volatile noexcept;
 
-		bool TryReserveContract() volatile noexcept
-		{
-			return TryChangeState(RoomStates::None, RoomStates::Reserved);
-		}
-
-		bool TryCancelContract() volatile noexcept
-		{
-			return TryChangeState(RoomStates::Reserved, RoomStates::None);
-		}
-
-		bool TryBeginCreate() volatile noexcept
-		{
-			return TryChangeState(RoomStates::Reserved, RoomStates::Creating);
-		}
-
-		bool TryCancelCreating() volatile noexcept
-		{
-			return TryChangeState(RoomStates::Creating, RoomStates::None);
-		}
-
-		bool TryEstablish() volatile noexcept
-		{
-			return TryChangeState(RoomStates::Creating, RoomStates::Idle);
-		}
-
-		bool TryCancelEstablishing() volatile noexcept
-		{
-			return TryChangeState(RoomStates::Idle, RoomStates::None);
-		}
-
-		void BeginClose() volatile noexcept
-		{
-			SetState(RoomStates::Closing);
-		}
-
-		bool TryBeginClose(RoomStates prev_state) volatile noexcept
-		{
-			return TryChangeState(prev_state, RoomStates::Closing);
-		}
-
-		bool TryEndClose(RoomStates next_state = RoomStates::None) volatile noexcept
-		{
-			return TryChangeState(RoomStates::Closing, next_state);
-		}
-
 		[[nodiscard]] std::vector<User*> AcquireMemberList() const;
 		[[nodiscard]] std::vector<User*> AcquireMemberList() const volatile;
 		[[nodiscard]] std::span<std::byte> SerializeMembers() volatile;
 
-		[[nodiscard]] size_t GetMembersCount() const volatile noexcept;
-
 		[[nodiscard]] bool HasMember(const IdType& id) const volatile noexcept;
-		[[nodiscard]] bool IsEmpty() const volatile noexcept;
-		[[nodiscard]] bool IsFull() const volatile noexcept;
-		[[nodiscard]] bool CanStartGame() const volatile noexcept;
 		[[nodiscard]] bool IsEveryMemberIsLoaded() const volatile noexcept;
 
 	private:
-		size_t IncreaseReadies() volatile noexcept
-		{
-			return loadCount.fetch_add(1);
-		}
-
-		size_t DecreaseReadies() volatile noexcept
-		{
-			return loadCount.fetch_sub(1);
-		}
-
 		MemberStorageType myMembers;
-		std::atomic_size_t membersCount;
-		std::atomic_size_t loadCount;
-		std::atomic_bool isMemberUpdated;
-
-		std::unique_ptr<std::byte[]> preRespondMembersPacket;
 	};
 }
