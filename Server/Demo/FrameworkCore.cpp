@@ -179,7 +179,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		case iconer::app::AsyncOperations::OpSendBorrowed:
 		{
 			auto sender = static_cast<iconer::app::BorrowedSendContext*>(ctx);
-			sender->ReturnToBase();
+			sender->Complete();
 		}
 		break;
 
@@ -318,7 +318,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			}
 
 			auto sender = static_cast<iconer::app::BorrowedSendContext*>(ctx);
-			sender->ReturnToBase();
+			sender->Complete();
 		}
 		break;
 
@@ -402,10 +402,15 @@ demo::Framework::RouteEvent(bool is_succeed
 			const IdType user_id = static_cast<IdType>(io_id);
 			auto user = FindUser(user_id);
 
-			//TODO
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tUser {}'s the operation of making a game is failed\n", user_id);
+				OnFailedToCreateGame(*user);
+			}
+			else if (not OnCreateGame(*user))
+			{
+				myLogger.LogError(L"\tUser {}'s the operation of making a game is failed\n", user_id);
+				OnFailedToCreateGame(*user);
 			}
 			else
 			{
@@ -416,16 +421,22 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
+		// Phase 7
 		case iconer::app::AsyncOperations::OpReadyGame:
 		{
-			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
-			const IdType& id = user->GetID();
+			const IdType user_id = static_cast<IdType>(io_id);
+			auto user = FindUser(user_id);
 
 			//TODO
-			user->Clear();
+
+			//NOTICE: just start game now
+
+			auto sender = static_cast<iconer::app::BorrowedSendContext*>(ctx);
+			sender->Complete();
 		}
 		break;
 
+		// Phase 7
 		case iconer::app::AsyncOperations::OpStartGame:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
@@ -437,6 +448,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
+		// Phase 7~
 		case iconer::app::AsyncOperations::OpLeaveGame:
 		{
 			auto user = std::launder(static_cast<iconer::app::User*>(ctx));
@@ -447,6 +459,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		}
 		break;
 
+		// Phase 9~
 		case iconer::app::AsyncOperations::OpEndWorkers:
 		{
 			return false;

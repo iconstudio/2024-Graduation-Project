@@ -4,6 +4,9 @@ module;
 #include <thread>
 #include <stop_token>
 #include <latch>
+#include <string>
+#include <string_view>
+#include <span>
 
 export module Demo.Framework;
 import Iconer.Utility.Logger;
@@ -21,9 +24,6 @@ import Iconer.Application.RoomContract;
 import Iconer.Application.BorrowedSendContext;
 export import <memory>;
 export import <expected>;
-import <span>;
-import <string>;
-import <string_view>;
 
 export namespace demo
 {

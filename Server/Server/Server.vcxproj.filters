@@ -354,11 +354,11 @@
     <ClCompile Include="ArrayIterator.ixx">
       <Filter>Collection</Filter>
     </ClCompile>
-    <ClCompile Include="RoomBase.ixx">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="RoomStates.ixx">
-      <Filter>소스 파일</Filter>
+      <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomBase.ixx">
+      <Filter>Collection</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

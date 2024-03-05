@@ -164,8 +164,11 @@ const
 	static const auto buffer = pk.Serialize();
 	static constexpr auto size = packets::SC_ReadyForGamePacket::WannabeSize();
 
-	// Preserve the serialized packet
-	return SendGeneralData(buffer.get(), size);
+	auto ctx = SendContextPool::Pop();
+
+	ctx->SetOperation(AsyncOperations::OpReadyGame);
+
+	return { mySocket.Send(*ctx, buffer.get(), size), std::move(ctx) };
 }
 
 iconer::app::User::BorrowedIoResult
@@ -176,6 +179,7 @@ const
 	static const auto buffer = pk.Serialize();
 	static constexpr auto size = packets::SC_ReadyForGamePacket::WannabeSize();
 
-	// Preserve the serialized packet
-	return SendGeneralData(buffer.get(), size);
+	auto ctx = SendContextPool::Pop();
+
+	return { mySocket.Send(*ctx, buffer.get(), size), std::move(ctx) };
 }

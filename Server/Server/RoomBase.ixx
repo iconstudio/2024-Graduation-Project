@@ -82,6 +82,16 @@ export namespace iconer::app::detail
 			return TryChangeState(RoomStates::Idle, RoomStates::None);
 		}
 
+		bool TryGettingReady() volatile noexcept
+		{
+			return TryChangeState(RoomStates::Idle, RoomStates::Ready);
+		}
+
+		bool TryCancelReady(RoomStates next_state = RoomStates::Idle) volatile noexcept
+		{
+			return TryChangeState(RoomStates::Ready, next_state);
+		}
+
 		void BeginClose() volatile noexcept
 		{
 			SetState(RoomStates::Closing);
