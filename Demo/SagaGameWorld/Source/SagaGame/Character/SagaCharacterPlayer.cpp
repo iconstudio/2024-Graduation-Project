@@ -79,6 +79,12 @@ ASagaCharacterPlayer::ASagaCharacterPlayer()
 		SprintAction = SprintActionAttackRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> InteractWithNPCRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_InteractWithNPC.IA_InteractWithNPC'"));
+	if (nullptr != InteractWithNPCRef.Object)
+	{
+		InteractionWithNPC = InteractWithNPCRef.Object;
+	}
+
 	CurrentCharacterControlType = ECharacterControlType::Quater;
 }
 
@@ -103,9 +109,13 @@ void ASagaCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Play
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::QuaterMove);
 	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::Attack);
 
+	//달리기
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ASagaCharacterPlayer::OnStartSprinting);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASagaCharacterPlayer::OnStopSprinting);
 	
+	//NPC와 상호작용
+	EnhancedInputComponent->BindAction(InteractionWithNPC, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::GetOnNPC);
+
 }
 
 void ASagaCharacterPlayer::ChangeCharacterControl()
@@ -148,6 +158,13 @@ void ASagaCharacterPlayer::UseItem(UItems* Item)
 		Item->Use(this);
 		Item->OnUse(this); //블루프린트 이벤트
 	}
+}
+
+void ASagaCharacterPlayer::SetNearbyNPC(ASagaCharacterNPC* NPC)
+{
+	NearbyNPC = NPC;
+
+	UE_LOG(LogTemp, Warning, TEXT("상호작용 발생!"));
 }
 
 void ASagaCharacterPlayer::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
@@ -245,4 +262,9 @@ void ASagaCharacterPlayer::OnStopSprinting()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Stopped Sprinting"));
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+}
+
+void ASagaCharacterPlayer::GetOnNPC()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnNPC"));
 }
