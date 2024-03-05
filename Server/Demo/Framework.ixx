@@ -210,11 +210,10 @@ export namespace demo
 		void OnFailedToJoinRoom(iconer::app::Room& room, iconer::app::User& user, iconer::app::RoomContract reason);
 		bool OnLeavingRoom(iconer::app::User& user);
 		void OnClosingRoom(iconer::app::Room& room);
+		[[nodiscard]] IoResult OnNotifyRoomsList(iconer::app::User& user);
 		[[nodiscard]] bool OnNotifyMemberOfRoom(iconer::app::User& user) noexcept;
 		void OnFailedNotifyRoomMember(iconer::app::User& user) noexcept;
-		[[nodiscard]] IoResult OnNotifyRoomsList(iconer::app::User& user);
-		[[nodiscard]]
-		bool OnCreateGame(iconer::app::User& user);
+		[[nodiscard]] bool OnCreateGame(iconer::app::User& user);
 		void OnFailedToCreateGame(iconer::app::User& user) noexcept;
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);

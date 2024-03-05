@@ -76,35 +76,3 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 	user.Cleanup();
 	user.BeginClose();
 }
-
-demo::Framework::IoResult
-demo::Framework::OnNotifyRoomsList(iconer::app::User& user)
-{
-	if (GetRoomModifiedFlag())
-	{
-		static iconer::app::packets::SC_RespondRoomsPacket pk{};
-
-		pk.serializedRooms.clear();
-		for (auto room : everyRoom)
-		{
-			if (nullptr != room and 0 < room->GetMembersCount())
-			{
-				pk.AddMember(room->GetID(), room->GetName(), room->GetMembersCount());
-			}
-		}
-		pk.Write(serializedRoomsBuffer.get());
-		serializedRoomsBufferSize = pk.WannabeSize();
-
-		SetRoomModifiedFlag();
-	}
-
-	auto sender = AcquireSendContext();
-
-	auto io = user.SendGeneralData(sender, serializedRoomsBuffer.get(), serializedRoomsBufferSize);
-	if (not io)
-	{
-		sender->ReturnToBase();
-	}
-
-	return std::move(io);
-}
