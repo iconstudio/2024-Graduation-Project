@@ -121,7 +121,7 @@ volatile noexcept
 
 				++count;
 
-				isMemberUpdated = true;
+				Dirty(true);
 				return true;
 			}
 		}
@@ -262,7 +262,17 @@ volatile noexcept
 	}
 
 	membersCount = 0;
-	isMemberUpdated = true;
+	Dirty(true);
+}
+
+void iconer::app::Room::Dirty(bool flag) volatile noexcept
+{
+	isMemberUpdated = flag;
+}
+
+bool iconer::app::Room::Dirty() volatile noexcept
+{
+	return isMemberUpdated;
 }
 
 std::vector<iconer::app::User*>
@@ -294,7 +304,7 @@ volatile
 	thread_local static packets::SC_RespondMembersPacket pk{};
 	auto ptr = const_cast<Room*>(this)->preRespondMembersPacket.get();
 
-	if (isMemberUpdated)
+	if (Dirty())
 	{
 		pk.serializedMembers.clear();
 		for (auto& [member, _] : myMembers)
@@ -306,7 +316,7 @@ volatile
 		}
 
 		pk.Write(ptr);
-		isMemberUpdated = false;
+		Dirty(false);
 
 		return std::span<std::byte>{ ptr, pk.WannabeSize() };
 	}

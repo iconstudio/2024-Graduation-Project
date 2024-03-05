@@ -66,6 +66,9 @@ export namespace iconer::app
 		bool RemoveMember(const IdType& id, MemberRemover&& predicate) volatile;
 		void ClearMembers() volatile noexcept;
 
+		void Dirty(bool flag) volatile noexcept;
+		[[nodiscard]] bool Dirty() volatile noexcept;
+
 		template<invocables<User&> Predicate>
 		void ForEach(Predicate&& predicate) const
 		{
