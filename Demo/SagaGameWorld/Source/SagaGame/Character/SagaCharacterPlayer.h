@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "Character/SagaCharacterBase.h"
 #include "InputActionValue.h"
+#include "SagaCharacterNPC.h"
 #include "SagaCharacterPlayer.generated.h"
 
 UCLASS()
@@ -31,6 +32,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Item)
 	void UseItem(class UItems* Item);
 	
+
+	void SetNearbyNPC(ASagaCharacterNPC* NPC);
 
 	//캐릭터 컨트롤 부분
 protected:
@@ -73,6 +76,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SprintAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<class UInputAction> InteractionWithNPC;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = NPC)
+	ASagaCharacterNPC* NearbyNPC;
+
 	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SprintReleaseAction;*/
 
@@ -87,4 +96,6 @@ protected:
 
 	void OnStartSprinting();
 	void OnStopSprinting();
+
+	void GetOnNPC();
 };
