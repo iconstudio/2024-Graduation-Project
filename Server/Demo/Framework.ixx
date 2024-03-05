@@ -230,6 +230,9 @@ export namespace demo
 		bool OnNotifyMemberOfRoom(iconer::app::User& user) noexcept;
 		void OnFailedNotifyRoomMember(iconer::app::User& user) noexcept;
 		[[nodiscard]]
+		bool OnCreateGame(iconer::app::User& user);
+		void OnFailedToCreateGame(iconer::app::User& user) noexcept;
+		[[nodiscard]]
 		IoResult OnRespondRoomsList(iconer::app::User& user);
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);
