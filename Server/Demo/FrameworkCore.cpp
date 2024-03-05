@@ -383,7 +383,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			{
 				myLogger.LogError(L"\tUser {}'s notifying rooms operation is failed\n", user_id);
 			}
-			else if (auto error = OnRespondRoomsList(*user); not error.has_value())
+			else if (auto error = OnNotifyRoomsList(*user); not error.has_value())
 			{
 				myLogger.LogError(L"\tUser {} has failed to send a list of rooms due to {}\n", user_id, error.error());
 			}
