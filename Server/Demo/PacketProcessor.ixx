@@ -39,21 +39,21 @@ demo::PacketProcessor(demo::Framework& framework
 	, std::span<std::byte> packet_data
 	, ptrdiff_t last_offset)
 {
-	if (nullptr == packet_data.data())
+	if (nullptr == packet_data.data()) [[unlikely]]
 	{
 		constexpr auto& msg = iconer::app::GetResourceString<3>();
 		throw msg.data();
-	}
+	};
 
 	iconer::app::PacketProtocol protocol;
 	std::int16_t pk_size = 0;
 	const std::byte* last_buf = iconer::util::Deserialize(iconer::util::Deserialize(packet_data.data(), protocol), pk_size);
 
-	if (pk_size <= 0)
+	if (pk_size <= 0) [[unlikely]]
 	{
 		constexpr auto& msg = iconer::app::GetResourceString<4>();
 		throw msg.data();
-	}
+	};
 
 	constexpr auto& unknown_packet_errmsg = iconer::app::GetResourceString<5>();
 	constexpr auto& notsupported_packet_errmsg = iconer::app::GetResourceString<11>();
