@@ -313,13 +313,6 @@ volatile
 }
 
 bool
-iconer::app::Room::CanStartGame()
-const volatile noexcept
-{
-	return GetState() == iconer::app::RoomStates::Idle and minUsersNumberForGame <= membersCount;
-}
-
-bool
 iconer::app::Room::IsEveryMemberIsLoaded()
 const volatile noexcept
 {
@@ -342,21 +335,28 @@ const volatile noexcept
 }
 
 size_t
-iconer::app::Room::GetMembersCount()
+iconer::app::detail::RoomBase::GetMembersCount()
 const volatile noexcept
 {
 	return membersCount.load(std::memory_order_relaxed);
 }
 
 bool
-iconer::app::Room::IsFull()
+iconer::app::detail::RoomBase::CanStartGame()
+const volatile noexcept
+{
+	return GetState() == iconer::app::RoomStates::Idle and minUsersNumberForGame <= membersCount;
+}
+
+bool
+iconer::app::detail::RoomBase::IsFull()
 const volatile noexcept
 {
 	return maxUsersNumberInRoom <= membersCount.load(std::memory_order_relaxed);
 }
 
 bool
-iconer::app::Room::IsEmpty()
+iconer::app::detail::RoomBase::IsEmpty()
 const volatile noexcept
 {
 	return 0 == membersCount.load(std::memory_order_relaxed);
