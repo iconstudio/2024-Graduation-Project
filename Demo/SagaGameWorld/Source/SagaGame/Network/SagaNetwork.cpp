@@ -1,16 +1,20 @@
 #include "SagaNetwork.h"
 #include "Interfaces/IPv4/IPv4Address.h"
+#include "Templates/SharedPointer.h"
 #include "Sockets.h"
 #include "Settings/SagaNetworkSettings.h"
 #include "SagaNetworkUtility.h"
 #include "SagaLocalPlayer.h"
+#include "../Packets/SagaBasicPacket.h"
 
 void
 USagaNetwork::Init()
 {
-	Super::Init();
+	UGameInstance::Init();
 
 	EveryClients.Reserve(100);
+
+	MyWorker = MakeShared<FSagaNetworkWorker>();
 
 	LocalSocket = USagaNetworkUtility::CreateTcpSocket();
 	if (nullptr == LocalSocket)
@@ -18,7 +22,7 @@ USagaNetwork::Init()
 		throw "error!";
 	}
 	
-	auto local_endpoint = USagaNetworkUtility::MakeEndPoint(FIPv4Address::InternalLoopback, USagaNetworkSettings::GetLocalPort());
+	auto local_endpoint = USagaNetworkUtility::MakeEndPoint(FIPv4Address::InternalLoopback, saga::GetLocalPort());
 	if (not LocalSocket->Bind(*local_endpoint))
 	{
 		throw "error!";
@@ -32,7 +36,7 @@ USagaNetwork::Init()
 
 #if true
 	{
-		auto remote_endpoint = USagaNetworkSettings::CreateRemoteEndPoint();
+		auto remote_endpoint = saga::CreateRemoteEndPoint();
 		if (LocalSocket->Connect(*remote_endpoint))
 		{
 			// 연결 성공
@@ -46,6 +50,7 @@ USagaNetwork::Init()
 		// #1
 		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
 
+#if false
 		constexpr FSagaPacket_CS_SignIn packet{ L"Nickname" };
 		auto ptr = packet.Serialize();
 	
@@ -104,18 +109,19 @@ USagaNetwork::Init()
 		//USagaNetworkUtility::Send(MakeShareable(LocalSocket), position_buffer, FSagaPacket_CS_ClientPosition::WannabeSize());
 	}
 #endif
+#endif
 }
 
 void
 USagaNetwork::OnWorldChanged(UWorld* OldWorld, UWorld* NewWorld)
 {
-	Super::OnWorldChanged(OldWorld, NewWorld);
+	UGameInstance::OnWorldChanged(OldWorld, NewWorld);
 }
 
 void
 USagaNetwork::Shutdown()
 {
-	Super::Shutdown();
+	UGameInstance::Shutdown();
 
 	LocalSocket->Close();
 }
@@ -134,5 +140,68 @@ USagaNetwork::SendKeyToServer(FKey Key)
 
 void
 USagaNetwork::AssignPlayerID(APlayerController* PlayerController)
+{
+}
+
+void
+USagaNetwork::AddPacket(saga::FSagaBasicPacket* packet)
+{
+}
+
+saga::FSagaBasicPacket*
+USagaNetwork::PopPacket()
+{
+	return nullptr;
+}
+
+bool
+USagaNetwork::TryPopPacket(saga::FSagaBasicPacket** handle)
+{
+	return false;
+}
+
+FSagaNetworkWorker::FSagaNetworkWorker()
+{
+	MyThread = FRunnableThread::Create(this, TEXT("Network Thread"));
+}
+
+FSagaNetworkWorker::~FSagaNetworkWorker()
+{
+	if (MyThread)
+	{
+		// 스레드 종료
+		MyThread->WaitForCompletion();
+		MyThread->Kill();
+		delete MyThread;
+	}
+}
+
+bool
+FSagaNetworkWorker::Init()
+{
+	UE_LOG(LogNet, Warning, TEXT("Thread has been initialized"));
+
+	// Socket 연결
+	return false;
+}
+
+uint32
+FSagaNetworkWorker::Run()
+{
+	while (true)
+	{
+		// Recv 작업 진행
+	}
+
+	return 0;
+}
+
+void
+FSagaNetworkWorker::Exit()
+{
+}
+
+void
+FSagaNetworkWorker::Stop()
 {
 }

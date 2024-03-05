@@ -1,14 +1,11 @@
 #pragma once
-#include "CoreMinimal.h"
-#include "SagaPacketProtocol.generated.h"
 
-UENUM(BlueprintType, Blueprintable)
-enum class [[nodiscard]] EPacketProtocol : uint8
+enum class [[nodiscard]] EPacketProtocol : unsigned char
 {
 	UNKNOWN = 0,
-	CS_SIGNIN UMETA(DisplayName="Sign In"),
-	CS_SIGNOUT UMETA(DisplayName="Sign Out"),
-	CS_SIGNUP UMETA(DisplayName="Sign Up"),
+	CS_SIGNIN,
+	CS_SIGNOUT,
+	CS_SIGNUP,
 
 	CS_REQUEST_VERSION,
 	CS_REQUEST_ROOMS,
