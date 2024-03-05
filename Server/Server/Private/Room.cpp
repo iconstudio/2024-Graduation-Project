@@ -220,11 +220,15 @@ volatile noexcept
 				{
 					++result;
 				}
+				else if (is_ready)
+				{
+					++result;
+				}
 			}
 		}
-		else if (is_ready)
+		else
 		{
-			++result;
+			is_ready.CompareAndSet(true, false);
 		}
 	}
 

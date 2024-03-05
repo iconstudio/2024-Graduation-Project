@@ -76,7 +76,7 @@ export namespace iconer::app
 		{
 			auto list = AcquireMemberList();
 
-			for (auto& member : list)
+			for (auto& [member, _] : list)
 			{
 				if (nullptr != member)
 				{

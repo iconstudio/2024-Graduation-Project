@@ -45,7 +45,7 @@ export namespace iconer::app
 			: Super(id)
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
-			, roomContext(), myRoomId(-1), isReady()
+			, roomContext(), myRoomId(-1)
 			, requestContext(AsyncOperations::OpNotifyRoom)
 			, requestMemberContext(AsyncOperations::OpNotifyMember)
 			, myTransform()
@@ -59,7 +59,7 @@ export namespace iconer::app
 			: Super(std::move(id))
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
-			, roomContext(), myRoomId(-1), isReady()
+			, roomContext(), myRoomId(-1)
 			, requestContext(AsyncOperations::OpNotifyRoom)
 			, requestMemberContext(AsyncOperations::OpNotifyMember)
 			, myTransform()
@@ -116,12 +116,6 @@ export namespace iconer::app
 			myName.clear();
 			recvOffset = 0;
 			myRoomId = -1;
-			isReady = false;
-		}
-
-		void SetReady(bool flag) volatile noexcept
-		{
-			isReady = flag;
 		}
 
 		template<size_t Size>
@@ -450,7 +444,6 @@ export namespace iconer::app
 		IContext roomContext;
 		IContext requestContext, requestMemberContext;
 		iconer::util::MovableAtomic<IdType> myRoomId;
-		iconer::util::MovableAtomic<bool> isReady;
 		glm::mat4 myTransform;
 
 		std::unique_ptr<std::byte[]> preSignInPacket;
