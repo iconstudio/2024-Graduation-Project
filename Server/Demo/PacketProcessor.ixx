@@ -29,8 +29,8 @@ export namespace demo
 	void OnLeaveRoom(Framework& framework, iconer::app::User& user);
 	void OnGameStartSignal(Framework& framework, iconer::app::User& user);
 	void OnGameLoadedSignal(Framework& framework, iconer::app::User& user);
-	void OnReceivePosition(iconer::app::User& user, float x, float y, float z);
-	void OnReceiveRotation(iconer::app::User& user, float roll, float yaw, float pitch);
+	void OnReceivePosition(Framework& framework, iconer::app::User& user, float x, float y, float z);
+	void OnReceiveRotation(Framework& framework, iconer::app::User& user, float roll, float yaw, float pitch);
 }
 
 ptrdiff_t
@@ -170,7 +170,7 @@ demo::PacketProcessor(demo::Framework& framework
 				float px{}, py{}, pz{};
 				iconer::util::Deserialize(iconer::util::Deserialize(iconer::util::Deserialize(last_buf, px), py), pz);
 
-				OnReceivePosition(user, px, py, pz);
+				OnReceivePosition(framework, user, px, py, pz);
 			}
 			break;
 
@@ -179,7 +179,7 @@ demo::PacketProcessor(demo::Framework& framework
 				float pl{}, pr{}, pu{};
 				iconer::util::Deserialize(iconer::util::Deserialize(iconer::util::Deserialize(last_buf, pl), pr), pu);
 
-				OnReceiveRotation(user, pl, pr, pu);
+				OnReceiveRotation(framework, user, pl, pr, pu);
 			}
 			break;
 
