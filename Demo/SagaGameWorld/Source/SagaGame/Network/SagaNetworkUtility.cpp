@@ -1,5 +1,4 @@
-#include "Network/SagaNetworkUtility.h"
-
+#include "SagaNetworkUtility.h"
 #include "Sockets.h"
 #include "SocketSubsystem.h"
 
@@ -53,6 +52,16 @@ USagaNetworkUtility::RawSend(FSocket& socket, const uint8* buffer, int32 size)
 	socket.Send(buffer, size, bytes);
 
 	return bytes;
+}
+
+int32 USagaNetworkUtility::RawSend(FSocket* socket, const std::byte* buffer, int32 size)
+{
+	return int32();
+}
+
+int32 USagaNetworkUtility::RawSend(FSocket& socket, const std::byte* buffer, int32 size)
+{
+	return int32();
 }
 
 int32

@@ -1,5 +1,5 @@
 #include "SagaNetworkSettings.h"
-#include "../SagaNetworkUtility.h"
+#include "SagaNetworkUtility.h"
 
 TSharedRef<FInternetAddr>
 saga::CreateRemoteEndPoint()

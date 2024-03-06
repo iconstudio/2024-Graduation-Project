@@ -495,21 +495,29 @@ namespace saga::detail
 	template<typename Arg>
 	size_t GetItemByteSize(Arg&& arg) noexcept
 	{
-		if (std::is_same_v<clean_t<Arg>, std::string>)
+		if constexpr (std::is_same_v<clean_t<Arg>, FString>)
 		{
-			return arg.length();
+			return arg.Len() * sizeof(TCHAR);
 		}
-		else if (std::is_same_v<clean_t<Arg>, std::wstring>)
+		else if constexpr (std::is_same_v<clean_t<Arg>, FName>)
 		{
-			return arg.length() * sizeof(wchar_t);
+			return arg.GetStringLength() * sizeof(TCHAR);
 		}
-		if (std::is_same_v<clean_t<Arg>, std::string_view>)
+		else if constexpr (std::is_same_v<clean_t<Arg>, std::string>)
 		{
-			return arg.length();
+			return arg.size();
 		}
-		else if (std::is_same_v<clean_t<Arg>, std::wstring_view>)
+		else if constexpr (std::is_same_v<clean_t<Arg>, std::wstring>)
 		{
-			return arg.length() * sizeof(wchar_t);
+			return arg.size() * sizeof(wchar_t);
+		}
+		if constexpr (std::is_same_v<clean_t<Arg>, std::string_view>)
+		{
+			return arg.size();
+		}
+		else if constexpr (std::is_same_v<clean_t<Arg>, std::wstring_view>)
+		{
+			return arg.size() * sizeof(wchar_t);
 		}
 		else
 		{
