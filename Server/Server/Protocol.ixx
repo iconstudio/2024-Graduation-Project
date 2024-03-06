@@ -33,6 +33,9 @@ export namespace iconer::app
 		CS_MY_ANIMATION_END,
 
 		CS_CHAT,
+		CS_RPC,
+		CS_GAME_LOADED,
+		CS_READY,
 
 		SC_SIGNIN_SUCCESS = 120,
 		SC_SIGNIN_FAILURE,
@@ -71,6 +74,10 @@ export namespace iconer::app
 		SC_PLAY_MUSIC,
 		SC_ANIMATION_START,
 
-		SC_CHAT = std::numeric_limits<std::uint8_t>::max(),
+		SC_CHAT,
+		SC_RPC,
+		SC_REMOVE_PLAYER,
+		SC_GAME_GETTING_READY,
+		SC_FAILED_GAME_START,
 	};
 }

@@ -93,7 +93,7 @@ const noexcept
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, std::addressof(flags)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
 		return bytes;
@@ -126,7 +126,7 @@ net::Socket::Receive(net::IoContext& context, std::span<std::byte> memory, size_
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, std::addressof(flags)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
 		return bytes;
@@ -160,7 +160,7 @@ const noexcept
 		, std::addressof(buffer), 1
 		, std::addressof(bytes)
 		, std::addressof(flags)
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
 		, nullptr))
 	{
 		return bytes;
@@ -199,31 +199,64 @@ const noexcept
 	return Receive(context, memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
 }
 
+struct AsyncAwaiter
+{
+	static constexpr bool await_ready() noexcept { return true; }
+	static constexpr void await_suspend(std::coroutine_handle<void>) noexcept
+	{
+	}
+
+	[[nodiscard]]
+	bool await_resume() const noexcept
+	{
+		return 1 == ::WSAGetOverlappedResult(addr_socket->GetHandle()
+			, addr_context
+			, addr_transferred_byte
+			, TRUE
+			, addr_flags);
+	}
+
+	const net::Socket* addr_socket;
+	::LPWSAOVERLAPPED addr_context;
+	::DWORD* addr_transferred_byte;
+	::DWORD* addr_flags;
+};
+
 net::Socket::IoTask
 net::Socket::MakeReceiveTask(net::IoContext& context, std::span<std::byte> memory)
 const noexcept
 {
-	if (auto sent = Receive(context, memory); sent.has_value())
+	::WSABUF buffer
 	{
-		co_return std::move(sent);
+		.len = static_cast<::ULONG>(memory.size_bytes()),
+		.buf = reinterpret_cast<char*>(memory.data()),
+	};
+
+	::DWORD transferred_bytes = 0;
+	::DWORD flags = 0;
+	if (0 == ::WSARecv(myHandle
+		, std::addressof(buffer), 1
+		, std::addressof(transferred_bytes)
+		, std::addressof(flags)
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, nullptr))
+	{
+		co_return transferred_bytes;
 	}
 
-	static ::DWORD flags = 0;
-	::DWORD transferred_bytes = 0;
-
-	::BOOL result = ::WSAGetOverlappedResult(myHandle
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
-		, std::addressof(transferred_bytes)
-		, TRUE
-		, std::addressof(flags));
-
-	if (FALSE == result)
+	if (co_await AsyncAwaiter
+		{
+			.addr_socket = this,
+			.addr_context = static_cast<::LPWSAOVERLAPPED>(std::addressof(context)),
+			.addr_transferred_byte = std::addressof(transferred_bytes),
+			.addr_flags = std::addressof(flags),
+		})
 	{
-		co_return std::unexpected{ AcquireNetworkError() };
+		co_return transferred_bytes;
 	}
 	else
 	{
-		co_return transferred_bytes;
+		co_return std::unexpected{ AcquireNetworkError() };
 	}
 }
 
@@ -231,27 +264,37 @@ net::Socket::IoTask
 net::Socket::MakeReceiveTask(net::IoContext& context, std::span<std::byte> memory, size_t size)
 const noexcept
 {
-	if (auto sent = Receive(context, memory, std::move(size)); sent.has_value())
+	::WSABUF buffer
 	{
-		co_return std::move(sent);
+		.len = static_cast<::ULONG>(memory.size_bytes()),
+		.buf = reinterpret_cast<char*>(size),
+	};
+
+	::DWORD transferred_bytes = 0;
+	::DWORD flags = 0;
+	if (0 == ::WSARecv(myHandle
+		, std::addressof(buffer), 1
+		, std::addressof(transferred_bytes)
+		, std::addressof(flags)
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, nullptr))
+	{
+		co_return transferred_bytes;
 	}
 
-	static ::DWORD flags = 0;
-	::DWORD transferred_bytes = 0;
-
-	::BOOL result = ::WSAGetOverlappedResult(myHandle
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
-		, std::addressof(transferred_bytes)
-		, TRUE
-		, std::addressof(flags));
-
-	if (FALSE == result)
+	if (co_await AsyncAwaiter
+		{
+			.addr_socket = this,
+			.addr_context = static_cast<::LPWSAOVERLAPPED>(std::addressof(context)),
+			.addr_transferred_byte = std::addressof(transferred_bytes),
+			.addr_flags = std::addressof(flags),
+		})
 	{
-		co_return std::unexpected{ AcquireNetworkError() };
+		co_return transferred_bytes;
 	}
 	else
 	{
-		co_return transferred_bytes;
+		co_return std::unexpected{ AcquireNetworkError() };
 	}
 }
 
@@ -259,27 +302,37 @@ net::Socket::IoTask
 net::Socket::MakeReceiveTask(net::IoContext& context, std::byte* const& memory, size_t size)
 const noexcept
 {
-	if (auto sent = Receive(context, memory, std::move(size)); sent.has_value())
+	::WSABUF buffer
 	{
-		co_return std::move(sent);
+		.len = static_cast<::ULONG>(size),
+		.buf = reinterpret_cast<char*>(memory),
+	};
+
+	::DWORD transferred_bytes = 0;
+	::DWORD flags = 0;
+	if (0 == ::WSARecv(myHandle
+		, std::addressof(buffer), 1
+		, std::addressof(transferred_bytes)
+		, std::addressof(flags)
+		, static_cast<::LPWSAOVERLAPPED>(std::addressof(context))
+		, nullptr))
+	{
+		co_return transferred_bytes;
 	}
 
-	static ::DWORD flags = 0;
-	::DWORD transferred_bytes = 0;
-
-	::BOOL result = ::WSAGetOverlappedResult(myHandle
-		, reinterpret_cast<::LPWSAOVERLAPPED>(std::addressof(context))
-		, std::addressof(transferred_bytes)
-		, TRUE
-		, std::addressof(flags));
-
-	if (FALSE == result)
+	if (co_await AsyncAwaiter
+		{
+			.addr_socket = this,
+			.addr_context = static_cast<::LPWSAOVERLAPPED>(std::addressof(context)),
+			.addr_transferred_byte = std::addressof(transferred_bytes),
+			.addr_flags = std::addressof(flags),
+		})
 	{
-		co_return std::unexpected{ AcquireNetworkError() };
+		co_return transferred_bytes;
 	}
 	else
 	{
-		co_return transferred_bytes;
+		co_return std::unexpected{ AcquireNetworkError() };
 	}
 }
 
@@ -311,7 +364,7 @@ const noexcept
 	auto task = MakeReceiveTask(context, memory);
 	task.StartAsync();
 
-	return task;
+	return std::move(task);
 }
 
 net::Socket::IoTask
@@ -321,7 +374,7 @@ const noexcept
 	auto task = MakeReceiveTask(context, memory, std::move(size));
 	task.StartAsync();
 
-	return task;
+	return std::move(task);
 }
 
 net::Socket::IoTask
@@ -331,5 +384,5 @@ const noexcept
 	auto task = MakeReceiveTask(context, memory, std::move(size));
 	task.StartAsync();
 
-	return task;
+	return std::move(task);
 }

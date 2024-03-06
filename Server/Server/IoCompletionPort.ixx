@@ -6,6 +6,7 @@ export import Iconer.Net.IoEvent;
 export import Iconer.Net.Socket;
 import <cstdint>;
 import <expected>;
+import <span>;
 
 export namespace iconer::net
 {
@@ -21,10 +22,15 @@ export namespace iconer::net
 		bool Destroy(ErrorCode& error_code) noexcept;
 
 		bool Schedule(IoContext& context, std::uintptr_t id, const unsigned long& infobytes) noexcept;
-		bool Schedule(IoContext* context, std::uintptr_t id, const unsigned long& infobytes) noexcept;
+		bool Schedule(IoContext* const context, std::uintptr_t id, const unsigned long& infobytes) noexcept;
 		bool Schedule(IoContext& context, std::uintptr_t id, unsigned long&& infobytes) noexcept;
 		bool Schedule(IoContext* const context, std::uintptr_t id, unsigned long&& infobytes) noexcept;
+		bool Schedule(volatile IoContext& context, std::uintptr_t id, const unsigned long& infobytes) noexcept;
+		bool Schedule(volatile IoContext* const context, std::uintptr_t id, const unsigned long& infobytes) noexcept;
+		bool Schedule(volatile IoContext& context, std::uintptr_t id, unsigned long&& infobytes) noexcept;
+		bool Schedule(volatile IoContext* const context, std::uintptr_t id, unsigned long&& infobytes) noexcept;
 		[[nodiscard]] IoEvent WaitForIoResult() noexcept;
+		[[nodiscard]] net::Socket::AsyncResult WaitForMultipleIoResults(std::span<IoEvent> dest, const unsigned long& max_count) noexcept;
 
 		[[nodiscard]]
 		bool IsAvailable() const noexcept;
@@ -33,8 +39,8 @@ export namespace iconer::net
 		[[nodiscard]] static FactoryResult Create() noexcept;
 		[[nodiscard]] static FactoryResult Create(std::uint32_t concurrency_hint) noexcept;
 
-		IoCompletionPort(IoCompletionPort&&) = default;
-		IoCompletionPort& operator=(IoCompletionPort&&) = default;
+		IoCompletionPort(IoCompletionPort&&) noexcept = default;
+		IoCompletionPort& operator=(IoCompletionPort&&) noexcept = default;
 
 	private:
 		IoCompletionPort(void* handle) noexcept;

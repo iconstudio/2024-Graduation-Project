@@ -25,8 +25,6 @@ export namespace iconer::net
 		{
 			Internal = std::exchange(other.Internal, 0);
 			InternalHigh = std::exchange(other.InternalHigh, 0);
-			//Offset = std::exchange(other.Offset, 0);
-			//OffsetHigh = std::exchange(other.OffsetHigh, 0);
 			memcpy(std::addressof(Offset), std::addressof(other.Offset), sizeof(void*));
 			memset(std::addressof(other.Offset), 0, sizeof(void*));
 			hEvent = std::exchange(other.hEvent, nullptr);
@@ -43,9 +41,18 @@ export namespace iconer::net
 			return *this;
 		}
 
-		void Clear() noexcept
+		constexpr void Clear() noexcept
 		{
-			::memset(this, 0, sizeof(Super));
+			Internal = 0;
+			InternalHigh = 0;
+			hEvent = nullptr;
+		}
+
+		constexpr void Clear() volatile noexcept
+		{
+			Internal = 0;
+			InternalHigh = 0;
+			hEvent = nullptr;
 		}
 
 		[[nodiscard]]
