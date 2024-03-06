@@ -244,7 +244,7 @@ demo::OnReceiveRotation(Framework& framework, iconer::app::User& user, float rol
 	auto room = framework.FindRoom(room_id);
 
 	room->ForEach([&user, roll, yaw, pitch](iconer::app::User& member) {
-		auto [io, ctx] = member.SendPositionPacket(user.GetID(), x, y, z);
+		auto [io, ctx] = member.SendPositionPacket(user.GetID(), roll, yaw, pitch);
 		if (not io)
 		{
 			ctx.Complete();
