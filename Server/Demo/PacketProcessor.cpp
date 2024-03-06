@@ -215,23 +215,39 @@ demo::OnGameLoadedSignal(demo::Framework& framework, iconer::app::User& user)
 }
 
 void
-demo::OnReceivePosition(iconer::app::User& user, float x, float y, float z)
+demo::OnReceivePosition(demo::Framework& framework, iconer::app::User& user, float x, float y, float z)
 {
 	user.PositionX(x);
 	user.PositionY(y);
 	user.PositionZ(z);
 
-	auto [io, ctx] = user.SendPositionPacket(user.GetID(), x, y, z);
-	if (not io)
-	{
-		ctx.Complete();
-	}
+	auto room_id = user.myRoomId.Load();
+	auto room = framework.FindRoom(room_id);
+
+	room->ForEach([&user, x, y, z](iconer::app::User& member) {
+		auto [io, ctx] = member.SendPositionPacket(user.GetID(), x, y, z);
+		if (not io)
+		{
+			ctx.Complete();
+		}
+	});
 }
 
 void
-demo::OnReceiveRotation(iconer::app::User& user, float roll, float yaw, float pitch)
+demo::OnReceiveRotation(Framework& framework, iconer::app::User& user, float roll, float yaw, float pitch)
 {
 	user.RotationLook({ roll, 0, 0 });
 	user.RotationRight({ 0, yaw, 0 });
 	user.RotationUp({ 0, 0, pitch });
+
+	auto room_id = user.myRoomId.Load();
+	auto room = framework.FindRoom(room_id);
+
+	room->ForEach([&user, roll, yaw, pitch](iconer::app::User& member) {
+		auto [io, ctx] = member.SendPositionPacket(user.GetID(), x, y, z);
+		if (not io)
+		{
+			ctx.Complete();
+		}
+	});
 }
