@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreMinimal.h"
-
 #include "SagaNetworkView.h"
 
 class SAGAGAME_API FSagaLocalPlayer : public ISagaNetworkView

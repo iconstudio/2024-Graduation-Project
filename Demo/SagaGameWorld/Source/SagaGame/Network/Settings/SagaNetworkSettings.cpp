@@ -1,8 +1,8 @@
-#include "Network/System/SagaNetworkSettings.h"
-#include "Network/SagaNetworkUtility.h"
+#include "SagaNetworkSettings.h"
+#include "../SagaNetworkUtility.h"
 
 TSharedRef<FInternetAddr>
-USagaNetworkSettings::CreateRemoteEndPoint()
+saga::CreateRemoteEndPoint()
 {
 	if constexpr (ConnectionCategory == ESagaNetworkConnectionCategory::Local)
 	{
