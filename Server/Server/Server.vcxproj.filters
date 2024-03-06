@@ -198,7 +198,7 @@
     <ClCompile Include="IProperty.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="ISession.ixx">
+    <ClCompile Include="IObject.ixx">
       <Filter>Application</Filter>
     </ClCompile>
     <ClCompile Include="User.ixx">
@@ -261,25 +261,113 @@
     <ClCompile Include="CharacterReader.ixx">
       <Filter>Utility</Filter>
     </ClCompile>
-    <ClCompile Include="StaticStringPool.ixx">
-      <Filter>Utility</Filter>
-    </ClCompile>
     <ClCompile Include="StringResources.ixx">
       <Filter>Application</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="BehaviourTreeHelper.hpp">
+    <ClCompile Include="NamedObject.ixx">
       <Filter>Utility</Filter>
-    </ClInclude>
-    <ClInclude Include="StaticStringPoolHelper.hpp">
+    </ClCompile>
+    <ClCompile Include="Transform.ixx">
       <Filter>Utility</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="XYZWrapper.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\Matrix.cpp">
+      <Filter>Utility\Implementaition</Filter>
+    </ClCompile>
+    <ClCompile Include="InternalObject.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix3x3.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\Matrix3x3.cpp">
+      <Filter>Utility\Implementaition</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix2x2.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="BlobSendContext.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="AsyncOperation.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientToServerPackets.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerToClientPackets.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableAtomic.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Atomic.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableAtomicStorage.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableAtomicTrivial.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableAtomicNonTrivial.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedMutex.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomContract.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Chronograph.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\Room.cpp">
+      <Filter>Application\Implementain</Filter>
+    </ClCompile>
+    <ClCompile Include="ISession.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Lock.ixx">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="BehaviourTreeHelper.hpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="GameContract.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="SendContextPool.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\SendContextPool.cpp">
+      <Filter>Application\Implementain</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomMember.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="ArrayIterator.ixx">
+      <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomStates.ixx">
+      <Filter>Collection</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomBase.ixx">
+      <Filter>Collection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\Server.natvis" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="PacketHelper.inl">
+      <Filter>Application</Filter>
+    </None>
   </ItemGroup>
 </Project>

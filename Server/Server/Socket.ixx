@@ -11,6 +11,7 @@ import Iconer.Coroutine.Task;
 import <cstdint>;
 import <expected>;
 import <optional>;
+import <utility>;
 import <span>;
 
 export namespace iconer::net
@@ -31,13 +32,31 @@ export namespace iconer::net
 		using ActionTask = iconer::coroutine::Task<ActionResult>;
 		using IoTask = iconer::coroutine::Task<AsyncResult>;
 
+		// Static members
+
+		static inline constexpr std::uintptr_t InvalidId = static_cast<std::uintptr_t>(-1);
+
 		// Constructors, Destructors, Assignees
 
 		explicit Socket() noexcept;
 		~Socket() noexcept = default;
 
-		constexpr Socket(Socket&&) noexcept = default;
-		constexpr Socket& operator=(Socket&&) noexcept = default;
+		constexpr Socket(Socket&& other) noexcept
+			: Super(std::exchange(other.GetHandle(), InvalidId))
+			, myProtocol(std::exchange(other.myProtocol, {}))
+			, myFamily(std::exchange(other.myFamily, {}))
+			, IsAddressReusable(std::move(other.IsAddressReusable))
+		{
+		}
+
+		constexpr Socket& operator=(Socket&& other) noexcept
+		{
+			Super::operator=(std::exchange(other.GetHandle(), InvalidId));
+			myProtocol = std::exchange(other.myProtocol, {});
+			myFamily = std::exchange(other.myFamily, {});
+			IsAddressReusable = std::move(other.IsAddressReusable);
+			return *this;
+		}
 
 		// Opt-in Interfaces
 
@@ -141,6 +160,19 @@ export namespace iconer::net
 		bool Send(std::span<const std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
 		bool Send(_In_reads_bytes_(size)const std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
 
+		/// <remarks>UDP</remarks>
+		IoResult SendTo(const EndPoint& ep, std::span<const std::byte> memory) const noexcept;
+		/// <remarks>UDP</remarks>
+		IoResult SendTo(const EndPoint& ep, std::span<const std::byte> memory, size_t size) const noexcept;
+		/// <remarks>UDP</remarks>
+		IoResult SendTo(const EndPoint& ep, _In_reads_bytes_(size)const std::byte* const& memory, size_t size) const noexcept;
+		/// <remarks>UDP</remarks>
+		bool SendTo(const EndPoint& ep, std::span<const std::byte> memory, ErrorCode& error_code) const noexcept;
+		/// <remarks>UDP</remarks>
+		bool SendTo(const EndPoint& ep, std::span<const std::byte> memory, size_t size, ErrorCode& error_code) const noexcept;
+		/// <remarks>UDP</remarks>
+		bool SendTo(const EndPoint& ep, _In_reads_bytes_(size)const std::byte* const& memory, size_t size, ErrorCode& error_code) const noexcept;
+
 		// Maybe asynchronous Send
 
 		AsyncResult Send(IoContext& context, std::span<const std::byte> memory) const noexcept;
@@ -237,10 +269,6 @@ export namespace iconer::net
 		struct DelegateAddressReusable
 		{
 			explicit constexpr DelegateAddressReusable(HandleType inst) noexcept : handle(inst) {}
-
-			//constexpr DelegateAddressReusable(DelegateAddressReusable&&) noexcept {}
-			//constexpr DelegateAddressReusable& operator=(DelegateAddressReusable&&) noexcept { return *this; }
-
 			ActionResult operator()(const bool& flag) noexcept;
 
 			HandleType handle;

@@ -1,9 +1,11 @@
 module;
 #include <WinSock2.h>
+#include <memory>
+#include <optional>
+#include <thread>
 
 module Iconer.Net.IoCompletionPort;
-import <optional>;
-import <thread>;
+import Iconer.Utility.Annihilator;
 
 using namespace iconer;
 
@@ -134,13 +136,53 @@ noexcept
 }
 
 bool
-net::IoCompletionPort::Schedule(net::IoContext* context, std::uintptr_t id, unsigned long&& infobytes)
+net::IoCompletionPort::Schedule(net::IoContext* const context, std::uintptr_t id, unsigned long&& infobytes)
 noexcept
 {
 	return 0 != ::PostQueuedCompletionStatus(GetHandle()
 		, std::move(infobytes)
 		, std::move(id)
 		, static_cast<::WSAOVERLAPPED*>(context));
+}
+
+bool
+net::IoCompletionPort::Schedule(volatile net::IoContext& context, std::uintptr_t id, const unsigned long& infobytes)
+noexcept
+{
+	return 0 != ::PostQueuedCompletionStatus(GetHandle()
+		, infobytes
+		, std::move(id)
+		, const_cast<::WSAOVERLAPPED*>(static_cast<volatile ::WSAOVERLAPPED*>(std::addressof(context))));
+}
+
+bool
+net::IoCompletionPort::Schedule(volatile net::IoContext* context, std::uintptr_t id, const unsigned long& infobytes)
+noexcept
+{
+	return 0 != ::PostQueuedCompletionStatus(GetHandle()
+		, infobytes
+		, std::move(id)
+		, const_cast<::WSAOVERLAPPED*>(static_cast<volatile ::WSAOVERLAPPED*>(context)));
+}
+
+bool
+net::IoCompletionPort::Schedule(volatile net::IoContext& context, std::uintptr_t id, unsigned long&& infobytes)
+noexcept
+{
+	return 0 != ::PostQueuedCompletionStatus(GetHandle()
+		, std::move(infobytes)
+		, std::move(id)
+		, const_cast<::WSAOVERLAPPED*>(static_cast<volatile ::WSAOVERLAPPED*>(std::addressof(context))));
+}
+
+bool
+net::IoCompletionPort::Schedule(volatile net::IoContext* const context, std::uintptr_t id, unsigned long&& infobytes)
+noexcept
+{
+	return 0 != ::PostQueuedCompletionStatus(GetHandle()
+		, std::move(infobytes)
+		, std::move(id)
+		, const_cast<::WSAOVERLAPPED*>(static_cast<volatile ::WSAOVERLAPPED*>(context)));
 }
 
 net::IoEvent
@@ -169,6 +211,45 @@ noexcept
 	}
 
 	return ev_handle;
+}
+
+net::Socket::AsyncResult
+iconer::net::IoCompletionPort::WaitForMultipleIoResults(std::span<IoEvent> dest, const unsigned long& max_count)
+noexcept
+{
+	std::allocator<::OVERLAPPED_ENTRY> entry_alloc{};
+	auto overlapped_entries = entry_alloc.allocate(max_count);
+
+	iconer::util::Annihilator<std::allocator<::OVERLAPPED_ENTRY>> annihilator
+	{
+		.ptrHandle = overlapped_entries,
+		.ptrSize = max_count
+	};
+
+	unsigned long removes = 0;
+	if (1 == ::GetQueuedCompletionStatusEx(GetHandle()
+		, overlapped_entries, max_count
+		, std::addressof(removes), INFINITE, FALSE))
+	{
+		auto it = dest.begin();
+
+		for (unsigned long i = 0; i < removes and it != dest.end(); ++i, ++it)
+		{
+			auto&& event = *it;
+			auto&& entry = *(overlapped_entries + i);
+
+			event.isSucceed = true;
+			event.eventId = entry.lpCompletionKey;
+			event.ioBytes = entry.dwNumberOfBytesTransferred;
+			event.ioContext = static_cast<iconer::net::IoContext*>(entry.lpOverlapped);
+		}
+	}
+	else
+	{
+		return std::unexpected{ AcquireNetworkError() };
+	}
+
+	return removes;
 }
 
 bool

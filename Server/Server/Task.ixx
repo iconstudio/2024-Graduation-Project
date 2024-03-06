@@ -191,6 +191,17 @@ export namespace iconer::coroutine
 		{
 		}
 
+		constexpr Task(Task&& other) noexcept
+			: Task(std::exchange(other.myHandle, nullptr))
+		{
+		}
+		
+		constexpr Task& operator=(Task&& other) noexcept
+		{
+			myHandle = std::exchange(other.myHandle, nullptr);
+			return *this;
+		}
+
 		~Task() noexcept;
 
 		void Start() const;
@@ -207,6 +218,9 @@ export namespace iconer::coroutine
 
 	private:
 		const static inline std::runtime_error reservedError{ "Cannot acquire a value from the null promise" };
+
+		Task(const Task& other) = delete;
+		Task& operator=(const Task& other) = delete;
 
 		handle_type myHandle;
 	};

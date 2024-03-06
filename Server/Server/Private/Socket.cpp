@@ -407,6 +407,86 @@ const noexcept
 	return SetOption(SocketOptions::UpdateContext, std::addressof(listener.GetHandle()), sizeof(HandleType));
 }
 
+iconer::net::Socket::IoResult
+iconer::net::Socket::SendTo(const iconer::net::EndPoint& ep, std::span<const std::byte> memory)
+const noexcept
+{
+	::SOCKADDR_STORAGE sockaddr = SerializeEndpoint(ep);
+	::SOCKADDR_STORAGE* ptr = std::addressof(sockaddr);
+
+	if (int bytes = ::sendto(Super::GetHandle()
+		, reinterpret_cast<const char*>(memory.data()), static_cast<int>(memory.size_bytes())
+		, 0
+		, reinterpret_cast<const SOCKADDR*>(ptr), sizeof(sockaddr)); SOCKET_ERROR != bytes)
+	{
+		return bytes;
+	}
+	else
+	{
+		return std::unexpected{ AcquireNetworkError() };
+	}
+}
+
+iconer::net::Socket::IoResult
+iconer::net::Socket::SendTo(const iconer::net::EndPoint& ep, std::span<const std::byte> memory, size_t size) const noexcept
+{
+	::SOCKADDR_STORAGE sockaddr = SerializeEndpoint(ep);
+	::SOCKADDR_STORAGE* ptr = std::addressof(sockaddr);
+
+	if (int bytes = ::sendto(Super::GetHandle()
+		, reinterpret_cast<const char*>(memory.data()), static_cast<int>(size)
+		, 0
+		, reinterpret_cast<const SOCKADDR*>(ptr), sizeof(sockaddr)); SOCKET_ERROR != bytes)
+	{
+		return bytes;
+	}
+	else
+	{
+		return std::unexpected{ AcquireNetworkError() };
+	}
+}
+
+iconer::net::Socket::IoResult
+iconer::net::Socket::SendTo(const iconer::net::EndPoint& ep, const std::byte* const& memory, size_t size)
+const noexcept
+{
+	::SOCKADDR_STORAGE sockaddr = SerializeEndpoint(ep);
+	::SOCKADDR_STORAGE* ptr = std::addressof(sockaddr);
+
+	if (int bytes = ::sendto(Super::GetHandle()
+		, reinterpret_cast<const char*>(memory), static_cast<int>(size)
+		, 0
+		, reinterpret_cast<const SOCKADDR*>(ptr), sizeof(sockaddr)); SOCKET_ERROR != bytes)
+	{
+		return bytes;
+	}
+	else
+	{
+		return std::unexpected{ AcquireNetworkError() };
+	}
+}
+
+bool
+iconer::net::Socket::SendTo(const EndPoint& ep, std::span<const std::byte> memory, ErrorCode& error_code)
+const noexcept
+{
+	return SendTo(ep, memory).transform_error(ErrorTransfer{ error_code }).value_or(true);
+}
+
+bool
+iconer::net::Socket::SendTo(const EndPoint& ep, std::span<const std::byte> memory, size_t size, ErrorCode& error_code) 
+const noexcept
+{
+	return SendTo(ep, memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
+}
+
+bool
+iconer::net::Socket::SendTo(const EndPoint& ep, const std::byte* const& memory, size_t size, ErrorCode& error_code)
+const noexcept
+{
+	return SendTo(ep, memory, std::move(size)).transform_error(ErrorTransfer{ error_code }).value_or(true);
+}
+
 iconer::net::Socket
 iconer::net::Socket::Create(IoCategory type
 	, const InternetProtocol& protocol

@@ -4,12 +4,11 @@ module;
 #include <utility>
 #include <vector>
 #include <algorithm>
-#include <ranges>
 #include <shared_mutex>
 
 export module Iconer.Application.ISessionManager;
 import Iconer.Utility.Constraints;
-import Iconer.Application.ISession;
+import Iconer.Application.IObject;
 
 export namespace iconer::app
 {
@@ -301,7 +300,7 @@ export namespace iconer::app
 		}
 
 		[[nodiscard]]
-		const mapped_type* operator[](const key_type& id) const noexcept
+		mapped_type* operator[](const key_type& id) const noexcept
 		{
 			std::shared_lock lock{ myLock };
 			if (const_iterator it = Find(id); it != myData.end())
