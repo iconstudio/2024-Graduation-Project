@@ -28,6 +28,9 @@ public:
 
 	static int32 RawSend(FSocket* socket, const uint8* buffer, int32 size);
 	static int32 RawSend(FSocket& socket, const uint8* buffer, int32 size);
+	static int32 RawSend(FSocket* socket, const std::byte* buffer, int32 size);
+	static int32 RawSend(FSocket& socket, const std::byte* buffer, int32 size);
+
 	static int32 Send(const TSharedRef<FSocket>& socket, const TUniquePtr<uint8[]>& buffer, int32 size);
 	static int32 Send(const TSharedRef<FSocket>& socket, TUniquePtr<uint8[]>&& buffer, int32 size);
 	static int32 Send(const TSharedRef<FSocket>& socket, const TSharedPtr<uint8[]>& buffer, int32 size);
