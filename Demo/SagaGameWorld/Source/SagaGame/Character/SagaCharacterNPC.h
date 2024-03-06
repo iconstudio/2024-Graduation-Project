@@ -29,6 +29,9 @@ protected:
 	UPROPERTY()
 	UUserWidget* NPCInteractionTEXTWidget;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interaction)
+	UCapsuleComponent* NPCInteractionCapsule;
+
 protected:
 	void SetDead() override;
 	virtual void BeginPlay() override;
