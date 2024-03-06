@@ -7,10 +7,11 @@
 #include "SagaLocalPlayer.h"
 #include "SagaClientPacketPrefabs.h"
 
-using namespace saga;
+[[nodiscard]] TSharedRef<FInternetAddr> CreateRemoteEndPoint();
 
-USagaNetwork::USagaNetwork()
-	: LocalSocket()
+saga::USagaNetwork::USagaNetwork()
+	: Super()
+	, LocalSocket()
 	, MyWorker(), PacketQueue()
 	, EveryClients()
 {
@@ -18,9 +19,9 @@ USagaNetwork::USagaNetwork()
 }
 
 bool
-USagaNetwork::Awake(const TCHAR* nickname)
+saga::USagaNetwork::Awake(const TCHAR* nickname)
 {
-	auto instance = USagaNetwork::Instance();
+	auto instance = saga::USagaNetwork::Instance();
 	auto& socket = instance->LocalSocket;
 
 	socket = USagaNetworkUtility::CreateTcpSocket();
@@ -48,107 +49,108 @@ USagaNetwork::Awake(const TCHAR* nickname)
 }
 
 bool
-USagaNetwork::Start()
+saga::USagaNetwork::Start()
 {
-	auto instance = USagaNetwork::Instance();
+	auto instance = saga::USagaNetwork::Instance();
 	auto& socket = instance->LocalSocket;
 
 	// 연결 부분
-#if true
-	auto remote_endpoint = CreateRemoteEndPoint();
-	if (not socket->Connect(*remote_endpoint))
+	if constexpr (not saga::IsOfflineMode)
 	{
-		// 연결 실패 처리
-		return false;
+		auto remote_endpoint = CreateRemoteEndPoint();
+		if (not socket->Connect(*remote_endpoint))
+		{
+			// 연결 실패 처리
+			return false;
+		}
+
+		// #1
+		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
+
+		auto& name = instance->MyName;
+
+		const saga::CS_SignInPacket packet{ name.GetCharArray().GetData(), static_cast<size_t>(name.Len()) };
+		auto ptr = packet.Serialize();
+
+		int32 sent_bytes = USagaNetworkUtility::RawSend(socket, ptr.get(), packet.WannabeSize());
+		if (sent_bytes <= 0)
+		{
+			return false;
+		}
 	}
 
-	// #1
-	// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
-
-#if true
-	auto& name = instance->MyName;
-
-	const CS_SignInPacket packet{ name.GetCharArray().GetData(), static_cast<size_t>(name.Len()) };
-	auto ptr = packet.Serialize();
-
-	int32 sent_bytes = USagaNetworkUtility::RawSend(socket, ptr.get(), packet.WannabeSize());
-	if (sent_bytes <= 0)
-	{
-		return false;
-	}
-#endif
-#endif
-
-	instance->MyWorker = MakeShared<FSagaNetworkWorker>();
+	instance->MyWorker = MakeShared<saga::FSagaNetworkWorker>();
 	return (instance->MyWorker != nullptr);
 }
 
 void
-USagaNetwork::Update()
+saga::USagaNetwork::Update()
 {
 }
 
 void
-USagaNetwork::AddPacket(FSagaBasicPacket* packet)
+saga::USagaNetwork::AddPacket(saga::FSagaBasicPacket* packet)
 {
-	PacketQueue.Add(packet);
+	auto instance = saga::USagaNetwork::Instance();
+	auto& queue = instance->PacketQueue;
+
+	queue.Add(packet);
 }
 
-FSagaBasicPacket*
-USagaNetwork::PopPacket()
+saga::FSagaBasicPacket*
+saga::USagaNetwork::PopPacket()
 {
-	if (PacketQueue.IsEmpty())
+	auto instance = saga::USagaNetwork::Instance();
+	auto& queue = instance->PacketQueue;
+
+	if (queue.IsEmpty())
 	{
 		return nullptr;
 	}
 	else
 	{
-		return PacketQueue.Pop(false);
+		return queue.Pop(false);
 	}
 }
 
 bool
-USagaNetwork::TryPopPacket(FSagaBasicPacket** handle)
+saga::USagaNetwork::TryPopPacket(saga::FSagaBasicPacket** handle)
 {
-	if (PacketQueue.IsEmpty())
+	auto instance = saga::USagaNetwork::Instance();
+	auto& queue = instance->PacketQueue;
+
+	if (queue.IsEmpty())
 	{
 		return false;
 	}
 	else
 	{
-		*handle = PacketQueue.Pop(false);
+		*handle = queue.Pop(false);
 		return true;
 	}
 }
 
 void
-USagaNetwork::AssignPlayerID(APlayerController* PlayerController)
+saga::USagaNetwork::AssignPlayerID(APlayerController* PlayerController)
 {
 }
 
 void
 saga::USagaNetwork::AddClient(ISagaNetworkView* client)
 {
-	EveryClients.Add(client->GetID(), client);
+	auto instance = saga::USagaNetwork::Instance();
+	auto& storage = instance->EveryClients;
+
+	storage.Add(client->GetID(), client);
 }
 
 ISagaNetworkView*
 saga::USagaNetwork::FindClient(int32 id)
 {
-	if (auto it = EveryClients.Find(id); it != nullptr)
-	{
-		return *it;
-	}
-	else
-	{
-		return nullptr;
-	}
-}
+	auto instance = saga::USagaNetwork::Instance();
+	auto& storage = instance->EveryClients;
 
-const ISagaNetworkView*
-saga::USagaNetwork::FindClient(int32 id) const
-{
-	if (auto it = EveryClients.Find(id); it != nullptr)
+	if (auto it = storage.Find(id); it != nullptr)
 	{
 		return *it;
 	}
@@ -161,11 +163,55 @@ saga::USagaNetwork::FindClient(int32 id) const
 bool
 saga::USagaNetwork::RemoveClient(int32 id)
 {
-	return 0 < EveryClients.Remove(id);
+	auto instance = saga::USagaNetwork::Instance();
+	auto& storage = instance->EveryClients;
+
+	return 0 < storage.Remove(id);
 }
 
 bool
-saga::USagaNetwork::HasClient(int32 id) const
+saga::USagaNetwork::HasClient(int32 id)
 {
-	return EveryClients.Contains(id);
+	auto instance = saga::USagaNetwork::Instance();
+	auto& storage = instance->EveryClients;
+
+	return storage.Contains(id);
+}
+
+bool
+saga::USagaNetwork::IsConnected()
+noexcept
+{
+	auto instance = saga::USagaNetwork::Instance();
+	auto& socket = instance->LocalSocket;
+
+	if (socket != nullptr and socket->GetConnectionState() == ESocketConnectionState::SCS_Connected)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+TSharedRef<FInternetAddr>
+CreateRemoteEndPoint()
+{
+	if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Local)
+	{
+		return USagaNetworkUtility::MakeEndPoint(FIPv4Address::InternalLoopback, saga::RemotePort);
+	}
+	else if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Host)
+	{
+		return USagaNetworkUtility::MakeEndPoint(FIPv4Address::Any, saga::RemotePort);
+	}
+	else if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Remote)
+	{
+		return USagaNetworkUtility::MakeEndPointFrom(saga::RemoteAddress, saga::RemotePort);
+	}
+	else
+	{
+		throw "error!";
+	}
 }

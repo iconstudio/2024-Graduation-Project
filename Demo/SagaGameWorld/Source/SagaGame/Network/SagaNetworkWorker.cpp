@@ -1,8 +1,7 @@
 #include "SagaNetworkWorker.h"
-#include "SagaBasicPacket.h"
+#include "Sockets.h"
 #include "SagaClientPacketPrefabs.h"
 #include "SagaNetwork.h"
-#include "Sockets.h"
 
 using namespace saga;
 

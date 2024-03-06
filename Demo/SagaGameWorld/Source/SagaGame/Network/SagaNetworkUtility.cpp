@@ -39,7 +39,7 @@ USagaNetworkUtility::MakeIpAddress(const FString String)
 int32
 USagaNetworkUtility::RawSend(FSocket* socket, const uint8* buffer, int32 size)
 {
-	int32 bytes;
+	int32 bytes{};
 	socket->Send(buffer, size, bytes);
 
 	return bytes;
@@ -48,20 +48,28 @@ USagaNetworkUtility::RawSend(FSocket* socket, const uint8* buffer, int32 size)
 int32
 USagaNetworkUtility::RawSend(FSocket& socket, const uint8* buffer, int32 size)
 {
-	int32 bytes;
+	int32 bytes{};
 	socket.Send(buffer, size, bytes);
 
 	return bytes;
 }
 
-int32 USagaNetworkUtility::RawSend(FSocket* socket, const std::byte* buffer, int32 size)
+int32
+USagaNetworkUtility::RawSend(FSocket* socket, const std::byte* buffer, int32 size)
 {
-	return int32();
+	int32 bytes{};
+	socket->Send(reinterpret_cast<const uint8*>(buffer), size, bytes);
+
+	return bytes;
 }
 
-int32 USagaNetworkUtility::RawSend(FSocket& socket, const std::byte* buffer, int32 size)
+int32
+USagaNetworkUtility::RawSend(FSocket& socket, const std::byte* buffer, int32 size)
 {
-	return int32();
+	int32 bytes{};
+	socket.Send(reinterpret_cast<const uint8*>(buffer), size, bytes);
+
+	return bytes;
 }
 
 int32

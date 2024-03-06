@@ -1,9 +1,12 @@
 #pragma once
 
-enum class [[nodiscard]] ESagaNetworkConnectionCategory
+namespace saga
 {
-	Unknown = 0,
-	Local,
-	Host,
-	Remote,
-};
+	enum class [[nodiscard]] ESagaNetworkConnectionCategory
+	{
+		Unknown = 0,
+		Local,
+		Host,
+		Remote,
+	};
+}

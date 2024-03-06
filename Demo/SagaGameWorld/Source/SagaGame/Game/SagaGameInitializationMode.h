@@ -2,10 +2,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "UI/SagaInitializationLevelUI.h"
+#include "SagaGameModeBase.h"
 #include "SagaGameInitializationMode.generated.h"
 
 UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga/Game Modes")
-class SAGAGAME_API ASagaGameInitializationMode : public AGameModeBase
+class SAGAGAME_API ASagaGameInitializationMode : public ASagaGameMode
 {
 	GENERATED_BODY()
 

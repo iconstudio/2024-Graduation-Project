@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Templates/SharedPointer.h"
 
 #include "SagaNetworkWorker.h"
 #include "SagaNetworkView.h"
@@ -11,12 +10,9 @@ namespace saga
 	class SAGAGAME_API USagaNetwork final : public TSharedFromThis<USagaNetwork>
 	{
 	public:
-		USagaNetwork();
+		using Super = TSharedFromThis<USagaNetwork>;
 
-		[[nodiscard]] static bool Awake(const TCHAR* nickname);
-		[[nodiscard]] static bool Start();
-		static void Update();
-		static void Shutdown();
+		USagaNetwork();
 
 		[[nodiscard]]
 		static TSharedPtr<USagaNetwork> Instance()
@@ -26,20 +22,22 @@ namespace saga
 			return instance;
 		}
 
-		/* Network Methods */
+		[[nodiscard]] static bool Awake(const TCHAR* nickname);
+		[[nodiscard]] static bool Start();
+		static void Update();
+		static void Shutdown();
 
 		/* Methods */
 
-		void AddPacket(saga::FSagaBasicPacket* packet);
-		saga::FSagaBasicPacket* PopPacket();
-		bool TryPopPacket(saga::FSagaBasicPacket** handle);
-		void AssignPlayerID(APlayerController* PlayerController);
+		static void AddPacket(saga::FSagaBasicPacket* packet);
+		static saga::FSagaBasicPacket* PopPacket();
+		static bool TryPopPacket(saga::FSagaBasicPacket** handle);
+		static void AssignPlayerID(APlayerController* PlayerController);
 
-		void AddClient(ISagaNetworkView* client);
-		[[nodiscard]] ISagaNetworkView* FindClient(int32 id);
-		[[nodiscard]] const ISagaNetworkView* FindClient(int32 id) const;
-		bool RemoveClient(int32 id);
-		[[nodiscard]] bool HasClient(int32 id) const;
+		static void AddClient(ISagaNetworkView* client);
+		[[nodiscard]] static ISagaNetworkView* FindClient(int32 id);
+		static bool RemoveClient(int32 id);
+		[[nodiscard]] static bool HasClient(int32 id);
 
 		/* Local Events */
 
@@ -49,10 +47,7 @@ namespace saga
 
 		/* Observers */
 
-		constexpr FSocket* GetLocalSocket() const noexcept
-		{
-			return LocalSocket;
-		}
+		[[nodiscard]] static bool IsConnected() noexcept;
 
 		friend class FSagaNetworkWorker;
 
