@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "Containers/UnrealString.h"
 #include "SagaNetworkConnectionCategory.h"
 
 namespace saga

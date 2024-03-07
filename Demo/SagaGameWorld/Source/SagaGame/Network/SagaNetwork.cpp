@@ -61,6 +61,7 @@ saga::USagaNetwork::Start()
 		if (not socket->Connect(*remote_endpoint))
 		{
 			// 연결 실패 처리
+			UE_LOG(LogNet, Error, TEXT("Cannot connect to the server."));
 			return false;
 		}
 
@@ -71,16 +72,25 @@ saga::USagaNetwork::Start()
 
 		const saga::CS_SignInPacket packet{ name.GetCharArray().GetData(), static_cast<size_t>(name.Len()) };
 		auto ptr = packet.Serialize();
+		UE_LOG(LogNet, Log, "User's nickname is %s.", *name);
 
-		int32 sent_bytes = USagaNetworkUtility::RawSend(socket, ptr.get(), packet.WannabeSize());
+		const int32 sent_bytes = USagaNetworkUtility::RawSend(socket, ptr.get(), packet.WannabeSize());
 		if (sent_bytes <= 0)
 		{
+			UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
 			return false;
 		}
 	}
 
-	instance->MyWorker = MakeShared<saga::FSagaNetworkWorker>();
-	return (instance->MyWorker != nullptr);
+	auto& worker = instance->MyWorker;
+	worker = MakeShared<saga::FSagaNetworkWorker>();
+	if (worker == nullptr)
+	{
+		UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
+		return false;
+	}
+
+	return true;
 }
 
 void
