@@ -9,7 +9,10 @@
 
 ASagaCharacterNPC::ASagaCharacterNPC()
 {
-
+    NPCInteractionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("InteractionCapsule"));
+    NPCInteractionCapsule->SetupAttachment(RootComponent);
+    NPCInteractionCapsule->SetCapsuleSize(150, 400);
+    NPCInteractionCapsule->SetCollisionProfileName(TEXT("Trigger"));
 }
 
 void ASagaCharacterNPC::InteractWithMe()
@@ -57,8 +60,8 @@ void ASagaCharacterNPC::BeginPlay()
 {
     Super::BeginPlay();
 
-
     // 콜리전 설정
+
     NPCInteractionCapsule->OnComponentBeginOverlap.AddDynamic(this, &ASagaCharacterNPC::OnOverlapBegin);
     NPCInteractionCapsule->OnComponentEndOverlap.AddDynamic(this, &ASagaCharacterNPC::OnOverlapEnd);
 
