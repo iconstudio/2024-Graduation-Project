@@ -12,12 +12,20 @@ ASagaGameInitializationMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (not saga::USagaNetwork::Awake(TEXT("Nickname")))
+	if (saga::USagaNetwork::Awake(TEXT("Nickname")))
+	{
+		UE_LOG(LogNet, Log, TEXT("The network system is initialized."));
+	}
+	else
 	{
 		UE_LOG(LogNet, Error, TEXT("Cannot initialize the network system."));
 	}
 
-	if (not saga::USagaNetwork::Start())
+	if (saga::USagaNetwork::Start())
+	{
+		UE_LOG(LogNet, Log, TEXT("The network system is started."));
+	}
+	else
 	{
 		UE_LOG(LogNet, Error, TEXT("Cannot start the network system."));
 	}
