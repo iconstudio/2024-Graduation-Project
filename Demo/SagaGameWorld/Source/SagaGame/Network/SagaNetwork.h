@@ -52,6 +52,15 @@ namespace saga
 		void OnPlayerConnected();
 		void OnPlayerDisconnected();
 
+		/* Getters */
+
+		[[nodiscard]]
+		static FSocket& GetLocalSocket() noexcept
+		{
+			auto instance = Instance();
+			return *(instance->LocalSocket);
+		}
+
 		/* Observers */
 
 		[[nodiscard]] static bool IsConnected() noexcept;
