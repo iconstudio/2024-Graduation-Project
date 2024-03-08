@@ -46,7 +46,8 @@ saga::EventRouter(const std::byte* packet_buffer
 			RoomContract error{};
 			auto offset = ReceiveRoomCreationFailedPacket(packet_buffer, error);
 
-			UE_LOG(LogNet, Log, TEXT("Could not create a room due to %d"), std::to_wstring(error));
+			const auto msg = std::to_wstring(error);
+			UE_LOG(LogNet, Log, TEXT("Could not create a room due to %d"), msg.data());
 		}
 		break;
 
@@ -73,7 +74,8 @@ saga::EventRouter(const std::byte* packet_buffer
 			RoomContract error{};
 			auto offset = ReceiveRoomJoinFailedPacket(packet_buffer, error);
 
-			UE_LOG(LogNet, Log, TEXT("Failed to join to a room due to %s"), std::to_wstring(error));
+			const auto msg = std::to_wstring(error);
+			UE_LOG(LogNet, Log, TEXT("Failed to join to a room due to %s"), msg.data());
 		}
 		break;
 
