@@ -153,15 +153,24 @@ saga::USagaNetwork::AssignPlayerID(APlayerController* PlayerController)
 }
 
 void
-saga::USagaNetwork::AddClient(ISagaNetworkView* client)
+saga::USagaNetwork::AddClient(const FSagaLocalPlayer& client)
 {
 	auto instance = saga::USagaNetwork::Instance();
 	auto& storage = instance->EveryClients;
 
-	storage.Add(client->GetID(), client);
+	storage.Add(client.GetID(), client);
 }
 
-std::optional<ISagaNetworkView*>
+void
+saga::USagaNetwork::AddClient(FSagaLocalPlayer&& client)
+{
+	auto instance = saga::USagaNetwork::Instance();
+	auto& storage = instance->EveryClients;
+
+	storage.Add(client.GetID(), std::move(client));
+}
+
+std::optional<FSagaLocalPlayer>
 saga::USagaNetwork::FindClient(int32 id)
 {
 	auto instance = saga::USagaNetwork::Instance();

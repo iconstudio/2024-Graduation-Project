@@ -1,5 +1,5 @@
-#include "Game/SagaMainMenuMode.h"
+#include "SagaLobbyMode.h"
 
-ASagaMainMenuMode::ASagaMainMenuMode()
+ASagaLobbyMode::ASagaLobbyMode()
 {
 }

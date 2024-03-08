@@ -1,4 +1,4 @@
-#include "Game/SagaNetworkReadyMode.h"
+#include "SagaNetworkReadyMode.h"
 
 ASagaNetworkReadyMode::ASagaNetworkReadyMode()
 {

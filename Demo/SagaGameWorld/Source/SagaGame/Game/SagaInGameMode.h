@@ -2,15 +2,15 @@
 #include "CoreMinimal.h"
 
 #include "SagaGameModeBase.h"
-#include "SagaMainMenuMode.generated.h"
+#include "SagaInGameMode.generated.h"
 
 UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga/Game Mode")
-class SAGAGAME_API ASagaMainMenuMode : public ASagaGameMode
+class SAGAGAME_API ASagaInGameMode : public ASagaGameMode
 {
 	GENERATED_BODY()
 
 public:
-	ASagaMainMenuMode();
+	ASagaInGameMode();
 
 	virtual void GotoPrevLevel_Implementation() override
 	{}

@@ -12,6 +12,9 @@ class SAGAGAME_API ASagaMainMenuMode : public ASagaGameMode
 public:
 	ASagaMainMenuMode();
 
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga/Game Mode")
+	bool TryLoginToServer();
+
 	virtual void GotoPrevLevel_Implementation() override
 	{}
 
@@ -27,4 +30,6 @@ public:
 	{
 		return true;
 	}
+
+	FString NicknameInput;
 };
