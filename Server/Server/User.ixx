@@ -446,6 +446,10 @@ export namespace iconer::app
 		iconer::util::MovableAtomic<IdType> myRoomId;
 		glm::mat4 myTransform;
 
+		iconer::util::MovableAtomic<std::uint8_t> myRoommyTeamId;
+		iconer::util::MovableAtomic<std::uint8_t> myWeaponId;
+		iconer::util::MovableAtomic<bool> isRidingGuardian;
+
 		std::unique_ptr<std::byte[]> preSignInPacket;
 		std::unique_ptr<std::byte[]> preRoomCreationPacket;
 
