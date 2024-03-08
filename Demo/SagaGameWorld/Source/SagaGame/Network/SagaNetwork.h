@@ -1,9 +1,11 @@
 #pragma once
 #include "CoreMinimal.h"
+#include <optional>
 
 #include "SagaNetworkWorker.h"
 #include "SagaNetworkView.h"
 #include "SagaBasicPacket.h"
+#include "SagaNetworkEventRouter.h"
 
 namespace saga
 {
@@ -27,19 +29,24 @@ namespace saga
 		static void Update();
 		static void Shutdown();
 
-		/* Methods */
+		/* Client Methods */
 
-		static void AddPacket(saga::FSagaBasicPacket* packet);
-		static saga::FSagaBasicPacket* PopPacket();
-		static bool TryPopPacket(saga::FSagaBasicPacket** handle);
-		static void AssignPlayerID(APlayerController* PlayerController);
+		static void SetLocalInfo();
+		static void SetRoomInfo();
 
 		static void AddClient(ISagaNetworkView* client);
-		[[nodiscard]] static ISagaNetworkView* FindClient(int32 id);
+		[[nodiscard]] static std::optional<ISagaNetworkView*> FindClient(int32 id);
 		static bool RemoveClient(int32 id);
 		[[nodiscard]] static bool HasClient(int32 id);
 
-		/* Local Events */
+		/* Task Methods */
+
+		static void AddPacket(FSagaBasicPacket* packet);
+		static FSagaBasicPacket* PopPacket();
+		static bool TryPopPacket(FSagaBasicPacket** handle);
+		static void AssignPlayerID(APlayerController* PlayerController);
+
+		/* Event Methods */
 
 		void OnConnected();
 		void OnPlayerConnected();
@@ -51,14 +58,27 @@ namespace saga
 
 		friend class FSagaNetworkWorker;
 
+		int32 MyId;
 		FString MyName;
+		int32 CurrentRoomId;
+		FString CurrentRoomTitle;
 
 	protected:
+		friend void EventRouter(const std::byte* packet_buffer, EPacketProtocol protocol, std::int16_t packet_size);
+
 		FSocket* LocalSocket;
 		TSharedPtr<FSagaNetworkWorker> MyWorker;
-		TArray<saga::FSagaBasicPacket*> PacketQueue;
+		TArray<FSagaBasicPacket*> PacketQueue;
 
 		/// <remarks>로컬 플레이어도 포함</remarks>
 		TMap<int32, ISagaNetworkView*> EveryClients;
 	};
+}
+
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga/Network")
+int32
+GetLocalPlayerID()
+{
+	auto instance = saga::USagaNetwork::Instance();
+	return instance->MyId;
 }

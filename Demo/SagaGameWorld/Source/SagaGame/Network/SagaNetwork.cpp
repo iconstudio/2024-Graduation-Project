@@ -12,6 +12,8 @@
 saga::USagaNetwork::USagaNetwork()
 	: Super()
 	, LocalSocket()
+	, MyId(-1), MyName("Empty Client")
+	, CurrentRoomId(-1), CurrentRoomTitle()
 	, MyWorker(), PacketQueue()
 	, EveryClients()
 {
@@ -24,20 +26,25 @@ saga::USagaNetwork::Awake(const TCHAR* nickname)
 	auto instance = saga::USagaNetwork::Instance();
 	auto& socket = instance->LocalSocket;
 
-	socket = USagaNetworkUtility::CreateTcpSocket();
+	socket = saga::CreateTcpSocket();
 	if (nullptr == socket)
 	{
 		return false;
 	}
 
 	// NOTICE: 클라는 바인드 금지
-	//auto local_endpoint = USagaNetworkUtility::MakeEndPoint(FIPv4Address::InternalLoopback, saga::GetLocalPort());
+	//auto local_endpoint = saga::MakeEndPoint(FIPv4Address::InternalLoopback, saga::GetLocalPort());
 	//if (not socket->Bind(*local_endpoint))
 	//{
 	//	return false;
 	//}
 
 	if (not socket->SetReuseAddr())
+	{
+		return false;
+	}
+
+	if (not socket->SetNoDelay())
 	{
 		return false;
 	}
@@ -72,9 +79,9 @@ saga::USagaNetwork::Start()
 
 		const saga::CS_SignInPacket packet{ name.GetCharArray().GetData(), static_cast<size_t>(name.Len()) };
 		auto ptr = packet.Serialize();
-		UE_LOG(LogNet, Log, "User's nickname is %s.", *name);
+		UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *name);
 
-		const int32 sent_bytes = USagaNetworkUtility::RawSend(socket, ptr.get(), packet.WannabeSize());
+		const int32 sent_bytes = saga::RawSend(socket, ptr.get(), packet.WannabeSize());
 		if (sent_bytes <= 0)
 		{
 			UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
@@ -154,7 +161,7 @@ saga::USagaNetwork::AddClient(ISagaNetworkView* client)
 	storage.Add(client->GetID(), client);
 }
 
-ISagaNetworkView*
+std::optional<ISagaNetworkView*>
 saga::USagaNetwork::FindClient(int32 id)
 {
 	auto instance = saga::USagaNetwork::Instance();
@@ -166,7 +173,7 @@ saga::USagaNetwork::FindClient(int32 id)
 	}
 	else
 	{
-		return nullptr;
+		return std::nullopt;
 	}
 }
 
@@ -210,15 +217,15 @@ CreateRemoteEndPoint()
 {
 	if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Local)
 	{
-		return USagaNetworkUtility::MakeEndPoint(FIPv4Address::InternalLoopback, saga::RemotePort);
+		return saga::MakeEndPoint(FIPv4Address::Any, saga::RemotePort);
 	}
 	else if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Host)
 	{
-		return USagaNetworkUtility::MakeEndPoint(FIPv4Address::Any, saga::RemotePort);
+		return saga::MakeEndPoint(FIPv4Address::InternalLoopback, saga::RemotePort);
 	}
 	else if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Remote)
 	{
-		return USagaNetworkUtility::MakeEndPointFrom(saga::RemoteAddress, saga::RemotePort);
+		return saga::MakeEndPointFrom(saga::RemoteAddress, saga::RemotePort);
 	}
 	else
 	{
