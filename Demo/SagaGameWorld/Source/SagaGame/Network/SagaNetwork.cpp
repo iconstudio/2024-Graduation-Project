@@ -11,9 +11,9 @@
 
 saga::USagaNetwork::USagaNetwork()
 	: Super()
-	, LocalSocket()
 	, MyId(-1), MyName("Empty Client")
 	, CurrentRoomId(-1), CurrentRoomTitle()
+	, LocalSocket()
 	, MyWorker(), PacketQueue()
 	, EveryClients()
 {

@@ -392,12 +392,12 @@ namespace saga::inline sc
 		[[nodiscard]]
 		std::unique_ptr<std::byte[]> Serialize() const override
 		{
-			return saga::Serializes(myProtocol, mySize, clientId, userName);
+			return saga::Serializes(myProtocol, mySize, clientId, std::wstring_view{ userName, nickNameLength });
 		}
 
 		std::byte* Write(std::byte* buffer) const override
 		{
-			return saga::Serializes(Super::Write(buffer), clientId, userName);
+			return saga::Serializes(Super::Write(buffer), clientId, std::wstring_view{ userName, nickNameLength });
 		}
 
 		const std::byte* Read(const std::byte* buffer) override
