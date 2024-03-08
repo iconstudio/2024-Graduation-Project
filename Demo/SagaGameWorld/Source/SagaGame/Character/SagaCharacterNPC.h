@@ -4,23 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "Character/SagaCharacterBase.h"
+#include "Interface/InteractionInterface.h"
 #include "SagaCharacterNPC.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SAGAGAME_API ASagaCharacterNPC : public ASagaCharacterBase
+class SAGAGAME_API ASagaCharacterNPC : public ASagaCharacterBase, public IInteractionInterface
 {
 	GENERATED_BODY()
 public:
 	ASagaCharacterNPC();
 
-	void ShowInteractionPrompt(bool bShow);
+	/*void ShowInteractionPrompt(bool bShow);
 
 	void OnPlayerEnterRange();
 
-	void OnPlayerExitRange();
+	void OnPlayerExitRange();*/
+
+	virtual void InteractWithMe() override;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
