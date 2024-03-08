@@ -17,7 +17,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		case EPacketProtocol::SC_SIGNIN_SUCCESS:
 		{
 			int32 my_id{};
-			auto offset = ReceiveSignInSucceedPacket(packet_buffer);
+			auto offset = ReceiveSignInSucceedPacket(packet_buffer, my_id);
 
 			UE_LOG(LogNet, Log, TEXT("Local player's id is %d"), my_id);
 		}
@@ -28,7 +28,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			int32 error{};
 			auto offset = ReceiveSignInFailurePacket(packet_buffer, error);
 
-			UE_LOG(LogNet, Log, TEXT("Local player can't get an id from server due to {}"), error);
+			UE_LOG(LogNet, Log, TEXT("Local player can't get an id from server due to %d"), error);
 		}
 		break;
 
@@ -36,6 +36,8 @@ saga::EventRouter(const std::byte* packet_buffer
 		{
 			int32 room_id{};
 			auto offset = ReceiveRoomCreatedPacket(packet_buffer, room_id);
+
+			instance->CurrentRoomId = room_id;
 
 			UE_LOG(LogNet, Log, TEXT("A room %d is created"), room_id);
 		}
@@ -60,10 +62,13 @@ saga::EventRouter(const std::byte* packet_buffer
 			if (newbie_id == instance->MyId)
 			{
 				instance->CurrentRoomId = room_id;
+
 				UE_LOG(LogNet, Log, TEXT("Local client has joined to the room %d"), room_id);
 			}
 			else
 			{
+				instance->AddClient(FSagaLocalPlayer{ id, nickname });
+
 				UE_LOG(LogNet, Log, TEXT("Client %d has joined to the room %d"), newbie_id, room_id);
 			}
 		}
@@ -115,7 +120,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			auto& members = pk.serializedMembers;
 			for (auto& [id, nickname] : members)
 			{
-				instance->AddClient(new FSagaLocalPlayer{ id, nickname });
+				instance->AddClient(FSagaLocalPlayer{ id, nickname });
 			}
 
 			UE_LOG(LogNet, Log, TEXT("Members: %d"), members.size());
@@ -156,7 +161,7 @@ saga::EventRouter(const std::byte* packet_buffer
 
 			UE_LOG(LogNet, Log, TEXT("A player %d is created"), pk.clientId);
 
-			instance->AddClient(new FSagaLocalPlayer{ pk.clientId, TEXT("Name") });
+			instance->AddClient(FSagaLocalPlayer{ pk.clientId, TEXT("Name") });
 		}
 		break;
 

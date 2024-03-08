@@ -3,7 +3,7 @@
 #include <optional>
 
 #include "SagaNetworkWorker.h"
-#include "SagaNetworkView.h"
+#include "SagaLocalPlayer.h"
 #include "SagaBasicPacket.h"
 #include "SagaNetworkEventRouter.h"
 
@@ -34,8 +34,9 @@ namespace saga
 		static void SetLocalInfo();
 		static void SetRoomInfo();
 
-		static void AddClient(ISagaNetworkView* client);
-		[[nodiscard]] static std::optional<ISagaNetworkView*> FindClient(int32 id);
+		static void AddClient(const FSagaLocalPlayer& client);
+		static void AddClient(FSagaLocalPlayer&& client);
+		[[nodiscard]] static std::optional<FSagaLocalPlayer> FindClient(int32 id);
 		static bool RemoveClient(int32 id);
 		[[nodiscard]] static bool HasClient(int32 id);
 
@@ -80,7 +81,7 @@ namespace saga
 		TArray<FSagaBasicPacket*> PacketQueue;
 
 		/// <remarks>로컬 플레이어도 포함</remarks>
-		TMap<int32, ISagaNetworkView*> EveryClients;
+		TMap<int32, FSagaLocalPlayer> EveryClients;
 	};
 }
 

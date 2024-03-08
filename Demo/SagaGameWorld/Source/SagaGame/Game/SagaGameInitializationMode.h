@@ -1,6 +1,5 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "UI/SagaInitializationLevelUI.h"
 
 #include "SagaGameModeBase.h"
 #include "SagaGameInitializationMode.generated.h"

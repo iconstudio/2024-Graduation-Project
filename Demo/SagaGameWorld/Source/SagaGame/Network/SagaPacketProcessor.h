@@ -15,7 +15,7 @@ namespace saga
 	std::optional<int32> SendGameIsLoadedPacket();
 	std::optional<int32> SendPositionPacket();
 
-	const std::byte* ReceiveSignInSucceedPacket(const std::byte* buffer);
+	const std::byte* ReceiveSignInSucceedPacket(const std::byte* buffer, int32& my_id);
 	const std::byte* ReceiveSignInFailurePacket(const std::byte* buffer, int32& error);
 	const std::byte* ReceiveRoomCreatedPacket(const std::byte* buffer, int32& room_id);
 	const std::byte* ReceiveRoomCreationFailedPacket(const std::byte* buffer, RoomContract& error);
