@@ -1,5 +1,4 @@
 #pragma once
-#include "CoreMinimal.h"
 #include "../Utility/Constraints.h"
 #include "../Utility/Byte.h"
 #include <cstdint>

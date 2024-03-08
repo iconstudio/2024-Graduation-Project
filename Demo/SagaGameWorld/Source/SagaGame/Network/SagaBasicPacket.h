@@ -1,6 +1,6 @@
 #pragma once
 #include "SagaPacketProtocol.h"
-#include "Serializer.h"
+#include "SagaSerializer.h"
 
 namespace saga
 {

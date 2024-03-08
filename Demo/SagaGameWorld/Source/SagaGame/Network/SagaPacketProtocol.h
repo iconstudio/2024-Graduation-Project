@@ -1,6 +1,12 @@
 #pragma once
+#include "CoreMinimal.h"
 
-enum class [[nodiscard]] EPacketProtocol : unsigned char
+#ifndef UENUM
+#define UENUM(...) 
+#endif
+
+UENUM(BlueprintType)
+enum class [[nodiscard]] EPacketProtocol : uint8
 {
 	UNKNOWN = 0,
 	CS_SIGNIN,

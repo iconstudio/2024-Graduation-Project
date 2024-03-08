@@ -16,6 +16,14 @@ class SAGAGAME_API ISagaNetworkView
 	GENERATED_BODY()
 
 public:
+	ISagaNetworkView() noexcept
+		: MyID(-1), MyName(TEXT("Empty Client"))
+	{}
+
+	ISagaNetworkView(int32 id, FStringView name) noexcept
+		: MyID(id), MyName(name)
+	{}
+
 	/// <summary>로컬 플레이어 접속 성공</summary>
 	/// <param name="local_id">부여된 나의 ID</param>
 	UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Network/Event")

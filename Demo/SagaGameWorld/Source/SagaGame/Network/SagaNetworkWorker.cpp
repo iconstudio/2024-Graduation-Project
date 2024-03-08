@@ -1,16 +1,17 @@
 #include "SagaNetworkWorker.h"
 #include "Sockets.h"
-#include "SagaClientPacketPrefabs.h"
+
+#include "SagaNetworkSettings.h"
 #include "SagaNetwork.h"
+#include "SagaClientPacketPrefabs.h"
+#include "SagaNetworkEventRouter.h"
 
-using namespace saga;
-
-FSagaNetworkWorker::FSagaNetworkWorker()
+saga::FSagaNetworkWorker::FSagaNetworkWorker()
 {
 	MyThread = FRunnableThread::Create(this, TEXT("Worker Thread"));
 }
 
-FSagaNetworkWorker::~FSagaNetworkWorker()
+saga::FSagaNetworkWorker::~FSagaNetworkWorker()
 {
 	if (MyThread)
 	{
@@ -24,7 +25,7 @@ FSagaNetworkWorker::~FSagaNetworkWorker()
 }
 
 bool
-FSagaNetworkWorker::Init()
+saga::FSagaNetworkWorker::Init()
 {
 	UE_LOG(LogNet, Display, TEXT("Worker has been initialized"));
 
@@ -32,91 +33,84 @@ FSagaNetworkWorker::Init()
 }
 
 uint32
-FSagaNetworkWorker::Run()
+saga::FSagaNetworkWorker::Run()
 {
-	auto instance = USagaNetwork::Instance();
+	auto instance = saga::USagaNetwork::Instance();
 	auto& socket = instance->LocalSocket;
 
+	constexpr int32 MaxReceiveSize = 512;
 	int32 recv_bytes{};
-	uint8 recv_buffer[512]{};
+	uint8 recv_buffer[MaxReceiveSize]{};
 	std::byte* alt_buffer = reinterpret_cast<std::byte*>(recv_buffer);
+
+	auto PullReceiveBuffer = [&](int32 packet_size) {
+		const auto memsz = static_cast<size_t>(MaxReceiveSize - packet_size);
+		std::memcpy(recv_buffer, recv_buffer + recv_bytes, memsz);
+		std::memset(recv_buffer + recv_bytes, 0, memsz);
+
+		recv_bytes -= packet_size;
+	};
 
 	while (true)
 	{
 #if true
 		// Recv 작업 진행
+		int32 temp_recv_bytes{};
 
-		// #2
-		// 서버가 닉네임 패킷을 받으면 서버는 ID 부여 패킷을 보낸다.
-		// 클라는 ID 부여 패킷을 받아서 갱신하고, 게임 or 메뉴 레벨로 넘어가야 한다.
-		if (not socket->Recv(recv_buffer, sizeof(recv_buffer), recv_bytes))
+		if constexpr (not saga::IsOfflineMode)
 		{
-			UE_LOG(LogNet, Error, TEXT("Receiving has failed"));
-			return 1;
+			// #2
+			// 서버가 닉네임 패킷을 받으면 서버는 ID 부여 패킷을 보낸다.
+			// 클라는 ID 부여 패킷을 받아서 갱신하고, 게임 or 메뉴 레벨로 넘어가야 한다.
+			if (not socket->Recv(recv_buffer + recv_bytes
+				, MaxReceiveSize - recv_bytes
+				, temp_recv_bytes))
+			{
+				UE_LOG(LogNet, Error, TEXT("Receiving has been failed!"));
+				return 1;
+			}
+			else if (temp_recv_bytes <= 0)
+			{
+				UE_LOG(LogNet, Error, TEXT("Received 0 byte!"));
+				return 2;
+			}
+
+			recv_bytes += temp_recv_bytes;
+
+			// 패킷 검증 필요
+			saga::FSagaBasicPacket basic_pk{ EPacketProtocol::UNKNOWN };
+			basic_pk.Read(alt_buffer);
+
+			if (basic_pk.mySize <= 0)
+			{
+				UE_LOG(LogNet, Error, TEXT("Packet's size was zero!"));
+				return 3;
+			}
+
+			auto ename = UEnum::GetValueAsString(basic_pk.myProtocol);
+			UE_LOG(LogNet, Log, TEXT("Received a packet (%d)"), *ename);
+
+			saga::EventRouter(alt_buffer, basic_pk.myProtocol, basic_pk.mySize);
+
+			UE_LOG(LogNet, Log, TEXT("Packet's size was %d"), basic_pk.mySize);
+
+			PullReceiveBuffer(basic_pk.mySize);
 		}
-
-		if (recv_bytes <= 0)
-		{
-			UE_LOG(LogNet, Error, TEXT("Received 0 byte"));
-			return 2;
-		}
-
-		// 패킷 검증 필요
-		FSagaBasicPacket reader{ EPacketProtocol::UNKNOWN };
-		auto seek = reader.Read(alt_buffer);
-
-
-		//FKey key;
-		//FString KeyString = key.ToString();
-		//TCHAR* SerializedChar = KeyString.GetCharArray().GetData();
-		//int32 Size = FCString::Strlen(SerializedChar) + 1;
-		//int32 Sent = 0;
-
-		//// 데이터 전송
-		//bool Successful = SagaClientSocket->Send((uint8*)TCHAR_TO_UTF8(SerializedChar), Size, Sent);
-
-		//if (id_packet.myProtocol != EPacketProtocol::SC_SIGNIN_SUCCESS or id_packet.mySize <= 0)
-		{
-		//	throw "error!";
-		}
-
-		//if (id_packet.mySize != static_cast<int32>(FSagaPacket_SC_SucceedSignIn::SignedWannabeSize()))
-		{
-			//	throw "error!";
-		}
-
-		// 플레이어 ID 읽기
-		//auto local_client = new FSagaLocalPlayer{};
-		//local_client->MyID = id_packet.clientId;
-
-		//EveryClients.Add(local_client);
-
-		// #3
-		// 좌표 송수신 
-
-		//FSagaPacket_CS_ClientPosition pk_position{};
-
-		// #3-a
-		// 로우 버퍼 사용
-		//uint8 position_raw_buffer[256]{};
-		//pk_position.Write(position_raw_buffer);
-		//USagaNetworkUtility::RawSend(socket, position_raw_buffer, FSagaPacket_CS_ClientPosition::WannabeSize());
-
-		// #3-b
-		// 공유 포인터 사용
-		//auto position_buffer = pk_position.Serialize();
-		//USagaNetworkUtility::Send(MakeShareable(LocalSocket), position_buffer, FSagaPacket_CS_ClientPosition::WannabeSize());
 	}
 #endif
 	return 0;
 }
 
 void
-FSagaNetworkWorker::Exit()
+saga::FSagaNetworkWorker::Exit()
 {
+	auto instance = saga::USagaNetwork::Instance();
+	auto& socket = instance->LocalSocket;
+
+	socket->Close();
 }
 
 void
-FSagaNetworkWorker::Stop()
+saga::FSagaNetworkWorker::Stop()
 {
 }
