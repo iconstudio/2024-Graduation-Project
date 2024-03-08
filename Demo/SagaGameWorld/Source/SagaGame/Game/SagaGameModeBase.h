@@ -3,7 +3,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "SagaGameModeBase.generated.h"
 
-UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga/Game Modes")
+UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga/Game Mode")
 class SAGAGAME_API ASagaGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
@@ -15,21 +15,21 @@ public:
 	/// 
 	/// </summary>
 	/// <param name="level_name"></param>
-	UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/GameMode/Event")
+	UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
 	void GotoNextLevel();
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="level_name"></param>
-	UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/GameMode/Event")
+	UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
 	void GotoPrevLevel();
-
-	[[nodiscard]] UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/GameMode/Event")
+	[[nodiscard]] UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
 	bool CanGotoNextLevel() const noexcept;
-	[[nodiscard]] UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/GameMode/Event")
+	[[nodiscard]] UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
 	bool CanGotoPrevLevel() const noexcept;
 
-	virtual void BeginPlay() override;
-	virtual void Tick(float delta_time) override;
-	virtual void BeginDestroy() override;
+	virtual void GotoNextLevel_Implementation();
+	virtual void GotoPrevLevel_Implementation();
+	[[nodiscard]] virtual bool CanGotoNextLevel_Implementation() const noexcept;
+	[[nodiscard]] virtual bool CanGotoPrevLevel_Implementation() const noexcept;
 };
