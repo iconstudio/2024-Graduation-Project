@@ -35,6 +35,11 @@ ASagaCharacterPlayer::ASagaCharacterPlayer()
 	Inventory = CreateDefaultSubobject<UInventoryComponent>("Inventory");
 	//Inventory->Capacity = 20;
 
+	//상호작용
+	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
+	InteractionBox->SetupAttachment(RootComponent);
+	/*FVector InteractionBoxSize = FVector(100.0f, 100.0f, 100.0f);
+	InteractionBox->SetBoxExtent(InteractionBoxSize);*/
 
 	//입력
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Jump.IA_Jump'"));
@@ -92,6 +97,8 @@ void ASagaCharacterPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	InteractionBox->OnComponentBeginOverlap.AddDynamic(this, &ASagaCharacterPlayer::OnBoxBeginOverlap);
+
 	SetCharacterControl(CurrentCharacterControlType);
 }
 
@@ -116,6 +123,11 @@ void ASagaCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Play
 	//NPC와 상호작용
 	EnhancedInputComponent->BindAction(InteractionWithNPC, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::GetOnNPC);
 
+}
+
+void ASagaCharacterPlayer::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
 }
 
 void ASagaCharacterPlayer::ChangeCharacterControl()
@@ -158,6 +170,11 @@ void ASagaCharacterPlayer::UseItem(UItems* Item)
 		Item->Use(this);
 		Item->OnUse(this); //블루프린트 이벤트
 	}
+}
+
+void ASagaCharacterPlayer::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+
 }
 
 
