@@ -21,7 +21,7 @@ saga::USagaNetwork::USagaNetwork()
 }
 
 bool
-saga::USagaNetwork::Awake(const TCHAR* nickname)
+saga::USagaNetwork::Awake()
 {
 	auto instance = saga::USagaNetwork::Instance();
 	auto& socket = instance->LocalSocket;
@@ -49,14 +49,11 @@ saga::USagaNetwork::Awake(const TCHAR* nickname)
 		return false;
 	}
 
-	auto& name = instance->MyName;
-	name = nickname;
-
 	return true;
 }
 
 bool
-saga::USagaNetwork::Start()
+saga::USagaNetwork::Start(FStringView nickname)
 {
 	auto instance = saga::USagaNetwork::Instance();
 	auto& socket = instance->LocalSocket;
@@ -76,6 +73,7 @@ saga::USagaNetwork::Start()
 		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
 
 		auto& name = instance->MyName;
+		name = nickname;
 
 		const saga::CS_SignInPacket packet{ name.GetCharArray().GetData(), static_cast<size_t>(name.Len()) };
 		auto ptr = packet.Serialize();

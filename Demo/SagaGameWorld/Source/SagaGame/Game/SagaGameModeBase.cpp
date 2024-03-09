@@ -9,41 +9,41 @@ ASagaGameModeBase::ASagaGameModeBase()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
-void ASagaGameModeBase::TransitionLevel(FName level_name)
-{
-	UGameplayStatics::OpenLevel(this, MoveTempIfPossible(level_name));
-}
-
-bool
-ASagaGameModeBase::CanGotoPrevLevel_Implementation()
-const noexcept
-{
-	return false;
-}
-
-bool
-ASagaGameModeBase::CanGotoNextLevel_Implementation()
-const noexcept
-{
-	return false;
-}
-
 void
-ASagaGameModeBase::GotoPrevLevel_Implementation()
+ASagaGameModeBase::GotoPrevLevel()
 {
 	if (CanGotoPrevLevel())
 	{
-		TransitionLevel(PrevLevelName);
+		TransitionLevel(*PrevLevelName);
 	}
 }
 
 void
-ASagaGameModeBase::GotoNextLevel_Implementation()
+ASagaGameModeBase::GotoNextLevel()
 {
 	if (CanGotoNextLevel())
 	{
-		TransitionLevel(NextLevelName);
+		TransitionLevel(*NextLevelName);
 	}
+}
+
+bool
+ASagaGameModeBase::CanGotoPrevLevel()
+const noexcept
+{
+	return PrevLevelName.IsSet();
+}
+
+bool
+ASagaGameModeBase::CanGotoNextLevel()
+const noexcept
+{
+	return NextLevelName.IsSet();
+}
+
+void ASagaGameModeBase::TransitionLevel(FName level_name)
+{
+	UGameplayStatics::OpenLevel(this, MoveTempIfPossible(level_name));
 }
 
 void ASagaGameModeBase::SetPrevLevelName(FName level_name)

@@ -11,14 +11,4 @@ class SAGAGAME_API ASagaLobbyMode : public ASagaGameModeBase
 
 public:
 	ASagaLobbyMode();
-
-	virtual bool CanGotoPrevLevel_Implementation() const noexcept override
-	{
-		return true;
-	}
-
-	virtual bool CanGotoNextLevel_Implementation() const noexcept override
-	{
-		return true;
-	}
 };

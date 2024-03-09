@@ -9,7 +9,8 @@
 
 namespace saga
 {
-	class SAGAGAME_API USagaNetwork final : public TSharedFromThis<USagaNetwork>
+	class SAGAGAME_API USagaNetwork final
+		: public TSharedFromThis<USagaNetwork>
 	{
 	public:
 		using Super = TSharedFromThis<USagaNetwork>;
@@ -24,8 +25,8 @@ namespace saga
 			return instance;
 		}
 
-		[[nodiscard]] static bool Awake(const TCHAR* nickname);
-		[[nodiscard]] static bool Start();
+		[[nodiscard]] static bool Awake();
+		[[nodiscard]] static bool Start(FStringView nickname);
 		static void Update();
 		static void Shutdown();
 

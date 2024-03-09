@@ -49,6 +49,7 @@ saga::FSagaNetworkWorker::Run()
 		std::memset(recv_buffer + recv_bytes, 0, memsz);
 
 		recv_bytes -= packet_size;
+		UE_LOG(LogNet, Log, TEXT("Remained receive bytes are %d"), recv_bytes);
 	};
 
 	while (true)
@@ -78,7 +79,7 @@ saga::FSagaNetworkWorker::Run()
 			recv_bytes += temp_recv_bytes;
 
 			// 패킷 검증 필요
-			while (true)
+			while (FSagaBasicPacket::MinSize() <= recv_bytes)
 			{
 				FSagaBasicPacket basic_pk{ EPacketProtocol::UNKNOWN };
 				basic_pk.Read(alt_buffer);
@@ -92,7 +93,7 @@ saga::FSagaNetworkWorker::Run()
 				if (recv_bytes <= basic_pk.mySize)
 				{
 					auto ename = UEnum::GetValueAsString(basic_pk.myProtocol);
-					UE_LOG(LogNet, Log, TEXT("Received a packet (%d)"), *ename);
+					UE_LOG(LogNet, Log, TEXT("Received a packet (%s)"), *ename);
 
 					saga::EventRouter(alt_buffer, basic_pk.myProtocol, basic_pk.mySize);
 
@@ -108,6 +109,7 @@ saga::FSagaNetworkWorker::Run()
 		} // if constexpr (IsOfflineMode)
 	} // while (true) #1
 #endif
+
 	return 0;
 }
 
