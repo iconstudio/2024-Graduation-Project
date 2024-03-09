@@ -1,4 +1,4 @@
-#include "Network/SagaLocalPlayer.h"
+#include "SagaLocalPlayer.h"
 
 void
 FSagaLocalPlayer::OnPlayerConnected_Implementation(const int32 PlayerID)

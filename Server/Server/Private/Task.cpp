@@ -1,6 +1,7 @@
+module;
+#include <exception>
+#include <thread>
 module Iconer.Coroutine.Task;
-import <exception>;
-import <thread>;
 
 iconer::coroutine::Task<void>
 iconer::coroutine::Task<void>::promise_type::get_return_object() noexcept

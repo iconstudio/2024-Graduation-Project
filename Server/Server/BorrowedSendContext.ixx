@@ -1,32 +1,155 @@
+module;
+#include <memory>
+
 export module Iconer.Application.BorrowedSendContext;
-import Iconer.Application.IContext;
-import <utility>;
+import Iconer.Application.BlobSendContext;
 
 export namespace iconer::app
 {
-	class [[nodiscard]] BorrowedSendContext : public IContext
+	class [[nodiscard]] BorrowedSendContext : public BlobSendContext
 	{
 	public:
-		using Super = IContext;
+		using Super = BlobSendContext;
 
-		explicit constexpr BorrowedSendContext(const size_t size) noexcept
-			: Super(Operations::OpSend)
-			, mySize(size)
+		explicit constexpr BorrowedSendContext() noexcept
+			: Super()
 		{
+			SetOperation(AsyncOperations::OpSendBorrowed);
+		}
+
+		explicit constexpr BorrowedSendContext(std::unique_ptr<std::byte[]>&& ptr, const size_t& size) noexcept
+			: Super(std::move(ptr), size)
+		{
+			SetOperation(AsyncOperations::OpSendBorrowed);
 		}
 
 		[[nodiscard]]
-		const size_t& GetSize() const& noexcept
+		constexpr void SetBlob(std::unique_ptr<std::byte[]>&& buffer) noexcept
 		{
-			return mySize;
+			myBlob = std::move(buffer);
 		}
 
 		[[nodiscard]]
-		size_t&& GetSize() && noexcept
+		constexpr void SetSize(size_t size) noexcept
 		{
-			return std::move(mySize);
+			mySize = size;
 		}
 
-		size_t mySize;
+		void ReturnToBase();
+	};
+
+	class [[nodiscard]] Borrower final
+	{
+	public:
+		constexpr Borrower() noexcept = default;
+
+		constexpr Borrower(Borrower&& other) noexcept
+			: borrowedContext(std::exchange(other.borrowedContext, nullptr))
+		{}
+
+		explicit constexpr Borrower(BorrowedSendContext& ctx) noexcept
+			: borrowedContext(std::addressof(ctx))
+		{
+		}
+
+		constexpr Borrower(BorrowedSendContext* const& ctx) noexcept
+			: borrowedContext(ctx)
+		{
+		}
+
+		~Borrower()
+		{
+			Complete();
+		}
+
+		BorrowedSendContext* Release() noexcept
+		{
+			return std::exchange(borrowedContext, nullptr);
+		}
+
+		BorrowedSendContext* Release() volatile noexcept
+		{
+			return std::exchange(borrowedContext, nullptr);
+		}
+
+		void Complete()
+		{
+			if (nullptr != borrowedContext)
+			{
+				Release()->ReturnToBase();
+			}
+		}
+		
+		void Complete() volatile
+		{
+			if (nullptr != borrowedContext)
+			{
+				Release()->ReturnToBase();
+			}
+		}
+
+		constexpr Borrower& operator=(Borrower&& other) noexcept
+		{
+			borrowedContext = std::exchange(other.borrowedContext, nullptr);
+			return *this;
+		}
+
+		constexpr Borrower& operator=(nullptr_t) noexcept
+		{
+			borrowedContext = nullptr;
+			return *this;
+		}
+		
+		constexpr Borrower& operator=(BorrowedSendContext* const& ptr) noexcept
+		{
+			borrowedContext = ptr;
+			return *this;
+		}
+
+		constexpr BorrowedSendContext* operator->() const noexcept
+		{
+			return borrowedContext;
+		}
+
+		constexpr BorrowedSendContext* operator->() const volatile noexcept
+		{
+			return borrowedContext;
+		}
+
+		constexpr BorrowedSendContext& operator*() noexcept
+		{
+			return *borrowedContext;
+		}
+
+		constexpr const BorrowedSendContext& operator*() const noexcept
+		{
+			return *borrowedContext;
+		}
+
+		constexpr volatile BorrowedSendContext& operator*() volatile noexcept
+		{
+			return *borrowedContext;
+		}
+
+		constexpr const volatile BorrowedSendContext& operator*() const volatile noexcept
+		{
+			return *borrowedContext;
+		}
+
+		constexpr operator BorrowedSendContext* () const noexcept
+		{
+			return borrowedContext;
+		}
+
+		constexpr operator BorrowedSendContext* () const volatile noexcept
+		{
+			return borrowedContext;
+		}
+
+	private:
+		Borrower(const Borrower&) = delete;
+		Borrower& operator=(const Borrower&) = delete;
+
+		BorrowedSendContext* borrowedContext;
 	};
 }
