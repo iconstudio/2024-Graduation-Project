@@ -1,29 +1,29 @@
 #include "SagaGameModeBase.h"
 #include "Player/SagaPlayerController.h"
 
-ASagaGameMode::ASagaGameMode()
+ASagaGameModeBase::ASagaGameModeBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
 void
-ASagaGameMode::GotoNextLevel_Implementation()
+ASagaGameModeBase::GotoNextLevel_Implementation()
 {}
 
 void
-ASagaGameMode::GotoPrevLevel_Implementation()
+ASagaGameModeBase::GotoPrevLevel_Implementation()
 {}
 
 bool
-ASagaGameMode::CanGotoNextLevel_Implementation()
+ASagaGameModeBase::CanGotoNextLevel_Implementation()
 const noexcept
 {
 	return false;
 }
 
 bool
-ASagaGameMode::CanGotoPrevLevel_Implementation()
+ASagaGameModeBase::CanGotoPrevLevel_Implementation()
 const noexcept
 {
 	return false;

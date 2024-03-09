@@ -4,28 +4,28 @@
 #include "SagaGameModeBase.generated.h"
 
 UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga/Game Mode")
-class SAGAGAME_API ASagaGameMode : public AGameModeBase
+class SAGAGAME_API ASagaGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	ASagaGameMode();
+	ASagaGameModeBase();
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="level_name"></param>
-	UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
 	void GotoNextLevel();
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="level_name"></param>
-	UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
 	void GotoPrevLevel();
-	[[nodiscard]] UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
+	[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
 	bool CanGotoNextLevel() const noexcept;
-	[[nodiscard]] UFUNCTION(BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
+	[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga/Game Mode/Event")
 	bool CanGotoPrevLevel() const noexcept;
 
 	virtual void GotoNextLevel_Implementation();
