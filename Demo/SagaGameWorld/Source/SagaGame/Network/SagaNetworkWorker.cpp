@@ -57,7 +57,7 @@ saga::FSagaNetworkWorker::Run()
 		// Recv 작업 진행
 		int32 temp_recv_bytes{};
 
-		if constexpr (not saga::IsOfflineMode)
+		if constexpr (not IsOfflineMode)
 		{
 			// #2
 			// 서버가 닉네임 패킷을 받으면 서버는 ID 부여 패킷을 보낸다.
@@ -78,25 +78,35 @@ saga::FSagaNetworkWorker::Run()
 			recv_bytes += temp_recv_bytes;
 
 			// 패킷 검증 필요
-			saga::FSagaBasicPacket basic_pk{ EPacketProtocol::UNKNOWN };
-			basic_pk.Read(alt_buffer);
-
-			if (basic_pk.mySize <= 0)
+			while (true)
 			{
-				UE_LOG(LogNet, Error, TEXT("Packet's size was zero!"));
-				return 3;
-			}
+				FSagaBasicPacket basic_pk{ EPacketProtocol::UNKNOWN };
+				basic_pk.Read(alt_buffer);
 
-			auto ename = UEnum::GetValueAsString(basic_pk.myProtocol);
-			UE_LOG(LogNet, Log, TEXT("Received a packet (%d)"), *ename);
+				if (basic_pk.mySize <= 0)
+				{
+					UE_LOG(LogNet, Error, TEXT("Packet's size was zero!"));
+					return 3;
+				}
 
-			saga::EventRouter(alt_buffer, basic_pk.myProtocol, basic_pk.mySize);
+				if (recv_bytes <= basic_pk.mySize)
+				{
+					auto ename = UEnum::GetValueAsString(basic_pk.myProtocol);
+					UE_LOG(LogNet, Log, TEXT("Received a packet (%d)"), *ename);
 
-			UE_LOG(LogNet, Log, TEXT("Packet's size was %d"), basic_pk.mySize);
+					saga::EventRouter(alt_buffer, basic_pk.myProtocol, basic_pk.mySize);
 
-			PullReceiveBuffer(basic_pk.mySize);
-		}
-	}
+					UE_LOG(LogNet, Log, TEXT("Packet's size was %d"), basic_pk.mySize);
+
+					PullReceiveBuffer(basic_pk.mySize);
+				}
+				else
+				{
+					break; // while (true) #2
+				}
+			} // while (true) #2
+		} // if constexpr (IsOfflineMode)
+	} // while (true) #1
 #endif
 	return 0;
 }

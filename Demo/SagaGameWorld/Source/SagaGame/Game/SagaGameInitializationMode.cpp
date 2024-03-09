@@ -3,6 +3,7 @@
 #include "../Network/SagaNetwork.h"
 
 ASagaGameInitializationMode::ASagaGameInitializationMode()
+	: ASagaGameModeBase()
 {
 	auto instance = saga::USagaNetwork::Instance();
 }
@@ -29,10 +30,4 @@ ASagaGameInitializationMode::BeginPlay()
 	{
 		UE_LOG(LogNet, Error, TEXT("Cannot start the network system."));
 	}
-}
-
-void
-ASagaGameInitializationMode::BeginDestroy()
-{
-	Super::BeginDestroy();
 }

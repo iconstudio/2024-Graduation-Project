@@ -1,7 +1,8 @@
 #include "SagaMainMenuMode.h"
 
 ASagaMainMenuMode::ASagaMainMenuMode()
-	: NicknameInput()
+	: ASagaGameModeBase()
+	, NicknameInput()
 {
 }
 
