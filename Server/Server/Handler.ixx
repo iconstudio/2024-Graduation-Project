@@ -1,9 +1,11 @@
+module;
+#include <typeinfo>
+#include <utility>
+#include <string>
+#include <format>
+
 export module Iconer.Utility.Handler;
 import Iconer.Utility.Constraints;
-import <typeinfo>;
-import <utility>;
-import <string>;
-import <format>;
 
 export namespace iconer::util
 {
@@ -28,17 +30,61 @@ export namespace iconer::util
 		explicit(not actual_integral<H>)
 			constexpr Handler(H&& handle)
 			noexcept(nothrow_move_constructibles<H>) requires move_constructible<H>
-			: myHandle(static_cast<H&&>(handle))
+			: myHandle(std::move(handle))
 		{
 		}
 
-		constexpr Handler& operator=(const H& handle) noexcept(nothrow_copy_assignables<H>)
+		constexpr Handler& operator=(const H& handle)
+			noexcept(nothrow_copy_assignables<H>)
 		{
 			myHandle = handle;
 			return *this;
 		}
 
-		constexpr Handler& operator=(H&& handle) noexcept(nothrow_move_assignables<H>)
+		constexpr Handler& operator=(H&& handle)
+			noexcept(nothrow_move_assignables<H>)
+		{
+			myHandle = std::move(handle);
+			return *this;
+		}
+		
+		constexpr volatile Handler& operator=(const H& handle)
+			volatile noexcept(nothrow_copy_assignables<H>)
+		{
+			myHandle = handle;
+			return *this;
+		}
+
+		constexpr volatile Handler& operator=(H&& handle)
+			volatile noexcept(nothrow_move_assignables<H>)
+		{
+			myHandle = std::move(handle);
+			return *this;
+		}
+
+		constexpr Handler& operator=(const volatile H& handle)
+			noexcept(nothrow_copy_assignables<H>)
+		{
+			myHandle = handle;
+			return *this;
+		}
+
+		constexpr Handler& operator=(volatile H&& handle)
+			noexcept(nothrow_move_assignables<H>)
+		{
+			myHandle = std::move(handle);
+			return *this;
+		}
+
+		constexpr volatile Handler& operator=(const volatile H& handle)
+			volatile noexcept(nothrow_copy_assignables<H>)
+		{
+			myHandle = handle;
+			return *this;
+		}
+
+		constexpr volatile Handler& operator=(volatile H&& handle)
+			volatile noexcept(nothrow_move_assignables<H>)
 		{
 			myHandle = std::move(handle);
 			return *this;

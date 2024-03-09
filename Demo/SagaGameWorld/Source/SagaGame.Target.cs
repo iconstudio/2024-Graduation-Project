@@ -10,6 +10,9 @@ public class SagaGameTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V4;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
+		//bUseAdaptiveUnityBuild = true;
+		bUseUnityBuild = false;
+		MinFilesUsingPrecompiledHeader = 1;
 		ExtraModuleNames.Add("SagaGame");
 	}
 }

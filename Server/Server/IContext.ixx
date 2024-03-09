@@ -2,42 +2,10 @@ export module Iconer.Application.IContext;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.AtomicSwitcher;
 import Iconer.Net.IoContext;
-import <utility>;
+export import Iconer.Application.AsyncOperation;
 
 export namespace iconer::app
 {
-	enum class [[nodiscard]] Operations : std::uint8_t
-	{
-		None,
-
-		/// <summary>Phase 0</summary>
-		OpReserveSession = 10,
-
-		/// <summary>Phase 1</summary>
-		OpAccept,
-
-		/// <summary>Phase 2 - Sign in</summary>
-		OpSignIn, OpSignInFailed,
-
-		/// <summary>Phase 3</summary>
-		OpAssignID,
-
-		/// <summary>Phase 4 ~ </summary>
-		OpRecv, OpSend,
-
-		/// <summary>Phase 5 ~ </summary>
-		OpCreateRoom, OpEnterRoom, OpLeaveRoom,
-
-		/// <summary>Phase 6 ~ </summary>
-		OpNotifyMember, OpEnterGame, OpReadyGame, OpStartGame, OpLeaveGame,
-
-		/// <summary>Phase 10 - Sign out (Quit)</summary>
-		OpDisconnect,
-
-		/// <summary>Extras</summary>
-		OpEndWorkers
-	};
-
 	class IContext : public iconer::net::IoContext
 	{
 	public:
@@ -46,64 +14,64 @@ export namespace iconer::app
 		explicit constexpr IContext() noexcept = default;
 		~IContext() noexcept = default;
 
-		explicit constexpr IContext(const Operations& ops) noexcept
-			: lastOperation(ops)
+		explicit constexpr IContext(const AsyncOperations& op) noexcept
+			: Super(), lastOperation(op)
 		{
 		}
 
-		explicit constexpr IContext(Operations&& ops) noexcept
-			: lastOperation(std::move(ops))
+		explicit constexpr IContext(AsyncOperations&& op) noexcept
+			: Super(), lastOperation(static_cast<AsyncOperations&&>(op))
 		{
 		}
 
-		constexpr void SetOperation(const Operations& ops) noexcept
-		{
-			lastOperation = ops;
-		}
-
-		constexpr void SetOperation(Operations&& ops) noexcept
-		{
-			lastOperation = std::move(ops);
-		}
-
-		constexpr void SetOperation(const Operations& op) volatile noexcept
+		constexpr void SetOperation(const AsyncOperations& op) noexcept
 		{
 			lastOperation = op;
 		}
 
-		constexpr void SetOperation(Operations&& op) volatile noexcept
+		constexpr void SetOperation(AsyncOperations&& op) noexcept
 		{
-			lastOperation = std::move(op);
+			lastOperation = static_cast<AsyncOperations&&>(op);
+		}
+
+		constexpr void SetOperation(const AsyncOperations& op) volatile noexcept
+		{
+			lastOperation = op;
+		}
+
+		constexpr void SetOperation(AsyncOperations&& op) volatile noexcept
+		{
+			lastOperation = static_cast<AsyncOperations&&>(op);
 		}
 
 		[[nodiscard]]
-		constexpr const Operations& GetOperation() const& noexcept
+		constexpr const AsyncOperations& GetOperation() const& noexcept
 		{
 			return lastOperation;
 		}
 
 		[[nodiscard]]
-		constexpr Operations&& GetOperation() && noexcept
+		constexpr AsyncOperations&& GetOperation() && noexcept
 		{
-			return std::move(lastOperation);
+			return static_cast<AsyncOperations&&>(lastOperation);
 		}
 
 		[[nodiscard]]
-		constexpr const volatile Operations& GetOperation() const volatile& noexcept
+		constexpr const volatile AsyncOperations& GetOperation() const volatile& noexcept
 		{
 			return lastOperation;
 		}
 
 		[[nodiscard]]
-		constexpr volatile Operations&& GetOperation() volatile&& noexcept
+		constexpr volatile AsyncOperations&& GetOperation() volatile&& noexcept
 		{
-			return std::move(lastOperation);
+			return static_cast<volatile AsyncOperations&&>(lastOperation);
 		}
 
 		IContext(IContext&&) noexcept = default;
 		IContext& operator=(IContext&&) noexcept = default;
 
-		Operations lastOperation;
+		AsyncOperations lastOperation;
 
 	private:
 		IContext(const IContext&) = delete;

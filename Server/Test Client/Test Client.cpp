@@ -1,235 +1,258 @@
-﻿#pragma comment(lib, "Server.lib")
-#include <cstdio>
-#include <string_view>
-#include <iostream>
-#include "StaticStringPoolHelper.hpp"
+﻿module;
+#pragma comment(lib, "Server.lib")
+#include <cstdlib>
+#include <print>
 
-import Iconer.Utility.Serializer;
-import Iconer.Utility.StaticStringPool;
-import Iconer.Net;
-import Iconer.Net.IpAddress;
-import Iconer.Net.EndPoint;
-import Iconer.Net.Socket;
-import Iconer.Coroutine;
+module TestClient;
+import Iconer.Application.BasicPacket;
 import Iconer.Application.Packet;
 
-using namespace iconer;
-
-net::Socket app_socket{};
-net::IpAddress server_address{};
-net::EndPoint server_ep{};
-constexpr std::uint16_t server_port = 40000;
-
-static inline constexpr size_t recvMaxSize = 512;
-static std::byte recv_space[recvMaxSize]{};
-static std::span<std::byte, recvMaxSize> recv_buffer{ recv_space };
-unsigned long received_bytes = 0;
-
-net::IoContext send_ctx{};
-
-using IdType = int;
-IdType clientId = -1;
-
-volatile bool cmd_assigned = false;
-char command[256]{};
-constexpr unsigned cmd_size = sizeof(command);
-
-struct FSagaPlayerCharacter
+namespace test
 {
-	// position
-	float x, y, z;
-	// orientation
-	float look, up, right;
-};
-
-coroutine::Coroutine Receiver();
-coroutine::Coroutine Sender();
-void PullReceiveBuffer(const std::byte* last_offset);
-
-int main()
-{
-	std::cout << "Client initiated\n";
-
-	std::cout << "Creating a socket...\n";
-	auto startup_r = net::Startup();
-	if (startup_r.has_value())
-	{
-		return 5;
-	}
-
-	app_socket = net::Socket::CreateTcpSocket(net::IoCategory::Asynchronous);
-
-	std::cout << "Binding...\n";
-
-	app_socket.IsAddressReusable = true;
-
-	auto client_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
-	auto client_ep = net::EndPoint{ client_address, 40001U };
-	
-	// NOTICE: 클라이언트는 바인드 금지
-	//auto bind_r = app_socket.Bind(client_ep);
-	////auto bind_r = app_socket.BindAny(40001);
-
-	std::cout << "Connecting to host...\n";
-	server_address = net::IpAddress{ net::IpAddressFamily::IPv4, "127.0.0.1" };
-	server_ep = net::EndPoint{ server_address, server_port };
-
-	//auto connect_r = app_socket.Connect(server_ep);
-	//auto connect_r = app_socket.ConnectToAny(server_port);
-	auto connect_r = app_socket.ConnectToHost(server_port);
-	if (connect_r.has_value())
-	{
-		return 3;
-	}
-
-	std::cout << "Starting receiving...\n";
-
-	app::packets::CS_SignInPacket pk{};
-
-	auto receiver = Receiver();
-	//auto sender = Sender();
-	
-	receiver.StartAsync();
-	//sender.StartAsync();
-
-	constexpr app::packets::CS_SignInPacket sign_packet{ L"Iconer" };
-
-	std::byte signin_buffer[recvMaxSize]{};
-	sign_packet.Write(signin_buffer);
-	auto it = pk.Read(signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
-
-	auto sent_signin_r = app_socket.Send(send_ctx, signin_buffer, app::packets::CS_SignInPacket::WannabeSize());
-	if (not sent_signin_r.has_value())
-	{
-		return 2;
-	}
-
-	send_ctx.Clear();
-
-	while (true)
-	{
-		auto input = ::scanf_s("%s", command, cmd_size);
-		if (EOF != input)
-		{
-			if (command[0] == 'q')
-			{
-				cmd_assigned = true;
-				break;
-			}
-		}
-	}
-
-	app_socket.Close();
-
-	net::Cleanup();
-	return 0;
+	void PullReceiveBuffer(const std::byte* last_offset);
 }
 
-coroutine::Coroutine Receiver()
+void
+test::Receiver()
 {
-	std::byte temp_buffer[recvMaxSize]{};
+	iconer::net::IoContext recv_context{};
 
 	while (true)
 	{
-		auto recv = app_socket.Receive(recv_buffer.subspan(received_bytes));
+		auto recv_result = app_socket.Receive(recv_buffer.subspan(received_bytes));
+		//auto recv = app_socket.MakeReceiveTask(recv_ctx, recv_space + received_bytes, recvMaxSize - received_bytes);
+		//auto recv_result = co_await recv;
 
-		if (not recv.has_value())
+		if (not recv_result.has_value())
 		{
-			std::cout << "Receive error: " << std::to_string(recv.error()) << '\n';
+			std::println("Receive error: {}", recv_result.error());
 			break;
 		}
 		else
 		{
-			const auto& bytes = recv.value();
+			recv_context.Clear();
+
+			const auto& bytes = recv_result.value();
 
 			received_bytes += bytes;
 
-			if (app::BasicPacket::MinSize() <= received_bytes)
+			while (iconer::app::BasicPacket::MinSize() <= received_bytes)
 			{
-				app::BasicPacket basic_pk{};
+				iconer::app::BasicPacket basic_pk{};
 				const auto seek = basic_pk.Read(recv_space);
 
 				if (basic_pk.mySize <= 0)
 				{
-					//throw "error!";
-					std::cout << "Packet's size is zero!\n";
+					std::println("Packet's size is zero!");
+					throw "error!";
 				}
-				else if (const auto sz = static_cast<unsigned long>(basic_pk.mySize); received_bytes <= sz)
+				else if (const auto sz = static_cast<unsigned long>(basic_pk.mySize); sz <= received_bytes)
 				{
 					switch (basic_pk.myProtocol)
 					{
-						case app::PacketProtocol::SC_SIGNIN_SUCCESS:
+						case iconer::app::PacketProtocol::SC_SIGNIN_SUCCESS:
 						{
-							app::packets::SC_SucceedSignInPacket pk{};
-							//util::Deserialize(seek, clientId);
-							auto offset = pk.Read(recv_space);
-
-							std::cout << "Local player's id is " << pk.clientId << '\n';
-							clientId = pk.clientId;
+							auto offset = ReceiveSignInSucceedPacket(recv_space);
+							std::println("Local player's id is {}", my_id);
 
 							PullReceiveBuffer(offset);
 						}
 						break;
 
-						case app::PacketProtocol::SC_SIGNIN_FAILURE:
+						case iconer::app::PacketProtocol::SC_SIGNIN_FAILURE:
 						{
-							app::packets::SC_FailedSignInPacket pk{};
-							//util::Deserialize(seek, clientId);
-							auto offset = pk.Read(recv_space);
-
-							std::cout << "Local player can't get an id from server due to {}" << pk.errCause << '\n';
+							int error{};
+							auto offset = ReceiveSignInFailurePacket(recv_space, error);
+							std::println("Local player can't get an id from server due to {}", error);
 
 							PullReceiveBuffer(offset);
 						}
 						break;
 
-						case app::PacketProtocol::SC_CREATE_PLAYER:
+						case iconer::app::PacketProtocol::SC_ROOM_CREATED:
 						{
+							auto offset = ReceiveRoomCreatedPacket(recv_space, roomId);
+
+							std::println("A room {} is created", roomId);
+
+							PullReceiveBuffer(offset);
 						}
 						break;
 
-						case app::PacketProtocol::SC_MOVE_CHARACTER:
+						case iconer::app::PacketProtocol::SC_ROOM_CREATE_FAILED:
 						{
+							iconer::app::RoomContract error{};
+							auto offset = ReceiveRoomCreationFailedPacket(recv_space, error);
+							std::println("Could not create a room due to {}", error);
+
+							PullReceiveBuffer(offset);
 						}
 						break;
 
-						case app::PacketProtocol::SC_UPDATE_CHARACTER:
+						case iconer::app::PacketProtocol::SC_ROOM_JOINED:
+						{
+							IdType newbie_id{};
+							IdType room_id{};
+							auto offset = ReceiveRoomJoinedPacket(recv_space, newbie_id, room_id);
+
+							if (newbie_id == my_id)
+							{
+								roomId = room_id;
+								std::println("Local client has joined to the room {}", room_id);
+							}
+							else
+							{
+								std::println("Client {} has joined to the room {}", newbie_id, room_id);
+							}
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_ROOM_JOIN_FAILED:
+						{
+							iconer::app::RoomContract error{};
+							auto offset = ReceiveRoomJoinFailedPacket(recv_space, error);
+							std::println("Failed to join to a room due to {}", error);
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_ROOM_LEFT:
+						{
+							std::int32_t left_client{};
+							auto offset = ReceiveRoomLeftPacket(recv_space, left_client);
+
+							std::println("Client {} has been left from room", left_client);
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_RESPOND_VERSION:
+						{
+							iconer::app::packets::SC_RespondVersionPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::fwprintf(stdout, L"Version: %s", pk.gameVersion);
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_RESPOND_ROOMS:
+						{
+							iconer::app::packets::SC_RespondRoomsPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							auto& every_room = pk.serializedRooms;
+							std::println("Rooms: {}", every_room.size());
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_RESPOND_USERS:
+						{
+							iconer::app::packets::SC_RespondMembersPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							auto& members = pk.serializedMembers;
+							std::println("Members: {}", members.size());
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_FAILED_GAME_START:
+						{
+							iconer::app::packets::SC_FailedGameStartingPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::println("Failed to start game due to {}", pk.errCause);
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_GAME_GETTING_READY:
+						{
+							iconer::app::packets::SC_ReadyForGamePacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::println("Now start loading game...");
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_GAME_START:
+						{
+							iconer::app::packets::SC_GameStartPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::println("Now start game...");
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_CREATE_PLAYER:
+						{
+							iconer::app::packets::SC_CreatePlayerPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							//std::println("A player {} is created",  pk.clientId);
+							//everyClients.emplace(std::make_pair(pk.clientId, FSagaPlayer{}));
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_REMOVE_PLAYER:
+						{
+							iconer::app::packets::SC_DestroyPlayerPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							//std::println("A player {} is destroyed(disconnected)", pk.clientId);
+							//std::println("A player is destroyed(disconnected)");
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_MOVE_CHARACTER:
+						{
+							iconer::app::packets::SC_UpdatePositionPacket pk{ 0, 0, 0, 0 };
+							auto offset = pk.Read(recv_space);
+
+							//std::println("Player id {}: pos({},{},{})", pk.clientId, pk.x, pk.y, pk.z);
+							//std::println("Player id pos");
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
+						case iconer::app::PacketProtocol::SC_UPDATE_CHARACTER:
 						{
 						}
 						break;
 					}
 				}
-			}
+				else
+				{
+					break;
+				}
+			} // while
 		}
+
+		recv_ctx.Clear();
 	}
-
-	co_return;
-}
-
-coroutine::Coroutine Sender()
-{
-	while (true)
-	{
-		if (cmd_assigned)
-		{
-			break;
-		}
-		//auto recv = co_await app_socket.MakeSendTask(send_ctx, recv_buffer);
-
-		//if (not recv.has_value())
-		{
-			//std::cout << "Receive error: \n" << std::to_string(recv.error());
-			//break;
-		}
-
-		//send_ctx.Clear();
-	}
-
-	co_return;
 }
 
 void
-PullReceiveBuffer(const std::byte* last_offset)
+test::PullReceiveBuffer(const std::byte* last_offset)
 {
 	const auto offset = (last_offset - recv_space);
 

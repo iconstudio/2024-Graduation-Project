@@ -1,7 +1,7 @@
 export module Iconer.Utility.AtomicSwitcher;
 import Iconer.Utility.Constraints;
+import Iconer.Utility.Atomic;
 import <type_traits>;
-import <atomic>;
 
 export namespace iconer::util
 {
@@ -9,7 +9,7 @@ export namespace iconer::util
 	class AtomicSwitcher
 	{
 	public:
-		static_assert(is_specialization_v<remove_cvref_t<Atomic>, std::atomic>);
+		static_assert(specializations<Atomic, std::atomic>);
 
 		using data_t = Atomic;
 		using value_type = Atomic::value_type;
@@ -17,7 +17,7 @@ export namespace iconer::util
 		explicit AtomicSwitcher(data_t& target
 			, const std::memory_order init_order = std::memory_order_acquire
 			, const std::memory_order final_order = std::memory_order_release)
-			noexcept(nothrow_default_constructibles<value_type> and noexcept(std::declval<data_t>().load(std::memory_order{})))
+			noexcept(nothrow_default_constructibles<value_type> and nothrow_atomic_readable<data_t>)
 			: myTarget(target), myValue(target.load(init_order))
 			, finalOrder(final_order)
 		{
@@ -26,7 +26,8 @@ export namespace iconer::util
 		template<typename U>
 		AtomicSwitcher(const std::atomic<U>&&, const std::memory_order init_order = std::memory_order_acquire, const std::memory_order final_order = std::memory_order_release) = delete;
 
-		~AtomicSwitcher() noexcept(nothrow_move_constructibles<value_type> and nothrow_destructibles<value_type>)
+		~AtomicSwitcher()
+			noexcept(nothrow_move_constructibles<value_type> and nothrow_destructibles<value_type> and nothrow_atomic_writable<data_t>)
 		{
 			myTarget.store(std::move(myValue), finalOrder);
 		}

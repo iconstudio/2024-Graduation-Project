@@ -1,5 +1,6 @@
+module;
+#include <thread>
 module Iconer.Coroutine;
-import <thread>;
 
 void
 iconer::coroutine::Coroutine::Start()
