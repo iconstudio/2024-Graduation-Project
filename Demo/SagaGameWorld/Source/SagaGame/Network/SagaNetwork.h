@@ -85,7 +85,7 @@ namespace saga
 	};
 }
 
-[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga/Network")
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 int32
 GetLocalPlayerID()
 {

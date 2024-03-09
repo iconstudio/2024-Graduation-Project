@@ -4,24 +4,15 @@
 #include "SagaGameModeBase.h"
 #include "SagaGameInitializationMode.generated.h"
 
-UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga/Game Modes")
-class SAGAGAME_API ASagaGameInitializationMode : public ASagaGameMode
+UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga|Game Mode")
+class SAGAGAME_API ASagaGameInitializationMode : public ASagaGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	static inline const FString TransferLevelName = "MainMenuLevel";
-	
 	ASagaGameInitializationMode();
 	
 	virtual void BeginPlay() override;
-	virtual void BeginDestroy() override;
-
-	virtual void GotoPrevLevel_Implementation() override
-	{}
-
-	virtual void GotoNextLevel_Implementation() override
-	{}
 
 	virtual bool CanGotoNextLevel_Implementation() const noexcept override
 	{

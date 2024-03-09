@@ -67,7 +67,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			}
 			else
 			{
-				instance->AddClient(FSagaLocalPlayer{ id, nickname });
+				instance->AddClient(FSagaLocalPlayer{ newbie_id, TEXT("Newbie") });
 
 				UE_LOG(LogNet, Log, TEXT("Client %d has joined to the room %d"), newbie_id, room_id);
 			}

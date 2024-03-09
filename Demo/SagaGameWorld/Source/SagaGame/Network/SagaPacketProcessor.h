@@ -1,6 +1,8 @@
 #pragma once
-#include "SagaRoomContract.h"
+#include "CoreTypes.h"
+
 #include <optional>
+#include "SagaRoomContract.h"
 
 namespace saga
 {
