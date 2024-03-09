@@ -1,7 +1,7 @@
 #include "SagaInGameMode.h"
 
 ASagaInGameMode::ASagaInGameMode()
-	: ASagaGameMode()
+	: ASagaGameModeBase()
 {
 	static ConstructorHelpers::FClassFinder<APawn> SagaCharacterClassRef(TEXT("/Script/Engine.Blueprint'/Game/BP/BP_SagaCharacterPlayer.BP_SagaCharacterPlayer_C'"));
 	if (SagaCharacterClassRef.Class)
