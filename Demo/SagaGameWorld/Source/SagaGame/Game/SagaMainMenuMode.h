@@ -17,15 +17,5 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Game Mode|Main Menu")
 	bool TryLoginToServer();
 
-	virtual bool CanGotoPrevLevel_Implementation() const noexcept override
-	{
-		return false;
-	}
-
-	virtual bool CanGotoNextLevel_Implementation() const noexcept override
-	{
-		return true;
-	}
-
 	FString NicknameInput;
 };
