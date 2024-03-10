@@ -1,37 +1,54 @@
 #include "SagaNetwork.h"
-#include "Templates/SharedPointer.h"
-#include "Sockets.h"
+#include <Sockets.h>
 
 #include "SagaNetworkSettings.h"
 #include "SagaNetworkUtility.h"
-#include "SagaLocalPlayer.h"
 #include "SagaClientPacketPrefabs.h"
 
-[[nodiscard]] TSharedRef<FInternetAddr> CreateRemoteEndPoint();
-
-saga::USagaNetwork::USagaNetwork()
-	: Super()
-	, MyId(-1), MyName("Empty Client")
-	, CurrentRoomId(-1), CurrentRoomTitle()
-	, LocalSocket()
-	, MyWorker(), PacketQueue()
-	, EveryClients()
+namespace
 {
-	EveryClients.Reserve(100);
+	[[nodiscard]] TSharedRef<FInternetAddr> CreateRemoteEndPoint();
+	bool InitializeNetwork();
+	bool ConnectToServer(FStringView nickname);
+
+	TSharedPtr<saga::USagaNetwork> netInterface{ MakeShared<saga::USagaNetwork>() };
+	constinit FSocket* clientSocket = nullptr;
+
+	TSharedPtr<saga::FSagaNetworkWorker> netWorker{};
+	TArray<saga::FSagaBasicPacket*> taskQueue{};
+
+	/// <remarks>로컬 플레이어도 포함</remarks>
+	TArray<FSagaVirtualUser> everyUsers{};
+	TAtomic<bool> wasUsersUpdated = true;
+	TArray<FSagaVirtualRoom> everyRooms{};
+	TAtomic<bool> wasRoomsUpdated = true;
+
+	constinit int32 localUserId = -1;
+	FString localUserName{};
+	constinit int32 currentRoomId = -1;
+	FString currentRoomTitle{};
+}
+
+saga::USagaNetwork::USagaNetwork() noexcept
+	: Super()
+{
+	everyUsers.Reserve(100);
+	everyRooms.Reserve(100);
 }
 
 TSharedPtr<saga::USagaNetwork>
 saga::USagaNetwork::Instance()
+noexcept
 {
-	static TSharedPtr<USagaNetwork> instance{ MakeShared<USagaNetwork>() };
-
-	return instance;
+	return netInterface;
 }
 
 bool
 saga::USagaNetwork::Awake()
 {
-	if (SagaNetworkInitialize())
+	(void)USagaNetwork::Instance();
+
+	if (InitializeNetwork())
 	{
 		UE_LOG(LogNet, Log, TEXT("The network system is initialized."));
 		return true;
@@ -58,83 +75,28 @@ saga::USagaNetwork::Start(FStringView nickname)
 		}
 	}
 
-	return SagaNetworkConnect(FString{ nickname });
+	return ConnectToServer(nickname);
 }
 
 void
-saga::USagaNetwork::AddPacket(saga::FSagaBasicPacket* packet)
+saga::USagaNetwork::AddUser(const FSagaVirtualUser& client)
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& queue = instance->PacketQueue;
-
-	queue.Add(packet);
-}
-
-saga::FSagaBasicPacket*
-saga::USagaNetwork::PopPacket()
-{
-	auto instance = saga::USagaNetwork::Instance();
-	auto& queue = instance->PacketQueue;
-
-	if (queue.IsEmpty())
-	{
-		return nullptr;
-	}
-	else
-	{
-		return queue.Pop(false);
-	}
-}
-
-bool
-saga::USagaNetwork::TryPopPacket(saga::FSagaBasicPacket** handle)
-{
-	auto instance = saga::USagaNetwork::Instance();
-	auto& queue = instance->PacketQueue;
-
-	if (queue.IsEmpty())
-	{
-		return false;
-	}
-	else
-	{
-		*handle = queue.Pop(false);
-		return true;
-	}
+	everyUsers.Add(client);
 }
 
 void
-saga::USagaNetwork::AssignPlayerID(APlayerController* PlayerController)
+saga::USagaNetwork::AddUser(FSagaVirtualUser&& client)
 {
+	everyUsers.Add(std::move(client));
 }
 
-void
-saga::USagaNetwork::AddClient(const FSagaLocalPlayer& client)
+std::optional<FSagaVirtualUser*>
+saga::USagaNetwork::FindUser(int32 id)
+noexcept
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& storage = instance->EveryClients;
-
-	storage.Add(client.GetID(), client);
-}
-
-void
-saga::USagaNetwork::AddClient(FSagaLocalPlayer&& client)
-{
-	auto instance = saga::USagaNetwork::Instance();
-	auto& storage = instance->EveryClients;
-
-	storage.Add(client.GetID(), std::move(client));
-}
-
-std::optional<FSagaLocalPlayer>
-saga::USagaNetwork::FindClient(int32 id)
-{
-	auto instance = saga::USagaNetwork::Instance();
-	auto& storage = instance->EveryClients;
-
-	if (auto it = storage.Find(id); it != nullptr)
+	if (auto ind = everyUsers.Find(id); ind != INDEX_NONE)
 	{
-		return *it;
+		return std::addressof(everyUsers[ind]);
 	}
 	else
 	{
@@ -143,41 +105,150 @@ saga::USagaNetwork::FindClient(int32 id)
 }
 
 bool
-saga::USagaNetwork::RemoveClient(int32 id)
+saga::USagaNetwork::RemoveUser(int32 id)
+noexcept
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& storage = instance->EveryClients;
+	return 0 < everyUsers.RemoveAllSwap(
+		[id](const FSagaVirtualUser& user) noexcept -> bool {
+		return user.ID() == id;
+	});
+}
 
-	return 0 < storage.Remove(id);
+void saga::USagaNetwork::ClearUserList() noexcept
+{
+	everyUsers.Reset();
+}
+
+void
+saga::USagaNetwork::AddPacket(saga::FSagaBasicPacket* packet)
+{
+	taskQueue.Add(packet);
+}
+
+std::optional<saga::FSagaBasicPacket*>
+saga::USagaNetwork::PopPacket()
+noexcept
+{
+	if (taskQueue.IsEmpty())
+	{
+		return std::nullopt;
+	}
+	else
+	{
+		return taskQueue.Pop(false);
+	}
 }
 
 bool
-saga::USagaNetwork::HasClient(int32 id)
+saga::USagaNetwork::TryPopPacket(saga::FSagaBasicPacket** handle)
+noexcept
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& storage = instance->EveryClients;
+	if (taskQueue.IsEmpty())
+	{
+		return false;
+	}
+	else
+	{
+		*handle = taskQueue.Pop(false);
+		return true;
+	}
+}
 
-	return storage.Contains(id);
+bool
+saga::USagaNetwork::TryPopPacket(FSagaBasicPacket*& handle)
+noexcept
+{
+	if (taskQueue.IsEmpty())
+	{
+		return false;
+	}
+	else
+	{
+		handle = taskQueue.Pop(false);
+		return true;
+	}
+}
+
+void
+saga::USagaNetwork::LocalUserId(int32 id)
+noexcept
+{
+	localUserId = id;
+}
+
+int32
+saga::USagaNetwork::LocalUserId()
+noexcept
+{
+	return localUserId;
+}
+
+void
+saga::USagaNetwork::LocalUserName(FStringView nickname)
+{
+	localUserName = nickname;
+}
+
+FStringView
+saga::USagaNetwork::LocalUserName()
+noexcept
+{
+	return localUserName;
+}
+
+void
+saga::USagaNetwork::CurrentRoomId(int32 id)
+noexcept
+{
+	currentRoomId = id;
+}
+
+int32
+saga::USagaNetwork::CurrentRoomId()
+noexcept
+{
+	return currentRoomId;
+}
+
+void
+saga::USagaNetwork::CurrentRoomTitle(FStringView title)
+{
+	currentRoomTitle = title;
+}
+
+FStringView
+saga::USagaNetwork::CurrentRoomTitle()
+noexcept
+{
+	return currentRoomTitle;
+}
+
+FSocket&
+saga::USagaNetwork::GetLocalSocket()
+noexcept
+{
+	return *clientSocket;
+}
+
+bool
+saga::USagaNetwork::HasUser(int32 id)
+noexcept
+{
+	return everyUsers.Contains(id);
 }
 
 bool
 saga::USagaNetwork::IsSocketAvailable()
 noexcept
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = instance->LocalSocket;
-
-	return nullptr != socket;
+	return nullptr != clientSocket;
 }
 
 bool
 saga::USagaNetwork::IsConnected()
 noexcept
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = instance->LocalSocket;
-
-	if (socket != nullptr and socket->GetConnectionState() == ESocketConnectionState::SCS_Connected)
+	if (clientSocket != nullptr and clientSocket->GetConnectionState() == ESocketConnectionState::SCS_Connected)
 	{
 		return true;
 	}
@@ -187,125 +258,171 @@ noexcept
 	}
 }
 
-TSharedRef<FInternetAddr>
-CreateRemoteEndPoint()
+namespace
 {
-	if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Local)
+	TSharedRef<FInternetAddr> CreateRemoteEndPoint()
 	{
-		return saga::MakeEndPoint(FIPv4Address::Any, saga::RemotePort);
-	}
-	else if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Host)
-	{
-		return saga::MakeEndPoint(FIPv4Address::InternalLoopback, saga::RemotePort);
-	}
-	else if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Remote)
-	{
-		return saga::MakeEndPointFrom(saga::RemoteAddress, saga::RemotePort);
-	}
-	else
-	{
-		throw "error!";
-	}
-}
-
-bool
-SagaNetworkInitialize()
-{
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = instance->LocalSocket;
-
-	if (nullptr != socket)
-	{
-		return true;
-	}
-
-	socket = saga::CreateTcpSocket();
-	if (nullptr == socket)
-	{
-		return false;
-	}
-
-	// NOTICE: 클라는 바인드 금지
-	//auto local_endpoint = saga::MakeEndPoint(FIPv4Address::InternalLoopback, saga::GetLocalPort());
-	//if (not socket->Bind(*local_endpoint))
-	//{
-	//	return false;
-	//}
-
-	if (not socket->SetReuseAddr())
-	{
-		return false;
-	}
-
-	if (not socket->SetNoDelay())
-	{
-		return false;
-	}
-
-	return true;
-}
-
-bool
-SagaNetworkConnect(FString nickname)
-{
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = instance->LocalSocket;
-
-	if (not saga::USagaNetwork::IsSocketAvailable())
-	{
-		UE_LOG(LogNet, Error, TEXT("The socket is not available."));
-		return false;
-	}
-
-	auto& name = instance->MyName;
-	name = nickname;
-
-	// 연결 부분
-	if constexpr (not saga::IsOfflineMode)
-	{
-		auto remote_endpoint = CreateRemoteEndPoint();
-		if (not socket->Connect(*remote_endpoint))
+		if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Local)
 		{
-			// 연결 실패 처리
-			UE_LOG(LogNet, Error, TEXT("Cannot connect to the server."));
+			return saga::MakeEndPoint(FIPv4Address::Any, saga::RemotePort);
+		}
+		else if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Host)
+		{
+			return saga::MakeEndPoint(FIPv4Address::InternalLoopback, saga::RemotePort);
+		}
+		else if constexpr (saga::ConnectionCategory == saga::ESagaNetworkConnectionCategory::Remote)
+		{
+			return saga::MakeEndPointFrom(saga::RemoteAddress, saga::RemotePort);
+		}
+		else
+		{
+			throw "error!";
+		}
+	}
+
+	bool InitializeNetwork()
+	{
+		if (nullptr != clientSocket)
+		{
+			return true;
+		}
+
+		clientSocket = saga::CreateTcpSocket();
+		if (nullptr == clientSocket)
+		{
 			return false;
 		}
 
-		// #1
-		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
+		// NOTICE: 클라는 바인드 금지
+		//auto local_endpoint = saga::MakeEndPoint(FIPv4Address::InternalLoopback, saga::GetLocalPort());
+		//if (not clientSocket->Bind(*local_endpoint))
+		//{
+		//	return false;
+		//}
 
-		const saga::CS_SignInPacket packet{ name.GetCharArray().GetData(), static_cast<size_t>(name.Len()) };
-		auto ptr = packet.Serialize();
-		UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *name);
+		if (not clientSocket->SetReuseAddr())
+		{
+			return false;
+		}
 
-		const int32 sent_bytes = saga::RawSend(socket, ptr.get(), packet.WannabeSize());
-		if (sent_bytes <= 0)
+		if (not clientSocket->SetNoDelay())
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	bool ConnectToServer(FStringView nickname)
+	{
+		if (not saga::USagaNetwork::IsSocketAvailable())
+		{
+			UE_LOG(LogNet, Error, TEXT("The socket is not available."));
+			return false;
+		}
+
+		localUserName = nickname;
+
+		// 연결 부분
+		if constexpr (not saga::IsOfflineMode)
+		{
+			auto remote_endpoint = CreateRemoteEndPoint();
+			if (not clientSocket->Connect(*remote_endpoint))
+			{
+				// 연결 실패 처리
+				UE_LOG(LogNet, Error, TEXT("Cannot connect to the server."));
+				return false;
+			}
+
+			// #1
+			// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
+
+			const saga::CS_SignInPacket packet{ localUserName.GetCharArray().GetData(), static_cast<size_t>(localUserName.Len()) };
+			auto ptr = packet.Serialize();
+			UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *localUserName);
+
+			const int32 sent_bytes = saga::RawSend(clientSocket, ptr.get(), packet.WannabeSize());
+			if (sent_bytes <= 0)
+			{
+				UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
+				return false;
+			}
+		}
+
+		netWorker = MakeShared<saga::FSagaNetworkWorker>();
+		if (netWorker == nullptr)
 		{
 			UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
 			return false;
 		}
+
+		return true;
 	}
 
-	auto& worker = instance->MyWorker;
-	worker = MakeShared<saga::FSagaNetworkWorker>();
-	if (worker == nullptr)
-	{
-		UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
-		return false;
-	}
-
-	return true;
 }
 
 FSocket&
 SagaNetworkGetSocket()
+noexcept
 {
-	auto instance = saga::USagaNetwork::Instance();
-	return *instance->LocalSocket;
+	return *clientSocket;
 }
 
 bool
 SagaNetworkHasSocket()
+noexcept
 {
 	return saga::USagaNetwork::IsSocketAvailable();
+}
+
+int32
+SagaNetworkLocalPlayerID()
+noexcept
+{
+	return localUserId;
+}
+
+FString
+SagaNetworkLocalPlayerName()
+noexcept
+{
+	return localUserName;
+}
+
+int32
+SagaNetworkCurrentRoomID()
+noexcept
+{
+	return currentRoomId;
+}
+
+FString
+SagaNetworkCurrentRoomTitle()
+noexcept
+{
+	return currentRoomTitle;
+}
+
+const TArray<FSagaVirtualUser>&
+GetPlayerList()
+noexcept
+{
+	return everyUsers;
+}
+
+const TArray<FSagaVirtualRoom>&
+GetRoomList()
+noexcept
+{
+	return everyRooms;
+}
+
+void
+UpdatePlayerList()
+{
+}
+
+void
+UpdateRoomList()
+{
 }

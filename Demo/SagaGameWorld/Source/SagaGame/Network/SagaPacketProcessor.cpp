@@ -1,4 +1,5 @@
 #include "SagaPacketProcessor.h"
+
 #include "SagaNetwork.h"
 #include "SagaNetworkUtility.h"
 #include "SagaServerPacketPrefabs.h"
@@ -6,17 +7,15 @@
 std::optional<int32>
 saga::SendSignInPacket()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = saga::USagaNetwork::GetLocalSocket();
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	return std::nullopt;
 }
 
 std::optional<int32>
-saga::SendCreateRoomPacket(std::wstring_view title)
+saga::SendCreateRoomPacket(FString title)
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = saga::USagaNetwork::GetLocalSocket();
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	return std::nullopt;
 }
@@ -24,8 +23,7 @@ saga::SendCreateRoomPacket(std::wstring_view title)
 std::optional<int32>
 saga::SendJoinRoomPacket(int32 room_id)
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = saga::USagaNetwork::GetLocalSocket();
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	return std::nullopt;
 }
@@ -33,8 +31,7 @@ saga::SendJoinRoomPacket(int32 room_id)
 std::optional<int32>
 saga::SendLeaveRoomPacket()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = saga::USagaNetwork::GetLocalSocket();
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	return std::nullopt;
 }
@@ -42,8 +39,7 @@ saga::SendLeaveRoomPacket()
 std::optional<int32>
 saga::SendRequestVersionPacket()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = saga::USagaNetwork::GetLocalSocket();
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	return std::nullopt;
 }
@@ -51,8 +47,7 @@ saga::SendRequestVersionPacket()
 std::optional<int32>
 saga::SendRequestRoomsPacket()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = saga::USagaNetwork::GetLocalSocket();
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	return std::nullopt;
 }
@@ -60,8 +55,7 @@ saga::SendRequestRoomsPacket()
 std::optional<int32>
 saga::SendRequestMembersPacket()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = saga::USagaNetwork::GetLocalSocket();
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	return std::nullopt;
 }
@@ -69,8 +63,7 @@ saga::SendRequestMembersPacket()
 std::optional<int32>
 saga::SendGameStartPacket()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = saga::USagaNetwork::GetLocalSocket();
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	return std::nullopt;
 }
@@ -78,8 +71,7 @@ saga::SendGameStartPacket()
 std::optional<int32>
 saga::SendGameIsLoadedPacket()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = saga::USagaNetwork::GetLocalSocket();
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	return std::nullopt;
 }
@@ -87,8 +79,7 @@ saga::SendGameIsLoadedPacket()
 std::optional<int32>
 saga::SendPositionPacket()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = saga::USagaNetwork::GetLocalSocket();
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	return std::nullopt;
 }
