@@ -22,8 +22,6 @@ namespace saga
 
 		[[nodiscard]] static bool Awake();
 		[[nodiscard]] static bool Start(FStringView nickname);
-		static void Update();
-		static void Shutdown();
 
 		/* Client Methods */
 
@@ -70,7 +68,6 @@ namespace saga
 		int32 CurrentRoomId;
 		FString CurrentRoomTitle;
 
-	protected:
 		friend void EventRouter(const std::byte* packet_buffer, EPacketProtocol protocol, std::int16_t packet_size);
 
 		FSocket* LocalSocket;
@@ -89,3 +86,12 @@ GetLocalPlayerID()
 	auto instance = saga::USagaNetwork::Instance();
 	return instance->MyId;
 }
+
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+bool SagaNetworkInitialize();
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+bool SagaNetworkConnect(FString nickname);
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+FSocket& SagaNetworkGetSocket();
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+bool SagaNetworkHasSocket();

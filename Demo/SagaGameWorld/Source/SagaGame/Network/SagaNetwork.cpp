@@ -25,102 +25,40 @@ saga::USagaNetwork::Instance()
 {
 	static TSharedPtr<USagaNetwork> instance{ MakeShared<USagaNetwork>() };
 
-	if (not IsSocketAvailable())
-	{
-		if (saga::USagaNetwork::Awake())
-		{
-			UE_LOG(LogNet, Log, TEXT("The network system is initialized."));
-		}
-		else
-		{
-			UE_LOG(LogNet, Error, TEXT("Cannot initialize the network system."));
-		}
-	}
-
 	return instance;
 }
 
 bool
 saga::USagaNetwork::Awake()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = instance->LocalSocket;
-
-	socket = saga::CreateTcpSocket();
-	if (nullptr == socket)
+	if (SagaNetworkInitialize())
 	{
+		UE_LOG(LogNet, Log, TEXT("The network system is initialized."));
+		return true;
+	}
+	else
+	{
+		UE_LOG(LogNet, Error, TEXT("Cannot initialize the network system."));
 		return false;
 	}
-
-	// NOTICE: 클라는 바인드 금지
-	//auto local_endpoint = saga::MakeEndPoint(FIPv4Address::InternalLoopback, saga::GetLocalPort());
-	//if (not socket->Bind(*local_endpoint))
-	//{
-	//	return false;
-	//}
-
-	if (not socket->SetReuseAddr())
-	{
-		return false;
-	}
-
-	if (not socket->SetNoDelay())
-	{
-		return false;
-	}
-
-	return true;
 }
 
 bool
 saga::USagaNetwork::Start(FStringView nickname)
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = instance->LocalSocket;
-
-	// 연결 부분
-	if constexpr (not saga::IsOfflineMode)
+	if (not IsSocketAvailable())
 	{
-		auto remote_endpoint = CreateRemoteEndPoint();
-		if (not socket->Connect(*remote_endpoint))
+		if (saga::USagaNetwork::Awake())
 		{
-			// 연결 실패 처리
-			UE_LOG(LogNet, Error, TEXT("Cannot connect to the server."));
-			return false;
+			UE_LOG(LogNet, Warning, TEXT("The network system was not initialized."));
 		}
-
-		// #1
-		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
-
-		auto& name = instance->MyName;
-		name = nickname;
-
-		const saga::CS_SignInPacket packet{ name.GetCharArray().GetData(), static_cast<size_t>(name.Len()) };
-		auto ptr = packet.Serialize();
-		UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *name);
-
-		const int32 sent_bytes = saga::RawSend(socket, ptr.get(), packet.WannabeSize());
-		if (sent_bytes <= 0)
+		else
 		{
-			UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
 			return false;
 		}
 	}
 
-	auto& worker = instance->MyWorker;
-	worker = MakeShared<saga::FSagaNetworkWorker>();
-	if (worker == nullptr)
-	{
-		UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
-		return false;
-	}
-
-	return true;
-}
-
-void
-saga::USagaNetwork::Update()
-{
+	return SagaNetworkConnect(FString{ nickname });
 }
 
 void
@@ -268,4 +206,106 @@ CreateRemoteEndPoint()
 	{
 		throw "error!";
 	}
+}
+
+bool
+SagaNetworkInitialize()
+{
+	auto instance = saga::USagaNetwork::Instance();
+	auto& socket = instance->LocalSocket;
+
+	if (nullptr != socket)
+	{
+		return true;
+	}
+
+	socket = saga::CreateTcpSocket();
+	if (nullptr == socket)
+	{
+		return false;
+	}
+
+	// NOTICE: 클라는 바인드 금지
+	//auto local_endpoint = saga::MakeEndPoint(FIPv4Address::InternalLoopback, saga::GetLocalPort());
+	//if (not socket->Bind(*local_endpoint))
+	//{
+	//	return false;
+	//}
+
+	if (not socket->SetReuseAddr())
+	{
+		return false;
+	}
+
+	if (not socket->SetNoDelay())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool
+SagaNetworkConnect(FString nickname)
+{
+	auto instance = saga::USagaNetwork::Instance();
+	auto& socket = instance->LocalSocket;
+
+	if (not saga::USagaNetwork::IsSocketAvailable())
+	{
+		UE_LOG(LogNet, Error, TEXT("The socket is not available."));
+		return false;
+	}
+
+	auto& name = instance->MyName;
+	name = nickname;
+
+	// 연결 부분
+	if constexpr (not saga::IsOfflineMode)
+	{
+		auto remote_endpoint = CreateRemoteEndPoint();
+		if (not socket->Connect(*remote_endpoint))
+		{
+			// 연결 실패 처리
+			UE_LOG(LogNet, Error, TEXT("Cannot connect to the server."));
+			return false;
+		}
+
+		// #1
+		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
+
+		const saga::CS_SignInPacket packet{ name.GetCharArray().GetData(), static_cast<size_t>(name.Len()) };
+		auto ptr = packet.Serialize();
+		UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *name);
+
+		const int32 sent_bytes = saga::RawSend(socket, ptr.get(), packet.WannabeSize());
+		if (sent_bytes <= 0)
+		{
+			UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
+			return false;
+		}
+	}
+
+	auto& worker = instance->MyWorker;
+	worker = MakeShared<saga::FSagaNetworkWorker>();
+	if (worker == nullptr)
+	{
+		UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
+		return false;
+	}
+
+	return true;
+}
+
+FSocket&
+SagaNetworkGetSocket()
+{
+	auto instance = saga::USagaNetwork::Instance();
+	return *instance->LocalSocket;
+}
+
+bool
+SagaNetworkHasSocket()
+{
+	return saga::USagaNetwork::IsSocketAvailable();
 }
