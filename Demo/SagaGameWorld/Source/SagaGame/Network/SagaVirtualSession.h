@@ -85,3 +85,37 @@ noexcept
 {
 	return session.Name();
 }
+
+namespace saga
+{
+	using ::FSagaVirtualSession;
+
+	struct SAGAGAME_API FSagaSessionComparator final
+	{
+		constexpr bool
+			operator()(const FSagaVirtualSession& lhs, const FSagaVirtualSession& rhs)
+			noexcept
+		{
+			return lhs.MyID == rhs.MyID;
+		}
+
+		constexpr bool
+			operator()(const FSagaVirtualSession& lhs, const int32& id)
+			noexcept
+		{
+			return lhs.MyID == id;
+		}
+	};
+
+	struct SAGAGAME_API FSagaSessionIdComparator final
+	{
+		constexpr bool
+			operator()(const FSagaVirtualSession& lhs)
+			noexcept
+		{
+			return lhs.MyID == cmpId;
+		}
+
+		int32 cmpId;
+	};
+}

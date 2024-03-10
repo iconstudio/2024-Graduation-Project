@@ -4,6 +4,7 @@
 #include "SagaNetworkSettings.h"
 #include "SagaNetworkUtility.h"
 #include "SagaClientPacketPrefabs.h"
+#include "SagaNetworkWorker.h"
 
 namespace
 {
@@ -82,19 +83,21 @@ void
 saga::USagaNetwork::AddUser(const FSagaVirtualUser& client)
 {
 	everyUsers.Add(client);
+	wasUsersUpdated = true;
 }
 
 void
 saga::USagaNetwork::AddUser(FSagaVirtualUser&& client)
 {
 	everyUsers.Add(std::move(client));
+	wasUsersUpdated = true;
 }
 
 std::optional<FSagaVirtualUser*>
 saga::USagaNetwork::FindUser(int32 id)
 noexcept
 {
-	if (auto ind = everyUsers.Find(id); ind != INDEX_NONE)
+	if (auto ind = everyUsers.FindByPredicate(FSagaSessionIdComparator{ id }); ind != INDEX_NONE)
 	{
 		return std::addressof(everyUsers[ind]);
 	}
@@ -108,15 +111,85 @@ bool
 saga::USagaNetwork::RemoveUser(int32 id)
 noexcept
 {
-	return 0 < everyUsers.RemoveAllSwap(
-		[id](const FSagaVirtualUser& user) noexcept -> bool {
-		return user.ID() == id;
-	});
+	const bool result = 0 < everyUsers.RemoveAllSwap(FSagaSessionIdComparator{ id });
+	if (result)
+	{
+		wasUsersUpdated = true;
+	}
+
+	return result;
 }
 
-void saga::USagaNetwork::ClearUserList() noexcept
+void
+saga::USagaNetwork::ClearUserList()
+noexcept
 {
 	everyUsers.Reset();
+	wasUsersUpdated = true;
+}
+
+void
+saga::USagaNetwork::AddRoom(const FSagaVirtualRoom& room)
+{
+	everyRooms.Add(room);
+	wasRoomsUpdated = true;
+}
+
+void
+saga::USagaNetwork::AddRoom(FSagaVirtualRoom&& room)
+{
+	everyRooms.Add(std::move(room));
+	wasRoomsUpdated = true;
+}
+
+std::optional<FSagaVirtualRoom*>
+saga::USagaNetwork::FindRoom(int32 id)
+noexcept
+{
+	if (auto ind = everyRooms.FindByPredicate(FSagaSessionIdComparator{ id }); ind != INDEX_NONE)
+	{
+		return std::addressof(everyRooms[ind]);
+	}
+	else
+	{
+		return std::nullopt;
+	}
+}
+
+std::optional<FSagaVirtualRoom*>
+saga::USagaNetwork::RoomAt(int32 index)
+noexcept
+{
+	//everyRooms.RangeCheck(index);
+	if (everyRooms.IsValidIndex(index))
+	{
+		return std::addressof(everyRooms[index]);
+	}
+	else
+	{
+		return std::nullopt;
+	}
+}
+
+bool
+saga::USagaNetwork::RemoveRoom(int32 id)
+noexcept
+{
+	const bool result = 0 < everyRooms.RemoveAllSwap(FSagaSessionIdComparator{ id });
+	if (result)
+	{
+		wasRoomsUpdated = true;
+	}
+
+	return result;
+}
+
+void
+saga::USagaNetwork::ClearRoomList()
+noexcept
+{
+	everyRooms.Reset();
+	wasRoomsUpdated = true;
 }
 
 void
@@ -234,7 +307,12 @@ bool
 saga::USagaNetwork::HasUser(int32 id)
 noexcept
 {
-	return everyUsers.Contains(id);
+	return everyUsers.ContainsByPredicate(FSagaSessionIdComparator{ id });
+}
+
+bool saga::USagaNetwork::HasRoom(int32 id) noexcept
+{
+	return everyRooms.ContainsByPredicate(FSagaSessionIdComparator{ id });
 }
 
 bool
@@ -352,7 +430,7 @@ namespace
 		netWorker = MakeShared<saga::FSagaNetworkWorker>();
 		if (netWorker == nullptr)
 		{
-			UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
+			UE_LOG(LogNet, Error, TEXT("Has failed to create the worker thread."));
 			return false;
 		}
 
@@ -420,9 +498,17 @@ noexcept
 void
 UpdatePlayerList()
 {
+	if (wasUsersUpdated)
+	{
+		wasUsersUpdated = false;
+	}
 }
 
 void
 UpdateRoomList()
 {
+	if (wasRoomsUpdated)
+	{
+		wasRoomsUpdated = false;
+	}
 }
