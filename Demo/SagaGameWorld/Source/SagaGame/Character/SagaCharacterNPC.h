@@ -10,18 +10,18 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Blueprintable)
 class SAGAGAME_API ASagaCharacterNPC : public ASagaCharacterBase, public IInteractionInterface
 {
 	GENERATED_BODY()
 public:
 	ASagaCharacterNPC();
 
-	/*void ShowInteractionPrompt(bool bShow);
+	void ShowInteractionPrompt(bool bShow);
 
 	void OnPlayerEnterRange();
 
-	void OnPlayerExitRange();*/
+	void OnPlayerExitRange();
 
 	virtual void InteractWithMe() override;
 

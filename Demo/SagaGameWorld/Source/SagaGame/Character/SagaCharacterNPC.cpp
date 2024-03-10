@@ -1,4 +1,4 @@
-ï»¿// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "Character/SagaCharacterNPC.h"
@@ -9,42 +9,39 @@
 
 ASagaCharacterNPC::ASagaCharacterNPC()
 {
-    NPCInteractionCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("InteractionCapsule"));
-    NPCInteractionCapsule->SetupAttachment(RootComponent);
-    NPCInteractionCapsule->SetCapsuleSize(150, 400);
-    NPCInteractionCapsule->SetCollisionProfileName(TEXT("Trigger"));
+
+}
+
+void ASagaCharacterNPC::ShowInteractionPrompt(bool bShow)
+{
+    if (NPCInteractionTEXTWidget)
+    {
+        NPCInteractionTEXTWidget->SetVisibility(bShow ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+    }
+}
+
+void ASagaCharacterNPC::OnPlayerEnterRange()
+{
+    if (NPCInteractionTEXTWidget)
+    {
+        NPCInteractionTEXTWidget->SetVisibility(ESlateVisibility::Visible);
+    }
+}
+
+void ASagaCharacterNPC::OnPlayerExitRange()
+{
+    if (NPCInteractionTEXTWidget)
+    {
+        NPCInteractionTEXTWidget->SetVisibility(ESlateVisibility::Hidden);
+    }
 }
 
 void ASagaCharacterNPC::InteractWithMe()
 {
-    UE_LOG(LogTemp, Warning, TEXT("Interacted with NPC!!"));
+    UE_LOG(LogTemp, Warning, TEXT("Interacted With NPC"));
 }
 
-//void ASagaCharacterNPC::ShowInteractionPrompt(bool bShow)
-//{
-//    if (NPCInteractionTEXTWidget)
-//    {
-//        NPCInteractionTEXTWidget->SetVisibility(bShow ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
-//    }
-//}
-//
-//void ASagaCharacterNPC::OnPlayerEnterRange()
-//{
-//    if (NPCInteractionTEXTWidget)
-//    {
-//        NPCInteractionTEXTWidget->SetVisibility(ESlateVisibility::Visible);
-//    }
-//}
-//
-//void ASagaCharacterNPC::OnPlayerExitRange()
-//{
-//    if (NPCInteractionTEXTWidget)
-//    {
-//        NPCInteractionTEXTWidget->SetVisibility(ESlateVisibility::Hidden);
-//    }
-//}
-
-void ASagaCharacterNPC::SetDead() //NPC ì‚¬ë§ì²˜ë¦¬
+void ASagaCharacterNPC::SetDead() //NPC »ç¸ÁÃ³¸®
 {
 	Super::SetDead();
 	FTimerHandle DeadTimerHandle;
@@ -60,11 +57,9 @@ void ASagaCharacterNPC::BeginPlay()
 {
     Super::BeginPlay();
 
-    // ì½œë¦¬ì „ ì„¤ì •
-
-    NPCInteractionCapsule->OnComponentBeginOverlap.AddDynamic(this, &ASagaCharacterNPC::OnOverlapBegin);
-    NPCInteractionCapsule->OnComponentEndOverlap.AddDynamic(this, &ASagaCharacterNPC::OnOverlapEnd);
-
+    // Äİ¸®Àü ¼³Á¤
+    GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ASagaCharacterNPC::OnOverlapBegin);
+    GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &ASagaCharacterNPC::OnOverlapEnd);
 
     if (NPCInteractionWidget)
     {
@@ -79,19 +74,18 @@ void ASagaCharacterNPC::BeginPlay()
 
 void ASagaCharacterNPC::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    // í”Œë ˆì´ì–´ì™€ì˜ ì˜¤ë²„ë© ê°ì§€
+    // ÇÃ·¹ÀÌ¾î¿ÍÀÇ ¿À¹ö·¦ °¨Áö
     ASagaCharacterPlayer* Player = Cast<ASagaCharacterPlayer>(OtherActor);
     if (Player)
     {
-        // í”Œë ˆì´ì–´ê°€ ê·¼ì²˜ì— ìˆìŒ
+        // ÇÃ·¹ÀÌ¾î°¡ ±ÙÃ³¿¡ ÀÖÀ½
         Player->SetNearbyNPC(this);
-
     }
 }
 
 void ASagaCharacterNPC::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-    // í”Œë ˆì´ì–´ê°€ ë©€ì–´ì§
+    // ÇÃ·¹ÀÌ¾î°¡ ¸Ö¾îÁü
     ASagaCharacterPlayer* Player = Cast<ASagaCharacterPlayer>(OtherActor);
     if (Player)
     {
