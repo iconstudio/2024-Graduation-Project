@@ -92,16 +92,18 @@ namespace saga
 
 	struct SAGAGAME_API FSagaSessionComparator final
 	{
+		[[nodiscard]]
 		constexpr bool
 			operator()(const FSagaVirtualSession& lhs, const FSagaVirtualSession& rhs)
-			noexcept
+			const noexcept
 		{
 			return lhs.MyID == rhs.MyID;
 		}
 
+		[[nodiscard]]
 		constexpr bool
 			operator()(const FSagaVirtualSession& lhs, const int32& id)
-			noexcept
+			const noexcept
 		{
 			return lhs.MyID == id;
 		}
@@ -109,9 +111,14 @@ namespace saga
 
 	struct SAGAGAME_API FSagaSessionIdComparator final
 	{
+		explicit constexpr FSagaSessionIdComparator(int32 another_id) noexcept
+			: cmpId(another_id)
+		{}
+
+		[[nodiscard]]
 		constexpr bool
 			operator()(const FSagaVirtualSession& lhs)
-			noexcept
+			const noexcept
 		{
 			return lhs.MyID == cmpId;
 		}
