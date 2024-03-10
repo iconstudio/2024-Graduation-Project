@@ -20,6 +20,26 @@ saga::USagaNetwork::USagaNetwork()
 	EveryClients.Reserve(100);
 }
 
+TSharedPtr<saga::USagaNetwork>
+saga::USagaNetwork::Instance()
+{
+	static TSharedPtr<USagaNetwork> instance{ MakeShared<USagaNetwork>() };
+
+	if (not IsSocketAvailable())
+	{
+		if (saga::USagaNetwork::Awake())
+		{
+			UE_LOG(LogNet, Log, TEXT("The network system is initialized."));
+		}
+		else
+		{
+			UE_LOG(LogNet, Error, TEXT("Cannot initialize the network system."));
+		}
+	}
+
+	return instance;
+}
+
 bool
 saga::USagaNetwork::Awake()
 {
@@ -200,6 +220,16 @@ saga::USagaNetwork::HasClient(int32 id)
 	auto& storage = instance->EveryClients;
 
 	return storage.Contains(id);
+}
+
+bool
+saga::USagaNetwork::IsSocketAvailable()
+noexcept
+{
+	auto instance = saga::USagaNetwork::Instance();
+	auto& socket = instance->LocalSocket;
+
+	return nullptr != socket;
 }
 
 bool

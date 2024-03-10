@@ -18,12 +18,7 @@ namespace saga
 		USagaNetwork();
 
 		[[nodiscard]]
-		static TSharedPtr<USagaNetwork> Instance()
-		{
-			static TSharedPtr<USagaNetwork> instance = MakeShared<USagaNetwork>();
-
-			return instance;
-		}
+		static TSharedPtr<USagaNetwork> Instance();
 
 		[[nodiscard]] static bool Awake();
 		[[nodiscard]] static bool Start(FStringView nickname);
@@ -65,6 +60,7 @@ namespace saga
 
 		/* Observers */
 
+		[[nodiscard]] static bool IsSocketAvailable() noexcept;
 		[[nodiscard]] static bool IsConnected() noexcept;
 
 		friend class FSagaNetworkWorker;

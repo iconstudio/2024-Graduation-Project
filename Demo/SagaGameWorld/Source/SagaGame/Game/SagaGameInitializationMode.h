@@ -11,6 +11,4 @@ class SAGAGAME_API ASagaGameInitializationMode : public ASagaGameModeBase
 
 public:
 	ASagaGameInitializationMode();
-	
-	virtual void BeginPlay() override;
 };
