@@ -5,7 +5,6 @@
 #include <optional>
 
 #include "SagaBasicPacket.h"
-#include "SagaNetworkWorker.h"
 #include "SagaVirtualUser.h"
 #include "SagaVirtualRoom.h"
 
@@ -68,6 +67,16 @@ namespace saga
 		static bool RemoveUser(int32 id) noexcept;
 		static void ClearUserList() noexcept;
 		[[nodiscard]] static bool HasUser(int32 id) noexcept;
+		
+		/* Overall Rooms Methods */
+
+		static void AddRoom(const FSagaVirtualRoom& room);
+		static void AddRoom(FSagaVirtualRoom&& room);
+		[[nodiscard]] static std::optional<FSagaVirtualRoom*> FindRoom(int32 id) noexcept;
+		[[nodiscard]] static std::optional<FSagaVirtualRoom*> RoomAt(int32 index) noexcept;
+		static bool RemoveRoom(int32 id) noexcept;
+		static void ClearRoomList() noexcept;
+		[[nodiscard]] static bool HasRoom(int32 id) noexcept;
 
 		/* Task Methods */
 
