@@ -5,7 +5,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "SagaGameModeBase.generated.h"
 
-UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga|Game Mode")
+UCLASS(BlueprintType, Category = "CandyLandSaga|Game Mode")
 class SAGAGAME_API ASagaGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()

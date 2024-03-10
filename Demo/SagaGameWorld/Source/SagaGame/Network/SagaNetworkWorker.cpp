@@ -3,7 +3,7 @@
 
 #include "SagaNetworkSettings.h"
 #include "SagaNetwork.h"
-#include "SagaClientPacketPrefabs.h"
+#include "SagaBasicPacket.h"
 #include "SagaNetworkEventRouter.h"
 
 saga::FSagaNetworkWorker::FSagaNetworkWorker()
@@ -35,8 +35,7 @@ saga::FSagaNetworkWorker::Init()
 uint32
 saga::FSagaNetworkWorker::Run()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = instance->LocalSocket;
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	constexpr int32 MaxReceiveSize = 512;
 	int32 recv_bytes{};
@@ -63,7 +62,7 @@ saga::FSagaNetworkWorker::Run()
 			// #2
 			// 서버가 닉네임 패킷을 받으면 서버는 ID 부여 패킷을 보낸다.
 			// 클라는 ID 부여 패킷을 받아서 갱신하고, 게임 or 메뉴 레벨로 넘어가야 한다.
-			if (not socket->Recv(recv_buffer + recv_bytes
+			if (not socket.Recv(recv_buffer + recv_bytes
 				, MaxReceiveSize - recv_bytes
 				, temp_recv_bytes))
 			{
@@ -116,13 +115,21 @@ saga::FSagaNetworkWorker::Run()
 void
 saga::FSagaNetworkWorker::Exit()
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = instance->LocalSocket;
+	auto& socket = USagaNetwork::GetLocalSocket();
 
-	socket->Close();
+	if (USagaNetwork::IsSocketAvailable())
+	{
+		socket.Close();
+	}
 }
 
 void
 saga::FSagaNetworkWorker::Stop()
 {
+	auto& socket = USagaNetwork::GetLocalSocket();
+
+	if (USagaNetwork::IsSocketAvailable())
+	{
+		socket.Close();
+	}
 }

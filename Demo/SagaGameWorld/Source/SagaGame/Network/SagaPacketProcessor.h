@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreTypes.h"
+#include "Containers/UnrealString.h"
 
 #include <optional>
 #include "SagaRoomContract.h"
@@ -7,7 +8,7 @@
 namespace saga
 {
 	std::optional<int32> SendSignInPacket();
-	std::optional<int32> SendCreateRoomPacket(std::wstring_view title);
+	std::optional<int32> SendCreateRoomPacket(FString title);
 	std::optional<int32> SendJoinRoomPacket(int32 room_id);
 	std::optional<int32> SendLeaveRoomPacket();
 	std::optional<int32> SendRequestVersionPacket();

@@ -1,11 +1,37 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "CoreTypes.h"
+#include "Templates/SharedPointer.h"
+#include "Containers/Array.h"
 #include <optional>
 
-#include "SagaNetworkWorker.h"
-#include "SagaLocalPlayer.h"
 #include "SagaBasicPacket.h"
-#include "SagaNetworkEventRouter.h"
+#include "SagaNetworkWorker.h"
+#include "SagaVirtualUser.h"
+#include "SagaVirtualRoom.h"
+
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+FSocket& SagaNetworkGetSocket() noexcept;
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+bool SagaNetworkHasSocket() noexcept;
+
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+int32 SagaNetworkLocalPlayerID() noexcept;
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+FString SagaNetworkLocalPlayerName() noexcept;
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+int32 SagaNetworkCurrentRoomID() noexcept;
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+FString SagaNetworkCurrentRoomTitle() noexcept;
+
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+const TArray<FSagaVirtualUser>& GetPlayerList() noexcept;
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+const TArray<FSagaVirtualRoom>& GetRoomList() noexcept;
+
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+void UpdatePlayerList();
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+void UpdateRoomList();
 
 namespace saga
 {
@@ -15,83 +41,48 @@ namespace saga
 	public:
 		using Super = TSharedFromThis<USagaNetwork>;
 
-		USagaNetwork();
+		USagaNetwork() noexcept;
 
 		[[nodiscard]]
-		static TSharedPtr<USagaNetwork> Instance();
+		static TSharedPtr<USagaNetwork> Instance() noexcept;
 
 		[[nodiscard]] static bool Awake();
 		[[nodiscard]] static bool Start(FStringView nickname);
 
-		/* Client Methods */
+		/* Local Client Methods */
 
-		static void SetLocalInfo();
-		static void SetRoomInfo();
+		static void LocalUserId(int32 id) noexcept;
+		[[nodiscard]] static int32 LocalUserId() noexcept;
+		static void LocalUserName(FStringView nickname);
+		[[nodiscard]] static FStringView LocalUserName() noexcept;
+		static void CurrentRoomId(int32 id) noexcept;
+		[[nodiscard]] static int32 CurrentRoomId() noexcept;
+		static void CurrentRoomTitle(FStringView title);
+		[[nodiscard]] static FStringView CurrentRoomTitle() noexcept;
 
-		static void AddClient(const FSagaLocalPlayer& client);
-		static void AddClient(FSagaLocalPlayer&& client);
-		[[nodiscard]] static std::optional<FSagaLocalPlayer> FindClient(int32 id);
-		static bool RemoveClient(int32 id);
-		[[nodiscard]] static bool HasClient(int32 id);
+		/* Overall Clients Methods */
+
+		static void AddUser(const FSagaVirtualUser& client);
+		static void AddUser(FSagaVirtualUser&& client);
+		[[nodiscard]] static std::optional<FSagaVirtualUser*> FindUser(int32 id) noexcept;
+		static bool RemoveUser(int32 id) noexcept;
+		static void ClearUserList() noexcept;
+		[[nodiscard]] static bool HasUser(int32 id) noexcept;
 
 		/* Task Methods */
 
 		static void AddPacket(FSagaBasicPacket* packet);
-		static FSagaBasicPacket* PopPacket();
-		static bool TryPopPacket(FSagaBasicPacket** handle);
-		static void AssignPlayerID(APlayerController* PlayerController);
-
-		/* Event Methods */
-
-		void OnConnected();
-		void OnPlayerConnected();
-		void OnPlayerDisconnected();
+		static std::optional<FSagaBasicPacket*> PopPacket() noexcept;
+		static bool TryPopPacket(FSagaBasicPacket** handle) noexcept;
+		static bool TryPopPacket(FSagaBasicPacket*& handle) noexcept;
 
 		/* Getters */
 
-		[[nodiscard]]
-		static FSocket& GetLocalSocket() noexcept
-		{
-			auto instance = Instance();
-			return *(instance->LocalSocket);
-		}
+		[[nodiscard]] static FSocket& GetLocalSocket() noexcept;
 
 		/* Observers */
 
 		[[nodiscard]] static bool IsSocketAvailable() noexcept;
 		[[nodiscard]] static bool IsConnected() noexcept;
-
-		friend class FSagaNetworkWorker;
-
-		int32 MyId;
-		FString MyName;
-		int32 CurrentRoomId;
-		FString CurrentRoomTitle;
-
-		friend void EventRouter(const std::byte* packet_buffer, EPacketProtocol protocol, std::int16_t packet_size);
-
-		FSocket* LocalSocket;
-		TSharedPtr<FSagaNetworkWorker> MyWorker;
-		TArray<FSagaBasicPacket*> PacketQueue;
-
-		/// <remarks>로컬 플레이어도 포함</remarks>
-		TMap<int32, FSagaLocalPlayer> EveryClients;
 	};
 }
-
-[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-int32
-GetLocalPlayerID()
-{
-	auto instance = saga::USagaNetwork::Instance();
-	return instance->MyId;
-}
-
-[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-bool SagaNetworkInitialize();
-[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-bool SagaNetworkConnect(FString nickname);
-[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-FSocket& SagaNetworkGetSocket();
-[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-bool SagaNetworkHasSocket();

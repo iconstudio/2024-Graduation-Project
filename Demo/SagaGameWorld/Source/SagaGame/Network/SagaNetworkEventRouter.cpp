@@ -1,7 +1,7 @@
 #include "SagaNetworkEventRouter.h"
 #include "SagaNetwork.h"
+#include "SagaVirtualUser.h"
 #include "SagaServerPacketPrefabs.h"
-#include "SagaLocalPlayer.h"
 #include "SagaPacketProcessor.h"
 
 void
@@ -9,8 +9,7 @@ saga::EventRouter(const std::byte* packet_buffer
 	, EPacketProtocol protocol
 	, std::int16_t packet_size)
 {
-	auto instance = saga::USagaNetwork::Instance();
-	auto& socket = instance->LocalSocket;
+	auto& socket = USagaNetwork::GetLocalSocket();
 
 	switch (protocol)
 	{
@@ -37,7 +36,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			int32 room_id{};
 			auto offset = ReceiveRoomCreatedPacket(packet_buffer, room_id);
 
-			instance->CurrentRoomId = room_id;
+			USagaNetwork::CurrentRoomId(room_id);
 
 			UE_LOG(LogNet, Log, TEXT("A room %d is created"), room_id);
 		}
@@ -59,15 +58,15 @@ saga::EventRouter(const std::byte* packet_buffer
 			int32 room_id{};
 			auto offset = ReceiveRoomJoinedPacket(packet_buffer, newbie_id, room_id);
 
-			if (newbie_id == instance->MyId)
+			if (newbie_id == USagaNetwork::LocalUserId())
 			{
-				instance->CurrentRoomId = room_id;
+				USagaNetwork::CurrentRoomId(room_id);
 
 				UE_LOG(LogNet, Log, TEXT("Local client has joined to the room %d"), room_id);
 			}
 			else
 			{
-				instance->AddClient(FSagaLocalPlayer{ newbie_id, TEXT("Newbie") });
+				USagaNetwork::AddUser(FSagaVirtualUser{ newbie_id, TEXT("Newbie") });
 
 				UE_LOG(LogNet, Log, TEXT("Client %d has joined to the room %d"), newbie_id, room_id);
 			}
@@ -120,7 +119,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			auto& members = pk.serializedMembers;
 			for (auto& [id, nickname] : members)
 			{
-				instance->AddClient(FSagaLocalPlayer{ id, nickname });
+				USagaNetwork::AddUser(FSagaVirtualUser{ id, nickname });
 			}
 
 			UE_LOG(LogNet, Log, TEXT("Members: %d"), members.size());
@@ -161,7 +160,7 @@ saga::EventRouter(const std::byte* packet_buffer
 
 			UE_LOG(LogNet, Log, TEXT("A player %d is created"), pk.clientId);
 
-			instance->AddClient(FSagaLocalPlayer{ pk.clientId, TEXT("Name") });
+			USagaNetwork::AddUser(FSagaVirtualUser{ pk.clientId, TEXT("Name") });
 		}
 		break;
 
@@ -189,44 +188,4 @@ saga::EventRouter(const std::byte* packet_buffer
 		}
 		break;
 	}
-	//FKey key;
-	//FString KeyString = key.ToString();
-	//TCHAR* SerializedChar = KeyString.GetCharArray().GetData();
-	//int32 Size = FCString::Strlen(SerializedChar) + 1;
-	//int32 Sent = 0;
-
-	//// 데이터 전송
-	//bool Successful = SagaClientSocket->Send((uint8*)TCHAR_TO_UTF8(SerializedChar), Size, Sent);
-
-	//if (id_packet.myProtocol != EPacketProtocol::SC_SIGNIN_SUCCESS or id_packet.mySize <= 0)
-	{
-		// throw "error!";
-	}
-
-	//if (id_packet.mySize != static_cast<int32>(FSagaPacket_SC_SucceedSignIn::SignedWannabeSize()))
-	{
-		//	throw "error!";
-	}
-
-	// 플레이어 ID 읽기
-	//auto local_client = new FSagaLocalPlayer{};
-	//local_client->MyID = id_packet.clientId;
-
-	//EveryClients.Add(local_client);
-
-	// #3
-	// 좌표 송수신 
-
-	//FSagaPacket_CS_ClientPosition pk_position{};
-
-	// #3-a
-	// 로우 버퍼 사용
-	//uint8 position_raw_buffer[256]{};
-	//pk_position.Write(position_raw_buffer);
-	//RawSend(socket, position_raw_buffer, FSagaPacket_CS_ClientPosition::WannabeSize());
-
-	// #3-b
-	// 공유 포인터 사용
-	//auto position_buffer = pk_position.Serialize();
-	//Send(MakeShareable(LocalSocket), position_buffer, FSagaPacket_CS_ClientPosition::WannabeSize());
 }
