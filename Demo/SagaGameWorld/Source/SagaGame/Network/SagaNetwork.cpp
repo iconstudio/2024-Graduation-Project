@@ -97,9 +97,10 @@ std::optional<FSagaVirtualUser*>
 saga::USagaNetwork::FindUser(int32 id)
 noexcept
 {
-	if (auto ind = everyUsers.FindByPredicate(FSagaSessionIdComparator{ id }); ind != INDEX_NONE)
+	auto handle = everyUsers.FindByPredicate(FSagaSessionIdComparator{ id });
+	if (nullptr != handle)
 	{
-		return std::addressof(everyUsers[ind]);
+		return handle;
 	}
 	else
 	{
@@ -146,9 +147,10 @@ std::optional<FSagaVirtualRoom*>
 saga::USagaNetwork::FindRoom(int32 id)
 noexcept
 {
-	if (auto ind = everyRooms.FindByPredicate(FSagaSessionIdComparator{ id }); ind != INDEX_NONE)
+	auto handle = everyRooms.FindByPredicate(FSagaSessionIdComparator{ id });
+	if (nullptr != handle)
 	{
-		return std::addressof(everyRooms[ind]);
+		return handle;
 	}
 	else
 	{
