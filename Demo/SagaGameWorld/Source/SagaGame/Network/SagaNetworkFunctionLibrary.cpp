@@ -60,7 +60,6 @@ noexcept
 
 const TArray<FSagaVirtualUser>&
 USagaNetworkFunctionLibrary::AwaitPlayerList(TPromise<bool> promise)
-noexcept
 {
 	AsyncTask(ENamedThreads::AnyThread, []() {
 		// 이 코드는 게임 스레드를 멈추지 않고 비동기적으로 실행됩니다.
@@ -73,7 +72,6 @@ noexcept
 
 const TArray<FSagaVirtualRoom>&
 USagaNetworkFunctionLibrary::AwaitRoomList(TPromise<bool> promise)
-noexcept
 {
 	// TODO
 	return saga::USagaNetwork::GetRoomList();
