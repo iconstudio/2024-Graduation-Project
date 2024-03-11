@@ -1,7 +1,6 @@
 #include "SagaPacketSenders.h"
-#include "CoreMinimal.h"
-#include <algorithm>
 
+#include "SagaNetworkUtility.h"
 #include "SagaClientPacketPrefabs.h"
 #include "SagaNetwork.h"
 
@@ -10,7 +9,15 @@ saga::SendSignInPacket(FStringView nickname)
 {
 	auto& socket = USagaNetwork::GetLocalSocket();
 
-	return std::nullopt;
+	const saga::CS_SignInPacket packet{ nickname.GetData(), static_cast<size_t>(nickname.Len()) };
+	auto ptr = packet.Serialize();
+	const int32 sent_bytes = saga::RawSend(socket, ptr.get(), packet.WannabeSize());
+	if (sent_bytes <= 0)
+	{
+		return std::nullopt;
+	}
+
+	return sent_bytes;
 }
 
 std::optional<int32>

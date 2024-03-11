@@ -3,7 +3,7 @@
 
 #include "SagaNetworkSettings.h"
 #include "SagaNetworkUtility.h"
-#include "SagaClientPacketPrefabs.h"
+#include "SagaPacketSenders.h"
 #include "SagaNetworkWorker.h"
 
 namespace
@@ -305,6 +305,20 @@ noexcept
 	return *clientSocket;
 }
 
+const TArray<FSagaVirtualUser>&
+saga::USagaNetwork::GetPlayerList()
+noexcept
+{
+	return everyUsers;
+}
+
+const TArray<FSagaVirtualRoom>&
+saga::USagaNetwork::GetRoomList()
+noexcept
+{
+	return everyRooms;
+}
+
 bool
 saga::USagaNetwork::HasUser(int32 id)
 noexcept
@@ -417,15 +431,15 @@ namespace
 			// #1
 			// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
 
-			const saga::CS_SignInPacket packet{ localUserName.GetCharArray().GetData(), static_cast<size_t>(localUserName.Len()) };
-			auto ptr = packet.Serialize();
-			UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *localUserName);
-
-			const int32 sent_bytes = saga::RawSend(clientSocket, ptr.get(), packet.WannabeSize());
-			if (sent_bytes <= 0)
+			auto sent_r = saga::SendSignInPacket(localUserName);
+			if (not sent_r.has_value())
 			{
-				UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
+				UE_LOG(LogNet, Error, TEXT("First try of sending signin packet has been failed."));
 				return false;
+			}
+			else
+			{
+				UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *localUserName);
 			}
 		}
 
@@ -438,63 +452,6 @@ namespace
 
 		return true;
 	}
-
-}
-
-FSocket&
-SagaNetworkGetSocket()
-noexcept
-{
-	return *clientSocket;
-}
-
-bool
-SagaNetworkHasSocket()
-noexcept
-{
-	return saga::USagaNetwork::IsSocketAvailable();
-}
-
-int32
-SagaNetworkLocalPlayerID()
-noexcept
-{
-	return localUserId;
-}
-
-FString
-SagaNetworkLocalPlayerName()
-noexcept
-{
-	return localUserName;
-}
-
-int32
-SagaNetworkCurrentRoomID()
-noexcept
-{
-	return currentRoomId;
-}
-
-FString
-SagaNetworkCurrentRoomTitle()
-noexcept
-{
-	return currentRoomTitle;
-}
-
-const TArray<FSagaVirtualUser>&
-GetPlayerList()
-noexcept
-{
-	return everyUsers;
-}
-
-const TArray<FSagaVirtualRoom>&
-GetRoomList()
-noexcept
-{
-	return everyRooms;
 }
 
 void
