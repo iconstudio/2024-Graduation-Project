@@ -5,8 +5,8 @@
 
 namespace saga
 {
-	std::optional<int32> SendSignInPacket();
-	std::optional<int32> SendCreateRoomPacket(FString title);
+	std::optional<int32> SendSignInPacket(FStringView nickname);
+	std::optional<int32> SendCreateRoomPacket(FStringView title);
 	std::optional<int32> SendJoinRoomPacket(int32 room_id);
 	std::optional<int32> SendLeaveRoomPacket();
 	std::optional<int32> SendRequestVersionPacket();
