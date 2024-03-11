@@ -6,7 +6,7 @@
 #include "SagaNetwork.h"
 
 std::optional<int32>
-saga::SendSignInPacket()
+saga::SendSignInPacket(FStringView nickname)
 {
 	auto& socket = USagaNetwork::GetLocalSocket();
 
@@ -14,7 +14,7 @@ saga::SendSignInPacket()
 }
 
 std::optional<int32>
-saga::SendCreateRoomPacket(FString title)
+saga::SendCreateRoomPacket(FStringView title)
 {
 	auto& socket = USagaNetwork::GetLocalSocket();
 
