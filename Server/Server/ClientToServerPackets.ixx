@@ -14,6 +14,83 @@ export namespace iconer::app::packets::inline cs
 {
 #pragma pack(push, 1)
 	/// <summary>
+	/// RPC packet for client
+	/// </summary>
+	/// <param name="rpcScript">A descriptor for rpc msg</param>
+	/// <remarks>Client would send it to the server</remarks>
+	struct [[nodiscard]] CS_RpcPacket : public FSagaBasicPacket
+	{
+		using Super = FSagaBasicPacket;
+
+		static inline constexpr size_t msgLength = 10;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(rpcScript);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(rpcScript));
+		}
+
+		constexpr CS_RpcPacket() noexcept
+			: Super(EPacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
+			, rpcScript()
+		{
+		}
+
+		explicit constexpr CS_RpcPacket(const wchar_t* begin, const wchar_t* end)
+			: Super(EPacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
+			, rpcScript()
+		{
+			std::copy(begin, end, rpcScript);
+		}
+
+		explicit constexpr CS_RpcPacket(const wchar_t* nts, const size_t length)
+			: Super(EPacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
+			, rpcScript()
+		{
+			std::copy_n(nts, std::min(length, msgLength), rpcScript);
+		}
+
+		template<size_t Length>
+		explicit constexpr CS_RpcPacket(const wchar_t(&str)[Length])
+			: Super(EPacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
+			, rpcScript()
+		{
+			std::copy_n(str, std::min(Length, msgLength), rpcScript);
+		}
+
+		template<size_t Length>
+		explicit constexpr CS_RpcPacket(wchar_t(&& str)[Length])
+			: Super(EPacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
+			, rpcScript()
+		{
+			std::move(str, str + std::min(Length, msgLength), rpcScript);
+		}
+
+		[[nodiscard]]
+		constexpr std::unique_ptr<std::byte[]> Serialize() const
+		{
+			return saga::Serializes(myProtocol, mySize, std::wstring_view{ rpcScript, msgLength });
+		}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			return saga::Serialize(Super::Write(buffer), std::wstring_view{ rpcScript, msgLength });
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer)
+		{
+			return saga::Deserialize(Super::Read(buffer), msgLength, rpcScript);
+		}
+
+		wchar_t rpcScript[msgLength];
+	};
+	/// <summary>
 	/// Requesting game version packet for client
 	/// </summary>
 	/// <remarks>Client would send it to the server</remarks>
