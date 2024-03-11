@@ -1,6 +1,8 @@
 #include "SagaPacketSenders.h"
 #include "CoreMinimal.h"
+#include <algorithm>
 
+#include "SagaClientPacketPrefabs.h"
 #include "SagaNetwork.h"
 
 std::optional<int32>

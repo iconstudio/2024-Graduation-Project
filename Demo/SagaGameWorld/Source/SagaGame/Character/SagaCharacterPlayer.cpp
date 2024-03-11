@@ -9,11 +9,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "SagaCharacterControlData.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Item/Items.h"
+#include "Item/InventoryComponent.h"
 
-
+ 
 ASagaCharacterPlayer::ASagaCharacterPlayer()
 {
-	PlayerHP = 150;
+	PlayerHP = 150.0f;
 	bIsRiding = false;
 
 	WalkSpeed = 500.0f; // 기본 걷기 속도
@@ -29,6 +31,13 @@ ASagaCharacterPlayer::ASagaCharacterPlayer()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
+	//인벤토리
+	Inventory = CreateDefaultSubobject<UInventoryComponent>("Inventory");
+	//Inventory->Capacity = 20;
+
+	//상호작용
+	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
+	InteractionBox->SetupAttachment(RootComponent);
 
 	//입력
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Jump.IA_Jump'"));
@@ -73,6 +82,12 @@ ASagaCharacterPlayer::ASagaCharacterPlayer()
 		SprintAction = SprintActionAttackRef.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<UInputAction> InteractWithNPCRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_InteractWithNPC.IA_InteractWithNPC'"));
+	if (nullptr != InteractWithNPCRef.Object)
+	{
+		InteractionWithNPC = InteractWithNPCRef.Object;
+	}
+
 	CurrentCharacterControlType = ECharacterControlType::Quater;
 }
 
@@ -81,6 +96,8 @@ void ASagaCharacterPlayer::BeginPlay()
 	Super::BeginPlay();
 
 	SetCharacterControl(CurrentCharacterControlType);
+
+	InteractionBox->OnComponentBeginOverlap.AddDynamic(this, &ASagaCharacterPlayer::OnBoxBeginOverlap);
 }
 
 void ASagaCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -97,8 +114,23 @@ void ASagaCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Play
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::QuaterMove);
 	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::Attack);
 
+	//달리기
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ASagaCharacterPlayer::OnStartSprinting);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASagaCharacterPlayer::OnStopSprinting);
+	
+	//NPC와 상호작용
+	EnhancedInputComponent->BindAction(InteractionWithNPC, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::GetOnNPC);
+
+}
+
+void ASagaCharacterPlayer::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+}
+
+void ASagaCharacterPlayer::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+
 }
 
 void ASagaCharacterPlayer::ChangeCharacterControl()
@@ -132,6 +164,26 @@ void ASagaCharacterPlayer::SetCharacterControl(ECharacterControlType NewCharacte
 	}
 
 	CurrentCharacterControlType = NewCharacterControlType;
+}
+
+void ASagaCharacterPlayer::UseItem(UItems* Item)
+{
+	if (Item)
+	{
+		Item->Use(this);
+		Item->OnUse(this); //블루프린트 이벤트
+	}
+}
+
+
+void ASagaCharacterPlayer::SetNearbyNPC(ASagaCharacterNPC* NPC)
+{
+	NearbyNPC = NPC;
+
+	UE_LOG(LogTemp, Warning, TEXT("상호작용 발생!"));
+
+	//// 상호작용 프롬프트 표시 (예: "F를 눌러 상호작용")
+	//ShowInteractionPrompt(true);
 }
 
 void ASagaCharacterPlayer::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
@@ -219,14 +271,19 @@ void ASagaCharacterPlayer::InteractWithNPC()
 	}
 }
 
-void ASagaCharacterPlayer::OnStartSprinting()
+void ASagaCharacterPlayer::OnStartSprinting() //Shift로 달리기
 {
-	UE_LOG(LogTemp, Warning, TEXT("Started Sprinting"));
+	//UE_LOG(LogTemp, Warning, TEXT("Started Sprinting"));
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 }
 
-void ASagaCharacterPlayer::OnStopSprinting()
+void ASagaCharacterPlayer::OnStopSprinting() //Shift 안누를시 달리기 해제
 {
-	UE_LOG(LogTemp, Warning, TEXT("Stopped Sprinting"));
+	//UE_LOG(LogTemp, Warning, TEXT("Stopped Sprinting"));
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+}
+
+void ASagaCharacterPlayer::GetOnNPC()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnNPC"));
 }
