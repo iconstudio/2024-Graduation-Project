@@ -31,6 +31,89 @@ namespace saga::datagrams
 namespace saga::inline sc
 {
 	/// <summary>
+	/// Broadcasted RPC packet for server
+	/// </summary>
+	/// <param name="clientId">- An id of the sender client</param>
+	/// <param name="rpcScript">A descriptor for rpc msg</param>
+	/// <param name="rpcArgument">Single rpc argument</param>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_RpcPacket : public FSagaBasicPacket
+	{
+		using Super = FSagaBasicPacket;
+
+		static inline constexpr size_t msgLength = 10;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(clientId) + sizeof(rpcScript) + sizeof(rpcArgument);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(WannabeSize());
+		}
+
+		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t* begin, const wchar_t* end)
+			noexcept
+			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
+			, clientId(id), rpcScript()
+			, rpcArgument()
+		{
+			std::copy(begin, end, rpcScript);
+		}
+
+		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t* nts, const size_t length)
+			noexcept
+			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
+			, clientId(id), rpcScript()
+			, rpcArgument()
+		{
+			std::copy_n(nts, std::min(length, msgLength), rpcScript);
+		}
+
+		template<size_t Length>
+		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t(&str)[Length])
+			noexcept
+			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
+			, clientId(id), rpcScript()
+			, rpcArgument()
+		{
+			std::copy_n(str, std::min(Length, msgLength), rpcScript);
+		}
+
+		template<size_t Length>
+		explicit constexpr SC_RpcPacket(std::int32_t id, wchar_t(&& str)[Length])
+			noexcept
+			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
+			, clientId(id), rpcScript()
+			, rpcArgument()
+		{
+			std::move(str, str + std::min(Length, msgLength), rpcScript);
+		}
+
+		[[nodiscard]]
+		std::unique_ptr<std::byte[]> Serialize() const override
+		{
+			return saga::Serializes(myProtocol, mySize, clientId, std::wstring_view{ rpcScript, msgLength }, rpcArgument);
+		}
+
+		std::byte* Write(std::byte* buffer) const override
+		{
+			return saga::Serialize(saga::Serialize(saga::Serialize(Super::Write(buffer), clientId), std::wstring_view{ rpcScript, msgLength }), rpcArgument);
+		}
+
+		const std::byte* Read(const std::byte* buffer) override
+		{
+			return saga::Deserialize(saga::Deserialize(saga::Deserialize(Super::Read(buffer), clientId), msgLength, rpcScript), rpcArgument);
+		}
+
+		std::int32_t clientId;
+		wchar_t rpcScript[msgLength];
+		long long rpcArgument;
+	};
+	/// <summary>
 	/// Getting game ready notification packet for server
 	/// </summary>
 	/// <remarks>Server would send it to the client</remarks>
