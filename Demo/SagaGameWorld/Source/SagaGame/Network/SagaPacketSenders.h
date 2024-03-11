@@ -14,5 +14,5 @@ namespace saga
 	std::optional<int32> SendRequestMembersPacket();
 	std::optional<int32> SendGameStartPacket();
 	std::optional<int32> SendGameIsLoadedPacket();
-	std::optional<int32> SendPositionPacket();
+	std::optional<int32> SendPositionPacket(float x, float y, float z);
 }
