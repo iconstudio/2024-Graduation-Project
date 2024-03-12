@@ -18,7 +18,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			int32 my_id{};
 			auto offset = ReceiveSignInSucceedPacket(packet_buffer, my_id);
 
-			UE_LOG(LogNet, Log, TEXT("Local player's id is %d"), my_id);
+			UE_LOG(LogNet, Log, TEXT("Local client's id is %d"), my_id);
 		}
 		break;
 
@@ -27,7 +27,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			int32 error{};
 			auto offset = ReceiveSignInFailurePacket(packet_buffer, error);
 
-			UE_LOG(LogNet, Log, TEXT("Local player can't get an id from server due to %d"), error);
+			UE_LOG(LogNet, Log, TEXT("Local client can't get an id from server due to %d"), error);
 		}
 		break;
 
@@ -158,7 +158,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			SC_CreatePlayerPacket pk{};
 			auto offset = pk.Read(packet_buffer);
 
-			UE_LOG(LogNet, Log, TEXT("A player %d is created"), pk.clientId);
+			UE_LOG(LogNet, Log, TEXT("A client %d is created"), pk.clientId);
 
 			USagaNetwork::AddUser(FSagaVirtualUser{ pk.clientId, TEXT("Name") });
 		}
@@ -169,7 +169,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			SC_DestroyPlayerPacket pk{};
 			auto offset = pk.Read(packet_buffer);
 
-			UE_LOG(LogNet, Log, TEXT("A player %d is destroyed(disconnected)"), pk.clientId);
+			UE_LOG(LogNet, Log, TEXT("A client %d is destroyed(disconnected)"), pk.clientId);
 		}
 		break;
 
@@ -178,8 +178,8 @@ saga::EventRouter(const std::byte* packet_buffer
 			SC_UpdatePositionPacket pk{ 0, 0, 0, 0 };
 			auto offset = pk.Read(packet_buffer);
 
-			UE_LOG(LogNet, Log, TEXT("Player id %d: pos(%f,%f,%f)"), pk.clientId, pk.x, pk.y, pk.z);
-			UE_LOG(LogNet, Log, TEXT("Player id pos"));
+			UE_LOG(LogNet, Log, TEXT("Client id %d: pos(%f,%f,%f)"), pk.clientId, pk.x, pk.y, pk.z);
+			UE_LOG(LogNet, Log, TEXT("Client id pos"));
 		}
 		break;
 
