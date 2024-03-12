@@ -25,31 +25,29 @@
 #endif
 
 #ifndef int16
-using int16 = short;
+//#define int16 short;
 #endif
 #ifndef uint16
-using uint16 = unsigned short;
+//#define uint16 unsigned short;
 #endif
 #ifndef int32
-using int32 = int;
+//#define int32 int;
 #endif
 #ifndef uint32
-using uint32 = unsigned int;
+//#define uint32 unsigned int;
 #endif
 #ifndef int64
-using int32 = long long;
+//#define int32 long long;
 #endif
 #ifndef uint64
-using uint64 = unsigned long long;
+//#define uint64 unsigned long long;
 #endif
 #ifndef TOptional
-template<typename>
-class TOptional;
+//template<typename> class TOptional;
 #endif
 #ifndef TString
-template<typename>
-class TString;
+//template<typename> class TString;
 #endif
 #ifndef FString
-class FString;
+//class FString;
 #endif
