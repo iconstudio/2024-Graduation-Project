@@ -17,13 +17,15 @@
 #ifndef USTRUCT
 #define USTRUCT(...) 
 #endif
+#ifndef UINTERFACE
+#define UINTERFACE(...) 
+#endif
 #ifndef UPROPERTY
 #define UPROPERTY(...) 
 #endif
 #ifndef TEXT
 #define TEXT(...) L __VA_ARGS__
 #endif
-
 #ifndef int16
 //#define int16 short;
 #endif
