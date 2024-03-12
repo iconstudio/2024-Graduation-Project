@@ -2,9 +2,6 @@
 #ifndef SAGAGAME_API
 #define SAGAGAME_API 
 #endif
-#ifndef GENERATED_BODY
-#define GENERATED_BODY(...) 
-#endif
 #ifndef UFUNCTION
 #define UFUNCTION(...) 
 #endif
@@ -23,9 +20,30 @@
 #ifndef UPROPERTY
 #define UPROPERTY(...) 
 #endif
+#ifndef UMETA
+#define UMETA(...) 
+#endif
+#ifndef UPARAM
+#define UPARAM(...) 
+#endif
+
+#ifndef BlueprintType
+#define BlueprintType 
+#endif
+#ifndef Blueprintable
+#define Blueprintable 
+#endif
+#ifndef DisplayName
+#define DisplayName 
+#endif
+
+#ifndef GENERATED_BODY
+#define GENERATED_BODY(...) 
+#endif
 #ifndef TEXT
 #define TEXT(...) L __VA_ARGS__
 #endif
+
 #ifndef int16
 //#define int16 short;
 #endif
