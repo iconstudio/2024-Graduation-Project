@@ -187,5 +187,16 @@ saga::EventRouter(const std::byte* packet_buffer
 		{
 		}
 		break;
+
+		case EPacketProtocol::SC_RPC:
+		{
+			SC_RpcPacket pk{};
+
+			wchar_t buffer[sizeof(pk.rpcScript) / sizeof(wchar_t)]{};
+			std::copy(std::cbegin(pk.rpcScript), std::cend(pk.rpcScript), std::begin(buffer));
+
+			UE_LOG(LogNet, Log, TEXT("RPC from client %d: %s(%lld))"), pk.clientId, pk.rpcScript, pk.rpcArgument);
+		}
+		break;
 	}
 }
