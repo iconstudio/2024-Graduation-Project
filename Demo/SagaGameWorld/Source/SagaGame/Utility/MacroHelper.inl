@@ -50,9 +50,6 @@ class TOptional;
 template<typename>
 class TString;
 #endif
-#ifndef FStringView
-class FStringView;
-#endif
 #ifndef FString
 class FString;
 #endif
