@@ -66,7 +66,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			}
 			else
 			{
-				USagaNetwork::AddUser(FSagaVirtualUser{ newbie_id, TEXT("Newbie") });
+				USagaNetwork::AddUser(FSagaVirtualUser{ newbie_id, TEXT("Member") });
 
 				UE_LOG(LogNet, Log, TEXT("Client %d has joined to the room %d"), newbie_id, room_id);
 			}
