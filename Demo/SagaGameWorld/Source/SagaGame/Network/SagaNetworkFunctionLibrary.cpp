@@ -85,7 +85,7 @@ USagaNetworkFunctionLibrary::AwaitRoomList(TPromise<bool> promise)
 void
 USagaNetworkFunctionLibrary::UpdatePlayerList()
 {
-	TAtomic<bool> a;
+	//TAtomic<bool> a;
 }
 
 void
