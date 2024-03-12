@@ -34,8 +34,8 @@ namespace saga::inline sc
 	/// Broadcasted RPC packet for server
 	/// </summary>
 	/// <param name="clientId">- An id of the sender client</param>
-	/// <param name="rpcScript">A descriptor for rpc msg</param>
-	/// <param name="rpcArgument">Single rpc argument</param>
+	/// <param name="rpcScript">- A descriptor for rpc msg</param>
+	/// <param name="rpcArgument">- Single rpc argument</param>
 	/// <remarks>Server would send it to the client</remarks>
 	struct [[nodiscard]] SC_RpcPacket : public FSagaBasicPacket
 	{
