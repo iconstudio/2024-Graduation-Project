@@ -12,8 +12,8 @@ namespace saga::inline cs
 	/// <summary>
 	/// RPC packet for client
 	/// </summary>
-	/// <param name="rpcScript">A descriptor for rpc msg</param>
-	/// <param name="rpcArgument">Single rpc argument</param>
+	/// <param name="rpcScript">- A descriptor for rpc msg</param>
+	/// <param name="rpcArgument">- Single rpc argument</param>
 	/// <remarks>Client would send it to the server</remarks>
 	struct [[nodiscard]] CS_RpcPacket : public FSagaBasicPacket
 	{
