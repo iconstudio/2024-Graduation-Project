@@ -55,6 +55,13 @@ namespace saga::inline sc
 			return static_cast<ptrdiff_t>(WannabeSize());
 		}
 
+		constexpr SC_RpcPacket()
+			noexcept
+			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
+			, clientId(-1), rpcScript()
+			, rpcArgument()
+		{}
+
 		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t* begin, const wchar_t* end)
 			noexcept
 			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
