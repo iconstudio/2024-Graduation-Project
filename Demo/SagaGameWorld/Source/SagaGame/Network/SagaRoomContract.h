@@ -5,22 +5,27 @@
 #include <string>
 #include <string_view>
 #include <format>
+#include "../Utility/MacroHelper.inl"
+#include "SagaRoomContract.generated.h"
+
+UENUM(BlueprintType)
+enum class [[nodiscard]] ERoomContract : uint8
+{
+	Success = 0
+	, CannotLocateEmptyRoom // Cannot create a room
+	, NoRoomFoundWithId // Cannot find any room with a specific id
+	, RoomIsFull // Full of members
+	, RoomIsBusy // State mismatching
+	, AnotherRoomIsAlreadyAssigned // The client already have a room id
+	, NoRoom // The room have not reserved yet
+	, InvalidOperation // Room task is invalid
+	, UnstableRoom // Room's state is changed at time
+	, ServerError // Unknown internal error
+};
 
 namespace saga
 {
-	enum class [[nodiscard]] RoomContract : std::uint8_t
-	{
-		Success = 0
-		, CannotLocateEmptyRoom // Cannot create a room
-		, NoRoomFoundWithId // Cannot find any room with a specific id
-		, RoomIsFull // Full of members
-		, RoomIsBusy // State mismatching
-		, AnotherRoomIsAlreadyAssigned // The client already have a room id
-		, NoRoom // The room have not reserved yet
-		, InvalidOperation // Room task is invalid
-		, UnstableRoom // Room's state is changed at time
-		, ServerError // Unknown internal error
-	};
+	using RoomContract = ::ERoomContract;
 }
 
 namespace std
