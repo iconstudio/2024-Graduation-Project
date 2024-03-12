@@ -1,6 +1,8 @@
 #pragma once
 #include "CoreMinimal.h"
+
 #include "SagaVirtualSession.h"
+#include "../Utility/MacroHelper.inl"
 #include "SagaVirtualRoom.generated.h"
 
 USTRUCT(BlueprintType, Category = "CandyLandSaga|Network|Session")

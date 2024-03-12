@@ -3,6 +3,8 @@
 #include "CoreTypes.h"
 #include "Containers/UnrealString.h"
 #include "Templates/UnrealTemplate.h"
+
+#include "../Utility/MacroHelper.inl"
 #include "SagaVirtualSession.generated.h"
 
 USTRUCT(BlueprintType, Category = "CandyLandSaga|Network|Session")
