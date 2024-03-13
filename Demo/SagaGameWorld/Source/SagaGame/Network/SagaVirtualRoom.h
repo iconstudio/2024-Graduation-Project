@@ -6,17 +6,32 @@
 #include "SagaVirtualRoom.generated.h"
 
 UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|Network|Session")
-class SAGAGAME_API FSagaVirtualRoom : public FSagaVirtualSession
+class SAGAGAME_API USagaVirtualRoom : public USagaVirtualSession
 {
 	GENERATED_BODY()
 
 public:
-	using FSagaVirtualSession::FSagaVirtualSession;
-
-	FSagaVirtualRoom(int32 id, FStringView title, int32 member_count)
-		: FSagaVirtualSession(id, title)
-		, MembersCount(member_count)
+	USagaVirtualRoom()
+		: USagaVirtualSession()
+		, MembersCount(0)
 	{}
+
+	USagaVirtualRoom(int32 id, FStringView title)
+		: USagaVirtualSession(id, title)
+		, MembersCount(0)
+	{}
+
+	USagaVirtualRoom(int32 id, FStringView title, int32 members_count)
+		: USagaVirtualSession(id, title)
+		, MembersCount(members_count)
+	{}
+
+	[[nodiscard]]
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
+	constexpr int32 GetNumberOfMember() const noexcept
+	{
+		return MembersCount;
+	}
 
 	UPROPERTY(VisibleAnywhere, meta = (NoResetToDefault, NoSpinbox = true, ClampMin = 0, UIMin = 0, ClampMax = 4, UIMax = 4))
 	int32 MembersCount;

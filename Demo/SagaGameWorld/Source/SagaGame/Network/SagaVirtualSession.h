@@ -7,55 +7,55 @@
 #include "SagaVirtualSession.generated.h"
 
 UCLASS(BlueprintType, Blueprintable, Abstract, NotPlaceable, Category = "CandyLandSaga|Network|Session")
-class SAGAGAME_API FSagaVirtualSession : public UObject
+class SAGAGAME_API USagaVirtualSession : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	FSagaVirtualSession()
+	USagaVirtualSession()
 		: UObject()
 		, MyID(-1), MyName(TEXT("Empty Client"))
 	{}
 
-	FSagaVirtualSession(int32 id)
+	USagaVirtualSession(int32 id)
 		: UObject()
 		, MyID(id), MyName(TEXT("Empty Client"))
 	{}
 
-	FSagaVirtualSession(int32 id, FStringView name)
+	USagaVirtualSession(int32 id, FStringView name)
 		: UObject()
 		, MyID(id), MyName(name)
 	{}
 
 	[[nodiscard]]
-	UFUNCTION(BlueprintCallable, BlueprintGetter, Category = "CandyLandSaga|Network|Session")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
 	constexpr int32 GetID() const noexcept
 	{
 		return MyID;
 	}
 
 	[[nodiscard]]
-	UFUNCTION(BlueprintCallable, BlueprintGetter, Category = "CandyLandSaga|Network|Session")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
 	constexpr const FString& GetName() const noexcept
 	{
 		return MyName;
 	}
 
-	UPROPERTY(VisibleAnywhere, BlueprintGetter = GetID, meta = (NoResetToDefault, NoSpinbox = true, ClampMin = 2, UIMin = 2, ClampMax = 21, UIMax = 21))
+	UPROPERTY(VisibleAnywhere, meta = (NoResetToDefault, NoSpinbox = true, ClampMin = 2, UIMin = 2, ClampMax = 21, UIMax = 21))
 	int32 MyID;
-	UPROPERTY(VisibleAnywhere, BlueprintGetter = GetName)
+	UPROPERTY(VisibleAnywhere)
 	FString MyName;
 };
 
 namespace saga
 {
-	using ::FSagaVirtualSession;
+	using ::USagaVirtualSession;
 
 	struct SAGAGAME_API FSagaSessionComparator final
 	{
 		[[nodiscard]]
 		constexpr bool
-			operator()(const FSagaVirtualSession& lhs, const FSagaVirtualSession& rhs)
+			operator()(const USagaVirtualSession& lhs, const USagaVirtualSession& rhs)
 			const noexcept
 		{
 			return lhs.MyID == rhs.MyID;
@@ -63,7 +63,7 @@ namespace saga
 
 		[[nodiscard]]
 		constexpr bool
-			operator()(const FSagaVirtualSession& lhs, const int32& id)
+			operator()(const USagaVirtualSession& lhs, const int32& id)
 			const noexcept
 		{
 			return lhs.MyID == id;
@@ -78,7 +78,7 @@ namespace saga
 
 		[[nodiscard]]
 		constexpr bool
-			operator()(const FSagaVirtualSession& lhs)
+			operator()(const USagaVirtualSession& lhs)
 			const noexcept
 		{
 			return lhs.MyID == cmpId;

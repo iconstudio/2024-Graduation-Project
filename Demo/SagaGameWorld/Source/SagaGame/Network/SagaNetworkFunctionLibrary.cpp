@@ -48,21 +48,21 @@ noexcept
 	return FString{ saga::USagaNetwork::CurrentRoomTitle() };
 }
 
-const TArray<FSagaVirtualUser>&
+const TArray<USagaVirtualUser>&
 USagaNetworkFunctionLibrary::GetPlayerList()
 noexcept
 {
 	return saga::USagaNetwork::GetPlayerList();
 }
 
-const TArray<FSagaVirtualRoom>&
+const TArray<USagaVirtualRoom>&
 USagaNetworkFunctionLibrary::GetRoomList()
 noexcept
 {
 	return saga::USagaNetwork::GetRoomList();
 }
 
-const TArray<FSagaVirtualUser>&
+const TArray<USagaVirtualUser>&
 USagaNetworkFunctionLibrary::AwaitPlayerList(TPromise<bool> promise)
 {
 	UpdatePlayerList();
@@ -76,7 +76,7 @@ USagaNetworkFunctionLibrary::AwaitPlayerList(TPromise<bool> promise)
 	return saga::USagaNetwork::GetPlayerList();
 }
 
-const TArray<FSagaVirtualRoom>&
+const TArray<USagaVirtualRoom>&
 USagaNetworkFunctionLibrary::AwaitRoomList(TPromise<bool> promise)
 {
 	UpdateRoomList();

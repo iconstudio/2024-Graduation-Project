@@ -19,9 +19,9 @@ namespace
 	TArray<saga::FSagaBasicPacket*> taskQueue{};
 
 	/// <remarks>로컬 플레이어도 포함</remarks>
-	TArray<FSagaVirtualUser> everyUsers{};
+	TArray<USagaVirtualUser> everyUsers{};
 	TAtomic<bool> wasUsersUpdated = true;
-	TArray<FSagaVirtualRoom> everyRooms{};
+	TArray<USagaVirtualRoom> everyRooms{};
 	TAtomic<bool> wasRoomsUpdated = true;
 
 	constinit int32 localUserId = -1;
@@ -80,20 +80,20 @@ saga::USagaNetwork::Start(FStringView nickname)
 }
 
 void
-saga::USagaNetwork::AddUser(const FSagaVirtualUser& client)
+saga::USagaNetwork::AddUser(const USagaVirtualUser& client)
 {
 	everyUsers.Add(client);
 	wasUsersUpdated = true;
 }
 
 void
-saga::USagaNetwork::AddUser(FSagaVirtualUser&& client)
+saga::USagaNetwork::AddUser(USagaVirtualUser&& client)
 {
 	everyUsers.Add(std::move(client));
 	wasUsersUpdated = true;
 }
 
-std::optional<FSagaVirtualUser*>
+std::optional<USagaVirtualUser*>
 saga::USagaNetwork::FindUser(int32 id)
 noexcept
 {
@@ -130,20 +130,20 @@ noexcept
 }
 
 void
-saga::USagaNetwork::AddRoom(const FSagaVirtualRoom& room)
+saga::USagaNetwork::AddRoom(const USagaVirtualRoom& room)
 {
 	everyRooms.Add(room);
 	wasRoomsUpdated = true;
 }
 
 void
-saga::USagaNetwork::AddRoom(FSagaVirtualRoom&& room)
+saga::USagaNetwork::AddRoom(USagaVirtualRoom&& room)
 {
 	everyRooms.Add(std::move(room));
 	wasRoomsUpdated = true;
 }
 
-std::optional<FSagaVirtualRoom*>
+std::optional<USagaVirtualRoom*>
 saga::USagaNetwork::FindRoom(int32 id)
 noexcept
 {
@@ -158,7 +158,7 @@ noexcept
 	}
 }
 
-std::optional<FSagaVirtualRoom*>
+std::optional<USagaVirtualRoom*>
 saga::USagaNetwork::RoomAt(int32 index)
 noexcept
 {
@@ -305,14 +305,14 @@ noexcept
 	return *clientSocket;
 }
 
-const TArray<FSagaVirtualUser>&
+const TArray<USagaVirtualUser>&
 saga::USagaNetwork::GetPlayerList()
 noexcept
 {
 	return everyUsers;
 }
 
-const TArray<FSagaVirtualRoom>&
+const TArray<USagaVirtualRoom>&
 saga::USagaNetwork::GetRoomList()
 noexcept
 {

@@ -67,7 +67,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		}
 		else
 		{
-			USagaNetwork::AddUser(FSagaVirtualUser{ newbie_id, TEXT("Member") });
+			USagaNetwork::AddUser(USagaVirtualUser{ newbie_id, TEXT("Member") });
 
 			UE_LOG(LogNet, Log, TEXT("Client %d has joined to the room %d"), newbie_id, room_id);
 		}
@@ -114,7 +114,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		USagaNetwork::ClearRoomList();
 		for (auto& room : rooms)
 		{
-			USagaNetwork::AddRoom(FSagaVirtualRoom
+			USagaNetwork::AddRoom(USagaVirtualRoom
 				{
 					room.id, room.title, static_cast<int>(room.members)
 				});
@@ -134,7 +134,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		USagaNetwork::ClearUserList();
 		for (auto& user : users)
 		{
-			USagaNetwork::AddUser(FSagaVirtualUser
+			USagaNetwork::AddUser(USagaVirtualUser
 				{
 					user.id, user.nickname
 				});
@@ -178,7 +178,7 @@ saga::EventRouter(const std::byte* packet_buffer
 
 		UE_LOG(LogNet, Log, TEXT("A client %d is created"), pk.clientId);
 
-		USagaNetwork::AddUser(FSagaVirtualUser{ pk.clientId, TEXT("Name") });
+		USagaNetwork::AddUser(USagaVirtualUser{ pk.clientId, TEXT("Name") });
 	}
 	break;
 
