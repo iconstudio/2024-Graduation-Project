@@ -326,9 +326,23 @@ noexcept
 	return everyUsers.ContainsByPredicate(FSagaSessionIdComparator{ id });
 }
 
+int32
+saga::USagaNetwork::NumberOfMember()
+noexcept
+{
+	return everyUsers.Num();
+}
+
 bool saga::USagaNetwork::HasRoom(int32 id) noexcept
 {
 	return everyRooms.ContainsByPredicate(FSagaSessionIdComparator{ id });
+}
+
+int32
+saga::USagaNetwork::NumberOfRoom()
+noexcept
+{
+	return everyRooms.Num();
 }
 
 bool
