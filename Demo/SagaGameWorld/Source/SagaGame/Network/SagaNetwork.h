@@ -43,7 +43,8 @@ namespace saga
 		static bool RemoveUser(int32 id) noexcept;
 		static void ClearUserList() noexcept;
 		[[nodiscard]] static bool HasUser(int32 id) noexcept;
-		
+		[[nodiscard]] static int32 NumberOfMember() noexcept;
+
 		/* Overall Rooms Methods */
 
 		static void AddRoom(const FSagaVirtualRoom& room);
@@ -53,6 +54,7 @@ namespace saga
 		static bool RemoveRoom(int32 id) noexcept;
 		static void ClearRoomList() noexcept;
 		[[nodiscard]] static bool HasRoom(int32 id) noexcept;
+		[[nodiscard]] static int32 NumberOfRoom() noexcept;
 
 		/* RPC Methods */
 

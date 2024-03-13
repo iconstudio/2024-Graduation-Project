@@ -6,14 +6,33 @@
 #include "../Utility/MacroHelper.inl"
 #include "SagaVirtualUser.generated.h"
 
-USTRUCT(BlueprintType, Category = "CandyLandSaga|Network|Session")
-struct SAGAGAME_API FSagaVirtualUser : public FSagaVirtualSession
+UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|Network|Session")
+class SAGAGAME_API FSagaVirtualUser : public FSagaVirtualSession
 {
 	GENERATED_BODY()
 
 public:
 	using FSagaVirtualSession::FSagaVirtualSession;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Network|Session")
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Session")
+	void SetCharacter(ASagaCharacterPlayer& character) noexcept
+	{
+		ownedCharacter = &character;
+	}
+
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Session")
+	void SetCharacterByPtr(ASagaCharacterPlayer* character) noexcept
+	{
+		ownedCharacter = character;
+	}
+
+	[[nodiscard]]
+	UFUNCTION(BlueprintCallable, BlueprintGetter, Category = "CandyLandSaga|Network|Session")
+	ASagaCharacterPlayer* GetCharacter() const noexcept
+	{
+		return ownedCharacter;
+	}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, BlueprintGetter = GetCharacters, Category = "CandyLandSaga|Network|Session")
 	ASagaCharacterPlayer* ownedCharacter;
 };
