@@ -54,6 +54,11 @@ namespace saga
 		static void ClearRoomList() noexcept;
 		[[nodiscard]] static bool HasRoom(int32 id) noexcept;
 
+		/* RPC Methods */
+
+		template<typename... Ts>
+		using RpcDelegateType = TFunction<void(Ts...)>;
+
 		/* Task Methods */
 
 		static void AddPacket(FSagaBasicPacket* packet);
