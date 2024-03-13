@@ -28,13 +28,13 @@ public:
 	static FString SagaNetworkCurrentRoomTitle() noexcept;
 
 	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static const TArray<FSagaVirtualUser>& GetPlayerList() noexcept;
+	static const TArray<USagaVirtualUser>& GetPlayerList() noexcept;
 	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static const TArray<FSagaVirtualRoom>& GetRoomList() noexcept;
+	static const TArray<USagaVirtualRoom>& GetRoomList() noexcept;
 	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static const TArray<FSagaVirtualUser>& AwaitPlayerList(TPromise<bool> promise);
+	static const TArray<USagaVirtualUser>& AwaitPlayerList(TPromise<bool> promise);
 	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static const TArray<FSagaVirtualRoom>& AwaitRoomList(TPromise<bool> promise);
+	static const TArray<USagaVirtualRoom>& AwaitRoomList(TPromise<bool> promise);
 
 	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	static void UpdatePlayerList();

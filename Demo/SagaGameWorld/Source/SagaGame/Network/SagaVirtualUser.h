@@ -7,32 +7,35 @@
 #include "SagaVirtualUser.generated.h"
 
 UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|Network|Session")
-class SAGAGAME_API FSagaVirtualUser : public FSagaVirtualSession
+class SAGAGAME_API USagaVirtualUser : public USagaVirtualSession
 {
 	GENERATED_BODY()
 
 public:
-	using FSagaVirtualSession::FSagaVirtualSession;
+	USagaVirtualUser()
+		: USagaVirtualSession()
+		, ownedCharacter(0)
+	{}
+
+	USagaVirtualUser(int32 id, FStringView name)
+		: USagaVirtualSession(id, name)
+		, ownedCharacter(0)
+	{}
+
 
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Session")
-	void SetCharacter(ASagaCharacterPlayer& character) noexcept
-	{
-		ownedCharacter = &character;
-	}
-
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Session")
-	void SetCharacterByPtr(ASagaCharacterPlayer* character) noexcept
+	void SetCharacter(ASagaCharacterPlayer* character) noexcept
 	{
 		ownedCharacter = character;
 	}
 
 	[[nodiscard]]
-	UFUNCTION(BlueprintCallable, BlueprintGetter, Category = "CandyLandSaga|Network|Session")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
 	ASagaCharacterPlayer* GetCharacter() const noexcept
 	{
 		return ownedCharacter;
 	}
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, BlueprintGetter = GetCharacters, Category = "CandyLandSaga|Network|Session")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Network|Session")
 	ASagaCharacterPlayer* ownedCharacter;
 };
