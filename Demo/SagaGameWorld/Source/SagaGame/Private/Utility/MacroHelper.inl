@@ -1,4 +1,6 @@
-#pragma once
+#ifndef SAGAGAME_MACROS
+#define SAGAGAME_MACROS 1
+
 #ifndef SAGAGAME_API
 #define SAGAGAME_API 
 #endif
@@ -70,4 +72,5 @@
 #endif
 #ifndef FString
 //class FString;
+#endif
 #endif
