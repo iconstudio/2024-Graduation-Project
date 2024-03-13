@@ -96,3 +96,42 @@ saga::ReceiveRoomLeftPacket(const std::byte* buffer, int32& client_id)
 
 	return seek;
 }
+
+const std::byte*
+saga::ReceiveRespondVersionPacket(const std::byte* buffer, wchar_t* version_str_buffer, const size_t& buffer_length)
+{
+	auto seek = buffer;
+
+	SC_RespondVersionPacket pk{};
+	pk.Read(buffer);
+
+	std::copy(std::cbegin(pk.gameVersion), std::cend(pk.gameVersion), version_str_buffer);
+
+	return seek;
+}
+
+const std::byte*
+saga::ReceiveRespondRoomsPacket(const std::byte* buffer, std::vector<datagrams::SerializedRoom>& rooms)
+{
+	auto seek = buffer;
+
+	SC_RespondRoomsPacket pk{};
+	pk.Read(buffer);
+
+	rooms = std::move(pk.serializedRooms);
+
+	return seek;
+}
+
+const std::byte*
+saga::ReceiveRespondUsersPacket(const std::byte* buffer, std::vector<datagrams::SerializedMember>& users)
+{
+	auto seek = buffer;
+
+	SC_RespondMembersPacket pk{};
+	pk.Read(buffer);
+
+	users = std::move(pk.serializedMembers);
+
+	return seek;
+}
