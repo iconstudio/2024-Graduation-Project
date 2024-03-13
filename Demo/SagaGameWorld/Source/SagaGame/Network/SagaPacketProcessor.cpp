@@ -7,6 +7,7 @@
 const std::byte*
 saga::ReceiveSignInSucceedPacket(const std::byte* buffer, int32& my_id)
 {
+
 	auto seek = buffer;
 
 	SC_SucceedSignInPacket pk{};
@@ -18,7 +19,8 @@ saga::ReceiveSignInSucceedPacket(const std::byte* buffer, int32& my_id)
 }
 
 const std::byte*
-saga::ReceiveSignInFailurePacket(const std::byte* buffer, int32& error)
+saga::ReceiveSignInFailurePacket(const std::byte* buffer
+	, int32& error)
 {
 	auto seek = buffer;
 
@@ -31,7 +33,8 @@ saga::ReceiveSignInFailurePacket(const std::byte* buffer, int32& error)
 }
 
 const std::byte*
-saga::ReceiveRoomCreatedPacket(const std::byte* buffer, int32& room_id)
+saga::ReceiveRoomCreatedPacket(const std::byte* buffer
+	, int32& room_id)
 {
 	auto seek = buffer;
 
@@ -44,8 +47,9 @@ saga::ReceiveRoomCreatedPacket(const std::byte* buffer, int32& room_id)
 }
 
 const std::byte*
-saga::ReceiveRoomCreationFailedPacket(const std::byte* buffer, saga::
-RoomContract& error)
+saga::ReceiveRoomCreationFailedPacket(const std::byte* buffer
+	, saga::
+	RoomContract& error)
 {
 	auto seek = buffer;
 
@@ -58,7 +62,9 @@ RoomContract& error)
 }
 
 const std::byte*
-saga::ReceiveRoomJoinedPacket(const std::byte* buffer, int32& client_id, int32& room_id)
+saga::ReceiveRoomJoinedPacket(const std::byte* buffer
+	, int32& client_id
+	, int32& room_id)
 {
 	auto seek = buffer;
 
@@ -72,7 +78,8 @@ saga::ReceiveRoomJoinedPacket(const std::byte* buffer, int32& client_id, int32& 
 }
 
 const std::byte*
-saga::ReceiveRoomJoinFailedPacket(const std::byte* buffer, saga::RoomContract& error)
+saga::ReceiveRoomJoinFailedPacket(const std::byte* buffer
+	, saga::RoomContract& error)
 {
 	auto seek = buffer;
 
@@ -85,7 +92,8 @@ saga::ReceiveRoomJoinFailedPacket(const std::byte* buffer, saga::RoomContract& e
 }
 
 const std::byte*
-saga::ReceiveRoomLeftPacket(const std::byte* buffer, int32& client_id)
+saga::ReceiveRoomLeftPacket(const std::byte* buffer
+	, int32& client_id)
 {
 	auto seek = buffer;
 
@@ -98,7 +106,8 @@ saga::ReceiveRoomLeftPacket(const std::byte* buffer, int32& client_id)
 }
 
 const std::byte*
-saga::ReceiveRespondVersionPacket(const std::byte* buffer, wchar_t* version_str_buffer, const size_t& buffer_length)
+saga::ReceiveRespondVersionPacket(const std::byte* buffer
+	, wchar_t* version_str_buffer, const size_t& buffer_length)
 {
 	auto seek = buffer;
 
@@ -111,7 +120,8 @@ saga::ReceiveRespondVersionPacket(const std::byte* buffer, wchar_t* version_str_
 }
 
 const std::byte*
-saga::ReceiveRespondRoomsPacket(const std::byte* buffer, std::vector<datagrams::SerializedRoom>& rooms)
+saga::ReceiveRespondRoomsPacket(const std::byte* buffer
+	, std::vector<datagrams::SerializedRoom>& rooms)
 {
 	auto seek = buffer;
 
@@ -124,7 +134,8 @@ saga::ReceiveRespondRoomsPacket(const std::byte* buffer, std::vector<datagrams::
 }
 
 const std::byte*
-saga::ReceiveRespondUsersPacket(const std::byte* buffer, std::vector<datagrams::SerializedMember>& users)
+saga::ReceiveRespondUsersPacket(const std::byte* buffer
+	, std::vector<datagrams::SerializedMember>& users)
 {
 	auto seek = buffer;
 
@@ -132,6 +143,24 @@ saga::ReceiveRespondUsersPacket(const std::byte* buffer, std::vector<datagrams::
 	pk.Read(buffer);
 
 	users = std::move(pk.serializedMembers);
+
+	return seek;
+}
+
+const std::byte*
+saga::ReceivePositionPacket(const std::byte* buffer
+	, int32& client_id
+	, float& x, float& y, float& z)
+{
+	auto seek = buffer;
+
+	SC_UpdatePositionPacket pk{};
+	pk.Read(buffer);
+
+	client_id = pk.clientId;
+	x = pk.x;
+	y = pk.y;
+	z = pk.z;
 
 	return seek;
 }
