@@ -16,7 +16,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		case EPacketProtocol::SC_SIGNIN_SUCCESS:
 		{
 			int32 my_id{};
-			auto offset = ReceiveSignInSucceedPacket(packet_buffer, my_id);
+			ReceiveSignInSucceedPacket(packet_buffer, my_id);
 
 			UE_LOG(LogNet, Log, TEXT("Local client's id is %d"), my_id);
 		}
@@ -25,7 +25,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		case EPacketProtocol::SC_SIGNIN_FAILURE:
 		{
 			int32 error{};
-			auto offset = ReceiveSignInFailurePacket(packet_buffer, error);
+			ReceiveSignInFailurePacket(packet_buffer, error);
 
 			UE_LOG(LogNet, Log, TEXT("Local client can't get an id from server due to %d"), error);
 		}
@@ -34,7 +34,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		case EPacketProtocol::SC_ROOM_CREATED:
 		{
 			int32 room_id{};
-			auto offset = ReceiveRoomCreatedPacket(packet_buffer, room_id);
+			ReceiveRoomCreatedPacket(packet_buffer, room_id);
 
 			USagaNetwork::CurrentRoomId(room_id);
 
@@ -45,7 +45,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		case EPacketProtocol::SC_ROOM_CREATE_FAILED:
 		{
 			RoomContract error{};
-			auto offset = ReceiveRoomCreationFailedPacket(packet_buffer, error);
+			ReceiveRoomCreationFailedPacket(packet_buffer, error);
 
 			const auto msg = std::to_wstring(error);
 			UE_LOG(LogNet, Log, TEXT("Could not create a room due to %d"), msg.data());
@@ -56,7 +56,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		{
 			int32 newbie_id{};
 			int32 room_id{};
-			auto offset = ReceiveRoomJoinedPacket(packet_buffer, newbie_id, room_id);
+			ReceiveRoomJoinedPacket(packet_buffer, newbie_id, room_id);
 
 			if (newbie_id == USagaNetwork::LocalUserId())
 			{
@@ -76,7 +76,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		case EPacketProtocol::SC_ROOM_JOIN_FAILED:
 		{
 			RoomContract error{};
-			auto offset = ReceiveRoomJoinFailedPacket(packet_buffer, error);
+			ReceiveRoomJoinFailedPacket(packet_buffer, error);
 
 			const auto msg = std::to_wstring(error);
 			UE_LOG(LogNet, Log, TEXT("Failed to join to a room due to %s"), msg.data());
@@ -86,7 +86,7 @@ saga::EventRouter(const std::byte* packet_buffer
 		case EPacketProtocol::SC_ROOM_LEFT:
 		{
 			int32 left_client{};
-			auto offset = ReceiveRoomLeftPacket(packet_buffer, left_client);
+			ReceiveRoomLeftPacket(packet_buffer, left_client);
 
 			UE_LOG(LogNet, Log, TEXT("Client %d has been left from room"), left_client);
 		}
