@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 
 #include "SagaVirtualSession.h"
+#include "../Character/SagaCharacterPlayer.h"
 #include "../Utility/MacroHelper.inl"
 #include "SagaVirtualUser.generated.h"
 
@@ -12,4 +13,7 @@ struct SAGAGAME_API FSagaVirtualUser : public FSagaVirtualSession
 
 public:
 	using FSagaVirtualSession::FSagaVirtualSession;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Network|Session")
+	ASagaCharacterPlayer* ownedCharacter;
 };
