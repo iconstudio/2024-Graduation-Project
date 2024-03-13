@@ -30,8 +30,8 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnJoinedRoom(int32 client_id);
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnFailedToJoinRoom(ERoomContract reason);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnLeftRoomBySelf();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnLeftRoom(int32 client_id);
