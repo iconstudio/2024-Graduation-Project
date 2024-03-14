@@ -1,7 +1,6 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
-using System.Collections.Generic;
 
 public class SagaGameEditorTarget : TargetRules
 {
@@ -10,6 +9,15 @@ public class SagaGameEditorTarget : TargetRules
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V4;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
-		ExtraModuleNames.Add("SagaGame");
+		bUseAdaptiveUnityBuild = true;
+		MinFilesUsingPrecompiledHeader = 1;
+		
+		ExtraModuleNames.AddRange(new string[]
+		{
+			"SagaFramework", "SagaAsssetMgr",
+			"SagaUtility",
+			"SagaNetwork",
+			"SagaGame"
+		});
 	}
 }

@@ -5,6 +5,22 @@
 	"Description": "",
 	"Modules": [
 		{
+			"Name": "SagaFramework",
+			"Type": "Runtime"
+		},
+		{
+			"Name": "SagaAssetMgr",
+			"Type": "Runtime"
+		},
+		{
+			"Name": "SagaUtility",
+			"Type": "Runtime"
+		},
+		{
+			"Name": "SagaNetwork",
+			"Type": "Runtime"
+		},
+		{
 			"Name": "SagaGame",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
