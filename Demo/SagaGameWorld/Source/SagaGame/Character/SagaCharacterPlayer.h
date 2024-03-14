@@ -1,9 +1,10 @@
 #pragma once
 #include "CoreMinimal.h"
-#include "Character/SagaCharacterBase.h"
+#include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
-#include "SagaCharacterNPC.h"
 #include "Components/BoxComponent.h"
+#include "SagaCharacterNPC.h"
+#include "Character/SagaCharacterBase.h"
 #include "SagaCharacterPlayer.generated.h"
 
 UCLASS()
