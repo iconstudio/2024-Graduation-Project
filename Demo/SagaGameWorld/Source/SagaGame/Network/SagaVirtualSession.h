@@ -1,42 +1,63 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "UObject/ObjectMacros.h"
+#include "CoreTypes.h"
 #include "Containers/UnrealString.h"
 #include "Templates/UnrealTemplate.h"
-
-#include "../Utility/MacroHelper.inl"
 #include "SagaVirtualSession.generated.h"
 
-UCLASS(BlueprintType, Blueprintable, Abstract, NotPlaceable, Category = "CandyLandSaga|Network|Session")
-class SAGAGAME_API USagaVirtualSession : public UObject
+USTRUCT(BlueprintType, Category = "CandyLandSaga|Network|Session")
+struct SAGAGAME_API FSagaVirtualSession
 {
 	GENERATED_BODY()
 
 public:
-	USagaVirtualSession()
-		: UObject()
-		, MyID(-1), MyName(TEXT("Empty Client"))
-	{}
+	FSagaVirtualSession()
+		: MyID(-1), MyName(TEXT("Empty Client"))
+	{
+	}
 
-	USagaVirtualSession(int32 id)
-		: UObject()
-		, MyID(id), MyName(TEXT("Empty Client"))
-	{}
+	FSagaVirtualSession(int32 id)
+		: MyID(id), MyName(TEXT("Empty Client"))
+	{
+	}
+	
+	FSagaVirtualSession(int32 id, FStringView name)
+		: MyID(id), MyName(name)
+	{
+	}
 
-	USagaVirtualSession(int32 id, FStringView name)
-		: UObject()
-		, MyID(id), MyName(name)
-	{}
+	void Name(const FString& name)
+	{
+		if (name.Len() == 0)
+		{
+			MyName.Reset();
+		}
+		else
+		{
+			MyName = name;
+		}
+	}
+	
+	void Name(FStringView name)
+	{
+		if (name.Len() == 0)
+		{
+			MyName.Reset();
+		}
+		else
+		{
+			MyName = name;
+		}
+	}
 
 	[[nodiscard]]
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
-	constexpr int32 GetID() const noexcept
+	constexpr int32 ID() const noexcept
 	{
 		return MyID;
 	}
 
 	[[nodiscard]]
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
-	constexpr const FString& GetName() const noexcept
+	const FString& Name() const noexcept
 	{
 		return MyName;
 	}
@@ -47,15 +68,33 @@ public:
 	FString MyName;
 };
 
+[[nodiscard]]
+UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
+constexpr int32
+GetID(const FSagaVirtualSession& session)
+noexcept
+{
+	return session.ID();
+}
+
+[[nodiscard]]
+UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
+FString
+GetName(const FSagaVirtualSession& session)
+noexcept
+{
+	return session.Name();
+}
+
 namespace saga
 {
-	using ::USagaVirtualSession;
+	using ::FSagaVirtualSession;
 
 	struct SAGAGAME_API FSagaSessionComparator final
 	{
 		[[nodiscard]]
 		constexpr bool
-			operator()(const USagaVirtualSession& lhs, const USagaVirtualSession& rhs)
+			operator()(const FSagaVirtualSession& lhs, const FSagaVirtualSession& rhs)
 			const noexcept
 		{
 			return lhs.MyID == rhs.MyID;
@@ -63,7 +102,7 @@ namespace saga
 
 		[[nodiscard]]
 		constexpr bool
-			operator()(const USagaVirtualSession& lhs, const int32& id)
+			operator()(const FSagaVirtualSession& lhs, const int32& id)
 			const noexcept
 		{
 			return lhs.MyID == id;
@@ -78,7 +117,7 @@ namespace saga
 
 		[[nodiscard]]
 		constexpr bool
-			operator()(const USagaVirtualSession& lhs)
+			operator()(const FSagaVirtualSession& lhs)
 			const noexcept
 		{
 			return lhs.MyID == cmpId;
