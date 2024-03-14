@@ -1,7 +1,6 @@
 #pragma once
-#include "BasicIncludes.inl"
-
 #include "SagaPlayerControllerBase.h"
+
 #include "SagaGameController.generated.h"
 
 UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|Game Mode|Controller")
