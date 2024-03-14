@@ -1,8 +1,8 @@
 #include "SagaGameInitializationMode.h"
-#include "../Network/SagaNetwork.h"
+#include "Network/SagaNetwork.h"
 
 ASagaGameInitializationMode::ASagaGameInitializationMode()
-	: ASagaGameModeBase()
+	: ASagaUserInterfaceModeBase()
 {
 	auto instance = saga::USagaNetwork::Instance();
 }

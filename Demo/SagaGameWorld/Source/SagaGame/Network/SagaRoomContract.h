@@ -5,7 +5,6 @@
 #include <string>
 #include <string_view>
 #include <format>
-#include "../Utility/MacroHelper.inl"
 #include "SagaRoomContract.generated.h"
 
 UENUM(BlueprintType)

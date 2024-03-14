@@ -1,11 +1,11 @@
 #pragma once
 #include "CoreMinimal.h"
 
-#include "SagaGameModeBase.h"
+#include "SagaUserInterfaceModeBase.h"
 #include "SagaNetworkReadyMode.generated.h"
 
 UCLASS(BlueprintType, Category = "CandyLandSaga|Game Mode")
-class SAGAGAME_API ASagaNetworkReadyMode : public ASagaGameModeBase
+class SAGAGAME_API ASagaNetworkReadyMode : public ASagaUserInterfaceModeBase
 {
 	GENERATED_BODY()
 

@@ -4,7 +4,6 @@
 
 #include "SagaVirtualUser.h"
 #include "SagaVirtualRoom.h"
-#include "../Utility/MacroHelper.inl"
 #include "SagaNetworkFunctionLibrary.generated.h"
 
 UCLASS()

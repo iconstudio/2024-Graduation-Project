@@ -1,4 +1,4 @@
-#include "SagaInGameMode.h"
+#include "GameModes/SagaInGameMode.h"
 
 ASagaInGameMode::ASagaInGameMode()
 	: ASagaGameModeBase()

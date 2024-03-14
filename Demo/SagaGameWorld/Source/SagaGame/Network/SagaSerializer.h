@@ -1,6 +1,6 @@
 #pragma once
-#include "../Utility/Constraints.h"
-#include "../Utility/Byte.h"
+#include "Utility/Constraints.h"
+#include "Utility/Byte.h"
 #include <cstdint>
 #include <cmath>
 #include <stdexcept>
