@@ -1,8 +1,5 @@
 #pragma once
-#ifndef SAGAGAME_INC_GAMEMODE
-#define SAGAGAME_INC_GAMEMODE
-#include "BasicIncludes.inl"
-#endif
+#include "Utility/HeaderHelper.inl"
 #include "GameFramework/PlayerController.h"
 
 #include "SagaPlayerControllerBase.generated.h"

@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "Utility/HeaderHelper.inl"
 
 #include "SagaGameModeBase.h"
 #include "SagaInGameMode.generated.h"
