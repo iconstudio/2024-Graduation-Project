@@ -1,4 +1,4 @@
-#include "SagaGameModeBase.h"
+#include "GameModes/SagaGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
 ASagaGameModeBase::ASagaGameModeBase()

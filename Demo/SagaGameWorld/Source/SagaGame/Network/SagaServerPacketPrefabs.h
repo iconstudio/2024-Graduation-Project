@@ -60,7 +60,8 @@ namespace saga::inline sc
 			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
 			, clientId(-1), rpcScript()
 			, rpcArgument()
-		{}
+		{
+		}
 
 		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t* begin, const wchar_t* end)
 			noexcept
