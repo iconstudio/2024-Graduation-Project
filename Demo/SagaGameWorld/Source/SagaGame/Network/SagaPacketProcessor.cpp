@@ -7,7 +7,6 @@
 const std::byte*
 saga::ReceiveSignInSucceedPacket(const std::byte* buffer, int32& my_id)
 {
-
 	auto seek = buffer;
 
 	SC_SucceedSignInPacket pk{};
