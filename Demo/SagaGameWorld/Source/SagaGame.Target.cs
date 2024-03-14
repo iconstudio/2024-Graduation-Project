@@ -10,9 +10,14 @@ public class SagaGameTarget : TargetRules
 		DefaultBuildSettings = BuildSettingsVersion.V4;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_3;
 		bUseAdaptiveUnityBuild = true;
-		bUseUnityBuild = true;
 		MinFilesUsingPrecompiledHeader = 1;
-		
-		ExtraModuleNames.Add("SagaGame");
+
+		ExtraModuleNames.AddRange(new string[]
+		{
+			"SagaFramework", "SagaAsssetMgr",
+			"SagaUtility",
+			"SagaNetwork",
+			"SagaGame"
+		});
 	}
 }
