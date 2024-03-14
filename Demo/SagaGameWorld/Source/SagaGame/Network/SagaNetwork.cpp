@@ -3,7 +3,7 @@
 
 #include "SagaNetworkSettings.h"
 #include "SagaNetworkUtility.h"
-#include "SagaPacketSenders.h"
+#include "SagaClientPacketPrefabs.h"
 #include "SagaNetworkWorker.h"
 
 namespace
@@ -19,9 +19,9 @@ namespace
 	TArray<saga::FSagaBasicPacket*> taskQueue{};
 
 	/// <remarks>로컬 플레이어도 포함</remarks>
-	TArray<USagaVirtualUser> everyUsers{};
+	TArray<FSagaVirtualUser> everyUsers{};
 	TAtomic<bool> wasUsersUpdated = true;
-	TArray<USagaVirtualRoom> everyRooms{};
+	TArray<FSagaVirtualRoom> everyRooms{};
 	TAtomic<bool> wasRoomsUpdated = true;
 
 	constinit int32 localUserId = -1;
@@ -80,20 +80,20 @@ saga::USagaNetwork::Start(FStringView nickname)
 }
 
 void
-saga::USagaNetwork::AddUser(const USagaVirtualUser& client)
+saga::USagaNetwork::AddUser(const FSagaVirtualUser& client)
 {
 	everyUsers.Add(client);
 	wasUsersUpdated = true;
 }
 
 void
-saga::USagaNetwork::AddUser(USagaVirtualUser&& client)
+saga::USagaNetwork::AddUser(FSagaVirtualUser&& client)
 {
 	everyUsers.Add(std::move(client));
 	wasUsersUpdated = true;
 }
 
-std::optional<USagaVirtualUser*>
+std::optional<FSagaVirtualUser*>
 saga::USagaNetwork::FindUser(int32 id)
 noexcept
 {
@@ -130,20 +130,20 @@ noexcept
 }
 
 void
-saga::USagaNetwork::AddRoom(const USagaVirtualRoom& room)
+saga::USagaNetwork::AddRoom(const FSagaVirtualRoom& room)
 {
 	everyRooms.Add(room);
 	wasRoomsUpdated = true;
 }
 
 void
-saga::USagaNetwork::AddRoom(USagaVirtualRoom&& room)
+saga::USagaNetwork::AddRoom(FSagaVirtualRoom&& room)
 {
 	everyRooms.Add(std::move(room));
 	wasRoomsUpdated = true;
 }
 
-std::optional<USagaVirtualRoom*>
+std::optional<FSagaVirtualRoom*>
 saga::USagaNetwork::FindRoom(int32 id)
 noexcept
 {
@@ -158,7 +158,7 @@ noexcept
 	}
 }
 
-std::optional<USagaVirtualRoom*>
+std::optional<FSagaVirtualRoom*>
 saga::USagaNetwork::RoomAt(int32 index)
 noexcept
 {
@@ -305,20 +305,6 @@ noexcept
 	return *clientSocket;
 }
 
-const TArray<USagaVirtualUser>&
-saga::USagaNetwork::GetPlayerList()
-noexcept
-{
-	return everyUsers;
-}
-
-const TArray<USagaVirtualRoom>&
-saga::USagaNetwork::GetRoomList()
-noexcept
-{
-	return everyRooms;
-}
-
 bool
 saga::USagaNetwork::HasUser(int32 id)
 noexcept
@@ -326,23 +312,9 @@ noexcept
 	return everyUsers.ContainsByPredicate(FSagaSessionIdComparator{ id });
 }
 
-int32
-saga::USagaNetwork::NumberOfMember()
-noexcept
-{
-	return everyUsers.Num();
-}
-
 bool saga::USagaNetwork::HasRoom(int32 id) noexcept
 {
 	return everyRooms.ContainsByPredicate(FSagaSessionIdComparator{ id });
-}
-
-int32
-saga::USagaNetwork::NumberOfRoom()
-noexcept
-{
-	return everyRooms.Num();
 }
 
 bool
@@ -445,15 +417,15 @@ namespace
 			// #1
 			// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
 
-			auto sent_r = saga::SendSignInPacket(localUserName);
-			if (not sent_r.has_value())
+			const saga::CS_SignInPacket packet{ localUserName.GetCharArray().GetData(), static_cast<size_t>(localUserName.Len()) };
+			auto ptr = packet.Serialize();
+			UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *localUserName);
+
+			const int32 sent_bytes = saga::RawSend(clientSocket, ptr.get(), packet.WannabeSize());
+			if (sent_bytes <= 0)
 			{
-				UE_LOG(LogNet, Error, TEXT("First try of sending signin packet has been failed."));
+				UE_LOG(LogNet, Error, TEXT("First send of signin is failed."));
 				return false;
-			}
-			else
-			{
-				UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *localUserName);
 			}
 		}
 
@@ -466,6 +438,63 @@ namespace
 
 		return true;
 	}
+
+}
+
+FSocket&
+SagaNetworkGetSocket()
+noexcept
+{
+	return *clientSocket;
+}
+
+bool
+SagaNetworkHasSocket()
+noexcept
+{
+	return saga::USagaNetwork::IsSocketAvailable();
+}
+
+int32
+SagaNetworkLocalPlayerID()
+noexcept
+{
+	return localUserId;
+}
+
+FString
+SagaNetworkLocalPlayerName()
+noexcept
+{
+	return localUserName;
+}
+
+int32
+SagaNetworkCurrentRoomID()
+noexcept
+{
+	return currentRoomId;
+}
+
+FString
+SagaNetworkCurrentRoomTitle()
+noexcept
+{
+	return currentRoomTitle;
+}
+
+const TArray<FSagaVirtualUser>&
+GetPlayerList()
+noexcept
+{
+	return everyUsers;
+}
+
+const TArray<FSagaVirtualRoom>&
+GetRoomList()
+noexcept
+{
+	return everyRooms;
 }
 
 void

@@ -8,6 +8,30 @@
 #include "SagaVirtualUser.h"
 #include "SagaVirtualRoom.h"
 
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+FSocket& SagaNetworkGetSocket() noexcept;
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+bool SagaNetworkHasSocket() noexcept;
+
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+int32 SagaNetworkLocalPlayerID() noexcept;
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+FString SagaNetworkLocalPlayerName() noexcept;
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+int32 SagaNetworkCurrentRoomID() noexcept;
+[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+FString SagaNetworkCurrentRoomTitle() noexcept;
+
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+const TArray<FSagaVirtualUser>& GetPlayerList() noexcept;
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+const TArray<FSagaVirtualRoom>& GetRoomList() noexcept;
+
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+void UpdatePlayerList();
+[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+void UpdateRoomList();
+
 namespace saga
 {
 	class SAGAGAME_API USagaNetwork final
@@ -37,29 +61,22 @@ namespace saga
 
 		/* Overall Clients Methods */
 
-		static void AddUser(const USagaVirtualUser& client);
-		static void AddUser(USagaVirtualUser&& client);
-		[[nodiscard]] static std::optional<USagaVirtualUser*> FindUser(int32 id) noexcept;
+		static void AddUser(const FSagaVirtualUser& client);
+		static void AddUser(FSagaVirtualUser&& client);
+		[[nodiscard]] static std::optional<FSagaVirtualUser*> FindUser(int32 id) noexcept;
 		static bool RemoveUser(int32 id) noexcept;
 		static void ClearUserList() noexcept;
 		[[nodiscard]] static bool HasUser(int32 id) noexcept;
-		[[nodiscard]] static int32 NumberOfMember() noexcept;
-
+		
 		/* Overall Rooms Methods */
 
-		static void AddRoom(const USagaVirtualRoom& room);
-		static void AddRoom(USagaVirtualRoom&& room);
-		[[nodiscard]] static std::optional<USagaVirtualRoom*> FindRoom(int32 id) noexcept;
-		[[nodiscard]] static std::optional<USagaVirtualRoom*> RoomAt(int32 index) noexcept;
+		static void AddRoom(const FSagaVirtualRoom& room);
+		static void AddRoom(FSagaVirtualRoom&& room);
+		[[nodiscard]] static std::optional<FSagaVirtualRoom*> FindRoom(int32 id) noexcept;
+		[[nodiscard]] static std::optional<FSagaVirtualRoom*> RoomAt(int32 index) noexcept;
 		static bool RemoveRoom(int32 id) noexcept;
 		static void ClearRoomList() noexcept;
 		[[nodiscard]] static bool HasRoom(int32 id) noexcept;
-		[[nodiscard]] static int32 NumberOfRoom() noexcept;
-
-		/* RPC Methods */
-
-		template<typename... Ts>
-		using RpcDelegateType = TFunction<void(Ts...)>;
 
 		/* Task Methods */
 
@@ -71,8 +88,7 @@ namespace saga
 		/* Getters */
 
 		[[nodiscard]] static FSocket& GetLocalSocket() noexcept;
-		[[nodiscard]] static const TArray<USagaVirtualUser>& GetPlayerList() noexcept;
-		[[nodiscard]] static const TArray<USagaVirtualRoom>& GetRoomList() noexcept;
+
 		/* Observers */
 
 		[[nodiscard]] static bool IsSocketAvailable() noexcept;
