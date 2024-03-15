@@ -308,7 +308,7 @@ noexcept
 }
 
 const TArray<FSagaVirtualUser>&
-saga::USagaNetwork::GetPlayerList()
+saga::USagaNetwork::GetUserList()
 noexcept
 {
 	return everyUsers;

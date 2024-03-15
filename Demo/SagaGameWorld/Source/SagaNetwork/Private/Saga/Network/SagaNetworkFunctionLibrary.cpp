@@ -49,10 +49,10 @@ noexcept
 }
 
 const TArray<FSagaVirtualUser>&
-USagaNetworkFunctionLibrary::GetPlayerList()
+USagaNetworkFunctionLibrary::GetUserList()
 noexcept
 {
-	return saga::USagaNetwork::GetPlayerList();
+	return saga::USagaNetwork::GetUserList();
 }
 
 const TArray<FSagaVirtualRoom>&
@@ -73,7 +73,7 @@ USagaNetworkFunctionLibrary::AwaitPlayerList(TPromise<bool> promise)
 	});
 
 	// TODO: AwaitPlayerList
-	return saga::USagaNetwork::GetPlayerList();
+	return saga::USagaNetwork::GetUserList();
 }
 
 const TArray<FSagaVirtualRoom>&
