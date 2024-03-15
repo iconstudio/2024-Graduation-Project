@@ -18,14 +18,14 @@ public:
 	USagaComboActionData();
 
 	UPROPERTY(EditAnywhere, Category = Name)
-	FString MontageSectionNamePrefix; //¸ùÅ¸ÁÖ ¼½¼Ç ÀÌ¸§ ÀúÀå
+	FString MontageSectionNamePrefix; //ëª½íƒ€ì£¼ ì„¹ì…˜ ì´ë¦„ ì €ì¥
 
 	UPROPERTY(EditAnywhere, Category = Name)
-	uint8 MaxComboCount;			  //ÄŞº¸¾×¼Ç ÃÑ °³¼ö
+	uint8 MaxComboCount;			  //ì½¤ë³´ì•¡ì…˜ ì´ ê°œìˆ˜
 
 	UPROPERTY(EditAnywhere, Category = Name)
-	float FrameRate;				//ÇÁ·¹ÀÓ ±âÁØ Àç»ı¼Óµµ. Á¤È®ÇÑ Å¸ÀÌ¹Ö¿¡ Ã¼Å©µÇµµ·Ï.
+	float FrameRate;				//í”„ë ˆì„ ê¸°ì¤€ ì¬ìƒì†ë„. ì •í™•í•œ íƒ€ì´ë°ì— ì²´í¬ë˜ë„ë¡.
 
 	UPROPERTY(EditAnywhere, Category = ComboData)
-	TArray<float> EffectiveFrameCount; //ÀÔ·ÂÀÌ »çÀü¿¡ ÀÔ·ÂµÈ°ÇÁö °¨ÁöÇÏ´Â ÇÁ·¹ÀÓ
+	TArray<float> EffectiveFrameCount; //ì…ë ¥ì´ ì‚¬ì „ì— ì…ë ¥ëœê±´ì§€ ê°ì§€í•˜ëŠ” í”„ë ˆì„
 };

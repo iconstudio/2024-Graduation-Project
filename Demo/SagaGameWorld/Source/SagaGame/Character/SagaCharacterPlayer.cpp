@@ -1,27 +1,24 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Character/SagaCharacterPlayer.h"
-#include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
 #include "InputMappingContext.h"
+#include "SagaCharacterControlData.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "SagaCharacterControlData.h"
-#include "GameFramework/CharacterMovementComponent.h"
+
 #include "Item/Items.h"
 #include "Item/InventoryComponent.h"
-
  
 ASagaCharacterPlayer::ASagaCharacterPlayer()
 {
 	PlayerHP = 150.0f;
 	bIsRiding = false;
 
-	WalkSpeed = 500.0f; // ±âº» °È±â ¼Óµµ
-	SprintSpeed = 1000.0f; // ´Ş¸®±â ¼Óµµ
+	WalkSpeed = 500.0f; // ê¸°ë³¸ ê±·ê¸° ì†ë„
+	SprintSpeed = 1000.0f; // ë‹¬ë¦¬ê¸° ì†ë„
 
-	//Ä«¸Ş¶ó
+	//ì¹´ë©”ë¼
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 400.0f;
@@ -31,15 +28,15 @@ ASagaCharacterPlayer::ASagaCharacterPlayer()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
-	//ÀÎº¥Åä¸®
+	//ì¸ë²¤í† ë¦¬
 	Inventory = CreateDefaultSubobject<UInventoryComponent>("Inventory");
 	//Inventory->Capacity = 20;
 
-	//»óÈ£ÀÛ¿ë
+	//ìƒí˜¸ì‘ìš©
 	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
 	InteractionBox->SetupAttachment(RootComponent);
 
-	//ÀÔ·Â
+	//ì…ë ¥
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Jump.IA_Jump'"));
 	if (nullptr != InputActionJumpRef.Object)
 	{
@@ -114,11 +111,11 @@ void ASagaCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Play
 	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::QuaterMove);
 	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::Attack);
 
-	//´Ş¸®±â
+	//ë‹¬ë¦¬ê¸°
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ASagaCharacterPlayer::OnStartSprinting);
 	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASagaCharacterPlayer::OnStopSprinting);
 	
-	//NPC¿Í »óÈ£ÀÛ¿ë
+	//NPCì™€ ìƒí˜¸ì‘ìš©
 	EnhancedInputComponent->BindAction(InteractionWithNPC, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::GetOnNPC);
 
 }
@@ -171,7 +168,7 @@ void ASagaCharacterPlayer::UseItem(UItems* Item)
 	if (Item)
 	{
 		Item->Use(this);
-		Item->OnUse(this); //ºí·çÇÁ¸°Æ® ÀÌº¥Æ®
+		Item->OnUse(this); //ë¸”ë£¨í”„ë¦°íŠ¸ ì´ë²¤íŠ¸
 	}
 }
 
@@ -180,9 +177,9 @@ void ASagaCharacterPlayer::SetNearbyNPC(ASagaCharacterNPC* NPC)
 {
 	NearbyNPC = NPC;
 
-	UE_LOG(LogTemp, Warning, TEXT("»óÈ£ÀÛ¿ë ¹ß»ı!"));
+	UE_LOG(LogTemp, Warning, TEXT("ìƒí˜¸ì‘ìš© ë°œìƒ!"));
 
-	//// »óÈ£ÀÛ¿ë ÇÁ·ÒÇÁÆ® Ç¥½Ã (¿¹: "F¸¦ ´­·¯ »óÈ£ÀÛ¿ë")
+	//// ìƒí˜¸ì‘ìš© í”„ë¡¬í”„íŠ¸ í‘œì‹œ (ì˜ˆ: "Fë¥¼ ëˆŒëŸ¬ ìƒí˜¸ì‘ìš©")
 	//ShowInteractionPrompt(true);
 }
 
@@ -190,7 +187,7 @@ void ASagaCharacterPlayer::SetCharacterControlData(const USagaCharacterControlDa
 {
 	Super::SetCharacterControlData(CharacterControlData);
 
-	//Ä«¸Ş¶ó ½ºÇÁ¸µ¾Ï ¼³Á¤
+	//ì¹´ë©”ë¼ ìŠ¤í”„ë§ì•” ì„¤ì •
 	CameraBoom->TargetArmLength = CharacterControlData->TargetArmLength;
 	CameraBoom->SetRelativeRotation(CharacterControlData->RelativeRotation);
 	CameraBoom->bUsePawnControlRotation = CharacterControlData->bUsePawnControlRotation;
@@ -226,7 +223,7 @@ void ASagaCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 {
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	
-	//movementº¤ÅÍ¸¦ ¹Ş¾Æ Å©±â¸¦ 1·Î Á¶Á¤ÇÑµÚ Forward¹æÇâÀ» »ç¿ëÇØ ÁöÁ¤ÇÏ¸é movement component¿¡¼­ ¼³Á¤ÇÑ ¿É¼Ç¿¡ ÀÇÇØ Ä³¸¯ÅÍ°¡ ÀÚµ¿À¸·Î ÀÌµ¿ÇÏ´Â ¹æÇâÀ¸·Î È¸ÀüÇÏ°Ô µÈ´Ù.
+	//movementë²¡í„°ë¥¼ ë°›ì•„ í¬ê¸°ë¥¼ 1ë¡œ ì¡°ì •í•œë’¤ Forwardë°©í–¥ì„ ì‚¬ìš©í•´ ì§€ì •í•˜ë©´ movement componentì—ì„œ ì„¤ì •í•œ ì˜µì…˜ì— ì˜í•´ ìºë¦­í„°ê°€ ìë™ìœ¼ë¡œ ì´ë™í•˜ëŠ” ë°©í–¥ìœ¼ë¡œ íšŒì „í•˜ê²Œ ëœë‹¤.
 	float InputSizeSquared = MovementVector.SquaredLength();
 	float MovementVectorSize = 1.0f;
 	float MovementVectorSizeSquared = MovementVector.SquaredLength();
@@ -255,29 +252,29 @@ void ASagaCharacterPlayer::Attack()
 
 void ASagaCharacterPlayer::InteractWithNPC()
 {
-	// NPC¿ÍÀÇ »óÈ£ÀÛ¿ë ·ÎÁ÷
+	// NPCì™€ì˜ ìƒí˜¸ì‘ìš© ë¡œì§
 	if (bIsRiding)
 	{
-		// ÇÏÂ÷ ·ÎÁ÷
+		// í•˜ì°¨ ë¡œì§
 		bIsRiding = false;
-		// ÇÃ·¹ÀÌ¾î ÄÁÆ®·Ñ º¹¿ø ÄÚµå ÀÛ¼ºÇÒ°Í
+		// í”Œë ˆì´ì–´ ì»¨íŠ¸ë¡¤ ë³µì› ì½”ë“œ ì‘ì„±í• ê²ƒ
 	}
 	else
 	{
-		// Å¾½Â ·ÎÁ÷
+		// íƒ‘ìŠ¹ ë¡œì§
 		bIsRiding = true;
-		// NPC ÄÁÆ®·Ñ ·ÎÁ÷ / NPC¸¦ ÇÃ·¹ÀÌ¾îÀÇ ÀÚ½Ä ÄÄÆ÷³ÍÆ®·Î ¼³Á¤
+		// NPC ì»¨íŠ¸ë¡¤ ë¡œì§ / NPCë¥¼ í”Œë ˆì´ì–´ì˜ ìì‹ ì»´í¬ë„ŒíŠ¸ë¡œ ì„¤ì •
 		
 	}
 }
 
-void ASagaCharacterPlayer::OnStartSprinting() //Shift·Î ´Ş¸®±â
+void ASagaCharacterPlayer::OnStartSprinting() //Shiftë¡œ ë‹¬ë¦¬ê¸°
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Started Sprinting"));
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 }
 
-void ASagaCharacterPlayer::OnStopSprinting() //Shift ¾È´©¸¦½Ã ´Ş¸®±â ÇØÁ¦
+void ASagaCharacterPlayer::OnStopSprinting() //Shift ì•ˆëˆ„ë¥¼ì‹œ ë‹¬ë¦¬ê¸° í•´ì œ
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Stopped Sprinting"));
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;

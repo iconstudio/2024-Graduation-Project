@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -7,7 +5,7 @@
 #include "SagaCharacterStatComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnHpZeroDelegate);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHpChangedDelegate, float /*CurrentHp*/); //º¯°æµÈ ÇöÀç hp°ªÀ» ±¸µ¶ÇÑ °´Ã¼¿¡ º¸³»µµ·Ï
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHpChangedDelegate, float /*CurrentHp*/); //ë³€ê²½ëœ í˜„ì¬ hpê°’ì„ êµ¬ë…í•œ ê°ì²´ì— ë³´ë‚´ë„ë¡
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SAGAGAME_API USagaCharacterStatComponent : public UActorComponent
@@ -36,7 +34,7 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, Category = Stat)
 	float MaxHp;
 
-	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat) //Transient: ÄÄ µğ½ºÅ©¿¡ ÀúÀå ¾ÈÇÔ(½Ç½Ã°£À¸·Î º¯È­ÇÏ´Âµ¥ÀÌÅÍ)
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat) //Transient: ì»´ ë””ìŠ¤í¬ì— ì €ì¥ ì•ˆí•¨(ì‹¤ì‹œê°„ìœ¼ë¡œ ë³€í™”í•˜ëŠ”ë°ì´í„°)
 	float CurrentHp;
 		
 };

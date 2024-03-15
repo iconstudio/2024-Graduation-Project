@@ -24,20 +24,20 @@ float USagaCharacterStatComponent::ApplyDamage(float InDamage)
 	const float PrevHp = CurrentHp;
 	const float ActualDamage = FMath::Clamp<float>(InDamage, 0, InDamage);
 
-	SetHp(PrevHp - ActualDamage); //0º¸´Ù ÀÛÁö ¾Ê°í MaxHp¸¦ ÃÊ°úÇÏÁö ¾Êµµ·Ï Á¦¾î
+	SetHp(PrevHp - ActualDamage); //0ë³´ë‹¤ ì‘ì§€ ì•Šê³  MaxHpë¥¼ ì´ˆê³¼í•˜ì§€ ì•Šë„ë¡ ì œì–´
 	if (CurrentHp <= KINDA_SMALL_NUMBER)
 	{
-		//Á×¾úÀ»¶§ÀÇ ÀÌº¥Æ® ½ÇÇà
+		//ì£½ì—ˆì„ë•Œì˜ ì´ë²¤íŠ¸ ì‹¤í–‰
 		OnHpZero.Broadcast();
 	}
 	return ActualDamage;
 }
 
-void USagaCharacterStatComponent::SetHp(float NewHp) //hpº¯µ¿µÉ¶§ ½ÇÇàÇÏ´Â ÇÔ¼ö
+void USagaCharacterStatComponent::SetHp(float NewHp) //hpë³€ë™ë ë•Œ ì‹¤í–‰í•˜ëŠ” í•¨ìˆ˜
 {
-	//hp°¡ º¯°æµÇ·Á¸é ÀÌ ÇÔ¼ö¸¦ °ÅÃÄ¾ß ÇÕ´Ï´Ù.
+	//hpê°€ ë³€ê²½ë˜ë ¤ë©´ ì´ í•¨ìˆ˜ë¥¼ ê±°ì³ì•¼ í•©ë‹ˆë‹¤.
 	CurrentHp = FMath::Clamp<float>(NewHp, 0.0f, MaxHp);
 
-	//hp¹Ù²î¾ú´Ù´Â ½ÅÈ£ º¸³»±â
+	//hpë°”ë€Œì—ˆë‹¤ëŠ” ì‹ í˜¸ ë³´ë‚´ê¸°
 	OnHpChanged.Broadcast(CurrentHp);
 }
