@@ -1,15 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "UI/SagaWidgetComponent.h"
-#include "SagaUserWidget.h"
+#include "Saga/Interface/SagaUserWidget.h"
 
-void USagaWidgetComponent::InitWidget()
+void
+USagaWidgetComponent::InitWidget()
 {
 	Super::InitWidget();
 
 	USagaUserWidget* SagaUserWidget = Cast<USagaUserWidget>(GetWidget());
-	if (SagaUserWidget)
+	if (SagaUserWidget != nullptr)
 	{
 		SagaUserWidget->SetOwningActor(GetOwner());
 	}
