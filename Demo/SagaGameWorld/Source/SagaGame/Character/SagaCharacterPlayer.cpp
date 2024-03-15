@@ -172,17 +172,6 @@ void ASagaCharacterPlayer::UseItem(UItems* Item)
 	}
 }
 
-
-void ASagaCharacterPlayer::SetNearbyNPC(ASagaCharacterNPC* NPC)
-{
-	NearbyNPC = NPC;
-
-	UE_LOG(LogTemp, Warning, TEXT("상호작용 발생!"));
-
-	//// 상호작용 프롬프트 표시 (예: "F를 눌러 상호작용")
-	//ShowInteractionPrompt(true);
-}
-
 void ASagaCharacterPlayer::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
 {
 	Super::SetCharacterControlData(CharacterControlData);
@@ -250,23 +239,23 @@ void ASagaCharacterPlayer::Attack()
 }
 
 
-void ASagaCharacterPlayer::InteractWithNPC()
-{
-	// NPC와의 상호작용 로직
-	if (bIsRiding)
-	{
-		// 하차 로직
-		bIsRiding = false;
-		// 플레이어 컨트롤 복원 코드 작성할것
-	}
-	else
-	{
-		// 탑승 로직
-		bIsRiding = true;
-		// NPC 컨트롤 로직 / NPC를 플레이어의 자식 컴포넌트로 설정
-		
-	}
-}
+//void ASagaCharacterPlayer::InteractWithNPC()
+//{
+//	// NPC와의 상호작용 로직
+//	if (bIsRiding)
+//	{
+//		// 하차 로직
+//		bIsRiding = false;
+//		// 플레이어 컨트롤 복원 코드 작성할것
+//	}
+//	else
+//	{
+//		// 탑승 로직
+//		bIsRiding = true;
+//		// NPC 컨트롤 로직 / NPC를 플레이어의 자식 컴포넌트로 설정
+//		
+//	}
+//}
 
 void ASagaCharacterPlayer::OnStartSprinting() //Shift로 달리기
 {
@@ -282,5 +271,14 @@ void ASagaCharacterPlayer::OnStopSprinting() //Shift 안누를시 달리기 해�
 
 void ASagaCharacterPlayer::GetOnNPC()
 {
+	//오버랩 된 NPC를 가져온 뒤 해당 NPC로 플레이어의 입력을 전달해야 함!!! 구현할 것.
+
+
+	/*ASagaCharacterNPC* NearestNPC;
+	if (NearestNPC)
+	{
+		AttachToActor(NearestNPC, FAttachmentTransformRules::KeepWorldTransform);
+	}*/
+
 	UE_LOG(LogTemp, Warning, TEXT("OnNPC"));
 }
