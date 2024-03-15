@@ -14,7 +14,7 @@ class SAGAGAME_API ASagaCharacterPlayer : public ASagaCharacterBase
 	
 public:
 	ASagaCharacterPlayer();
-	void InteractWithNPC();
+	//void InteractWithNPC();
 
 private:
 	int8 bIsRiding;
@@ -41,9 +41,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Item)
 	void UseItem(class UItems* Item);
-	
 
-	void SetNearbyNPC(ASagaCharacterNPC* NPC);
+	UFUNCTION(BlueprintCallable, Category = NPC)
+	void GetOnNPC();
+	
 
 	//캐릭터 컨트롤 부분
 protected:
@@ -89,7 +90,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> InteractionWithNPC;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = NPC)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = NPC)
 	ASagaCharacterNPC* NearbyNPC;
 
 	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
@@ -106,6 +107,4 @@ protected:
 
 	void OnStartSprinting();
 	void OnStopSprinting();
-
-	void GetOnNPC();
 };

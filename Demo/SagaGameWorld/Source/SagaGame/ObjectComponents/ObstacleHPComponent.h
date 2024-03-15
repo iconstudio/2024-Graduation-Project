@@ -28,7 +28,7 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, Category = Obstacles)
-	float Health = 30.0f;
+	float Health = 90.0f;
 
 	void CheckDeath();
 
