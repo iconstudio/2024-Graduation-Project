@@ -3,4 +3,5 @@
 #define SAGAUTILITY_H
 
 #include "Engine.h"
+#include <cstddef>
 #endif
