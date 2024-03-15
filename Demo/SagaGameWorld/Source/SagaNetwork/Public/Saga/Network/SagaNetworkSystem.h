@@ -63,9 +63,10 @@ namespace saga
 		static void AddUser(FSagaVirtualUser&& client);
 		[[nodiscard]] static std::optional<FSagaVirtualUser*> FindUser(int32 id) noexcept;
 		static bool RemoveUser(int32 id) noexcept;
+		[[nodiscard]] static const TArray<FSagaVirtualUser>& GetUserList() noexcept;
 		static void ClearUserList() noexcept;
 		[[nodiscard]] static bool HasUser(int32 id) noexcept;
-		
+
 		/* Overall Rooms Methods */
 
 		static void AddRoom(const FSagaVirtualRoom& room);
@@ -73,6 +74,7 @@ namespace saga
 		[[nodiscard]] static std::optional<FSagaVirtualRoom*> FindRoom(int32 id) noexcept;
 		[[nodiscard]] static std::optional<FSagaVirtualRoom*> RoomAt(int32 index) noexcept;
 		static bool RemoveRoom(int32 id) noexcept;
+		[[nodiscard]] static const TArray<FSagaVirtualRoom>& GetRoomList() noexcept;
 		static void ClearRoomList() noexcept;
 		[[nodiscard]] static bool HasRoom(int32 id) noexcept;
 

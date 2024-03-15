@@ -7,8 +7,8 @@
 
 namespace saga
 {
-	std::optional<int32> SendSignInPacket();
-	std::optional<int32> SendCreateRoomPacket(FString title);
+	std::optional<int32> SendSignInPacket(FStringView nickname);
+	std::optional<int32> SendCreateRoomPacket(FStringView title);
 	std::optional<int32> SendJoinRoomPacket(int32 room_id);
 	std::optional<int32> SendLeaveRoomPacket();
 	std::optional<int32> SendRequestVersionPacket();
@@ -16,7 +16,7 @@ namespace saga
 	std::optional<int32> SendRequestMembersPacket();
 	std::optional<int32> SendGameStartPacket();
 	std::optional<int32> SendGameIsLoadedPacket();
-	std::optional<int32> SendPositionPacket();
+	std::optional<int32> SendPositionPacket(float x, float y, float z);
 }
 
 #endif // !SAGAFRAMEWORK_NET_PACKET_SENDERS_H
