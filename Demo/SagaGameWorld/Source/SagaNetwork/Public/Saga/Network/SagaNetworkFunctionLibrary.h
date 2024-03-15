@@ -27,7 +27,7 @@ public:
 	static FString SagaNetworkCurrentRoomTitle() noexcept;
 
 	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static const TArray<FSagaVirtualUser>& GetPlayerList() noexcept;
+	static const TArray<FSagaVirtualUser>& GetUserList() noexcept;
 	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	static const TArray<FSagaVirtualRoom>& GetRoomList() noexcept;
 	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")

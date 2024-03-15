@@ -21,7 +21,7 @@ int32 SagaNetworkCurrentRoomID() noexcept;
 FString SagaNetworkCurrentRoomTitle() noexcept;
 
 [[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-const TArray<FSagaVirtualUser>& GetPlayerList() noexcept;
+const TArray<FSagaVirtualUser>& GetUserList() noexcept;
 [[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 const TArray<FSagaVirtualRoom>& GetRoomList() noexcept;
 
