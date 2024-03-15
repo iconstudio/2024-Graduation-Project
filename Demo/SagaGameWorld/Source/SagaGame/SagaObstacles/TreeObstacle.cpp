@@ -20,6 +20,10 @@ ATreeObstacle::ATreeObstacle()
     RootComponent = MeshComponent;
 
     MeshComponent->SetCollisionProfileName(TEXT("SagaCapsule"));
+    MeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+
+    SetActorScale3D(FVector(8.0f, 8.0f, 8.0f));
 
 }
 
