@@ -14,8 +14,8 @@ public class SagaGameEditorTarget : TargetRules
 		
 		ExtraModuleNames.AddRange(new string[]
 		{
-			"SagaFramework", "SagaAsssetMgr",
-			"SagaUtility",
+			"SagaUtility", 
+			"SagaFramework", "SagaAssetMgr",
 			"SagaNetwork",
 			"SagaGame"
 		});

@@ -13,5 +13,10 @@ public class SagaAssetMgr : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "UMG" });
+
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"SagaUtility"
+		});
 	}
 }
