@@ -6,12 +6,15 @@
 #include "Saga/Network/SagaVirtualRoom.h"
 #include "SagaNetworkFunctionLibrary.generated.h"
 
-UCLASS()
+UCLASS(Category = "CandyLandSaga|Network")
 class SAGANETWORK_API USagaNetworkFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
 public:
+	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	static bool TryLoginToServer(FString nickname);
+
 	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	static FSocket& SagaNetworkGetSocket() noexcept;
 	[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
