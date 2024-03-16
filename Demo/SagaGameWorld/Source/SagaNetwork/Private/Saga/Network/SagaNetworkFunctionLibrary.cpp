@@ -6,6 +6,23 @@
 #include "Saga/Network/SagaNetworkSystem.h"
 #include "Saga/Network/SagaPacketSenders.h"
 
+#include "Saga/Network/SagaNetworkSystem.h"
+
+bool
+USagaNetworkFunctionLibrary::TryLoginToServer(FString nickname)
+{
+	if (saga::USagaNetwork::Start(MoveTemp(nickname)))
+	{
+		UE_LOG(LogNet, Log, TEXT("The network system is started."));
+		return true;
+	}
+	else
+	{
+		UE_LOG(LogNet, Error, TEXT("Cannot start the network system."));
+		return false;
+	}
+}
+
 FSocket&
 USagaNetworkFunctionLibrary::SagaNetworkGetSocket()
 noexcept
