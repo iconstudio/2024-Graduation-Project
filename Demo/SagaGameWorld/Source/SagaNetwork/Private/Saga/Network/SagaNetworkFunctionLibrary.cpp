@@ -2,16 +2,17 @@
 #include "Async/Async.h"
 #include "Async/Future.h"
 #include "Containers/UnrealString.h"
+#include <GameplayTask.h>
+#include <Tasks/GameplayTask_WaitDelay.h>
 
+#include "Saga/Network/SagaNetworkSettings.h"
 #include "Saga/Network/SagaNetworkSystem.h"
 #include "Saga/Network/SagaPacketSenders.h"
 
-#include "Saga/Network/SagaNetworkSystem.h"
-
 bool
-USagaNetworkFunctionLibrary::TryLoginToServer(FString nickname)
+USagaNetworkFunctionLibrary::TryLoginToServer(const FString& nickname)
 {
-	if (saga::USagaNetwork::Start(MoveTemp(nickname)))
+	if (saga::USagaNetwork::Start(nickname))
 	{
 		UE_LOG(LogNet, Log, TEXT("The network system is started."));
 		return true;
@@ -21,13 +22,6 @@ USagaNetworkFunctionLibrary::TryLoginToServer(FString nickname)
 		UE_LOG(LogNet, Error, TEXT("Cannot start the network system."));
 		return false;
 	}
-}
-
-FSocket&
-USagaNetworkFunctionLibrary::SagaNetworkGetSocket()
-noexcept
-{
-	return saga::USagaNetwork::GetLocalSocket();
 }
 
 bool
@@ -76,34 +70,6 @@ const TArray<FSagaVirtualRoom>&
 USagaNetworkFunctionLibrary::GetRoomList()
 noexcept
 {
-	return saga::USagaNetwork::GetRoomList();
-}
-
-const TArray<FSagaVirtualUser>&
-USagaNetworkFunctionLibrary::AwaitPlayerList(TPromise<bool> promise)
-{
-	UpdatePlayerList();
-
-	AsyncTask(ENamedThreads::AnyThread, [&]() {
-		// 이 코드는 게임 스레드를 멈추지 않고 비동기적으로 실행됩니다.
-		promise.SetValue(true);
-	});
-
-	// TODO: AwaitPlayerList
-	return saga::USagaNetwork::GetUserList();
-}
-
-const TArray<FSagaVirtualRoom>&
-USagaNetworkFunctionLibrary::AwaitRoomList(TPromise<bool> promise)
-{
-	UpdateRoomList();
-
-	AsyncTask(ENamedThreads::AnyThread, [&]() {
-		// 이 코드는 게임 스레드를 멈추지 않고 비동기적으로 실행됩니다.
-		promise.SetValue(true);
-	});
-
-	// TODO: AwaitRoomList
 	return saga::USagaNetwork::GetRoomList();
 }
 
@@ -179,4 +145,140 @@ int32
 USagaNetworkFunctionLibrary::SendPositionPacket(float x, float y, float z)
 {
 	return saga::SendPositionPacket(x, y, z).value_or(0);
+}
+
+USagaUsersAwaiter::USagaUsersAwaiter(const FObjectInitializer& initializer)
+	: UBlueprintAsyncActionBase(initializer)
+	, Success(), Failed()
+	, WorldContextObject(nullptr), IsActived(false), UpdateTimer()
+	, MyOutput(nullptr)
+{
+}
+
+USagaUsersAwaiter*
+USagaUsersAwaiter::AwaitUserList(const UObject* WorldContextObject, TArray<FSagaVirtualUser>& out)
+{
+	USagaUsersAwaiter* Node = NewObject<USagaUsersAwaiter>();
+	Node->WorldContextObject = WorldContextObject;
+	Node->MyOutput = &out;
+
+	return Node;
+}
+
+void
+USagaUsersAwaiter::Activate()
+{
+	if (nullptr == WorldContextObject)
+	{
+		FFrame::KismetExecutionMessage(TEXT("Invalid WorldContextObject. Cannot execute `SagaUsersAwaiter`."), ELogVerbosity::Error);
+		return;
+	}
+
+	UpdatePlayerList();
+
+	WorldContextObject->GetWorld()->GetTimerManager().SetTimer(UpdateTimer, this, &USagaUsersAwaiter::_Update, 1.0f, false);
+
+	IsActived = true;
+}
+
+void
+USagaUsersAwaiter::_Update()
+{
+	// TODO: USagaUsersAwaiter
+	//AsyncTask(ENamedThreads::AnyThread, [&]() {});
+	_Finish();
+}
+
+void
+USagaUsersAwaiter::_Finish()
+{
+	// Copy
+	*MyOutput = saga::USagaNetwork::GetUserList();
+
+	WorldContextObject->GetWorld()->GetTimerManager().ClearTimer(UpdateTimer);
+	UpdateTimer.Invalidate();
+
+	if (saga::IsOfflineMode)
+	{
+		Success.Broadcast();
+	}
+	else if (saga::USagaNetwork::IsConnected())
+	{
+		// TODO: USagaUsersAwaiter
+		Success.Broadcast();
+	}
+	else
+	{
+		Failed.Broadcast();
+	}
+
+	IsActived = false;
+}
+
+USagaRoomsAwaiter::USagaRoomsAwaiter(const FObjectInitializer& initializer)
+	: UBlueprintAsyncActionBase(initializer)
+	, Success(), Failed()
+	, WorldContextObject(nullptr), IsActived(false), UpdateTimer()
+	, MyOutput(nullptr)
+{
+}
+
+USagaRoomsAwaiter*
+USagaRoomsAwaiter::AwaitRoomList(const UObject* WorldContextObject, TArray<FSagaVirtualRoom>& out)
+{
+	USagaRoomsAwaiter* Node = NewObject<USagaRoomsAwaiter>();
+	Node->WorldContextObject = WorldContextObject;
+	Node->MyOutput = &out;
+
+	return Node;
+}
+
+void
+USagaRoomsAwaiter::Activate()
+{
+	if (nullptr == WorldContextObject)
+	{
+		FFrame::KismetExecutionMessage(TEXT("Invalid WorldContextObject. Cannot execute `SagaUsersAwaiter`."), ELogVerbosity::Error);
+		return;
+	}
+
+	UpdateRoomList();
+
+	WorldContextObject->GetWorld()->GetTimerManager().SetTimer(UpdateTimer, this, &USagaRoomsAwaiter::_Update, 1.0f, false);
+
+	IsActived = true;
+}
+
+void
+USagaRoomsAwaiter::_Update()
+{
+	// TODO: USagaRoomsAwaiter
+	//AsyncTask(ENamedThreads::AnyThread, [&]() {});
+	_Finish();
+}
+
+void
+USagaRoomsAwaiter::_Finish()
+{
+	// Copy
+	*MyOutput = saga::USagaNetwork::GetRoomList();
+
+	WorldContextObject->GetWorld()->GetTimerManager().ClearTimer(UpdateTimer);
+	UpdateTimer.Invalidate();
+
+	if (saga::IsOfflineMode)
+	{
+		Success.Broadcast();
+	}
+	else if (saga::USagaNetwork::IsConnected())
+	{
+		// TODO: USagaRoomsAwaiter
+		Success.Broadcast();
+	}
+	else
+	{
+		Failed.Broadcast();
+	}
+
+	IsActived = false;
 }

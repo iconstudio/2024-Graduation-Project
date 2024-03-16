@@ -6,28 +6,9 @@
 #include "Saga/Network/SagaVirtualUser.h"
 #include "Saga/Network/SagaVirtualRoom.h"
 
-[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-FSocket& SagaNetworkGetSocket() noexcept;
-[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-bool SagaNetworkHasSocket() noexcept;
-
-[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-int32 SagaNetworkLocalPlayerID() noexcept;
-[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-FString SagaNetworkLocalPlayerName() noexcept;
-[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-int32 SagaNetworkCurrentRoomID() noexcept;
-[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-FString SagaNetworkCurrentRoomTitle() noexcept;
-
-[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-const TArray<FSagaVirtualUser>& GetUserList() noexcept;
-[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-const TArray<FSagaVirtualRoom>& GetRoomList() noexcept;
-
-[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 void UpdatePlayerList();
-[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 void UpdateRoomList();
 
 namespace saga
