@@ -1,15 +1,11 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
-#include "Kismet/BlueprintAsyncActionBase.h"
 
 #include "Saga/Network/SagaVirtualUser.h"
 #include "Saga/Network/SagaVirtualRoom.h"
 #include "Saga/Network/SagaNetworkView.h"
 #include "SagaNetworkFunctionLibrary.generated.h"
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUSagaUsersAwaitOutputPin);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUSagaRoomsAwaitOutputPin);
 
 UCLASS(Category = "CandyLandSaga|Network")
 class SAGANETWORK_API USagaNetworkFunctionLibrary : public UBlueprintFunctionLibrary
@@ -18,7 +14,7 @@ class SAGANETWORK_API USagaNetworkFunctionLibrary : public UBlueprintFunctionLib
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static void RegisterNetworkView(UObject* event_interface);
+	static void RegisterNetworkView(AActor* event_interface);
 
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Phase")
 	static bool TryLoginToServer(const FString& nickname);
@@ -65,60 +61,4 @@ public:
 	static int32 SendGameIsLoadedPacket();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	static int32 SendPositionPacket(float x, float y, float z);
-};
-
-UCLASS(Category = "CandyLandSaga|Network")
-class SAGANETWORK_API USagaUsersAwaiter : public UBlueprintAsyncActionBase
-{
-	GENERATED_UCLASS_BODY()
-
-public:
-	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject"), Category = "CandyLandSaga|Network")
-	static USagaUsersAwaiter* AwaitUserList(const UObject* WorldContextObject, TArray<FSagaVirtualUser>& out);
-
-	virtual void Activate() override;
-
-	UPROPERTY(BlueprintAssignable)
-	FUSagaUsersAwaitOutputPin Success;
-	UPROPERTY(BlueprintAssignable)
-	FUSagaUsersAwaitOutputPin Failed;
-
-private:
-	UFUNCTION()
-	void _Update();
-	UFUNCTION()
-	void _Finish();
-
-	const UObject* WorldContextObject;
-	bool IsActived;
-	FTimerHandle UpdateTimer;
-	TArray<FSagaVirtualUser>* MyOutput;
-};
-
-UCLASS(Category = "CandyLandSaga|Network")
-class SAGANETWORK_API USagaRoomsAwaiter : public UBlueprintAsyncActionBase
-{
-	GENERATED_UCLASS_BODY()
-
-public:
-	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject"), Category = "CandyLandSaga|Network")
-	static USagaRoomsAwaiter* AwaitRoomList(const UObject* WorldContextObject, TArray<FSagaVirtualRoom>& out);
-
-	virtual void Activate() override;
-
-	UPROPERTY(BlueprintAssignable)
-	FUSagaRoomsAwaitOutputPin Success;
-	UPROPERTY(BlueprintAssignable)
-	FUSagaRoomsAwaitOutputPin Failed;
-
-private:
-	UFUNCTION()
-	void _Update();
-	UFUNCTION()
-	void _Finish();
-
-	const UObject* WorldContextObject;
-	bool IsActived;
-	FTimerHandle UpdateTimer;
-	TArray<FSagaVirtualRoom>* MyOutput;
 };
