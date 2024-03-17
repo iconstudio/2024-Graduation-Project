@@ -10,8 +10,20 @@
 #include "Saga/Network/SagaPacketSenders.h"
 
 void
-USagaNetworkFunctionLibrary::RegisterNetworkView(TScriptInterface<ISagaNetworkView> event_interface)
+USagaNetworkFunctionLibrary::RegisterNetworkView(UObject* event_interface)
 {
+	if (event_interface != nullptr
+		and event_interface->GetClass()->ImplementsInterface(USagaNetworkView::StaticClass()))
+	{
+		TScriptInterface<ISagaNetworkView> interface { event_interface };
+
+		auto&& object = interface.GetObject();
+
+	}
+	else
+	{
+		UE_LOG(LogNet, Error, TEXT("The argument object have not import network view interface."));
+	}
 }
 
 bool

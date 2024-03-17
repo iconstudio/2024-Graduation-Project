@@ -18,7 +18,7 @@ class SAGANETWORK_API USagaNetworkFunctionLibrary : public UBlueprintFunctionLib
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static void RegisterNetworkView(TScriptInterface<ISagaNetworkView> event_interface);
+	static void RegisterNetworkView(UObject* event_interface);
 
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Phase")
 	static bool TryLoginToServer(const FString& nickname);
