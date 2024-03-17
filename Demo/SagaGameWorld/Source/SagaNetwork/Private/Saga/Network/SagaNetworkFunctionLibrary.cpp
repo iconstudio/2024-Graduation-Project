@@ -18,7 +18,7 @@ USagaNetworkFunctionLibrary::RegisterNetworkView(AActor* event_interface)
 		auto&& object = interface.GetObject();
 
 		FString name = object->GetName();
-		UE_LOG(LogNet, Error, TEXT("The actor `%s` have import network view interface."), *name);
+		UE_LOG(LogNet, Log, TEXT("The actor `%s` have import network view interface."), *name);
 
 
 	}
