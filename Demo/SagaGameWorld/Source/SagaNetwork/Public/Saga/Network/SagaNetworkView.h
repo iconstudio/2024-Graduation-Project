@@ -34,5 +34,4 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnUpdateMembers(const TArray<FSagaVirtualUser>& list);
-
 };
