@@ -26,6 +26,11 @@ public:
 
 	void TakeDamage(float DamageAmount);
 
+	float GetCurrentHealth();
+	void SetObjectHealth(float hp);
+
+
+
 private:
 	UPROPERTY(EditAnywhere, Category = Obstacles)
 	float Health = 90.0f;
