@@ -66,19 +66,26 @@ saga::USagaNetwork::Awake()
 bool
 saga::USagaNetwork::Start(FStringView nickname)
 {
-	if (not IsSocketAvailable())
+	if constexpr (not saga::IsOfflineMode)
 	{
-		if (saga::USagaNetwork::Awake())
+		if (not IsSocketAvailable())
 		{
-			UE_LOG(LogNet, Warning, TEXT("The network system was not initialized."));
+			if (saga::USagaNetwork::Awake())
+			{
+				UE_LOG(LogNet, Warning, TEXT("The network system was not initialized."));
+			}
+			else
+			{
+				return false;
+			}
 		}
-		else
-		{
-			return false;
-		}
-	}
 
-	return ConnectToServer(nickname);
+		return ConnectToServer(nickname);
+	}
+	else
+	{
+		return true;
+	}
 }
 
 void
