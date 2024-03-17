@@ -38,6 +38,16 @@ void UObstacleHPComponent::TakeDamage(float DamageAmount)
 	CheckDeath();
 }
 
+float UObstacleHPComponent::GetCurrentHealth()
+{
+	return Health;
+}
+
+void UObstacleHPComponent::SetObjectHealth(float hp)
+{
+	Health = hp;
+}
+
 void UObstacleHPComponent::CheckDeath()
 {
 	if (Health <= 0)

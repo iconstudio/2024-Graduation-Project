@@ -2,6 +2,7 @@
 
 
 #include "SagaObstacles/TreeObstacle.h"
+#include "Item/SagaItemBox.h"
 
 // Sets default values
 ATreeObstacle::ATreeObstacle()
@@ -39,10 +40,21 @@ float ATreeObstacle::TakeDamage(float DamageAmount, FDamageEvent const& DamageEv
 {
     float DamageApplied = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-    // HealthComponent가 있는지 확인하고, 있다면 TakeDamage 호출
+    // HealthComponent가 있는지 확인후 TakeDamage 호출
     if (HealthComponent)
     {
         HealthComponent->TakeDamage(DamageAmount);
+
+        if (HealthComponent->GetCurrentHealth() <= 0)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Tree is destroyed, spawning item..."));
+            FVector SpawnLocation = GetActorLocation() + FVector(0.0f, 0.0f, 40.0f); //맵 수정 시 높이 수정해줘야 함.
+            FRotator SpawnRotation = FRotator::ZeroRotator;
+            FActorSpawnParameters SpawnParameters;
+
+            GetWorld()->SpawnActor<ASagaItemBox>(ASagaItemBox::StaticClass(), SpawnLocation, SpawnRotation, SpawnParameters);
+
+        }
     }
 
     return DamageApplied;
