@@ -1,7 +1,7 @@
 #include "Saga/GameMode/SagaGameModeBase.h"
 
-ASagaGameModeBase::ASagaGameModeBase(const FObjectInitializer& intializer)
-	: AGameModeBase(intializer), ISagaNetworkView()
+ASagaGameModeBase::ASagaGameModeBase()
+	: AGameModeBase(), ISagaNetworkView()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.bStartWithTickEnabled = true;
