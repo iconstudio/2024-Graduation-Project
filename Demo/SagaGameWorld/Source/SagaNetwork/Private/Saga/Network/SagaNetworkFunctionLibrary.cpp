@@ -9,6 +9,11 @@
 #include "Saga/Network/SagaNetworkSystem.h"
 #include "Saga/Network/SagaPacketSenders.h"
 
+void
+USagaNetworkFunctionLibrary::RegisterNetworkView(TScriptInterface<ISagaNetworkView> event_interface)
+{
+}
+
 bool
 USagaNetworkFunctionLibrary::TryLoginToServer(const FString& nickname)
 {

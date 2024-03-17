@@ -5,6 +5,7 @@
 
 #include "Saga/Network/SagaVirtualUser.h"
 #include "Saga/Network/SagaVirtualRoom.h"
+#include "Saga/Network/SagaNetworkView.h"
 #include "SagaNetworkFunctionLibrary.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FUSagaUsersAwaitOutputPin);
@@ -17,6 +18,9 @@ class SAGANETWORK_API USagaNetworkFunctionLibrary : public UBlueprintFunctionLib
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	static void RegisterNetworkView(TScriptInterface<ISagaNetworkView> event_interface);
+
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Phase")
 	static bool TryLoginToServer(const FString& nickname);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
