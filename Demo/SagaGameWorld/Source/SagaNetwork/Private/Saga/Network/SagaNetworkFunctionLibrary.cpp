@@ -8,29 +8,99 @@
 #include "Saga/Network/SagaNetworkSystem.h"
 #include "Saga/Network/SagaPacketSenders.h"
 
-void
-USagaNetworkFunctionLibrary::RegisterNetworkView(AActor* event_interface)
+namespace
 {
-	if (event_interface != nullptr
-		and event_interface->GetClass()->ImplementsInterface(USagaNetworkView::StaticClass()))
+	TArray<TScriptInterface<ISagaNetworkView>, FConcurrentLinearArrayAllocator> internalList{};
+}
+
+void
+USagaNetworkFunctionLibrary::BroadcastOnConnected()
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnConnected`"));
+
+	for (auto& interface_view : internalList)
+	{		
+		ISagaNetworkView::Execute_OnConnected(interface_view.GetObject());
+	}
+}
+
+void
+USagaNetworkFunctionLibrary::BroadcastOnFailedToConnect(int32 reason)
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnFailedToConnect`"));
+
+	for (auto& interface_view : internalList)
 	{
-		TScriptInterface<ISagaNetworkView> interface { event_interface };
-		auto&& object = interface.GetObject();
+		ISagaNetworkView::Execute_OnFailedToConnect(interface_view.GetObject(), reason);
+	}
+}
+
+void
+USagaNetworkFunctionLibrary::BroadcastOnDisconnected()
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnDisconnected`"));
+
+	for (auto& interface_view : internalList)
+	{
+		ISagaNetworkView::Execute_OnDisconnected(interface_view.GetObject());
+	}
+}
+
+void
+USagaNetworkFunctionLibrary::BroadcastOnRespondVersion(const FString& version_string)
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnRespondVersion`"));
+
+	for (auto& interface_view : internalList)
+	{
+		ISagaNetworkView::Execute_OnRespondVersion(interface_view.GetObject(), version_string);
+	}
+}
+
+void
+USagaNetworkFunctionLibrary::BroadcastOnUpdateRoomList(const TArray<FSagaVirtualRoom>& list)
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnUpdateRoomList`"));
+
+	for (auto& interface_view : internalList)
+	{
+		ISagaNetworkView::Execute_OnUpdateRoomList(interface_view.GetObject(), list);
+	}
+}
+
+void
+USagaNetworkFunctionLibrary::BroadcastOnUpdateMembers(const TArray<FSagaVirtualUser>& list)
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnUpdateMembers`"));
+
+	for (auto& interface_view : internalList)
+	{
+		ISagaNetworkView::Execute_OnUpdateMembers(interface_view.GetObject(), list);
+	}
+}
+
+void
+USagaNetworkFunctionLibrary::RegisterNetworkView(TScriptInterface<ISagaNetworkView> event_interface)
+{
+	if (event_interface != nullptr)
+	{
+		auto&& object = event_interface.GetObject();
 
 		FString name = object->GetName();
-		UE_LOG(LogNet, Log, TEXT("The actor `%s` have import network view interface."), *name);
+		UE_LOG(LogNet, Log, TEXT("The actor `%s` have been registered to network view."), *name);
 
-
-	}
-	else if (event_interface != nullptr)
-	{
-		FString name = event_interface->GetName();
-		UE_LOG(LogNet, Error, TEXT("The actor have not import network view interface."), *name);
+		internalList.Add(MoveTempIfPossible(event_interface));
 	}
 	else
 	{
 		UE_LOG(LogNet, Error, TEXT("The actor handle is nullptr."));
 	}
+}
+
+void
+USagaNetworkFunctionLibrary::DeregisterNetworkView(TScriptInterface<ISagaNetworkView> event_interface)
+{
+	internalList.RemoveSwap(event_interface, false);
 }
 
 bool
