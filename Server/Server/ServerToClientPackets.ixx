@@ -43,9 +43,9 @@ export namespace iconer::app::packets::inline sc
 	/// <param name="rpcScript">- A descriptor for rpc msg</param>
 	/// <param name="rpcArgument">- Single rpc argument</param>
 	/// <remarks>Server would send it to the client</remarks>
-	struct [[nodiscard]] SC_RpcPacket : public FSagaBasicPacket
+	struct [[nodiscard]] SC_RpcPacket : public BasicPacket
 	{
-		using Super = FSagaBasicPacket;
+		using Super = BasicPacket;
 
 		static inline constexpr size_t msgLength = 10;
 
@@ -63,7 +63,7 @@ export namespace iconer::app::packets::inline sc
 
 		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t* begin, const wchar_t* end)
 			noexcept
-			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
+			: Super(PacketProtocol::SC_RPC, SignedWannabeSize())
 			, clientId(id), rpcScript()
 			, rpcArgument()
 		{
@@ -72,7 +72,7 @@ export namespace iconer::app::packets::inline sc
 
 		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t* nts, const size_t length)
 			noexcept
-			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
+			: Super(PacketProtocol::SC_RPC, SignedWannabeSize())
 			, clientId(id), rpcScript()
 			, rpcArgument()
 		{
@@ -82,7 +82,7 @@ export namespace iconer::app::packets::inline sc
 		template<size_t Length>
 		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t(&str)[Length])
 			noexcept
-			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
+			: Super(PacketProtocol::SC_RPC, SignedWannabeSize())
 			, clientId(id), rpcScript()
 			, rpcArgument()
 		{
@@ -92,7 +92,7 @@ export namespace iconer::app::packets::inline sc
 		template<size_t Length>
 		explicit constexpr SC_RpcPacket(std::int32_t id, wchar_t(&& str)[Length])
 			noexcept
-			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
+			: Super(PacketProtocol::SC_RPC, SignedWannabeSize())
 			, clientId(id), rpcScript()
 			, rpcArgument()
 		{
@@ -102,17 +102,17 @@ export namespace iconer::app::packets::inline sc
 		[[nodiscard]]
 		constexpr std::unique_ptr<std::byte[]> Serialize() const
 		{
-			return saga::Serializes(myProtocol, mySize, clientId, std::wstring_view{ rpcScript, msgLength }, rpcArgument);
+			return iconer::util::Serializes(myProtocol, mySize, clientId, std::wstring_view{ rpcScript, msgLength }, rpcArgument);
 		}
 
 		constexpr std::byte* Write(std::byte* buffer) const
 		{
-			return saga::Serialize(saga::Serialize(saga::Serialize(Super::Write(buffer), clientId), std::wstring_view{ rpcScript, msgLength }), rpcArgument);
+			return iconer::util::Serialize(iconer::util::Serialize(iconer::util::Serialize(Super::Write(buffer), clientId), std::wstring_view{ rpcScript, msgLength }), rpcArgument);
 		}
 
 		constexpr const std::byte* Read(const std::byte* buffer)
 		{
-			return saga::Deserialize(saga::Deserialize(saga::Deserialize(Super::Read(buffer), clientId), msgLength, rpcScript), rpcArgument);
+			return iconer::util::Deserialize(iconer::util::Deserialize(iconer::util::Deserialize(Super::Read(buffer), clientId), msgLength, rpcScript), rpcArgument);
 		}
 
 		std::int32_t clientId;
