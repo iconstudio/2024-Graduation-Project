@@ -11,6 +11,8 @@ class SAGAFRAMEWORK_API ASagaGameModeBase : public AGameModeBase, public ISagaNe
 	GENERATED_BODY()
 
 public:
+	ASagaGameModeBase();
+
 	virtual void OnConnected_Implementation() override;
 	virtual void OnFailedToConnect_Implementation(int32 reason) override;
 	virtual void OnDisconnected_Implementation() override;
