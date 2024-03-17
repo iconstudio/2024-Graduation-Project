@@ -1,5 +1,9 @@
 #include "Saga/System/SagaGameManager.h"
+#include "Saga/Network/SagaNetworkFunctionLibrary.h"
 
-USagaGameManager::USagaGameManager()
+void
+USagaGameManager::Shutdown()
 {
+	Super::Shutdown();
+	USagaNetworkFunctionLibrary::SagaNetworkClose();
 }

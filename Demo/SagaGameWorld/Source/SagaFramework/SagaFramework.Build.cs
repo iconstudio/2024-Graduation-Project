@@ -16,7 +16,8 @@ public class SagaFramework : ModuleRules
 		
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
-			"SagaUtility"
+			"SagaUtility",
+			"SagaNetwork"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]

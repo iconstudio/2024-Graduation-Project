@@ -6,6 +6,7 @@
 #include "Saga/Network/SagaNetworkSettings.h"
 #include "Saga/Network/SagaNetworkUtility.h"
 #include "Saga/Network/SagaPacketSenders.h"
+#include "Saga/Network/SagaNetworkFunctionLibrary.h"
 #include "Saga/Network/SagaNetworkWorker.h"
 
 namespace
@@ -54,11 +55,15 @@ saga::USagaNetwork::Awake()
 	if (InitializeNetwork())
 	{
 		UE_LOG(LogNet, Log, TEXT("The network system is initialized."));
+		USagaNetworkFunctionLibrary::BroadcastOnNetworkInitialized();
+
 		return true;
 	}
 	else
 	{
 		UE_LOG(LogNet, Error, TEXT("Cannot initialize the network system."));
+		USagaNetworkFunctionLibrary::BroadcastOnFailedToInitializeNetwork();
+
 		return false;
 	}
 }
@@ -84,6 +89,29 @@ saga::USagaNetwork::Start(FStringView nickname)
 	}
 	else
 	{
+		return true;
+	}
+}
+
+bool
+saga::USagaNetwork::Destroy()
+{
+	if constexpr (not IsOfflineMode)
+	{
+		if (IsSocketAvailable())
+		{
+			UE_LOG(LogNet, Warning, TEXT("Closing network system..."));
+			return clientSocket->Close();
+		}
+		else
+		{
+			UE_LOG(LogNet, Warning, TEXT("The network system have been destroyed."));
+			return true;
+		}
+	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("The network system have been destroyed. (Offline Mode)"));
 		return true;
 	}
 }

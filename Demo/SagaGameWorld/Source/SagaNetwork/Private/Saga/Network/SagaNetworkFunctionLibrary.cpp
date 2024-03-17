@@ -1,11 +1,11 @@
 #include "Saga/Network/SagaNetworkFunctionLibrary.h"
+#include "UObject/ScriptInterface.h"
+#include "Containers/UnrealString.h"
 #include "Async/Async.h"
 #include "Async/Future.h"
-#include "Containers/UnrealString.h"
-#include <GameplayTask.h>
-#include <Tasks/GameplayTask_WaitDelay.h>
 
 #include "Saga/Network/SagaNetworkSystem.h"
+#include "Saga/Network/SagaNetworkViewAnnihilator.h"
 #include "Saga/Network/SagaPacketSenders.h"
 
 namespace
@@ -14,24 +14,62 @@ namespace
 }
 
 void
+USagaNetworkFunctionLibrary::BroadcastOnNetworkInitialized()
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnNetworkInitialized`"));
+
+	for (auto& interface_view : internalList)
+	{
+		auto&& object = interface_view.GetObject();
+		if (object != nullptr)
+		{
+			ISagaNetworkView::Execute_OnNetworkInitialized(object);
+		}
+	}
+}
+
+void
+USagaNetworkFunctionLibrary::BroadcastOnFailedToInitializeNetwork()
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnFailedToInitializeNetwork`"));
+
+	for (auto& interface_view : internalList)
+	{
+		auto&& object = interface_view.GetObject();
+		if (object != nullptr)
+		{
+			ISagaNetworkView::Execute_OnFailedToInitializeNetwork(object);
+		}
+	}
+}
+
+void
 USagaNetworkFunctionLibrary::BroadcastOnConnected()
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnConnected`"));
 
 	for (auto& interface_view : internalList)
-	{		
-		ISagaNetworkView::Execute_OnConnected(interface_view.GetObject());
+	{
+		auto&& object = interface_view.GetObject();
+		if (object != nullptr)
+		{
+			ISagaNetworkView::Execute_OnConnected(object);
+		}
 	}
 }
 
 void
-USagaNetworkFunctionLibrary::BroadcastOnFailedToConnect(int32 reason)
+USagaNetworkFunctionLibrary::BroadcastOnFailedToConnect(ESagaConnectionContract reason)
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnFailedToConnect`"));
 
 	for (auto& interface_view : internalList)
 	{
-		ISagaNetworkView::Execute_OnFailedToConnect(interface_view.GetObject(), reason);
+		auto&& object = interface_view.GetObject();
+		if (object != nullptr)
+		{
+			ISagaNetworkView::Execute_OnFailedToConnect(object, reason);
+		}
 	}
 }
 
@@ -42,7 +80,11 @@ USagaNetworkFunctionLibrary::BroadcastOnDisconnected()
 
 	for (auto& interface_view : internalList)
 	{
-		ISagaNetworkView::Execute_OnDisconnected(interface_view.GetObject());
+		auto&& object = interface_view.GetObject();
+		if (object != nullptr)
+		{
+			ISagaNetworkView::Execute_OnDisconnected(object);
+		}
 	}
 }
 
@@ -53,7 +95,11 @@ USagaNetworkFunctionLibrary::BroadcastOnRespondVersion(const FString& version_st
 
 	for (auto& interface_view : internalList)
 	{
-		ISagaNetworkView::Execute_OnRespondVersion(interface_view.GetObject(), version_string);
+		auto&& object = interface_view.GetObject();
+		if (object != nullptr)
+		{
+			ISagaNetworkView::Execute_OnRespondVersion(object, version_string);
+		}
 	}
 }
 
@@ -64,7 +110,11 @@ USagaNetworkFunctionLibrary::BroadcastOnUpdateRoomList(const TArray<FSagaVirtual
 
 	for (auto& interface_view : internalList)
 	{
-		ISagaNetworkView::Execute_OnUpdateRoomList(interface_view.GetObject(), list);
+		auto&& object = interface_view.GetObject();
+		if (object != nullptr)
+		{
+			ISagaNetworkView::Execute_OnUpdateRoomList(object, list);
+		}
 	}
 }
 
@@ -75,21 +125,33 @@ USagaNetworkFunctionLibrary::BroadcastOnUpdateMembers(const TArray<FSagaVirtualU
 
 	for (auto& interface_view : internalList)
 	{
-		ISagaNetworkView::Execute_OnUpdateMembers(interface_view.GetObject(), list);
+		auto&& object = interface_view.GetObject();
+		if (object != nullptr)
+		{
+			ISagaNetworkView::Execute_OnUpdateMembers(object, list);
+		}
 	}
 }
 
 void
-USagaNetworkFunctionLibrary::RegisterNetworkView(TScriptInterface<ISagaNetworkView> event_interface)
+USagaNetworkFunctionLibrary::RegisterNetworkView(AActor* event_interface)
 {
 	if (event_interface != nullptr)
 	{
-		auto&& object = event_interface.GetObject();
+		FString name = event_interface->GetName();
 
-		FString name = object->GetName();
-		UE_LOG(LogNet, Log, TEXT("The actor `%s` have been registered to network view."), *name);
+		if (event_interface->GetClass()->ImplementsInterface(USagaNetworkView::StaticClass()))
+		{
+			internalList.Add(MoveTempIfPossible(event_interface));
+			UE_LOG(LogNet, Log, TEXT("The actor `%s` have been registered to network view."), *name);
 
-		internalList.Add(MoveTempIfPossible(event_interface));
+			event_interface->OnDestroyed.AddDynamic(GetSingleInstance(), &USagaNetworkFunctionLibrary::_DestroyNetworkView_Implementation);
+			UE_LOG(LogNet, Log, TEXT("Also binded a event to `OnDestroyed`"));
+		}
+		else
+		{
+			UE_LOG(LogNet, Error, TEXT("The actor `%s` have not implemented network view."), *name);
+		}
 	}
 	else
 	{
@@ -98,7 +160,7 @@ USagaNetworkFunctionLibrary::RegisterNetworkView(TScriptInterface<ISagaNetworkVi
 }
 
 void
-USagaNetworkFunctionLibrary::DeregisterNetworkView(TScriptInterface<ISagaNetworkView> event_interface)
+USagaNetworkFunctionLibrary::DeregisterNetworkView(AActor* event_interface)
 {
 	internalList.RemoveSwap(event_interface, false);
 }
@@ -116,6 +178,12 @@ USagaNetworkFunctionLibrary::TryLoginToServer(const FString& nickname)
 		UE_LOG(LogNet, Error, TEXT("Cannot start the network system."));
 		return false;
 	}
+}
+
+bool
+USagaNetworkFunctionLibrary::SagaNetworkClose()
+{
+	return saga::USagaNetwork::Destroy();
 }
 
 bool
@@ -239,4 +307,22 @@ int32
 USagaNetworkFunctionLibrary::SendPositionPacket(float x, float y, float z)
 {
 	return saga::SendPositionPacket(x, y, z).value_or(0);
+}
+
+void
+USagaNetworkFunctionLibrary::_DestroyNetworkView_Implementation(AActor* destroying_actor)
+{
+	USagaNetworkViewAnnihilator::DestroyNetworkView(GetWorld(), destroying_actor);
+}
+
+USagaNetworkFunctionLibrary*
+USagaNetworkFunctionLibrary::GetSingleInstance()
+{
+	static constinit USagaNetworkFunctionLibrary* instance = nullptr;
+	if (nullptr == instance)
+	{
+		instance = NewObject<USagaNetworkFunctionLibrary>();
+	}
+
+	return instance;
 }

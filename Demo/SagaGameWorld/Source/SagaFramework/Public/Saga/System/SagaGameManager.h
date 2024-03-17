@@ -4,11 +4,11 @@
 
 #include "SagaGameManager.generated.h"
 
-UCLASS(BlueprintType, Category = "CandyLandSaga|System")
+UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|System")
 class SAGAFRAMEWORK_API USagaGameManager : public UGameInstance
 {
 	GENERATED_BODY()
 
 public:
-	USagaGameManager();
+	virtual void Shutdown() override;
 };

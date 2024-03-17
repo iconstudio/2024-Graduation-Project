@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 
+#include "Saga/Network/SagaConnectionContract.h"
 #include "Saga/Network/SagaVirtualRoom.h"
 #include "Saga/Network/SagaVirtualUser.h"
 #include "SagaNetworkView.generated.h"
@@ -18,10 +19,18 @@ class SAGANETWORK_API ISagaNetworkView
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnNetworkInitialized();
+	virtual void OnNetworkInitialized_Implementation() {};
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnFailedToInitializeNetwork();
+	virtual void OnFailedToInitializeNetwork_Implementation() {};
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnConnected();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
-	void OnFailedToConnect(int32 reason);
+	void OnFailedToConnect(ESagaConnectionContract reason);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnDisconnected();
