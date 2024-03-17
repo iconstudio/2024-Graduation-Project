@@ -26,6 +26,7 @@ namespace saga
 
 		[[nodiscard]] static bool Awake();
 		[[nodiscard]] static bool Start(FStringView nickname);
+		static bool Destroy();
 
 		/* Local Client Methods */
 
