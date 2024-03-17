@@ -13,8 +13,23 @@ class SAGANETWORK_API USagaNetworkFunctionLibrary : public UBlueprintFunctionLib
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	static void BroadcastOnConnected();
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	static void BroadcastOnFailedToConnect(int32 reason);
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	static void BroadcastOnDisconnected();
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	static void BroadcastOnRespondVersion(const FString& version_string);
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	static void BroadcastOnUpdateRoomList(const TArray<FSagaVirtualRoom>& list);
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	static void BroadcastOnUpdateMembers(const TArray<FSagaVirtualUser>& list);
+
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static void RegisterNetworkView(AActor* event_interface);
+	static void RegisterNetworkView(TScriptInterface<ISagaNetworkView> event_interface);
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	static void DeregisterNetworkView(TScriptInterface<ISagaNetworkView> event_interface);
 
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Phase")
 	static bool TryLoginToServer(const FString& nickname);
