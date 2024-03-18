@@ -14,6 +14,7 @@ namespace
 	[[nodiscard]] TSharedRef<FInternetAddr> CreateRemoteEndPoint();
 
 	constinit FSocket* clientSocket = nullptr;
+	constinit USagaNetworkSubSystem* systemInstance = nullptr;
 
 	TSharedPtr<saga::FSagaNetworkWorker> netWorker{};
 	TArray<saga::FSagaBasicPacket*> taskQueue{};
@@ -23,11 +24,6 @@ namespace
 	TAtomic<bool> wasUsersUpdated = true;
 	TArray<FSagaVirtualRoom> everyRooms{};
 	TAtomic<bool> wasRoomsUpdated = true;
-
-	constinit int32 localUserId = -1;
-	FString localUserName{};
-	constinit int32 currentRoomId = -1;
-	FString currentRoomTitle{};
 }
 
 saga::USagaNetwork::USagaNetwork() noexcept
@@ -72,7 +68,7 @@ saga::USagaNetwork::InitializeNetwork()
 }
 
 ESagaConnectionContract
-saga::USagaNetwork::ConnectToServer()
+saga::USagaNetwork::ConnectToServer(FStringView nickname)
 {
 	if (not saga::USagaNetwork::IsSocketAvailable())
 	{
@@ -94,7 +90,7 @@ saga::USagaNetwork::ConnectToServer()
 		// #1
 		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
 
-		auto sent_r = saga::SendSignInPacket(localUserName);
+		auto sent_r = saga::SendSignInPacket(nickname);
 		if (not sent_r.has_value())
 		{
 			UE_LOG(LogNet, Error, TEXT("First try of sending signin packet has been failed."));
@@ -102,7 +98,8 @@ saga::USagaNetwork::ConnectToServer()
 		}
 		else
 		{
-			UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *localUserName);
+			const auto str = FString{ nickname };
+			UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *str);
 		}
 	}
 
@@ -114,6 +111,20 @@ saga::USagaNetwork::ConnectToServer()
 	}
 
 	return ESagaConnectionContract::Success;
+}
+
+void
+saga::USagaNetwork::SetSubsystemInstance(USagaNetworkSubSystem* instance)
+noexcept
+{
+	systemInstance = instance;
+}
+
+USagaNetworkSubSystem*
+saga::USagaNetwork::GetSubsystemInstance()
+noexcept
+{
+	return systemInstance;
 }
 
 void
@@ -279,60 +290,6 @@ noexcept
 		handle = taskQueue.Pop(false);
 		return true;
 	}
-}
-
-void
-saga::USagaNetwork::LocalUserId(int32 id)
-noexcept
-{
-	localUserId = id;
-}
-
-int32
-saga::USagaNetwork::LocalUserId()
-noexcept
-{
-	return localUserId;
-}
-
-void
-saga::USagaNetwork::LocalUserName(FStringView nickname)
-{
-	localUserName = nickname;
-}
-
-FStringView
-saga::USagaNetwork::LocalUserName()
-noexcept
-{
-	return localUserName;
-}
-
-void
-saga::USagaNetwork::CurrentRoomId(int32 id)
-noexcept
-{
-	currentRoomId = id;
-}
-
-int32
-saga::USagaNetwork::CurrentRoomId()
-noexcept
-{
-	return currentRoomId;
-}
-
-void
-saga::USagaNetwork::CurrentRoomTitle(FStringView title)
-{
-	currentRoomTitle = title;
-}
-
-FStringView
-saga::USagaNetwork::CurrentRoomTitle()
-noexcept
-{
-	return currentRoomTitle;
 }
 
 FSocket&

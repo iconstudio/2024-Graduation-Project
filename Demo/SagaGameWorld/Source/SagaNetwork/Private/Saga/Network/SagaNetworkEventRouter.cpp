@@ -1,4 +1,5 @@
 #include "Saga/Network/SagaNetworkEventRouter.h"
+#include "Saga/Network/SagaNetworkSubSystem.h"
 #include "Saga/Network/SagaNetworkSystem.h"
 #include "Saga/Network/SagaVirtualUser.h"
 #include "Saga/Network/SagaVirtualRoom.h"
@@ -11,6 +12,7 @@ saga::EventRouter(const std::byte* packet_buffer
 	, int16 packet_size)
 {
 	auto& socket = USagaNetwork::GetLocalSocket();
+	auto system = USagaNetwork::GetSubsystemInstance();
 
 	switch (protocol)
 	{
@@ -20,7 +22,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			ReceiveSignInSucceedPacket(packet_buffer, my_id);
 
 			UE_LOG(LogNet, Log, TEXT("Local client's id is %d"), my_id);
-			USagaNetwork::LocalUserId(my_id);
+			system->SetLocalUserId(my_id);
 		}
 		break;
 
@@ -30,7 +32,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			ReceiveSignInFailurePacket(packet_buffer, error);
 
 			UE_LOG(LogNet, Log, TEXT("Local client can't get an id from server due to %d"), error);
-			USagaNetwork::LocalUserId(-1);
+			system->SetLocalUserId(-1);
 		}
 		break;
 
@@ -39,15 +41,16 @@ saga::EventRouter(const std::byte* packet_buffer
 			int32 room_id{};
 			ReceiveRoomCreatedPacket(packet_buffer, room_id);
 
-			USagaNetwork::CurrentRoomId(room_id);
+			system->SetCurrentRoomId(room_id);
 
 			UE_LOG(LogNet, Log, TEXT("A room %d is created"), room_id);
+			system->BroadcastOnRoomCreated(room_id);
 		}
 		break;
 
 		case EPacketProtocol::SC_ROOM_CREATE_FAILED:
 		{
-			RoomContract error{};
+			ERoomContract error{};
 			ReceiveRoomCreationFailedPacket(packet_buffer, error);
 
 			const auto msg = std::to_wstring(error);
@@ -61,11 +64,12 @@ saga::EventRouter(const std::byte* packet_buffer
 			int32 room_id{};
 			ReceiveRoomJoinedPacket(packet_buffer, newbie_id, room_id);
 
-			if (newbie_id == USagaNetwork::LocalUserId())
+			if (newbie_id == system->GetLocalUserId())
 			{
-				USagaNetwork::CurrentRoomId(room_id);
+				system->SetCurrentRoomId(room_id);
 
 				UE_LOG(LogNet, Log, TEXT("Local client has joined to the room %d"), room_id);
+				system->BroadcastOnJoinedRoom(newbie_id);
 			}
 			else
 			{
@@ -78,7 +82,7 @@ saga::EventRouter(const std::byte* packet_buffer
 
 		case EPacketProtocol::SC_ROOM_JOIN_FAILED:
 		{
-			RoomContract error{};
+			ERoomContract error{};
 			ReceiveRoomJoinFailedPacket(packet_buffer, error);
 
 			const auto msg = std::to_wstring(error);
@@ -88,10 +92,21 @@ saga::EventRouter(const std::byte* packet_buffer
 
 		case EPacketProtocol::SC_ROOM_LEFT:
 		{
-			int32 left_client{};
-			ReceiveRoomLeftPacket(packet_buffer, left_client);
+			int32 left_client_id{};
+			ReceiveRoomLeftPacket(packet_buffer, left_client_id);
 
-			UE_LOG(LogNet, Log, TEXT("Client %d has been left from room"), left_client);
+			if (left_client_id == system->GetLocalUserId())
+			{
+				system->SetCurrentRoomId(-1);
+
+				UE_LOG(LogNet, Log, TEXT("Local client has been left from room"));
+				system->BroadcastOnLeftRoomBySelf();
+			}
+			else
+			{
+				UE_LOG(LogNet, Log, TEXT("Remote client %d has been left from room"), left_client_id);
+				system->BroadcastOnLeftRoom(left_client_id);
+			}
 		}
 		break;
 
@@ -102,6 +117,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			ReceiveRespondVersionPacket(packet_buffer, version_string, 16);
 
 			UE_LOG(LogNet, Log, TEXT("Version: %s"), version_string);
+			system->BroadcastOnRespondVersion(version_string);
 		}
 		break;
 
@@ -122,6 +138,8 @@ saga::EventRouter(const std::byte* packet_buffer
 					});
 				UE_LOG(LogNet, Log, TEXT("Room (%d): %s (%d/4)"), room.id, room.title, room.members);
 			}
+
+			system->BroadcastOnUpdateRoomList(USagaNetwork::GetRoomList());
 		}
 		break;
 
@@ -143,6 +161,8 @@ saga::EventRouter(const std::byte* packet_buffer
 
 				UE_LOG(LogNet, Log, TEXT("User (%d): %s"), user.id, user.nickname);
 			}
+
+			system->BroadcastOnUpdateMembers(USagaNetwork::GetUserList());
 		}
 		break;
 

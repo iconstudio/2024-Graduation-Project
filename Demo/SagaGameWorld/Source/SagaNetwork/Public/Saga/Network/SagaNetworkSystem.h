@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include <optional>
 
+#include "Saga/Network/SagaNetworkSubSystem.h"
 #include "Saga/Network/SagaConnectionContract.h"
 #include "Saga/Network/SagaBasicPacket.h"
 #include "Saga/Network/SagaVirtualUser.h"
@@ -23,18 +24,9 @@ namespace saga
 		USagaNetwork() noexcept;
 
 		static bool InitializeNetwork();
-		static ESagaConnectionContract ConnectToServer();
-
-		/* Local Client Methods */
-
-		static void LocalUserId(int32 id) noexcept;
-		[[nodiscard]] static int32 LocalUserId() noexcept;
-		static void LocalUserName(FStringView nickname);
-		[[nodiscard]] static FStringView LocalUserName() noexcept;
-		static void CurrentRoomId(int32 id) noexcept;
-		[[nodiscard]] static int32 CurrentRoomId() noexcept;
-		static void CurrentRoomTitle(FStringView title);
-		[[nodiscard]] static FStringView CurrentRoomTitle() noexcept;
+		static ESagaConnectionContract ConnectToServer(FStringView nickname);
+		static void SetSubsystemInstance(USagaNetworkSubSystem* instance) noexcept;
+		static USagaNetworkSubSystem* GetSubsystemInstance() noexcept;
 
 		/* Overall Clients Methods */
 

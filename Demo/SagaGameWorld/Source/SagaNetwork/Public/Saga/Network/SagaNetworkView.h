@@ -53,4 +53,19 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnUpdatePosition(int32 id, float x, float y, float z);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnFailedToStartGame(int32 reason);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnBeginPrepareGame();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnGameStarted();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnCreatePlayerCharacter(int32 user_id, uint8 team);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnRemovePlayerCharacter(int32 user_id);
 };

@@ -10,6 +10,7 @@
 
 USagaNetworkSubSystem::USagaNetworkSubSystem()
 	: UGameInstanceSubsystem()
+	, localUserId(-1), localUserName(), currentRoomId(), currentRoomTitle()
 	, OnNetworkInitialized(), OnConnected(), OnFailedToConnect(), OnDisconnected()
 	, OnRoomCreated(), OnJoinedRoom(), OnLeftRoomBySelf(), OnLeftRoom()
 	, OnRespondVersion(), OnUpdateRoomList(), OnUpdateMembers()
@@ -31,6 +32,8 @@ USagaNetworkSubSystem::Awake()
 	OnUpdateRoomList.AddDynamic(this, &USagaNetworkSubSystem::OnUpdateRoomList_Implementation);
 	OnUpdateMembers.AddDynamic(this, &USagaNetworkSubSystem::OnUpdateMembers_Implementation);
 	OnUpdatePosition.AddDynamic(this, &USagaNetworkSubSystem::OnUpdatePosition_Implementation);
+
+	saga::USagaNetwork::SetSubsystemInstance(this);
 
 	if (saga::USagaNetwork::InitializeNetwork())
 	{
@@ -65,10 +68,10 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 			}
 		}
 
-		saga::USagaNetwork::LocalUserName(nickname);
+		USagaNetworkSubSystem::SetLocalUserName(nickname);
 
 		UE_LOG(LogNet, Log, TEXT("Connecting..."));
-		auto connect_r = saga::USagaNetwork::ConnectToServer();
+		auto connect_r = saga::USagaNetwork::ConnectToServer(nickname);
 		if (connect_r == ESagaConnectionContract::Success)
 		{
 			BroadcastOnConnected();
@@ -107,6 +110,60 @@ USagaNetworkSubSystem::Destroy()
 		UE_LOG(LogNet, Warning, TEXT("The network system have been destroyed. (Offline Mode)"));
 		return true;
 	}
+}
+
+void
+USagaNetworkSubSystem::SetLocalUserId(int32 id)
+noexcept
+{
+	localUserId = id;
+}
+
+int32
+USagaNetworkSubSystem::GetLocalUserId()
+const noexcept
+{
+	return localUserId;
+}
+
+void
+USagaNetworkSubSystem::SetLocalUserName(const FString& nickname)
+{
+	localUserName = nickname;
+}
+
+FString
+USagaNetworkSubSystem::GetLocalUserName()
+const
+{
+	return localUserName;
+}
+
+void
+USagaNetworkSubSystem::SetCurrentRoomId(int32 id)
+noexcept
+{
+	currentRoomId = id;
+}
+
+int32
+USagaNetworkSubSystem::GetCurrentRoomId()
+const noexcept
+{
+	return currentRoomId;
+}
+
+void
+USagaNetworkSubSystem::SetCurrentRoomTitle(const FString& title)
+{
+	currentRoomTitle = title;
+}
+
+FString
+USagaNetworkSubSystem::GetCurrentRoomTitle()
+const
+{
+	return currentRoomTitle;
 }
 
 void
@@ -170,26 +227,26 @@ const
 }
 
 void
-USagaNetworkSubSystem::BroadcastOnRoomCreated(int32 id)
+USagaNetworkSubSystem::BroadcastOnRoomCreated(int32 room_id)
 const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnRoomCreated`"));
 
 	if (OnRoomCreated.IsBound())
 	{
-		OnRoomCreated.Broadcast(id);
+		OnRoomCreated.Broadcast(room_id);
 	}
 }
 
 void
-USagaNetworkSubSystem::BroadcastOnJoinedRoom(int32 id)
+USagaNetworkSubSystem::BroadcastOnJoinedRoom(int32 user_id)
 const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnJoinedRoom`"));
 
 	if (OnJoinedRoom.IsBound())
 	{
-		OnJoinedRoom.Broadcast(id);
+		OnJoinedRoom.Broadcast(user_id);
 	}
 }
 
@@ -254,14 +311,14 @@ const
 }
 
 void
-USagaNetworkSubSystem::BroadcastOnUpdatePosition(int32 id, float x, float y, float z)
+USagaNetworkSubSystem::BroadcastOnUpdatePosition(int32 user_id, float x, float y, float z)
 const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnUpdatePosition`"));
 
 	if (OnUpdatePosition.IsBound())
 	{
-		OnUpdatePosition.Broadcast(id, x, y, z);
+		OnUpdatePosition.Broadcast(user_id, x, y, z);
 	}
 }
 
@@ -319,44 +376,16 @@ noexcept
 	return saga::USagaNetwork::IsSocketAvailable();
 }
 
-int32
-USagaNetworkSubSystem::SagaNetworkLocalPlayerID()
-noexcept
-{
-	return saga::USagaNetwork::LocalUserId();
-}
-
-FString
-USagaNetworkSubSystem::SagaNetworkLocalPlayerName()
-noexcept
-{
-	return FString{ saga::USagaNetwork::LocalUserName() };
-}
-
-int32
-USagaNetworkSubSystem::SagaNetworkCurrentRoomID()
-noexcept
-{
-	return saga::USagaNetwork::CurrentRoomId();
-}
-
-FString
-USagaNetworkSubSystem::SagaNetworkCurrentRoomTitle()
-noexcept
-{
-	return FString{ saga::USagaNetwork::CurrentRoomTitle() };
-}
-
 const TArray<FSagaVirtualUser>&
 USagaNetworkSubSystem::GetUserList()
-noexcept
+const noexcept
 {
 	return saga::USagaNetwork::GetUserList();
 }
 
 const TArray<FSagaVirtualRoom>&
 USagaNetworkSubSystem::GetRoomList()
-noexcept
+const noexcept
 {
 	return saga::USagaNetwork::GetRoomList();
 }

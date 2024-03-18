@@ -45,30 +45,83 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	void DeregisterNetworkView(AActor* event_interface);
 
+	/* Local Client Methods */
+
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Session")
+	void SetLocalUserId(int32 id) noexcept;
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Session")
+	int32 GetLocalUserId() const noexcept;
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Session")
+	void SetLocalUserName(const FString& nickname);
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
+	FString GetLocalUserName() const;
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Session")
+	void SetCurrentRoomId(int32 id) noexcept;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
+	int32 GetCurrentRoomId() const noexcept;
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Session")
+	void SetCurrentRoomTitle(const FString& title);
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
+	FString GetCurrentRoomTitle() const;
+
+	/* Complicated Network Methods */
+
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Phase")
 	bool TryLoginToServer(const FString& nickname);
-
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	bool SagaNetworkHasSocket() noexcept;
-
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	int32 SagaNetworkLocalPlayerID() noexcept;
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	FString SagaNetworkLocalPlayerName() noexcept;
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	int32 SagaNetworkCurrentRoomID() noexcept;
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	FString SagaNetworkCurrentRoomTitle() noexcept;
-
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	const TArray<FSagaVirtualUser>& GetUserList() noexcept;
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	const TArray<FSagaVirtualRoom>& GetRoomList() noexcept;
-
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	void UpdatePlayerList();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	void UpdateRoomList();
+
+	/* Getters */
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	const TArray<FSagaVirtualUser>& GetUserList() const noexcept;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	const TArray<FSagaVirtualRoom>& GetRoomList() const noexcept;
+
+	/* Observers */
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	bool SagaNetworkHasSocket() noexcept;
+
+	/* Internal Event Broadcasting Methods */
+
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnNetworkInitialized() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnFailedToInitializeNetwork() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnConnected() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnFailedToConnect(ESagaConnectionContract reason) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnDisconnected() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnRoomCreated(int32 room_id) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnJoinedRoom(int32 user_id) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnLeftRoomBySelf() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnLeftRoom(int32 id) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnRespondVersion(const FString& version_string) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnUpdateRoomList(UPARAM(ref) const TArray<FSagaVirtualRoom>& list) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnUpdateMembers(UPARAM(ref) const TArray<FSagaVirtualUser>& list) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnUpdatePosition(int32 user_id, float x, float y, float z) const;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
+	int32 localUserId;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
+	FString localUserName;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
+	int32 currentRoomId;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
+	FString currentRoomTitle;
 
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnNetworkInitialized OnNetworkInitialized;
@@ -96,6 +149,7 @@ public:
 	FSagaEventOnUpdateRoomList OnUpdateRoomList;
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnUpdateUserList OnUpdateMembers;
+
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnUpdatePosition OnUpdatePosition;
 
@@ -124,33 +178,6 @@ protected:
 	void OnUpdateMembers_Implementation(UPARAM(ref) const TArray<FSagaVirtualUser>& list);
 	UFUNCTION()
 	void OnUpdatePosition_Implementation(int32 id, float x, float y, float z);
-
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnNetworkInitialized() const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnFailedToInitializeNetwork() const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnConnected() const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnFailedToConnect(ESagaConnectionContract reason) const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnDisconnected() const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnRoomCreated(int32 id) const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnJoinedRoom(int32 id) const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnLeftRoomBySelf() const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnLeftRoom(int32 id) const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnRespondVersion(const FString& version_string) const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnUpdateRoomList(UPARAM(ref) const TArray<FSagaVirtualRoom>& list) const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnUpdateMembers(UPARAM(ref) const TArray<FSagaVirtualUser>& list) const;
-	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnUpdatePosition(int32 id, float x, float y, float z) const;
 
 	TArray<TScriptInterface<ISagaNetworkView>, FConcurrentLinearArrayAllocator> internalList;
 };
