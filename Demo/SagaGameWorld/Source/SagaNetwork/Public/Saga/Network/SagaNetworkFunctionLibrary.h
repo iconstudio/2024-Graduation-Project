@@ -2,10 +2,6 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 
-#include "Saga/Network/SagaVirtualUser.h"
-#include "Saga/Network/SagaVirtualRoom.h"
-#include "Saga/Network/SagaNetworkView.h"
-#include "Saga/Network/SagaConnectionContract.h"
 #include "SagaNetworkFunctionLibrary.generated.h"
 
 UCLASS(Category = "CandyLandSaga|Network")
@@ -14,55 +10,6 @@ class SAGANETWORK_API USagaNetworkFunctionLibrary : public UBlueprintFunctionLib
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	static void BroadcastOnNetworkInitialized();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	static void BroadcastOnFailedToInitializeNetwork();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	static void BroadcastOnConnected();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	static void BroadcastOnFailedToConnect(ESagaConnectionContract reason);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	static void BroadcastOnDisconnected();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	static void BroadcastOnRespondVersion(const FString& version_string);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	static void BroadcastOnUpdateRoomList(const TArray<FSagaVirtualRoom>& list);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	static void BroadcastOnUpdateMembers(const TArray<FSagaVirtualUser>& list);
-
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static void RegisterNetworkView(AActor* event_interface);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static void DeregisterNetworkView(AActor* event_interface);
-
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Phase")
-	static bool TryLoginToServer(const FString& nickname);
-
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static bool SagaNetworkClose();
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	static bool SagaNetworkHasSocket() noexcept;
-
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	static int32 SagaNetworkLocalPlayerID() noexcept;
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	static FString SagaNetworkLocalPlayerName() noexcept;
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	static int32 SagaNetworkCurrentRoomID() noexcept;
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	static FString SagaNetworkCurrentRoomTitle() noexcept;
-
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static const TArray<FSagaVirtualUser>& GetUserList() noexcept;
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static const TArray<FSagaVirtualRoom>& GetRoomList() noexcept;
-
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static void UpdatePlayerList();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	static void UpdateRoomList();
-
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	static int32 SendSignInPacket(const FString& nickname);
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")

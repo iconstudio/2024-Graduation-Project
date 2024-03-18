@@ -19,10 +19,7 @@ class SAGANETWORK_API ISagaNetworkView
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
-	void OnNetworkInitialized();
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
-	void OnFailedToInitializeNetwork();
+	void OnNetworkInitialized(bool succeed);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnConnected();
@@ -41,4 +38,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnUpdateMembers(const TArray<FSagaVirtualUser>& list);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnUpdatePosition(int32 id, float x, float y, float z);
 };

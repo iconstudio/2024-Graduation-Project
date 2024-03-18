@@ -23,7 +23,8 @@ public class SagaFramework : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
 			"SagaAssetMgr",
-			"SagaNetwork"
+			"SagaNetwork",
+			"SagaGame"
 		});
 	}
 }
