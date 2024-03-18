@@ -21,12 +21,8 @@ namespace saga
 
 		USagaNetwork() noexcept;
 
-		[[nodiscard]]
-		static TSharedPtr<USagaNetwork> Instance() noexcept;
-
-		[[nodiscard]] static bool Awake();
-		[[nodiscard]] static bool Start(FStringView nickname);
-		static bool Destroy();
+		static bool InitializeNetwork();
+		static bool ConnectToServer();
 
 		/* Local Client Methods */
 

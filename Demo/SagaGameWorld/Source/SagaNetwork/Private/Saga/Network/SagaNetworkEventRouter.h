@@ -9,7 +9,7 @@
 
 namespace saga
 {
-	void EventRouter(const std::byte* packet_buffer, EPacketProtocol protocol, std::int16_t packet_size);
+	void EventRouter(const std::byte* packet_buffer, EPacketProtocol protocol, int16 packet_size);
 }
 
 #endif // !SAGAFRAMEWORK_NET_ROUTER_H

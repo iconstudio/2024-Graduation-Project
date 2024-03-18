@@ -7,7 +7,7 @@
 #include "Saga/Network/SagaVirtualUser.h"
 #include "SagaNetworkView.generated.h"
 
-UINTERFACE(MinimalAPI, BlueprintType, Blueprintable)
+UINTERFACE(MinimalAPI)
 class USagaNetworkView : public UInterface
 {
 	GENERATED_BODY()
@@ -19,12 +19,7 @@ class SAGANETWORK_API ISagaNetworkView
 
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
-	void OnNetworkInitialized();
-	virtual void OnNetworkInitialized_Implementation() {};
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
-	void OnFailedToInitializeNetwork();
-	virtual void OnFailedToInitializeNetwork_Implementation() {};
+	void OnNetworkInitialized(bool succeed);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnConnected();
@@ -43,4 +38,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnUpdateMembers(const TArray<FSagaVirtualUser>& list);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnUpdatePosition(int32 id, float x, float y, float z);
 };
