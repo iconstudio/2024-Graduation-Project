@@ -37,3 +37,4 @@ private:
 	TOptional<FName> PrevLevelName;
 	TOptional<FName> NextLevelName;
 };
+
