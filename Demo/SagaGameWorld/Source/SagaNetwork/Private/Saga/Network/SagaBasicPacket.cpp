@@ -5,14 +5,14 @@ std::unique_ptr<std::byte[]>
 saga::FSagaBasicPacket::Serialize()
 const
 {
-	return saga::Serializes(static_cast<std::uint8_t>(myProtocol), mySize);
+	return saga::Serializes(static_cast<uint8>(myProtocol), mySize);
 }
 
 std::byte*
 saga::FSagaBasicPacket::Write(std::byte* buffer)
 const
 {
-	return saga::Serialize(saga::Serialize(buffer, static_cast<std::uint8_t>(myProtocol)), mySize);
+	return saga::Serialize(saga::Serialize(buffer, static_cast<uint8>(myProtocol)), mySize);
 }
 
 const std::byte*

@@ -2,7 +2,6 @@
 #include "UObject/ScriptInterface.h"
 #include "Containers/UnrealString.h"
 #include "Async/Async.h"
-#include "Async/Future.h"
 
 #include "Saga/Network/SagaNetworkSystem.h"
 #include "Saga/Network/SagaNetworkViewAnnihilator.h"
@@ -145,7 +144,7 @@ USagaNetworkFunctionLibrary::RegisterNetworkView(AActor* event_interface)
 			internalList.Add(MoveTempIfPossible(event_interface));
 			UE_LOG(LogNet, Log, TEXT("The actor `%s` have been registered to network view."), *name);
 
-			event_interface->OnDestroyed.AddDynamic(GetSingleInstance(), &USagaNetworkFunctionLibrary::_DestroyNetworkView_Implementation);
+			//event_interface->OnDestroyed.AddDynamic(GetSingleInstance(), &USagaNetworkFunctionLibrary::_DestroyNetworkView_Implementation);
 			UE_LOG(LogNet, Log, TEXT("Also binded a event to `OnDestroyed`"));
 		}
 		else
@@ -307,22 +306,4 @@ int32
 USagaNetworkFunctionLibrary::SendPositionPacket(float x, float y, float z)
 {
 	return saga::SendPositionPacket(x, y, z).value_or(0);
-}
-
-void
-USagaNetworkFunctionLibrary::_DestroyNetworkView_Implementation(AActor* destroying_actor)
-{
-	USagaNetworkViewAnnihilator::DestroyNetworkView(GetWorld(), destroying_actor);
-}
-
-USagaNetworkFunctionLibrary*
-USagaNetworkFunctionLibrary::GetSingleInstance()
-{
-	static constinit USagaNetworkFunctionLibrary* instance = nullptr;
-	if (nullptr == instance)
-	{
-		instance = NewObject<USagaNetworkFunctionLibrary>();
-	}
-
-	return instance;
 }
