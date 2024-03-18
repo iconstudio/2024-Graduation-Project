@@ -23,7 +23,6 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateUserList, const TA
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSagaEventOnUpdatePosition, int32, id, float, x, float, y, float, z);
 
-
 UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|Network")
 class SAGANETWORK_API USagaNetworkSubSystem : public UGameInstanceSubsystem
 {
@@ -136,6 +135,14 @@ protected:
 	void BroadcastOnFailedToConnect(ESagaConnectionContract reason) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnDisconnected() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnRoomCreated(int32 id) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnJoinedRoom(int32 id) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnLeftRoomBySelf() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnLeftRoom(int32 id) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnRespondVersion(const FString& version_string) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")

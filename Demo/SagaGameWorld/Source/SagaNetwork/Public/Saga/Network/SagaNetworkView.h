@@ -7,7 +7,7 @@
 #include "Saga/Network/SagaVirtualUser.h"
 #include "SagaNetworkView.generated.h"
 
-UINTERFACE(MinimalAPI)
+UINTERFACE(BlueprintType, Blueprintable, MinimalAPI)
 class USagaNetworkView : public UInterface
 {
 	GENERATED_BODY()
@@ -29,6 +29,18 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnDisconnected();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnRoomCreated(int32 id);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnJoinedRoom(int32 id);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnLeftRoomBySelf();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnLeftRoom(int32 id);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnRespondVersion(const FString& version_string);

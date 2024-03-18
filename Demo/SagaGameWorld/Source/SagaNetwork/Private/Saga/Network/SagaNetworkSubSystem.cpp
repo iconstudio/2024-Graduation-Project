@@ -170,6 +170,54 @@ const
 }
 
 void
+USagaNetworkSubSystem::BroadcastOnRoomCreated(int32 id)
+const
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnRoomCreated`"));
+
+	if (OnRoomCreated.IsBound())
+	{
+		OnRoomCreated.Broadcast(id);
+	}
+}
+
+void
+USagaNetworkSubSystem::BroadcastOnJoinedRoom(int32 id)
+const
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnJoinedRoom`"));
+
+	if (OnJoinedRoom.IsBound())
+	{
+		OnJoinedRoom.Broadcast(id);
+	}
+}
+
+void
+USagaNetworkSubSystem::BroadcastOnLeftRoomBySelf()
+const
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnLeftRoomBySelf`"));
+
+	if (OnLeftRoomBySelf.IsBound())
+	{
+		OnLeftRoomBySelf.Broadcast();
+	}
+}
+
+void
+USagaNetworkSubSystem::BroadcastOnLeftRoom(int32 id)
+const
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnLeftRoom`"));
+
+	if (OnLeftRoom.IsBound())
+	{
+		OnLeftRoom.Broadcast(id);
+	}
+}
+
+void
 USagaNetworkSubSystem::BroadcastOnRespondVersion(const FString& version_string)
 const
 {
