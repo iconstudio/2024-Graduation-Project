@@ -23,12 +23,13 @@ public class SagaGame : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"SagaUtility",
-			"SagaFramework",
 			"SagaAssetMgr"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
+			"SagaUtility",
+			"SagaFramework",
 			"SagaNetwork"
 		});
 	}

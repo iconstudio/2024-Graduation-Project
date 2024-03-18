@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "SagaFramework.h"
 #include "Engine/LevelScriptActor.h"
 
 #include "SagaLevelScripterBase.generated.h"

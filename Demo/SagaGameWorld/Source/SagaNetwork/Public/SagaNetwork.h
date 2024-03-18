@@ -2,5 +2,7 @@
 #ifndef SAGANETWORK_H
 #define SAGANETWORK_H
 
-#include "Engine.h"
+#include "CoreMinimal.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogSagaNetwork, Log, All);
 #endif
