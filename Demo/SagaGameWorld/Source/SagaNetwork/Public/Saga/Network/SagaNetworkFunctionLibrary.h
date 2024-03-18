@@ -14,21 +14,21 @@ class SAGANETWORK_API USagaNetworkFunctionLibrary : public UBlueprintFunctionLib
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
 	static void BroadcastOnNetworkInitialized();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
 	static void BroadcastOnFailedToInitializeNetwork();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
 	static void BroadcastOnConnected();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
 	static void BroadcastOnFailedToConnect(ESagaConnectionContract reason);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
 	static void BroadcastOnDisconnected();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
 	static void BroadcastOnRespondVersion(const FString& version_string);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
 	static void BroadcastOnUpdateRoomList(const TArray<FSagaVirtualRoom>& list);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal", meta = (BlueprintInternalUseOnly = "true"))
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
 	static void BroadcastOnUpdateMembers(const TArray<FSagaVirtualUser>& list);
 
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
@@ -83,10 +83,4 @@ public:
 	static int32 SendGameIsLoadedPacket();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	static int32 SendPositionPacket(float x, float y, float z);
-
-private:
-	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "CandyLandSaga|Network|Packet")
-	void _DestroyNetworkView_Implementation(AActor* destroying_actor);
-	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"), Category = "CandyLandSaga|Network|Packet")
-	static USagaNetworkFunctionLibrary* GetSingleInstance();
 };

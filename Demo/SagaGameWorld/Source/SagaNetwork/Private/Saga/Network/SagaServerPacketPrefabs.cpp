@@ -58,7 +58,7 @@ std::byte*
 saga::sc::SC_RespondRoomsPacket::Write(std::byte* buffer)
 const
 {
-	auto seek = saga::Serialize(saga::Serialize(buffer, myProtocol), static_cast<std::int16_t>(WannabeSize()));
+	auto seek = saga::Serialize(saga::Serialize(buffer, myProtocol), static_cast<int16>(WannabeSize()));
 
 	seek = saga::Serialize(seek, serializedRooms.size());
 
@@ -110,7 +110,7 @@ const
 std::byte*
 saga::sc::SC_RespondMembersPacket::Write(std::byte* buffer) const
 {
-	auto seek = saga::Serialize(saga::Serialize(buffer, myProtocol), static_cast<std::int16_t>(WannabeSize()));
+	auto seek = saga::Serialize(saga::Serialize(buffer, myProtocol), static_cast<int16>(WannabeSize()));
 
 	seek = saga::Serialize(seek, serializedMembers.size());
 
