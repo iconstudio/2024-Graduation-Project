@@ -1,6 +1,7 @@
 #include "Saga/Network/SagaNetworkViewAnnihilator.h"
 #include "Saga/Network/SagaNetworkView.h"
 #include "Saga/Network/SagaNetworkFunctionLibrary.h"
+#include "Saga/Network/SagaNetworkSubSystem.h"
 #include "Async/Async.h"
 
 USagaNetworkViewAnnihilator::USagaNetworkViewAnnihilator(const FObjectInitializer& ObjectInitializer)
@@ -49,6 +50,8 @@ USagaNetworkViewAnnihilator::_DestroyNetworkView_Implementation(AActor* destroye
 {
 	if (destroyed_object->GetClass()->ImplementsInterface(USagaNetworkView::StaticClass()))
 	{
-		USagaNetworkFunctionLibrary::DeregisterNetworkView(destroyed_object);
+		auto instance = destroyed_object->GetGameInstance<USagaNetworkSubSystem>();
+
+		instance->DeregisterNetworkView(destroyed_object);
 	}
 }
