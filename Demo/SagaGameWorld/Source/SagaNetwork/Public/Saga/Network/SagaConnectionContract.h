@@ -7,7 +7,11 @@ UENUM(BlueprintType)
 enum class [[nodiscard]] ESagaConnectionContract : uint8
 {
 	Success = 0
-	, Error
+	, NoSocket
+	, SignInFailed
+	, CannotCreateWorker
+	, ConnectError
+	, OtherError
 };
 
 namespace saga

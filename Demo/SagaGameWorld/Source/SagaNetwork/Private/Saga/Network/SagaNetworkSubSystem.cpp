@@ -68,7 +68,17 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 		saga::USagaNetwork::LocalUserName(nickname);
 
 		UE_LOG(LogNet, Log, TEXT("Connecting..."));
-		return saga::USagaNetwork::ConnectToServer();
+		auto connect_r = saga::USagaNetwork::ConnectToServer();
+		if (connect_r == ESagaConnectionContract::Success)
+		{
+			BroadcastOnConnected();
+			return true;
+		}
+		else
+		{
+			BroadcastOnFailedToConnect(connect_r);
+			return false;
+		}
 	}
 	else
 	{
@@ -101,6 +111,7 @@ USagaNetworkSubSystem::Destroy()
 
 void
 USagaNetworkSubSystem::BroadcastOnNetworkInitialized()
+const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnNetworkInitialized`"));
 
@@ -112,6 +123,7 @@ USagaNetworkSubSystem::BroadcastOnNetworkInitialized()
 
 void
 USagaNetworkSubSystem::BroadcastOnFailedToInitializeNetwork()
+const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnFailedToInitializeNetwork`"));
 
@@ -123,44 +135,86 @@ USagaNetworkSubSystem::BroadcastOnFailedToInitializeNetwork()
 
 void
 USagaNetworkSubSystem::BroadcastOnConnected()
+const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnConnected`"));
 
+	if (OnConnected.IsBound())
+	{
+		OnConnected.Broadcast();
+	}
 }
 
 void
 USagaNetworkSubSystem::BroadcastOnFailedToConnect(ESagaConnectionContract reason)
+const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnFailedToConnect`"));
 
+	if (OnFailedToConnect.IsBound())
+	{
+		OnFailedToConnect.Broadcast(reason);
+	}
 }
 
 void
 USagaNetworkSubSystem::BroadcastOnDisconnected()
+const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnDisconnected`"));
 
+	if (OnDisconnected.IsBound())
+	{
+		OnDisconnected.Broadcast();
+	}
 }
 
 void
 USagaNetworkSubSystem::BroadcastOnRespondVersion(const FString& version_string)
+const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnRespondVersion`"));
 
+	if (OnRespondVersion.IsBound())
+	{
+		OnRespondVersion.Broadcast(version_string);
+	}
 }
 
 void
 USagaNetworkSubSystem::BroadcastOnUpdateRoomList(const TArray<FSagaVirtualRoom>& list)
+const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnUpdateRoomList`"));
 
+	if (OnUpdateRoomList.IsBound())
+	{
+		OnUpdateRoomList.Broadcast(list);
+	}
 }
 
 void
 USagaNetworkSubSystem::BroadcastOnUpdateMembers(const TArray<FSagaVirtualUser>& list)
+const
 {
 	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnUpdateMembers`"));
 
+	if (OnUpdateMembers.IsBound())
+	{
+		OnUpdateMembers.Broadcast(list);
+	}
+}
+
+void
+USagaNetworkSubSystem::BroadcastOnUpdatePosition(int32 id, float x, float y, float z)
+const
+{
+	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnUpdatePosition`"));
+
+	if (OnUpdatePosition.IsBound())
+	{
+		OnUpdatePosition.Broadcast(id, x, y, z);
+	}
 }
 
 void

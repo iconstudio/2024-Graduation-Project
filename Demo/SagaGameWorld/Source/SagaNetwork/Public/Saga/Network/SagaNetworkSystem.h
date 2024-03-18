@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include <optional>
 
+#include "Saga/Network/SagaConnectionContract.h"
 #include "Saga/Network/SagaBasicPacket.h"
 #include "Saga/Network/SagaVirtualUser.h"
 #include "Saga/Network/SagaVirtualRoom.h"
@@ -22,7 +23,7 @@ namespace saga
 		USagaNetwork() noexcept;
 
 		static bool InitializeNetwork();
-		static bool ConnectToServer();
+		static ESagaConnectionContract ConnectToServer();
 
 		/* Local Client Methods */
 

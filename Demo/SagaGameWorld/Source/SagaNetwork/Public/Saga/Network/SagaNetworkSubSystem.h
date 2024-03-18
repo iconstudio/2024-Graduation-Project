@@ -24,7 +24,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateUserList, const TA
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSagaEventOnUpdatePosition, int32, id, float, x, float, y, float, z);
 
 
-UCLASS()
+UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|Network")
 class SAGANETWORK_API USagaNetworkSubSystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
@@ -126,22 +126,24 @@ protected:
 	UFUNCTION()
 	void OnUpdatePosition_Implementation(int32 id, float x, float y, float z);
 
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnNetworkInitialized();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnFailedToInitializeNetwork();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnConnected();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnFailedToConnect(ESagaConnectionContract reason);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnDisconnected();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnRespondVersion(const FString& version_string);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnUpdateRoomList(const TArray<FSagaVirtualRoom>& list);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnUpdateMembers(const TArray<FSagaVirtualUser>& list);
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnNetworkInitialized() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnFailedToInitializeNetwork() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnConnected() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnFailedToConnect(ESagaConnectionContract reason) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnDisconnected() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnRespondVersion(const FString& version_string) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnUpdateRoomList(const TArray<FSagaVirtualRoom>& list) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnUpdateMembers(const TArray<FSagaVirtualUser>& list) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnUpdatePosition(int32 id, float x, float y, float z) const;
 
 	TArray<TScriptInterface<ISagaNetworkView>, FConcurrentLinearArrayAllocator> internalList;
 };

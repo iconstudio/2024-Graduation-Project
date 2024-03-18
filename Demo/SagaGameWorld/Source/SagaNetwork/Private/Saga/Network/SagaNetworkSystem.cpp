@@ -71,13 +71,13 @@ saga::USagaNetwork::InitializeNetwork()
 	return true;
 }
 
-bool
+ESagaConnectionContract
 saga::USagaNetwork::ConnectToServer()
 {
 	if (not saga::USagaNetwork::IsSocketAvailable())
 	{
 		UE_LOG(LogNet, Error, TEXT("The socket is not available."));
-		return false;
+		return ESagaConnectionContract::NoSocket;
 	}
 
 	// 연결 부분
@@ -88,7 +88,7 @@ saga::USagaNetwork::ConnectToServer()
 		{
 			// 연결 실패 처리
 			UE_LOG(LogNet, Error, TEXT("Cannot connect to the server."));
-			return false;
+			return ESagaConnectionContract::OtherError;
 		}
 
 		// #1
@@ -98,7 +98,7 @@ saga::USagaNetwork::ConnectToServer()
 		if (not sent_r.has_value())
 		{
 			UE_LOG(LogNet, Error, TEXT("First try of sending signin packet has been failed."));
-			return false;
+			return ESagaConnectionContract::SignInFailed;
 		}
 		else
 		{
@@ -110,10 +110,10 @@ saga::USagaNetwork::ConnectToServer()
 	if (netWorker == nullptr)
 	{
 		UE_LOG(LogNet, Error, TEXT("Has failed to create the worker thread."));
-		return false;
+		return ESagaConnectionContract::CannotCreateWorker;
 	}
 
-	return true;
+	return ESagaConnectionContract::Success;
 }
 
 void
