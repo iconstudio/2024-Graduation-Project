@@ -1,28 +1,27 @@
 #pragma once
-#include "UObject/ObjectMacros.h"
-#include "CoreTypes.h"
+#include "CoreMinimal.h"
 #include "Containers/UnrealString.h"
 #include "Templates/UnrealTemplate.h"
 
 #include "SagaVirtualSession.generated.h"
 
-USTRUCT(BlueprintType, Category = "CandyLandSaga|Network|Session")
+USTRUCT(BlueprintType, Atomic, Category = "CandyLandSaga|Network|Session")
 struct SAGANETWORK_API FSagaVirtualSession
 {
 	GENERATED_BODY()
 
 public:
-	FSagaVirtualSession()
+	FSagaVirtualSession() noexcept
 		: MyID(-1), MyName(TEXT("Empty Client"))
 	{
 	}
 
-	FSagaVirtualSession(int32 id)
+	FSagaVirtualSession(int32 id) noexcept
 		: MyID(id), MyName(TEXT("Empty Client"))
 	{
 	}
 	
-	FSagaVirtualSession(int32 id, FStringView name)
+	FSagaVirtualSession(int32 id, FStringView name) noexcept
 		: MyID(id), MyName(name)
 	{
 	}
@@ -63,57 +62,49 @@ public:
 		return MyName;
 	}
 
-	UPROPERTY(VisibleAnywhere, meta = (NoResetToDefault, NoSpinbox = true, ClampMin = 2, UIMin = 2, ClampMax = 21, UIMax = 21))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Network|Session")
 	int32 MyID;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Network|Session")
 	FString MyName;
 };
 
-[[nodiscard]]
-UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
-int32 GetID(const FSagaVirtualSession& session) noexcept;
+struct SAGANETWORK_API FSagaSessionComparator final
+{
+	[[nodiscard]]
+	constexpr bool
+		operator()(const FSagaVirtualSession& lhs, const FSagaVirtualSession& rhs)
+		const noexcept
+	{
+		return lhs.MyID == rhs.MyID;
+	}
 
-[[nodiscard]]
-UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
-const FString& GetName(const FSagaVirtualSession& session) noexcept;
+	[[nodiscard]]
+	constexpr bool
+		operator()(const FSagaVirtualSession& lhs, const int32& id)
+		const noexcept
+	{
+		return lhs.MyID == id;
+	}
+};
+
+struct SAGANETWORK_API FSagaSessionIdComparator final
+{
+	explicit constexpr FSagaSessionIdComparator(int32 another_id) noexcept
+		: cmpId(another_id)
+	{}
+
+	[[nodiscard]]
+	constexpr bool
+		operator()(const FSagaVirtualSession& lhs)
+		const noexcept
+	{
+		return lhs.MyID == cmpId;
+	}
+
+	int32 cmpId;
+};
 
 namespace saga
 {
 	using ::FSagaVirtualSession;
-
-	struct SAGANETWORK_API FSagaSessionComparator final
-	{
-		[[nodiscard]]
-		constexpr bool
-			operator()(const FSagaVirtualSession& lhs, const FSagaVirtualSession& rhs)
-			const noexcept
-		{
-			return lhs.MyID == rhs.MyID;
-		}
-
-		[[nodiscard]]
-		constexpr bool
-			operator()(const FSagaVirtualSession& lhs, const int32& id)
-			const noexcept
-		{
-			return lhs.MyID == id;
-		}
-	};
-
-	struct SAGANETWORK_API FSagaSessionIdComparator final
-	{
-		explicit constexpr FSagaSessionIdComparator(int32 another_id) noexcept
-			: cmpId(another_id)
-		{}
-
-		[[nodiscard]]
-		constexpr bool
-			operator()(const FSagaVirtualSession& lhs)
-			const noexcept
-		{
-			return lhs.MyID == cmpId;
-		}
-
-		int32 cmpId;
-	};
 }

@@ -20,6 +20,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			ReceiveSignInSucceedPacket(packet_buffer, my_id);
 
 			UE_LOG(LogNet, Log, TEXT("Local client's id is %d"), my_id);
+			USagaNetwork::LocalUserId(my_id);
 		}
 		break;
 
@@ -29,6 +30,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			ReceiveSignInFailurePacket(packet_buffer, error);
 
 			UE_LOG(LogNet, Log, TEXT("Local client can't get an id from server due to %d"), error);
+			USagaNetwork::LocalUserId(-1);
 		}
 		break;
 

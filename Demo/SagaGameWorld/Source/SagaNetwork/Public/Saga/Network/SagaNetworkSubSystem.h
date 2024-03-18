@@ -119,9 +119,9 @@ protected:
 	UFUNCTION()
 	void OnRespondVersion_Implementation(const FString& version_string);
 	UFUNCTION()
-	void OnUpdateRoomList_Implementation(const TArray<FSagaVirtualRoom>& list);
+	void OnUpdateRoomList_Implementation(UPARAM(ref) const TArray<FSagaVirtualRoom>& list);
 	UFUNCTION()
-	void OnUpdateMembers_Implementation(const TArray<FSagaVirtualUser>& list);
+	void OnUpdateMembers_Implementation(UPARAM(ref) const TArray<FSagaVirtualUser>& list);
 	UFUNCTION()
 	void OnUpdatePosition_Implementation(int32 id, float x, float y, float z);
 
@@ -146,9 +146,9 @@ protected:
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnRespondVersion(const FString& version_string) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnUpdateRoomList(const TArray<FSagaVirtualRoom>& list) const;
+	void BroadcastOnUpdateRoomList(UPARAM(ref) const TArray<FSagaVirtualRoom>& list) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
-	void BroadcastOnUpdateMembers(const TArray<FSagaVirtualUser>& list) const;
+	void BroadcastOnUpdateMembers(UPARAM(ref) const TArray<FSagaVirtualUser>& list) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnUpdatePosition(int32 id, float x, float y, float z) const;
 

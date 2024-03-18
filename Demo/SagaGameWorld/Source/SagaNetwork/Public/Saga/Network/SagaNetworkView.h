@@ -46,10 +46,10 @@ public:
 	void OnRespondVersion(const FString& version_string);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
-	void OnUpdateRoomList(const TArray<FSagaVirtualRoom>& list);
+	void OnUpdateRoomList(UPARAM(ref) const TArray<FSagaVirtualRoom>& list);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
-	void OnUpdateMembers(const TArray<FSagaVirtualUser>& list);
+	void OnUpdateMembers(UPARAM(ref) const TArray<FSagaVirtualUser>& list);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnUpdatePosition(int32 id, float x, float y, float z);
