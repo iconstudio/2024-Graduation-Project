@@ -50,8 +50,8 @@ USagaNetworkViewAnnihilator::_DestroyNetworkView_Implementation(AActor* destroye
 {
 	if (destroyed_object->GetClass()->ImplementsInterface(USagaNetworkView::StaticClass()))
 	{
-		auto instance = destroyed_object->GetGameInstance<USagaNetworkSubSystem>();
+		//auto instance = destroyed_object->GetGameInstance<USagaNetworkSubSystem>();
 
-		instance->DeregisterNetworkView(destroyed_object);
+		//instance->DeregisterNetworkView(destroyed_object);
 	}
 }

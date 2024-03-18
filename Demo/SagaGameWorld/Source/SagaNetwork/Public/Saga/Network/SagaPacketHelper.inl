@@ -1,8 +1,8 @@
 #pragma once
 #define MAKE_EMPTY_PACKET(name, protocol) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept { return Super::MinSize(); } \
 	[[nodiscard]] static consteval ptrdiff_t SignedWannabeSize() noexcept { return Super::SignedMinSize(); } \
@@ -64,9 +64,9 @@ name::Read(const std::byte* buffer) \
 
 #pragma region 1 Field
 #define MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, var1_default_value, serializer_method) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type); } \
@@ -105,9 +105,9 @@ struct name : public saga::FSagaBasicPacket \
 MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, (var1_default_value), MAKE_SERIALIZE_METHOD())
 
 #define MAKE_EMPTY_PACKET_1VAR_EX(name, protocol, var1_type, var1_name, param1_name, serializer_method, create_default_ctor) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type); } \
@@ -149,9 +149,9 @@ MAKE_EMPTY_PACKET_1VAR_EX(name, protocol, var1_type, var1_name, param1_name, MAK
 
 #pragma region 2 Fields
 #define MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, var1_default_value, var2_type, var2_name, param2_name, var2_default_value, serializer_method) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type) + sizeof(var2_type); } \
@@ -209,9 +209,9 @@ struct name : public saga::FSagaBasicPacket \
 MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, (var1_default_value), var2_type, var2_name, param2_name, (var2_default_value), MAKE_SERIALIZE_METHOD())
 
 #define MAKE_EMPTY_PACKET_2VAR_EX(name, protocol, var1_type, var1_name, param1_name, var2_type, var2_name, param2_name, serializer_method, create_default_ctor) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type) + sizeof(var2_type); } \
@@ -273,9 +273,9 @@ MAKE_EMPTY_PACKET_2VAR_EX(name, protocol, var1_type, var1_name, param1_name, var
 
 #pragma region 3 Fields
 #define MAKE_EMPTY_PACKET_3VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, var1_default_value, var2_type, var2_name, param2_name, var2_default_value, var3_type, var3_name, param3_name, var3_default_value, serializer_method) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type) + sizeof(var2_type) + sizeof(var3_type); } \
@@ -375,9 +375,9 @@ struct name : public saga::FSagaBasicPacket \
 MAKE_EMPTY_PACKET_3VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, (var1_default_value), var2_type, var2_name, param2_name, (var2_default_value), var3_type, var3_name, param3_name, (var3_default_value), MAKE_SERIALIZE_METHOD())
 
 #define MAKE_EMPTY_PACKET_3VAR_EX(name, protocol, var1_type, var1_name, param1_name, var2_type, var2_name, param2_name, var3_type, var3_name, param3_name, serializer_method, create_default_ctor) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type) + sizeof(var2_type) + sizeof(var3_type); } \

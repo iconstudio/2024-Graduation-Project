@@ -1,15 +1,12 @@
 #include "Saga/Network/SagaPacketSenders.h"
 #include "Containers/UnrealString.h"
 
-#include "Saga/Network/SagaNetworkSystem.h"
 #include "Saga/Network/SagaNetworkUtility.h"
 #include "Saga/Network/SagaClientPacketPrefabs.h"
 
 std::optional<int32>
-saga::SendSignInPacket(FStringView nickname)
+saga::SendSignInPacket(FSocket* socket, FStringView nickname)
 {
-	auto& socket = USagaNetwork::GetLocalSocket();
-
 	const saga::CS_SignInPacket pk{ nickname.GetData(), static_cast<size_t>(nickname.Len()) };
 	auto ptr = pk.Serialize();
 
@@ -23,10 +20,8 @@ saga::SendSignInPacket(FStringView nickname)
 }
 
 std::optional<int32>
-saga::SendCreateRoomPacket(FStringView title)
+saga::SendCreateRoomPacket(FSocket* socket, FStringView title)
 {
-	auto& socket = USagaNetwork::GetLocalSocket();
-
 	const saga::CS_CreateRoomPacket pk{ title.GetData(), static_cast<size_t>(title.Len()) };
 	auto ptr = pk.Serialize();
 
@@ -40,9 +35,8 @@ saga::SendCreateRoomPacket(FStringView title)
 }
 
 std::optional<int32>
-saga::SendJoinRoomPacket(int32 room_id)
+saga::SendJoinRoomPacket(FSocket* socket, int32 room_id)
 {
-	auto& socket = USagaNetwork::GetLocalSocket();
 	const saga::CS_EnterRoomPacket pk{ room_id };
 	auto ptr = pk.Serialize();
 
@@ -56,9 +50,8 @@ saga::SendJoinRoomPacket(int32 room_id)
 }
 
 std::optional<int32>
-saga::SendLeaveRoomPacket()
+saga::SendLeaveRoomPacket(FSocket* socket)
 {
-	auto& socket = USagaNetwork::GetLocalSocket();
 	static constexpr saga::CS_LeaveRoomPacket pk{};
 	static auto ptr = pk.Serialize();
 
@@ -72,9 +65,8 @@ saga::SendLeaveRoomPacket()
 }
 
 std::optional<int32>
-saga::SendRequestVersionPacket()
+saga::SendRequestVersionPacket(FSocket* socket)
 {
-	auto& socket = USagaNetwork::GetLocalSocket();
 	static constexpr saga::CS_RequestVersionPacket pk{};
 	static auto ptr = pk.Serialize();
 
@@ -88,9 +80,8 @@ saga::SendRequestVersionPacket()
 }
 
 std::optional<int32>
-saga::SendRequestRoomsPacket()
+saga::SendRequestRoomsPacket(FSocket* socket)
 {
-	auto& socket = USagaNetwork::GetLocalSocket();
 	static constexpr saga::CS_RequestRoomsPacket pk{};
 	static auto ptr = pk.Serialize();
 
@@ -104,9 +95,8 @@ saga::SendRequestRoomsPacket()
 }
 
 std::optional<int32>
-saga::SendRequestMembersPacket()
+saga::SendRequestMembersPacket(FSocket* socket)
 {
-	auto& socket = USagaNetwork::GetLocalSocket();
 	static constexpr saga::CS_RequestMembersPacket pk{};
 	static auto ptr = pk.Serialize();
 
@@ -120,9 +110,8 @@ saga::SendRequestMembersPacket()
 }
 
 std::optional<int32>
-saga::SendGameStartPacket()
+saga::SendGameStartPacket(FSocket* socket)
 {
-	auto& socket = USagaNetwork::GetLocalSocket();
 	static constexpr saga::CS_GameStartPacket pk{};
 	static auto ptr = pk.Serialize();
 
@@ -136,10 +125,8 @@ saga::SendGameStartPacket()
 }
 
 std::optional<int32>
-saga::SendGameIsLoadedPacket()
+saga::SendGameIsLoadedPacket(FSocket* socket)
 {
-	auto& socket = USagaNetwork::GetLocalSocket();
-
 	static constexpr saga::CS_GameLoadedPacket pk{};
 	static auto ptr = pk.Serialize();
 
@@ -153,10 +140,8 @@ saga::SendGameIsLoadedPacket()
 }
 
 std::optional<int32>
-saga::SendPositionPacket(float x, float y, float z)
+saga::SendPositionPacket(FSocket* socket, float x, float y, float z)
 {
-	auto& socket = USagaNetwork::GetLocalSocket();
-
 	saga::CS_UpdatePositionPacket pk{ x, y, z };
 	auto ptr = pk.Serialize();
 

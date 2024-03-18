@@ -11,10 +11,6 @@ enum class [[nodiscard]] ESagaConnectionContract : uint8
 	, SignInFailed
 	, CannotCreateWorker
 	, ConnectError
+	, WrongAddress
 	, OtherError
 };
-
-namespace saga
-{
-	using ConnectionContract = ::ESagaConnectionContract;
-}
