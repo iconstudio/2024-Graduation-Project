@@ -6,22 +6,24 @@
 #include "HAL/Runnable.h"
 #include "HAL/RunnableThread.h"
 
-namespace saga
+class USagaNetworkSubSystem;
+
+class SAGANETWORK_API FSagaNetworkWorker final : public FRunnable
 {
-	class SAGANETWORK_API FSagaNetworkWorker final : public FRunnable
-	{
-	public:
-		FSagaNetworkWorker();
-		~FSagaNetworkWorker();
+public:
+	FSagaNetworkWorker(USagaNetworkSubSystem* instance);
+	~FSagaNetworkWorker();
 
-		virtual bool Init() override;
-		virtual uint32 Run() override;
-		virtual void Exit() override;
-		virtual void Stop() override;
+	virtual bool Init() override;
+	virtual uint32 Run() override;
+	virtual void Exit() override;
+	virtual void Stop() override;
 
-	private:
-		FRunnableThread* MyThread;
-	};
-}
+private:
+	void RouteEvents(const std::byte* packet_buffer, EPacketProtocol protocol, int16 packet_size);
+
+	FRunnableThread* MyThread;
+	USagaNetworkSubSystem* SubSystemInstance;
+};
 
 #endif // !SAGAFRAMEWORK_NET_WORKER_H
