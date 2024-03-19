@@ -6,7 +6,7 @@
 
 class ASagaCharacterPlayer;
 
-USTRUCT(BlueprintType, Category = "CandyLandSaga|Network|Session")
+USTRUCT(BlueprintType, Atomic, Category = "CandyLandSaga|Level|UI|Element")
 struct SAGANETWORK_API FSagaVirtualUser : public FSagaVirtualSession
 {
 	GENERATED_BODY()
