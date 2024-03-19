@@ -21,7 +21,7 @@ public:
 	{
 	}
 	
-	FSagaVirtualSession(int32 id, FStringView name)
+	FSagaVirtualSession(int32 id, const FString& name)
 		: MyID(id), MyName(name)
 	{
 	}
