@@ -4,7 +4,7 @@
 #include "Saga/Network/SagaVirtualSession.h"
 #include "SagaVirtualRoom.generated.h"
 
-USTRUCT(BlueprintType, Category = "CandyLandSaga|Network|Session")
+USTRUCT(BlueprintType, Atomic, Category = "CandyLandSaga|Level|UI|Element")
 struct SAGANETWORK_API FSagaVirtualRoom : public FSagaVirtualSession
 {
 	GENERATED_BODY()

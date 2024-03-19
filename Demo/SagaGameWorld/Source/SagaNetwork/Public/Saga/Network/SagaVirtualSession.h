@@ -5,7 +5,7 @@
 
 #include "SagaVirtualSession.generated.h"
 
-USTRUCT(BlueprintType, Atomic, Category = "CandyLandSaga|Network|Session")
+USTRUCT(BlueprintType, Atomic, Category = "CandyLandSaga|Level|UI|Element")
 struct SAGANETWORK_API FSagaVirtualSession
 {
 	GENERATED_BODY()
@@ -67,14 +67,6 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	FString MyName;
 };
-
-[[nodiscard]]
-UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
-int32 GetID(const FSagaVirtualSession& session) noexcept;
-
-[[nodiscard]]
-UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
-const FString& GetName(const FSagaVirtualSession& session) noexcept;
 
 struct SAGANETWORK_API FSagaSessionComparator final
 {
