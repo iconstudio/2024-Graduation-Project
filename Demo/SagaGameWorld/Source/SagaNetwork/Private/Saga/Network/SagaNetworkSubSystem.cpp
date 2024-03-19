@@ -70,6 +70,7 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 			}
 			else
 			{
+				UE_LOG(LogNet, Error, TEXT("Could not initialize network system."));
 				return false;
 			}
 		}
@@ -88,6 +89,9 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 		}
 		else
 		{
+			auto str = UEnum::GetValueAsString(connect_r);
+
+			UE_LOG(LogNet, Error, TEXT("Could not connect to the server, due to `%s`"), *str);
 			BroadcastOnFailedToConnect(connect_r);
 			return false;
 		}
