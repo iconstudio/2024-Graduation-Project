@@ -73,21 +73,21 @@ struct name : public saga::FSagaBasicPacket \
 	[[nodiscard]] static consteval ptrdiff_t SignedWannabeSize() noexcept \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
-	template<std::enable_if_t<std::is_constructible_v<var1_type, decltype(var1_default_value)>, int> = 0> \
+	template<std::enable_if_t<std::is_constructible_v<var1_type, decltype(var1_default_value)>, int32> = 0> \
 	constexpr name() \
 		noexcept(std::is_nothrow_constructible_v<var1_type, decltype(var1_default_value)>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
 		, var1_name((var1_default_value)) \
 	{} \
  \
-	template<std::enable_if_t<std::is_copy_constructible_v<var1_type>, int> = 0>\
+	template<std::enable_if_t<std::is_copy_constructible_v<var1_type>, int32> = 0>\
 	constexpr name(const var1_type& param1_name) \
 		noexcept(std::is_nothrow_copy_constructible_v<var1_type>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::is_move_constructible_v<var1_type>, int> = 0>\
+	template<std::enable_if_t<std::is_move_constructible_v<var1_type>, int32> = 0>\
 	constexpr name(var1_type&& param1_name) \
 		noexcept(std::is_nothrow_move_constructible_v<var1_type>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -115,21 +115,21 @@ struct name : public saga::FSagaBasicPacket \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
 	ICONER_CONDITIONAL(create_default_ctor, \
-	template<std::enable_if_t<std::is_default_constructible_v<var1_type>, int> = 0> \
+	template<std::enable_if_t<std::is_default_constructible_v<var1_type>, int32> = 0> \
 	constexpr name() \
 		noexcept(std::is_nothrow_default_constructible_v<var1_type>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
 		, var1_name() \
 	{}) \
  \
-	template<std::enable_if_t<std::is_copy_constructible_v<var1_type>, int> = 0>\
+	template<std::enable_if_t<std::is_copy_constructible_v<var1_type>, int32> = 0>\
 	constexpr name(const var1_type& param1_name) \
 		noexcept(std::is_nothrow_copy_constructible_v<var1_type>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::is_move_constructible_v<var1_type>, int> = 0>\
+	template<std::enable_if_t<std::is_move_constructible_v<var1_type>, int32> = 0>\
 	constexpr name(var1_type&& param1_name) \
 		noexcept(std::is_nothrow_move_constructible_v<var1_type>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -158,7 +158,7 @@ struct name : public saga::FSagaBasicPacket \
 	[[nodiscard]] static consteval ptrdiff_t SignedWannabeSize() noexcept \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_constructible<var1_type, decltype(var1_default_value)>, std::is_constructible<var2_type, decltype(var2_default_value)>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_constructible<var1_type, decltype(var1_default_value)>, std::is_constructible<var2_type, decltype(var2_default_value)>>, int32> = 0>\
 	constexpr name() \
 		noexcept(std::conjunction_v<std::is_nothrow_constructible<var1_type, decltype(var1_default_value)>, std::is_nothrow_constructible<var2_type, decltype(var2_default_value)>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -166,7 +166,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var2_name((var2_default_value)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -174,7 +174,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var2_name((param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -182,7 +182,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var2_name((param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -190,7 +190,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var2_name(std::move(param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -219,7 +219,7 @@ struct name : public saga::FSagaBasicPacket \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
 	ICONER_CONDITIONAL(create_default_ctor, \
-	template<std::enable_if_t<std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>>, int32> = 0>\
 	constexpr name() \
 		noexcept(std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -227,7 +227,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var2_name() \
 	{}) \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -235,7 +235,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var2_name((param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -243,7 +243,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var2_name((param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -251,7 +251,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var2_name(std::move(param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -282,7 +282,7 @@ struct name : public saga::FSagaBasicPacket \
 	[[nodiscard]] static consteval ptrdiff_t SignedWannabeSize() noexcept \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_constructible<var1_type, decltype(var1_default_value)>, std::is_constructible<var2_type, decltype(var2_default_value)>, std::is_constructible<var3_type, decltype(var3_default_value)>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_constructible<var1_type, decltype(var1_default_value)>, std::is_constructible<var2_type, decltype(var2_default_value)>, std::is_constructible<var3_type, decltype(var3_default_value)>>, int32> = 0>\
 	constexpr name() \
 		noexcept(std::conjunction_v<std::is_nothrow_constructible<var1_type, decltype(var1_default_value)>, std::is_nothrow_constructible<var2_type, decltype(var2_default_value)>, std::is_nothrow_constructible<var2_type, decltype(var2_default_value)>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -291,7 +291,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name((var3_default_value)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -300,7 +300,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -309,7 +309,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -318,7 +318,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -327,7 +327,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -336,7 +336,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -345,7 +345,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -354,7 +354,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -385,7 +385,7 @@ struct name : public saga::FSagaBasicPacket \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
 	ICONER_CONDITIONAL(create_default_ctor, \
-	template<std::enable_if_t<DEFER_BOOLEAN(create_default_ctor) and std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>, std::is_nothrow_default_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<DEFER_BOOLEAN(create_default_ctor) and std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>, std::is_nothrow_default_constructible<var3_type>>, int32> = 0>\
 	constexpr name() \
 		noexcept(std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>, std::is_nothrow_default_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -394,7 +394,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name() \
 	{}) \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -403,7 +403,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -412,7 +412,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -421,7 +421,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -430,7 +430,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -439,7 +439,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -448,7 +448,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
@@ -457,7 +457,7 @@ struct name : public saga::FSagaBasicPacket \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
 		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \

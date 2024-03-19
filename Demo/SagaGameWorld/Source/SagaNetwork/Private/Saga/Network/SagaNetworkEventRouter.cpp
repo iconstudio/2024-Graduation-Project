@@ -116,7 +116,7 @@ saga::EventRouter(const std::byte* packet_buffer
 			{
 				USagaNetwork::AddRoom(FSagaVirtualRoom
 					{
-						room.id, room.title, static_cast<int>(room.members)
+						room.id, room.title, static_cast<int32>(room.members)
 					});
 				UE_LOG(LogNet, Log, TEXT("Room (%d): %s (%d/4)"), room.id, room.title, room.members);
 			}

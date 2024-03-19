@@ -127,7 +127,7 @@ namespace saga::inline sc
 	/// </summary>
 	/// <param name="errCause">- Cause of the failure</param>
 	/// <remarks>Server would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_1VAR(SC_FailedGameStartingPacket, EPacketProtocol::SC_FAILED_GAME_START, int, errCause, error, true);
+	MAKE_EMPTY_PACKET_1VAR(SC_FailedGameStartingPacket, EPacketProtocol::SC_FAILED_GAME_START, int32, errCause, error, true);
 	/// <summary>
 	/// Creating a client packet for server
 	/// </summary>
@@ -391,7 +391,7 @@ namespace saga::inline sc
 	/// </summary>
 	/// <param name="errCause">- Cause of the failure</param>
 	/// <remarks>Server would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_1VAR(SC_FailedSignInPacket, EPacketProtocol::SC_SIGNIN_FAILURE, int, errCause, cause, true);
+	MAKE_EMPTY_PACKET_1VAR(SC_FailedSignInPacket, EPacketProtocol::SC_SIGNIN_FAILURE, int32, errCause, cause, true);
 	/// <summary>
 	/// Position packet for server
 	/// </summary>
@@ -407,13 +407,13 @@ namespace saga::inline sc
 		[[nodiscard]]
 		static consteval size_t WannabeSize() noexcept
 		{
-			return Super::MinSize() + sizeof(int) + sizeof(float) * 3;
+			return Super::MinSize() + sizeof(int32) + sizeof(float) * 3;
 		}
 
 		[[nodiscard]]
 		static consteval ptrdiff_t SignedWannabeSize() noexcept
 		{
-			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(int) + sizeof(float) * 3);
+			return static_cast<ptrdiff_t>(Super::MinSize() + sizeof(int32) + sizeof(float) * 3);
 		}
 
 		constexpr SC_UpdatePositionPacket()
