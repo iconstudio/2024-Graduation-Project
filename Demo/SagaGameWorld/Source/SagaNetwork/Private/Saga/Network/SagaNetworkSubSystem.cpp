@@ -388,6 +388,10 @@ const
 	{
 		OnNetworkInitialized.Broadcast(true);
 	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnFailedToInitializeNetwork` was not bound"));
+	}
 }
 
 void
@@ -399,6 +403,10 @@ const
 	if (OnNetworkInitialized.IsBound())
 	{
 		OnNetworkInitialized.Broadcast(false);
+	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnFailedToInitializeNetwork` was not bound"));
 	}
 }
 
@@ -412,6 +420,10 @@ const
 	{
 		OnConnected.Broadcast();
 	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnConnected` was not bound"));
+	}
 }
 
 void
@@ -423,6 +435,10 @@ const
 	if (OnFailedToConnect.IsBound())
 	{
 		OnFailedToConnect.Broadcast(reason);
+	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnFailedToConnect` was not bound"));
 	}
 }
 
@@ -436,6 +452,10 @@ const
 	{
 		OnDisconnected.Broadcast();
 	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnDisconnected` was not bound"));
+	}
 }
 
 void
@@ -447,6 +467,10 @@ const
 	if (OnRoomCreated.IsBound())
 	{
 		OnRoomCreated.Broadcast(room_id);
+	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnRoomCreated` was not bound"));
 	}
 }
 
@@ -460,6 +484,10 @@ const
 	{
 		OnJoinedRoom.Broadcast(user_id);
 	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnJoinedRoom` was not bound"));
+	}
 }
 
 void
@@ -471,6 +499,10 @@ const
 	if (OnLeftRoomBySelf.IsBound())
 	{
 		OnLeftRoomBySelf.Broadcast();
+	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnLeftRoomBySelf` was not bound"));
 	}
 }
 
@@ -484,6 +516,10 @@ const
 	{
 		OnLeftRoom.Broadcast(id);
 	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnLeftRoom` was not bound"));
+	}
 }
 
 void
@@ -495,6 +531,10 @@ const
 	if (OnRespondVersion.IsBound())
 	{
 		OnRespondVersion.Broadcast(version_string);
+	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnRespondVersion` was not bound"));
 	}
 }
 
@@ -508,6 +548,10 @@ const
 	{
 		OnUpdateRoomList.Broadcast(list);
 	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnUpdateRoomList` was not bound"));
+	}
 }
 
 void
@@ -520,6 +564,10 @@ const
 	{
 		OnUpdateMembers.Broadcast(list);
 	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnUpdateMembers` was not bound"));
+	}
 }
 
 void
@@ -531,6 +579,10 @@ const
 	if (OnUpdatePosition.IsBound())
 	{
 		OnUpdatePosition.Broadcast(user_id, x, y, z);
+	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("`OnUpdatePosition` was not bound"));
 	}
 }
 
@@ -651,7 +703,7 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 		// #1
 		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
 
-		
+
 		auto sent_r = SendSignInPacket(localUserName);
 		if (sent_r <= 0)
 		{
