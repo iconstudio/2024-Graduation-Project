@@ -18,7 +18,7 @@ namespace
 	constinit FSocket* clientSocket = nullptr;
 
 	TSharedPtr<saga::FSagaNetworkWorker> netWorker{};
-	TArray<saga::FSagaBasicPacket*> taskQueue{};
+	TArray<FSagaBasicPacket*> taskQueue{};
 
 	/// <remarks>로컬 플레이어도 포함</remarks>
 	TArray<FSagaVirtualUser> everyUsers{};
@@ -197,12 +197,12 @@ noexcept
 }
 
 void
-saga::USagaNetwork::AddPacket(saga::FSagaBasicPacket* packet)
+saga::USagaNetwork::AddPacket(FSagaBasicPacket* packet)
 {
 	taskQueue.Add(packet);
 }
 
-std::optional<saga::FSagaBasicPacket*>
+std::optional<FSagaBasicPacket*>
 saga::USagaNetwork::PopPacket()
 noexcept
 {
@@ -217,7 +217,7 @@ noexcept
 }
 
 bool
-saga::USagaNetwork::TryPopPacket(saga::FSagaBasicPacket** handle)
+saga::USagaNetwork::TryPopPacket(FSagaBasicPacket** handle)
 noexcept
 {
 	if (taskQueue.IsEmpty())
