@@ -7,6 +7,7 @@
 #include "Saga/Network/SagaNetworkUtility.h"
 #include "Saga/Network/SagaPacketSenders.h"
 #include "Saga/Network/SagaNetworkWorker.h"
+#include "Saga/Network/SagaNetworkSubSystem.h"
 
 namespace
 {
@@ -17,7 +18,7 @@ namespace
 	TSharedPtr<saga::USagaNetwork> netInterface{ MakeShared<saga::USagaNetwork>() };
 	constinit FSocket* clientSocket = nullptr;
 
-	TSharedPtr<saga::FSagaNetworkWorker> netWorker{};
+	TSharedPtr<FSagaNetworkWorker> netWorker{};
 	TArray<FSagaBasicPacket*> taskQueue{};
 
 	/// <remarks>로컬 플레이어도 포함</remarks>
@@ -30,6 +31,8 @@ namespace
 	FString localUserName{};
 	constinit int32 currentRoomId = -1;
 	FString currentRoomTitle{};
+
+	constinit USagaNetworkSubSystem* subsystemInstance = nullptr;
 }
 
 saga::USagaNetwork::USagaNetwork() noexcept
@@ -433,7 +436,7 @@ namespace
 			// #1
 			// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
 
-			auto sent_r = saga::SendSignInPacket(localUserName);
+			auto sent_r = saga::SendSignInPacket(clientSocket, localUserName);
 			if (not sent_r.has_value())
 			{
 				UE_LOG(LogNet, Error, TEXT("First try of sending signin packet has been failed."));
@@ -445,7 +448,7 @@ namespace
 			}
 		}
 
-		netWorker = MakeShared<saga::FSagaNetworkWorker>();
+		netWorker = MakeShared<FSagaNetworkWorker>(subsystemInstance);
 		if (netWorker == nullptr)
 		{
 			UE_LOG(LogNet, Error, TEXT("Has failed to create the worker thread."));
