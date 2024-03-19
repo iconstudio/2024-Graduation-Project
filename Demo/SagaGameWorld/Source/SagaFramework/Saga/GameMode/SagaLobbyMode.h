@@ -7,6 +7,4 @@ UCLASS(BlueprintType, Category = "CandyLandSaga|Game Mode")
 class SAGAFRAMEWORK_API ASagaLobbyMode : public ASagaUserInterfaceModeBase
 {
 	GENERATED_BODY()
-
-public:
 };
