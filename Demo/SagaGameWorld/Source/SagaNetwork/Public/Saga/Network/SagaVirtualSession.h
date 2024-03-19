@@ -1,12 +1,11 @@
 #pragma once
-#include "UObject/ObjectMacros.h"
-#include "CoreTypes.h"
+#include "CoreMinimal.h"
 #include "Containers/UnrealString.h"
 #include "Templates/UnrealTemplate.h"
 
 #include "SagaVirtualSession.generated.h"
 
-USTRUCT(BlueprintType, Category = "CandyLandSaga|Network|Session")
+USTRUCT(BlueprintType, Atomic, Category = "CandyLandSaga|Network|Session")
 struct SAGANETWORK_API FSagaVirtualSession
 {
 	GENERATED_BODY()
@@ -77,43 +76,38 @@ int32 GetID(const FSagaVirtualSession& session) noexcept;
 UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
 const FString& GetName(const FSagaVirtualSession& session) noexcept;
 
-namespace saga
+struct SAGANETWORK_API FSagaSessionComparator final
 {
-	using ::FSagaVirtualSession;
-
-	struct SAGANETWORK_API FSagaSessionComparator final
+	[[nodiscard]]
+	constexpr bool
+		operator()(const FSagaVirtualSession& lhs, const FSagaVirtualSession& rhs)
+		const noexcept
 	{
-		[[nodiscard]]
-		constexpr bool
-			operator()(const FSagaVirtualSession& lhs, const FSagaVirtualSession& rhs)
-			const noexcept
-		{
-			return lhs.MyID == rhs.MyID;
-		}
+		return lhs.MyID == rhs.MyID;
+	}
 
-		[[nodiscard]]
-		constexpr bool
-			operator()(const FSagaVirtualSession& lhs, const int32& id)
-			const noexcept
-		{
-			return lhs.MyID == id;
-		}
-	};
-
-	struct SAGANETWORK_API FSagaSessionIdComparator final
+	[[nodiscard]]
+	constexpr bool
+		operator()(const FSagaVirtualSession& lhs, const int32& id)
+		const noexcept
 	{
-		explicit constexpr FSagaSessionIdComparator(int32 another_id) noexcept
-			: cmpId(another_id)
-		{}
+		return lhs.MyID == id;
+	}
+};
 
-		[[nodiscard]]
-		constexpr bool
-			operator()(const FSagaVirtualSession& lhs)
-			const noexcept
-		{
-			return lhs.MyID == cmpId;
-		}
+struct SAGANETWORK_API FSagaSessionIdComparator final
+{
+	explicit constexpr FSagaSessionIdComparator(int32 another_id) noexcept
+		: cmpId(another_id)
+	{}
 
-		int32 cmpId;
-	};
-}
+	[[nodiscard]]
+	constexpr bool
+		operator()(const FSagaVirtualSession& lhs)
+		const noexcept
+	{
+		return lhs.MyID == cmpId;
+	}
+
+	int32 cmpId;
+};
