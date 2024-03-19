@@ -8,7 +8,7 @@ namespace saga
 	public:
 		[[nodiscard]] static consteval size_t MinSize() noexcept
 		{
-			return sizeof(EPacketProtocol) + sizeof(int16);
+			return sizeof(EPacketProtocol) + sizeof(std::int16_t);
 		}
 
 		[[nodiscard]] static consteval ptrdiff_t SignedMinSize() noexcept
@@ -26,12 +26,12 @@ namespace saga
 		{
 		}
 
-		explicit constexpr FSagaBasicPacket(const EPacketProtocol& protocol, int16 size) noexcept
+		explicit constexpr FSagaBasicPacket(const EPacketProtocol& protocol, std::int16_t size) noexcept
 			: myProtocol(protocol), mySize(size)
 		{
 		}
 
-		explicit constexpr FSagaBasicPacket(EPacketProtocol&& protocol, int16 size) noexcept
+		explicit constexpr FSagaBasicPacket(EPacketProtocol&& protocol, std::int16_t size) noexcept
 			: myProtocol(std::move(protocol)), mySize(size)
 		{
 		}
@@ -56,6 +56,6 @@ namespace saga
 		virtual const std::byte* Read(const std::byte* buffer);
 
 		EPacketProtocol myProtocol;
-		int16 mySize;
+		std::int16_t mySize;
 	};
 }

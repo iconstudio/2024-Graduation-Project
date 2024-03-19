@@ -6,13 +6,15 @@
 #include "Saga/Network/SagaNetworkSettings.h"
 #include "Saga/Network/SagaNetworkUtility.h"
 #include "Saga/Network/SagaPacketSenders.h"
-#include "Saga/Network/SagaNetworkFunctionLibrary.h"
 #include "Saga/Network/SagaNetworkWorker.h"
 
 namespace
 {
 	[[nodiscard]] TSharedRef<FInternetAddr> CreateRemoteEndPoint();
+	bool InitializeNetwork();
+	bool ConnectToServer(FStringView nickname);
 
+	TSharedPtr<saga::USagaNetwork> netInterface{ MakeShared<saga::USagaNetwork>() };
 	constinit FSocket* clientSocket = nullptr;
 
 	TSharedPtr<saga::FSagaNetworkWorker> netWorker{};
@@ -37,83 +39,46 @@ saga::USagaNetwork::USagaNetwork() noexcept
 	everyRooms.Reserve(100);
 }
 
-bool
-saga::USagaNetwork::InitializeNetwork()
+TSharedPtr<saga::USagaNetwork>
+saga::USagaNetwork::Instance()
+noexcept
 {
-	if (nullptr != clientSocket)
-	{
-		return true;
-	}
-
-	clientSocket = saga::CreateTcpSocket();
-	if (nullptr == clientSocket)
-	{
-		return false;
-	}
-
-	// NOTICE: 클라는 바인드 금지
-	//auto local_endpoint = saga::MakeEndPoint(FIPv4Address::InternalLoopback, saga::GetLocalPort());
-	//if (not clientSocket->Bind(*local_endpoint))
-	//{
-	//	return false;
-	//}
-
-	if (not clientSocket->SetReuseAddr())
-	{
-		return false;
-	}
-
-	if (not clientSocket->SetNoDelay())
-	{
-		return false;
-	}
-
-	return true;
+	return netInterface;
 }
 
 bool
-saga::USagaNetwork::ConnectToServer()
+saga::USagaNetwork::Awake()
 {
-	if (not saga::USagaNetwork::IsSocketAvailable())
+	(void)USagaNetwork::Instance();
+
+	if (InitializeNetwork())
 	{
-		UE_LOG(LogNet, Error, TEXT("The socket is not available."));
+		UE_LOG(LogNet, Log, TEXT("The network system is initialized."));
+		return true;
+	}
+	else
+	{
+		UE_LOG(LogNet, Error, TEXT("Cannot initialize the network system."));
 		return false;
 	}
+}
 
-	// 연결 부분
-	if constexpr (not saga::IsOfflineMode)
+bool
+saga::USagaNetwork::Start(FStringView nickname)
+{
+	if (not IsSocketAvailable())
 	{
-		auto remote_endpoint = CreateRemoteEndPoint();
-		if (not clientSocket->Connect(*remote_endpoint))
+		if (saga::USagaNetwork::Awake())
 		{
-			// 연결 실패 처리
-			UE_LOG(LogNet, Error, TEXT("Cannot connect to the server."));
-			return false;
-		}
-
-		// #1
-		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
-
-		auto sent_r = saga::SendSignInPacket(localUserName);
-		if (not sent_r.has_value())
-		{
-			UE_LOG(LogNet, Error, TEXT("First try of sending signin packet has been failed."));
-			return false;
+			UE_LOG(LogNet, Warning, TEXT("The network system was not initialized."));
 		}
 		else
 		{
-			UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *localUserName);
+			return false;
 		}
 	}
 
-	netWorker = MakeShared<saga::FSagaNetworkWorker>();
-	if (netWorker == nullptr)
-	{
-		UE_LOG(LogNet, Error, TEXT("Has failed to create the worker thread."));
-		return false;
-	}
-
-	return true;
+	return ConnectToServer(nickname);
 }
 
 void
@@ -409,6 +374,85 @@ namespace
 		{
 			throw "error!";
 		}
+	}
+
+	bool InitializeNetwork()
+	{
+		if (nullptr != clientSocket)
+		{
+			return true;
+		}
+
+		clientSocket = saga::CreateTcpSocket();
+		if (nullptr == clientSocket)
+		{
+			return false;
+		}
+
+		// NOTICE: 클라는 바인드 금지
+		//auto local_endpoint = saga::MakeEndPoint(FIPv4Address::InternalLoopback, saga::GetLocalPort());
+		//if (not clientSocket->Bind(*local_endpoint))
+		//{
+		//	return false;
+		//}
+
+		if (not clientSocket->SetReuseAddr())
+		{
+			return false;
+		}
+
+		if (not clientSocket->SetNoDelay())
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	bool ConnectToServer(FStringView nickname)
+	{
+		if (not saga::USagaNetwork::IsSocketAvailable())
+		{
+			UE_LOG(LogNet, Error, TEXT("The socket is not available."));
+			return false;
+		}
+
+		localUserName = nickname;
+
+		// 연결 부분
+		if constexpr (not saga::IsOfflineMode)
+		{
+			auto remote_endpoint = CreateRemoteEndPoint();
+			if (not clientSocket->Connect(*remote_endpoint))
+			{
+				// 연결 실패 처리
+				UE_LOG(LogNet, Error, TEXT("Cannot connect to the server."));
+				return false;
+			}
+
+			// #1
+			// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
+
+			auto sent_r = saga::SendSignInPacket(localUserName);
+			if (not sent_r.has_value())
+			{
+				UE_LOG(LogNet, Error, TEXT("First try of sending signin packet has been failed."));
+				return false;
+			}
+			else
+			{
+				UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *localUserName);
+			}
+		}
+
+		netWorker = MakeShared<saga::FSagaNetworkWorker>();
+		if (netWorker == nullptr)
+		{
+			UE_LOG(LogNet, Error, TEXT("Has failed to create the worker thread."));
+			return false;
+		}
+
+		return true;
 	}
 }
 
