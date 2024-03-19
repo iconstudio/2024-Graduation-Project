@@ -2,7 +2,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 
-#include "Saga/Network/SagaNetworkView.h"
 #include "SagaGameModeBase.generated.h"
 
 UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|Game Mode")

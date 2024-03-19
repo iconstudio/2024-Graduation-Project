@@ -8,7 +8,4 @@ UCLASS(BlueprintType, Abstract, Category = "CandyLandSaga|Game Mode|Controller")
 class SAGAFRAMEWORK_API ASagaPlayerControllerBase : public APlayerController
 {
 	GENERATED_BODY()
-
-public:
-	ASagaPlayerControllerBase() noexcept;
 };
