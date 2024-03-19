@@ -11,7 +11,7 @@ class USagaNetworkSubSystem;
 class SAGANETWORK_API FSagaNetworkWorker final : public FRunnable
 {
 public:
-	FSagaNetworkWorker(USagaNetworkSubSystem* instance);
+	FSagaNetworkWorker(TObjectPtr<USagaNetworkSubSystem> instance);
 	~FSagaNetworkWorker();
 
 	virtual bool Init() override;
@@ -23,7 +23,7 @@ private:
 	void RouteEvents(const std::byte* packet_buffer, EPacketProtocol protocol, int16 packet_size);
 
 	FRunnableThread* MyThread;
-	USagaNetworkSubSystem* SubSystemInstance;
+ 	TObjectPtr<USagaNetworkSubSystem> SubSystemInstance;
 };
 
 #endif // !SAGAFRAMEWORK_NET_WORKER_H

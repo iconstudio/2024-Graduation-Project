@@ -3,13 +3,12 @@
 
 #include "Saga/Network/SagaNetworkSettings.h"
 #include "Saga/Network/SagaBasicPacket.h"
-#include "Saga/Network/SagaNetworkEventRouter.h"
 #include "Saga/Network/SagaNetworkSubSystem.h"
 #include "Saga/Network/SagaRoomContract.h"
 #include "Saga/Network/SagaPacketProcessor.h"
 
-FSagaNetworkWorker::FSagaNetworkWorker(USagaNetworkSubSystem* instance)
-	: SubSystemInstance(instance)
+FSagaNetworkWorker::FSagaNetworkWorker(TObjectPtr<USagaNetworkSubSystem> instance)
+	: SubSystemInstance(MoveTempIfPossible(instance))
 {
 	MyThread = FRunnableThread::Create(this, TEXT("Worker Thread"));
 }
