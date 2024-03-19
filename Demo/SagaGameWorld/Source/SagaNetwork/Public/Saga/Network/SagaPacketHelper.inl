@@ -1,14 +1,14 @@
 #pragma once
 #define MAKE_EMPTY_PACKET(name, protocol) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept { return Super::MinSize(); } \
 	[[nodiscard]] static consteval ptrdiff_t SignedWannabeSize() noexcept { return Super::SignedMinSize(); } \
  \
 	constexpr name() noexcept \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 	{ \
 	} \
 }
@@ -64,33 +64,33 @@ name::Read(const std::byte* buffer) \
 
 #pragma region 1 Field
 #define MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, var1_default_value, serializer_method) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type); } \
 	[[nodiscard]] static consteval ptrdiff_t SignedWannabeSize() noexcept \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
-	template<std::enable_if_t<std::is_constructible_v<var1_type, decltype(var1_default_value)>, int32> = 0> \
+	template<std::enable_if_t<std::is_constructible_v<var1_type, decltype(var1_default_value)>, int> = 0> \
 	constexpr name() \
 		noexcept(std::is_nothrow_constructible_v<var1_type, decltype(var1_default_value)>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((var1_default_value)) \
 	{} \
  \
-	template<std::enable_if_t<std::is_copy_constructible_v<var1_type>, int32> = 0>\
+	template<std::enable_if_t<std::is_copy_constructible_v<var1_type>, int> = 0>\
 	constexpr name(const var1_type& param1_name) \
 		noexcept(std::is_nothrow_copy_constructible_v<var1_type>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::is_move_constructible_v<var1_type>, int32> = 0>\
+	template<std::enable_if_t<std::is_move_constructible_v<var1_type>, int> = 0>\
 	constexpr name(var1_type&& param1_name) \
 		noexcept(std::is_nothrow_move_constructible_v<var1_type>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 	{} \
  \
@@ -105,9 +105,9 @@ struct name : public saga::FSagaBasicPacket \
 MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, (var1_default_value), MAKE_SERIALIZE_METHOD())
 
 #define MAKE_EMPTY_PACKET_1VAR_EX(name, protocol, var1_type, var1_name, param1_name, serializer_method, create_default_ctor) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type); } \
@@ -115,24 +115,24 @@ struct name : public saga::FSagaBasicPacket \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
 	ICONER_CONDITIONAL(create_default_ctor, \
-	template<std::enable_if_t<std::is_default_constructible_v<var1_type>, int32> = 0> \
+	template<std::enable_if_t<std::is_default_constructible_v<var1_type>, int> = 0> \
 	constexpr name() \
 		noexcept(std::is_nothrow_default_constructible_v<var1_type>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name() \
 	{}) \
  \
-	template<std::enable_if_t<std::is_copy_constructible_v<var1_type>, int32> = 0>\
+	template<std::enable_if_t<std::is_copy_constructible_v<var1_type>, int> = 0>\
 	constexpr name(const var1_type& param1_name) \
 		noexcept(std::is_nothrow_copy_constructible_v<var1_type>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::is_move_constructible_v<var1_type>, int32> = 0>\
+	template<std::enable_if_t<std::is_move_constructible_v<var1_type>, int> = 0>\
 	constexpr name(var1_type&& param1_name) \
 		noexcept(std::is_nothrow_move_constructible_v<var1_type>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 	{} \
  \
@@ -149,51 +149,51 @@ MAKE_EMPTY_PACKET_1VAR_EX(name, protocol, var1_type, var1_name, param1_name, MAK
 
 #pragma region 2 Fields
 #define MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, var1_default_value, var2_type, var2_name, param2_name, var2_default_value, serializer_method) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type) + sizeof(var2_type); } \
 	[[nodiscard]] static consteval ptrdiff_t SignedWannabeSize() noexcept \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_constructible<var1_type, decltype(var1_default_value)>, std::is_constructible<var2_type, decltype(var2_default_value)>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_constructible<var1_type, decltype(var1_default_value)>, std::is_constructible<var2_type, decltype(var2_default_value)>>, int> = 0>\
 	constexpr name() \
 		noexcept(std::conjunction_v<std::is_nothrow_constructible<var1_type, decltype(var1_default_value)>, std::is_nothrow_constructible<var2_type, decltype(var2_default_value)>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((var1_default_value)) \
 		, var2_name((var2_default_value)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name((param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name((param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name(std::move(param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name(std::move(param2_name)) \
 	{} \
@@ -209,9 +209,9 @@ struct name : public saga::FSagaBasicPacket \
 MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, (var1_default_value), var2_type, var2_name, param2_name, (var2_default_value), MAKE_SERIALIZE_METHOD())
 
 #define MAKE_EMPTY_PACKET_2VAR_EX(name, protocol, var1_type, var1_name, param1_name, var2_type, var2_name, param2_name, serializer_method, create_default_ctor) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type) + sizeof(var2_type); } \
@@ -219,42 +219,42 @@ struct name : public saga::FSagaBasicPacket \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
 	ICONER_CONDITIONAL(create_default_ctor, \
-	template<std::enable_if_t<std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>>, int> = 0>\
 	constexpr name() \
 		noexcept(std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name() \
 		, var2_name() \
 	{}) \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name((param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name((param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name(std::move(param2_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name(std::move(param2_name)) \
 	{} \
@@ -273,91 +273,91 @@ MAKE_EMPTY_PACKET_2VAR_EX(name, protocol, var1_type, var1_name, param1_name, var
 
 #pragma region 3 Fields
 #define MAKE_EMPTY_PACKET_3VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, var1_default_value, var2_type, var2_name, param2_name, var2_default_value, var3_type, var3_name, param3_name, var3_default_value, serializer_method) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type) + sizeof(var2_type) + sizeof(var3_type); } \
 	[[nodiscard]] static consteval ptrdiff_t SignedWannabeSize() noexcept \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_constructible<var1_type, decltype(var1_default_value)>, std::is_constructible<var2_type, decltype(var2_default_value)>, std::is_constructible<var3_type, decltype(var3_default_value)>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_constructible<var1_type, decltype(var1_default_value)>, std::is_constructible<var2_type, decltype(var2_default_value)>, std::is_constructible<var3_type, decltype(var3_default_value)>>, int> = 0>\
 	constexpr name() \
 		noexcept(std::conjunction_v<std::is_nothrow_constructible<var1_type, decltype(var1_default_value)>, std::is_nothrow_constructible<var2_type, decltype(var2_default_value)>, std::is_nothrow_constructible<var2_type, decltype(var2_default_value)>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((var1_default_value)) \
 		, var2_name((var2_default_value)) \
 		, var3_name((var3_default_value)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name((param2_name)) \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name((param2_name)) \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name(std::move(param2_name)) \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name((param2_name)) \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name(std::move(param2_name)) \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name(std::move(param2_name)) \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name((param2_name)) \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name(std::move(param2_name)) \
 		, var3_name(std::move(param3_name)) \
@@ -375,9 +375,9 @@ struct name : public saga::FSagaBasicPacket \
 MAKE_EMPTY_PACKET_3VAR_WITH_DEFAULT_EX(name, protocol, var1_type, var1_name, param1_name, (var1_default_value), var2_type, var2_name, param2_name, (var2_default_value), var3_type, var3_name, param3_name, (var3_default_value), MAKE_SERIALIZE_METHOD())
 
 #define MAKE_EMPTY_PACKET_3VAR_EX(name, protocol, var1_type, var1_name, param1_name, var2_type, var2_name, param2_name, var3_type, var3_name, param3_name, serializer_method, create_default_ctor) \
-struct name : public saga::FSagaBasicPacket \
+struct name : public FSagaBasicPacket \
 { \
-	using Super = saga::FSagaBasicPacket; \
+	using Super = FSagaBasicPacket; \
  \
 	[[nodiscard]] static consteval size_t WannabeSize() noexcept \
 	{ return Super::MinSize() + sizeof(var1_type) + sizeof(var2_type) + sizeof(var3_type); } \
@@ -385,82 +385,82 @@ struct name : public saga::FSagaBasicPacket \
 	{ return static_cast<ptrdiff_t>(WannabeSize()); } \
  \
 	ICONER_CONDITIONAL(create_default_ctor, \
-	template<std::enable_if_t<DEFER_BOOLEAN(create_default_ctor) and std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>, std::is_nothrow_default_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<DEFER_BOOLEAN(create_default_ctor) and std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>, std::is_nothrow_default_constructible<var3_type>>, int> = 0>\
 	constexpr name() \
 		noexcept(std::conjunction_v<std::is_nothrow_default_constructible<var1_type>, std::is_nothrow_default_constructible<var2_type>, std::is_nothrow_default_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name() \
 		, var2_name() \
 		, var3_name() \
 	{}) \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name((param2_name)) \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name((param2_name)) \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name(std::move(param2_name)) \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, const var2_type& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name((param2_name)) \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_copy_constructible<var3_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name, const var3_type& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_copy_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name(std::move(param2_name)) \
 		, var3_name((param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_copy_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
 	constexpr name(const var1_type& param1_name, var2_type&& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name((param1_name)) \
 		, var2_name(std::move(param2_name)) \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_copy_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, const var2_type& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_copy_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name((param2_name)) \
 		, var3_name(std::move(param3_name)) \
 	{} \
  \
-	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int32> = 0>\
+	template<std::enable_if_t<std::conjunction_v<std::is_move_constructible<var1_type>, std::is_move_constructible<var2_type>, std::is_move_constructible<var3_type>>, int> = 0>\
 	constexpr name(var1_type&& param1_name, var2_type&& param2_name, var3_type&& param3_name) \
 		noexcept(std::conjunction_v<std::is_nothrow_move_constructible<var1_type>, std::is_nothrow_move_constructible<var2_type>, std::is_nothrow_move_constructible<var3_type>>) \
-		: Super((protocol), static_cast<std::int16_t>(SignedWannabeSize())) \
+		: Super((protocol), static_cast<int16>(SignedWannabeSize())) \
 		, var1_name(std::move(param1_name)) \
 		, var2_name(std::move(param2_name)) \
 		, var3_name(std::move(param3_name)) \
