@@ -7,7 +7,7 @@
 #include "SagaItemData.generated.h"
 
 
-//¾ÆÀÌÅÛ Á¾·ù
+//ì•„ì´í…œ ì¢…ë¥˜
 UENUM(BlueprintType)
 enum class EItemType : uint8
 {
@@ -18,28 +18,27 @@ enum class EItemType : uint8
 
 
 USTRUCT(BlueprintType)
-struct FSagaInventoryItem //¾ÆÀÌÅÛ ¹× ¼ö·® ÀúÀåÇÒ ¼ö ÀÖ´Â ±¸Á¶Ã¼ Á¤ÀÇ
+struct SAGAGAME_API FSagaInventoryItem //ì•„ì´í…œ ë° ìˆ˜ëŸ‰ ì €ì¥í•  ìˆ˜ ìˆëŠ” êµ¬ì¡°ì²´ ì •ì˜
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	USagaItemData* Item;
+	FSagaInventoryItem() noexcept
+		: Item(nullptr), Quantity(0)
+	{}
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Game|Item")
+	class USagaItemData* Item;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Game|Item")
 	int32 Quantity;
 };
 
-
-
-/**
- * 
- */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|Game|Item")
 class SAGAGAME_API USagaItemData : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Game|Item")
 	EItemType Type;
 };
