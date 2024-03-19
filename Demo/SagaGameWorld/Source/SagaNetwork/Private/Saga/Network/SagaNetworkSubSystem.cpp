@@ -134,7 +134,7 @@ USagaNetworkSubSystem::CallFunctionOnGameThread(TUniqueFunction<void()> function
 	FGraphEventRef Task = FFunctionGraphTask::CreateAndDispatchWhenReady(MoveTemp(function), TStatId(), nullptr, ENamedThreads::GameThread);
 	*/
 
-	AsyncTask(ENamedThreads::GameThread, MoveTemp(function));
+	AsyncTask(ENamedThreads::GameThread_Local, MoveTemp(function));
 }
 
 void
