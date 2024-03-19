@@ -192,7 +192,7 @@ namespace saga::inline cs
 	/// </summary>
 	/// <param name="roomId"/>
 	/// <remarks>Client would send it to the server</remarks>
-	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(CS_EnterRoomPacket, EPacketProtocol::CS_ROOM_JOIN, int32, roomId, room_id, -1);
+	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(CS_EnterRoomPacket, EPacketProtocol::CS_ROOM_JOIN, std::int32_t, roomId, room_id, -1);
 	/// <summary>
 	/// Room leaving packet for client
 	/// </summary>

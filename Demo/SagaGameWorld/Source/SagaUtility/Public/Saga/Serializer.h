@@ -57,21 +57,21 @@ namespace saga::inline serializers
 
 	/// <summary>Transfer a 16-bit integer value to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
-	static std::byte* Serialize(std::byte* dest, const int16& value);
+	static std::byte* Serialize(std::byte* dest, const std::int16_t& value);
 
 	/// <summary>Allocate a byte buffer for a 16-bit integer value</summary>
 	/// <exception cref="std::bad_alloc"/>
 	[[nodiscard]]
-	static std::unique_ptr<std::byte[]> Serialize(const int16& value);
+	static std::unique_ptr<std::byte[]> Serialize(const std::int16_t& value);
 
 	/// <summary>Transfer an unsigned 16-bit integer value to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
-	static std::byte* Serialize(std::byte* dest, const uint16& value);
+	static std::byte* Serialize(std::byte* dest, const std::uint16_t& value);
 
 	/// <summary>Allocate a byte buffer for an unsigned 16-bit integer value</summary>
 	/// <exception cref="std::bad_alloc"/>
 	[[nodiscard]]
-	static std::unique_ptr<std::byte[]> Serialize(const uint16& value);
+	static std::unique_ptr<std::byte[]> Serialize(const std::uint16_t& value);
 
 	/// <summary>Transfer an utf-16 character to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
@@ -93,21 +93,21 @@ namespace saga::inline serializers
 
 	/// <summary>Transfer a 32-bit integer value to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
-	static std::byte* Serialize(std::byte* dest, const int32& value);
+	static std::byte* Serialize(std::byte* dest, const std::int32_t& value);
 
 	/// <summary>Allocate a byte buffer for a 32-bit integer value</summary>
 	/// <exception cref="std::bad_alloc"/>
 	[[nodiscard]]
-	static std::unique_ptr<std::byte[]> Serialize(const int32& value);
+	static std::unique_ptr<std::byte[]> Serialize(const std::int32_t& value);
 
 	/// <summary>Transfer an unsigned 32-bit integer value to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
-	static std::byte* Serialize(std::byte* dest, const uint32& value);
+	static std::byte* Serialize(std::byte* dest, const std::uint32_t& value);
 
 	/// <summary>Allocate a byte buffer for  an unsigned 32-bit integer value</summary>
 	/// <exception cref="std::bad_alloc"/>
 	[[nodiscard]]
-	static std::unique_ptr<std::byte[]> Serialize(const uint32& value);
+	static std::unique_ptr<std::byte[]> Serialize(const std::uint32_t& value);
 
 	/// <summary>Transfer a 32-bit integer value to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
@@ -138,21 +138,21 @@ namespace saga::inline serializers
 
 	/// <summary>Transfer a 64-bit integer value to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
-	static std::byte* Serialize(std::byte* dest, const int64& value);
+	static std::byte* Serialize(std::byte* dest, const std::int64_t& value);
 
 	/// <summary>Allocate a byte buffer for a 64-bit integer value</summary>
 	/// <exception cref="std::bad_alloc"/>
 	[[nodiscard]]
-	static std::unique_ptr<std::byte[]> Serialize(const int64& value);
+	static std::unique_ptr<std::byte[]> Serialize(const std::int64_t& value);
 
 	/// <summary>Transfer an unsigned 64-bit integer value to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
-	static std::byte* Serialize(std::byte* dest, const uint64& value);
+	static std::byte* Serialize(std::byte* dest, const std::uint64_t& value);
 
 	/// <summary>Allocate a byte buffer for an unsigned 64-bit integer value</summary>
 	/// <exception cref="std::bad_alloc"/>
 	[[nodiscard]]
-	static std::unique_ptr<std::byte[]> Serialize(const uint64& value);
+	static std::unique_ptr<std::byte[]> Serialize(const std::uint64_t& value);
 
 	/// <summary>Transfer a 32-bit floating point value to the byte buffer</summary>
 	/// <returns>last buffer pointer after dest</returns>
@@ -379,12 +379,12 @@ namespace saga::inline deserializers
 	/// <exception cref="std::out_of_range"/>
 	static constexpr
 		const std::byte*
-		Deserialize(const std::byte* buffer, int16& output)
+		Deserialize(const std::byte* buffer, std::int16_t& output)
 	{
-		const uint32 mid = (static_cast<uint32>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint32>(static_cast<uint8>(buffer[0]));
+		const std::uint32_t mid = (static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[0]));
 
-		output = static_cast<int16>(mid);
+		output = static_cast<std::int16_t>(mid);
 
 		return buffer + 2;
 	}
@@ -394,12 +394,12 @@ namespace saga::inline deserializers
 	/// <exception cref="std::out_of_range"/>
 	static constexpr
 		const std::byte*
-		Deserialize(const std::byte* buffer, uint16& output)
+		Deserialize(const std::byte* buffer, std::uint16_t& output)
 	{
-		const uint32 mid = (static_cast<uint32>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint32>(static_cast<uint8>(buffer[0]));
+		const std::uint32_t mid = (static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[0]));
 
-		output = static_cast<uint16>(mid);
+		output = static_cast<std::uint16_t>(mid);
 
 		return buffer + 2;
 	}
@@ -411,8 +411,8 @@ namespace saga::inline deserializers
 		const std::byte*
 		Deserialize(const std::byte* buffer, wchar_t& output)
 	{
-		const uint32 mid = (static_cast<uint32>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint32>(static_cast<uint8>(buffer[0]));
+		const std::uint32_t mid = (static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[0]));
 
 		output = static_cast<wchar_t>(mid);
 
@@ -426,8 +426,8 @@ namespace saga::inline deserializers
 		const std::byte*
 		Deserialize(const std::byte* buffer, char16_t& output)
 	{
-		const uint32 mid = (static_cast<uint32>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint32>(static_cast<uint8>(buffer[0]));
+		const std::uint32_t mid = (static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint32_t>(static_cast<std::uint8_t>(buffer[0]));
 
 		output = static_cast<char16_t>(mid);
 
@@ -439,14 +439,14 @@ namespace saga::inline deserializers
 	/// <exception cref="std::out_of_range"/>
 	static constexpr
 		const std::byte*
-		Deserialize(const std::byte* buffer, int32& output)
+		Deserialize(const std::byte* buffer, std::int32_t& output)
 	{
-		const uint64 mid = (static_cast<uint64>(static_cast<uint8>(buffer[3])) << 24U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[2])) << 16U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint64>(static_cast<uint8>(buffer[0]));
+		const std::uint64_t mid = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[2])) << 16U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0]));
 
-		output = static_cast<int32>(mid);
+		output = static_cast<std::int32_t>(mid);
 
 		return buffer + 4;
 	}
@@ -456,14 +456,14 @@ namespace saga::inline deserializers
 	/// <exception cref="std::out_of_range"/>
 	static constexpr
 		const std::byte*
-		Deserialize(const std::byte* buffer, uint32& output)
+		Deserialize(const std::byte* buffer, std::uint32_t& output)
 	{
-		const uint64 mid = (static_cast<uint64>(static_cast<uint8>(buffer[3])) << 24U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[2])) << 16U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint64>(static_cast<uint8>(buffer[0]));
+		const std::uint64_t mid = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[2])) << 16U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0]));
 
-		output = static_cast<uint32>(mid);
+		output = static_cast<std::uint32_t>(mid);
 
 		return buffer + 4;
 	}
@@ -475,10 +475,10 @@ namespace saga::inline deserializers
 		const std::byte*
 		Deserialize(const std::byte* buffer, long& output)
 	{
-		const uint64 mid = (static_cast<uint64>(static_cast<uint8>(buffer[3])) << 24U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[2])) << 16U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint64>(static_cast<uint8>(buffer[0]));
+		const std::uint64_t mid = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[2])) << 16U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0]));
 
 		output = static_cast<long>(mid);
 
@@ -492,10 +492,10 @@ namespace saga::inline deserializers
 		const std::byte*
 		Deserialize(const std::byte* buffer, unsigned long& output)
 	{
-		const uint64 mid = (static_cast<uint64>(static_cast<uint8>(buffer[3])) << 24U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[2])) << 16U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint64>(static_cast<uint8>(buffer[0]));
+		const std::uint64_t mid = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[2])) << 16U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0]));
 
 		output = static_cast<unsigned long>(mid);
 
@@ -509,10 +509,10 @@ namespace saga::inline deserializers
 		const std::byte*
 		Deserialize(const std::byte* buffer, char32_t& output)
 	{
-		const uint64 mid = (static_cast<uint64>(static_cast<uint8>(buffer[3])) << 24U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[2])) << 16U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint64>(static_cast<uint8>(buffer[0]));
+		const std::uint64_t mid = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[2])) << 16U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0]));
 
 		output = static_cast<char32_t>(mid);
 
@@ -524,16 +524,16 @@ namespace saga::inline deserializers
 	/// <exception cref="std::out_of_range"/>
 	static constexpr
 		const std::byte*
-		Deserialize(const std::byte* buffer, int64& output)
+		Deserialize(const std::byte* buffer, std::int64_t& output)
 	{
-		output = static_cast<int64>((static_cast<uint64>(static_cast<uint8>(buffer[7])) << 56U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[6])) << 48U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[5])) << 40U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[4])) << 32U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[3])) << 24U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[2])) << 16U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint64>(static_cast<uint8>(buffer[0])));
+		output = static_cast<std::int64_t>((static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[7])) << 56U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[6])) << 48U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[5])) << 40U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[4])) << 32U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[2])) << 16U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0])));
 
 		return buffer + 8;
 	}
@@ -543,16 +543,16 @@ namespace saga::inline deserializers
 	/// <exception cref="std::out_of_range"/>
 	static constexpr
 		const std::byte*
-		Deserialize(const std::byte* buffer, uint64& output)
+		Deserialize(const std::byte* buffer, std::uint64_t& output)
 	{
-		output = (static_cast<uint64>(static_cast<uint8>(buffer[7])) << 56U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[6])) << 48U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[5])) << 40U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[4])) << 32U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[3])) << 24U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[2])) << 16U)
-			| (static_cast<uint64>(static_cast<uint8>(buffer[1])) << 8U)
-			| static_cast<uint64>(static_cast<uint8>(buffer[0]));
+		output = (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[7])) << 56U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[6])) << 48U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[5])) << 40U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[4])) << 32U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[3])) << 24U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[2])) << 16U)
+			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
+			| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0]));
 
 		return buffer + 8;
 	}
@@ -564,7 +564,7 @@ namespace saga::inline deserializers
 		const std::byte*
 		Deserialize(const std::byte* buffer, float_t& output)
 	{
-		int32 mid{};
+		std::int32_t mid{};
 		auto it = Deserialize(buffer, mid);
 
 		output = std::bit_cast<float_t>(mid);
@@ -579,7 +579,7 @@ namespace saga::inline deserializers
 		const std::byte*
 		Deserialize(const std::byte* buffer, double_t& output)
 	{
-		int64 mid{};
+		std::int64_t mid{};
 		auto it = Deserialize(buffer, mid);
 
 		output = std::bit_cast<double_t>(mid);
@@ -796,9 +796,9 @@ saga::serializers::Serialize(const char8_t& value)
 }
 
 std::byte*
-saga::serializers::Serialize(std::byte* dest, const int16& value)
+saga::serializers::Serialize(std::byte* dest, const std::int16_t& value)
 {
-	const auto longer = static_cast<int32>(value);
+	const auto longer = static_cast<std::int32_t>(value);
 	dest[0] = std::bit_cast<std::byte>(RShift(longer, 0));
 	dest[1] = std::bit_cast<std::byte>(RShift(longer, 1));
 
@@ -806,17 +806,17 @@ saga::serializers::Serialize(std::byte* dest, const int16& value)
 }
 
 std::unique_ptr<std::byte[]>
-saga::serializers::Serialize(const int16& value)
+saga::serializers::Serialize(const std::int16_t& value)
 {
-	auto buffer = std::make_unique<std::byte[]>(sizeof(int16));
+	auto buffer = std::make_unique<std::byte[]>(sizeof(std::int16_t));
 	Serialize(buffer.get(), value);
 	return buffer;
 }
 
 std::byte*
-saga::serializers::Serialize(std::byte* dest, const uint16& value)
+saga::serializers::Serialize(std::byte* dest, const std::uint16_t& value)
 {
-	const auto longer = static_cast<uint32>(value);
+	const auto longer = static_cast<std::uint32_t>(value);
 	dest[0] = std::bit_cast<std::byte>(RShift(longer, 0));
 	dest[1] = std::bit_cast<std::byte>(RShift(longer, 1));
 
@@ -824,9 +824,9 @@ saga::serializers::Serialize(std::byte* dest, const uint16& value)
 }
 
 std::unique_ptr<std::byte[]>
-saga::serializers::Serialize(const uint16& value)
+saga::serializers::Serialize(const std::uint16_t& value)
 {
-	auto buffer = std::make_unique<std::byte[]>(sizeof(uint16));
+	auto buffer = std::make_unique<std::byte[]>(sizeof(std::uint16_t));
 	Serialize(buffer.get(), value);
 	return buffer;
 }
@@ -834,7 +834,7 @@ saga::serializers::Serialize(const uint16& value)
 std::byte*
 saga::serializers::Serialize(std::byte* dest, const char16_t& value)
 {
-	const auto longer = static_cast<uint32>(value);
+	const auto longer = static_cast<std::uint32_t>(value);
 	dest[0] = std::bit_cast<std::byte>(RShift(longer, 0));
 	dest[1] = std::bit_cast<std::byte>(RShift(longer, 1));
 
@@ -852,7 +852,7 @@ saga::serializers::Serialize(const char16_t& value)
 std::byte*
 saga::serializers::Serialize(std::byte* dest, const wchar_t& value)
 {
-	const auto longer = static_cast<uint32>(value);
+	const auto longer = static_cast<std::uint32_t>(value);
 	dest[0] = std::bit_cast<std::byte>(RShift(longer, 0));
 	dest[1] = std::bit_cast<std::byte>(RShift(longer, 1));
 
@@ -868,9 +868,9 @@ saga::serializers::Serialize(const wchar_t& value)
 }
 
 std::byte*
-saga::serializers::Serialize(std::byte* dest, const int32& value)
+saga::serializers::Serialize(std::byte* dest, const std::int32_t& value)
 {
-	const auto longer = static_cast<int64>(value);
+	const auto longer = static_cast<std::int64_t>(value);
 	dest[0] = std::bit_cast<std::byte>(RShift(longer, 0));
 	dest[1] = std::bit_cast<std::byte>(RShift(longer, 1));
 	dest[2] = std::bit_cast<std::byte>(RShift(longer, 2));
@@ -880,17 +880,17 @@ saga::serializers::Serialize(std::byte* dest, const int32& value)
 }
 
 std::unique_ptr<std::byte[]>
-saga::serializers::Serialize(const int32& value)
+saga::serializers::Serialize(const std::int32_t& value)
 {
-	auto buffer = std::make_unique<std::byte[]>(sizeof(int32));
+	auto buffer = std::make_unique<std::byte[]>(sizeof(std::int32_t));
 	Serialize(buffer.get(), value);
 	return buffer;
 }
 
 std::byte*
-saga::serializers::Serialize(std::byte* dest, const uint32& value)
+saga::serializers::Serialize(std::byte* dest, const std::uint32_t& value)
 {
-	const auto longer = static_cast<uint64>(value);
+	const auto longer = static_cast<std::uint64_t>(value);
 	dest[0] = std::bit_cast<std::byte>(RShift(longer, 0));
 	dest[1] = std::bit_cast<std::byte>(RShift(longer, 1));
 	dest[2] = std::bit_cast<std::byte>(RShift(longer, 2));
@@ -900,9 +900,9 @@ saga::serializers::Serialize(std::byte* dest, const uint32& value)
 }
 
 std::unique_ptr<std::byte[]>
-saga::serializers::Serialize(const uint32& value)
+saga::serializers::Serialize(const std::uint32_t& value)
 {
-	auto buffer = std::make_unique<std::byte[]>(sizeof(uint32));
+	auto buffer = std::make_unique<std::byte[]>(sizeof(std::uint32_t));
 	Serialize(buffer.get(), value);
 	return buffer;
 }
@@ -910,7 +910,7 @@ saga::serializers::Serialize(const uint32& value)
 std::byte*
 saga::serializers::Serialize(std::byte* dest, const long& value)
 {
-	const auto longer = static_cast<int64>(value);
+	const auto longer = static_cast<std::int64_t>(value);
 	dest[0] = std::bit_cast<std::byte>(RShift(longer, 0));
 	dest[1] = std::bit_cast<std::byte>(RShift(longer, 1));
 	dest[2] = std::bit_cast<std::byte>(RShift(longer, 2));
@@ -930,7 +930,7 @@ saga::serializers::Serialize(const long& value)
 std::byte*
 saga::serializers::Serialize(std::byte* dest, const unsigned long& value)
 {
-	const auto longer = static_cast<uint64>(value);
+	const auto longer = static_cast<std::uint64_t>(value);
 	dest[0] = std::bit_cast<std::byte>(RShift(longer, 0));
 	dest[1] = std::bit_cast<std::byte>(RShift(longer, 1));
 	dest[2] = std::bit_cast<std::byte>(RShift(longer, 2));
@@ -950,7 +950,7 @@ saga::serializers::Serialize(const unsigned long& value)
 std::byte*
 saga::serializers::Serialize(std::byte* dest, const char32_t& value)
 {
-	const auto longer = static_cast<uint64>(value);
+	const auto longer = static_cast<std::uint64_t>(value);
 	dest[0] = std::bit_cast<std::byte>(RShift(longer, 0));
 	dest[1] = std::bit_cast<std::byte>(RShift(longer, 1));
 	dest[2] = std::bit_cast<std::byte>(RShift(longer, 2));
@@ -968,7 +968,7 @@ saga::serializers::Serialize(const char32_t& value)
 }
 
 std::byte*
-saga::serializers::Serialize(std::byte* dest, const int64& value)
+saga::serializers::Serialize(std::byte* dest, const std::int64_t& value)
 {
 	std::byte* it = dest;
 	for (size_t i = 0; i < 8; ++i)
@@ -980,15 +980,15 @@ saga::serializers::Serialize(std::byte* dest, const int64& value)
 }
 
 std::unique_ptr<std::byte[]>
-saga::serializers::Serialize(const int64& value)
+saga::serializers::Serialize(const std::int64_t& value)
 {
-	auto buffer = std::make_unique<std::byte[]>(sizeof(int64));
+	auto buffer = std::make_unique<std::byte[]>(sizeof(std::int64_t));
 	Serialize(buffer.get(), value);
 	return buffer;
 }
 
 std::byte*
-saga::serializers::Serialize(std::byte* dest, const uint64& value)
+saga::serializers::Serialize(std::byte* dest, const std::uint64_t& value)
 {
 	std::byte* it = dest;
 	for (size_t i = 0; i < 8; ++i)
@@ -1000,9 +1000,9 @@ saga::serializers::Serialize(std::byte* dest, const uint64& value)
 }
 
 std::unique_ptr<std::byte[]>
-saga::serializers::Serialize(const uint64& value)
+saga::serializers::Serialize(const std::uint64_t& value)
 {
-	auto buffer = std::make_unique<std::byte[]>(sizeof(uint64));
+	auto buffer = std::make_unique<std::byte[]>(sizeof(std::uint64_t));
 	Serialize(buffer.get(), value);
 	return buffer;
 }
@@ -1010,28 +1010,28 @@ saga::serializers::Serialize(const uint64& value)
 std::byte*
 saga::serializers::Serialize(std::byte* dest, const float_t& value)
 {
-	return Serialize(dest, std::bit_cast<int32>(value));
+	return Serialize(dest, std::bit_cast<std::int32_t>(value));
 }
 
 std::unique_ptr<std::byte[]>
 saga::serializers::Serialize(const float_t& value)
 {
-	auto buffer = std::make_unique<std::byte[]>(sizeof(int32));
-	Serialize(buffer.get(), std::bit_cast<int32>(value));
+	auto buffer = std::make_unique<std::byte[]>(sizeof(std::int32_t));
+	Serialize(buffer.get(), std::bit_cast<std::int32_t>(value));
 	return buffer;
 }
 
 std::byte*
 saga::serializers::Serialize(std::byte* dest, const double_t& value)
 {
-	return Serialize(dest, std::bit_cast<int64>(value));
+	return Serialize(dest, std::bit_cast<std::int64_t>(value));
 }
 
 std::unique_ptr<std::byte[]>
 saga::serializers::Serialize(const double_t& value)
 {
-	auto buffer = std::make_unique<std::byte[]>(sizeof(int64));
-	Serialize(buffer.get(), std::bit_cast<int64>(value));
+	auto buffer = std::make_unique<std::byte[]>(sizeof(std::int64_t));
+	Serialize(buffer.get(), std::bit_cast<std::int64_t>(value));
 	return buffer;
 }
 

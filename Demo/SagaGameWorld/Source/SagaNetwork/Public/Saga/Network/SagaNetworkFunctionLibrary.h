@@ -2,14 +2,44 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 
+#include "Saga/Network/SagaVirtualUser.h"
+#include "Saga/Network/SagaVirtualRoom.h"
 #include "SagaNetworkFunctionLibrary.generated.h"
 
-UCLASS(Category = "CandyLandSaga|Network")
+UCLASS()
 class SAGANETWORK_API USagaNetworkFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
 public:
+	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	static FSocket& SagaNetworkGetSocket() noexcept;
+	[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	static bool SagaNetworkHasSocket() noexcept;
+
+	[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	static int32 SagaNetworkLocalPlayerID() noexcept;
+	[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	static FString SagaNetworkLocalPlayerName() noexcept;
+	[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	static int32 SagaNetworkCurrentRoomID() noexcept;
+	[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	static FString SagaNetworkCurrentRoomTitle() noexcept;
+
+	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	static const TArray<FSagaVirtualUser>& GetUserList() noexcept;
+	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	static const TArray<FSagaVirtualRoom>& GetRoomList() noexcept;
+	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	static const TArray<FSagaVirtualUser>& AwaitPlayerList(TPromise<bool> promise);
+	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	static const TArray<FSagaVirtualRoom>& AwaitRoomList(TPromise<bool> promise);
+
+	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	static void UpdatePlayerList();
+	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	static void UpdateRoomList();
+
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	static int32 SendSignInPacket(const FString& nickname);
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")

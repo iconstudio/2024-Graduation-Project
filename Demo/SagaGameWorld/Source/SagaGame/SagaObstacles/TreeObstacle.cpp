@@ -47,6 +47,7 @@ float ATreeObstacle::TakeDamage(float DamageAmount, FDamageEvent const& DamageEv
 
         if (HealthComponent->GetCurrentHealth() <= 0)
         {
+            UE_LOG(LogTemp, Warning, TEXT("Tree is destroyed, spawning item..."));
             FVector SpawnLocation = GetActorLocation() + FVector(0.0f, 0.0f, 40.0f); //맵 수정 시 높이 수정해줘야 함.
             FRotator SpawnRotation = FRotator::ZeroRotator;
             FActorSpawnParameters SpawnParameters;

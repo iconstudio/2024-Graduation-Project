@@ -6,26 +6,19 @@
 	"Modules": [
 		{
 			"Name": "SagaFramework",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"Type": "Runtime"
 		},
 		{
 			"Name": "SagaAssetMgr",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"Type": "Runtime"
 		},
 		{
 			"Name": "SagaUtility",
-			"Type": "Runtime",
-			"LoadingPhase": "Default",
-			"AdditionalDependencies": [
-				"Engine"
-			]
+			"Type": "Runtime"
 		},
 		{
 			"Name": "SagaNetwork",
-			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"Type": "Runtime"
 		},
 		{
 			"Name": "SagaGame",
