@@ -8,7 +8,7 @@
 void
 saga::EventRouter(const std::byte* packet_buffer
 	, EPacketProtocol protocol
-	, int16 packet_size)
+	, std::int16_t packet_size)
 {
 	auto& socket = USagaNetwork::GetLocalSocket();
 
