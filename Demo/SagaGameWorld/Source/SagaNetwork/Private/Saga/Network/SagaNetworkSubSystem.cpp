@@ -106,7 +106,7 @@ USagaNetworkSubSystem::Destroy()
 		if (IsSocketAvailable())
 		{
 			UE_LOG(LogNet, Warning, TEXT("Closing network system..."));
-			clientSocket->Shutdown(ESocketShutdownMode::ReadWrite);
+			//clientSocket->Shutdown(ESocketShutdownMode::ReadWrite);
 
 			return std::exchange(clientSocket, nullptr)->Close();
 		}
