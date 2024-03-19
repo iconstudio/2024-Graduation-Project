@@ -7,6 +7,8 @@ ASagaInterfaceController::BeginPlay()
 
 	FInputModeUIOnly UIOnlyInputMode;
     SetInputMode(UIOnlyInputMode);
+
+	SetShowMouseCursor(true);
 }
 
 void
