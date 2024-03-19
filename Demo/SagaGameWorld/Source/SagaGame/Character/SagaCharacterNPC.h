@@ -1,19 +1,15 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
-
 #include "CoreMinimal.h"
 #include "Character/SagaCharacterBase.h"
 #include "Interface/InteractionInterface.h"
+
 #include "SagaCharacterNPC.generated.h"
 
-/**
- * 
- */
-UCLASS(Blueprintable)
+UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|Game|NPC")
 class SAGAGAME_API ASagaCharacterNPC : public ASagaCharacterBase, public IInteractionInterface
 {
 	GENERATED_BODY()
+
 public:
 	ASagaCharacterNPC();
 
@@ -26,13 +22,13 @@ public:
 	virtual void InteractWithMe() override;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Game|NPC")
 	TSubclassOf<UUserWidget> NPCInteractionWidget;
 
 	UPROPERTY()
 	UUserWidget* NPCInteractionTEXTWidget;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interaction)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Game|NPC")
 	UCapsuleComponent* NPCInteractionCapsule;
 
 protected:

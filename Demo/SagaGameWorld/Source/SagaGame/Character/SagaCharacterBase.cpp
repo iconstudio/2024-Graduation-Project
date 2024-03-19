@@ -1,304 +1,321 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Character/SagaCharacterBase.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "SagaCharacterControlData.h"
 #include "Animation/AnimMontage.h"
-#include "SagaComboActionData.h"
 #include "Physics/SagaCollision.h"
 #include "Engine/DamageEvents.h"
-#include "Item/SagaWeaponItemData.h"
 #include "CharacterStat/SagaCharacterStatComponent.h"
 #include "UI/SagaWidgetComponent.h"
 #include "UI/SagaHpBarWidget.h"
 
+#include "SagaComboActionData.h"
+#include "SagaCharacterControlData.h"
+#include "Item/SagaWeaponItemData.h"
+
 DEFINE_LOG_CATEGORY(LogSagaCharacter);
 
-// Sets default values
 ASagaCharacterBase::ASagaCharacterBase()
+	: ACharacter()
+	, ISagaAttackAnimationInterface(), ISagaCharacterItemInterface()
+	, ISagaCharacterWidgetInterface()
 {
-    bUseControllerRotationPitch = false;
-    bUseControllerRotationYaw = false;
-    bUseControllerRotationRoll = false;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
 
-    GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-    GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_SAGACAPSULE);
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->SetCollisionProfileName(CPROFILE_SAGACAPSULE);
 
-    //¿òÁ÷ÀÓ
-    GetCharacterMovement()->bOrientRotationToMovement = true;
-    GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-    GetCharacterMovement()->JumpZVelocity = 400.f;
-    GetCharacterMovement()->AirControl = 0.35f;
-    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-    GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-    GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	//ì›€ì§ì„
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
+	GetCharacterMovement()->JumpZVelocity = 400.f;
+	GetCharacterMovement()->AirControl = 0.35f;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
-    //¸Ş½Ã
-    GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
-    GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-    GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+	//ë©”ì‹œ
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -100.0f), FRotator(0.0f, -90.0f, 0.0f));
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 
-    static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/InfinityBladeWarriors/Character/CompleteCharacters/SK_CharM_Cardboard.SK_CharM_Cardboard'"));
-    if (CharacterMeshRef.Object)
-    {
-        GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
-    }
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> CharacterMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/InfinityBladeWarriors/Character/CompleteCharacters/SK_CharM_Cardboard.SK_CharM_Cardboard'"));
+	if (CharacterMeshRef.Object)
+	{
+		GetMesh()->SetSkeletalMesh(CharacterMeshRef.Object);
+	}
 
-    static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/Animation/SAGABP_Character.SAGABP_Character_C"));
-    if (AnimInstanceClassRef.Class)
-    {
-        GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
-    }
+	static ConstructorHelpers::FClassFinder<UAnimInstance> AnimInstanceClassRef(TEXT("/Game/Animation/SAGABP_Character.SAGABP_Character_C"));
+	if (AnimInstanceClassRef.Class)
+	{
+		GetMesh()->SetAnimInstanceClass(AnimInstanceClassRef.Class);
+	}
 
-    //»ı¼ºÇÑ µÎ°¡Áö ÄÁÆ®·Ñ µ¥ÀÌÅÍµéÀ» Map¿¡ Ãß°¡
-    static ConstructorHelpers::FObjectFinder<USagaCharacterControlData> SoulderDataRef(TEXT("/Script/SagaGame.SagaCharacterControlData'/Game/CharacterControl/SagaControl_Shoulder.SagaControl_Shoulder'"));
-    if (SoulderDataRef.Object)
-    {
-        CharacterControlManager.Add(ECharacterControlType::Shoulder, SoulderDataRef.Object);
-    }
-    static ConstructorHelpers::FObjectFinder<USagaCharacterControlData> QuaterDataRef(TEXT("/Script/SagaGame.SagaCharacterControlData'/Game/CharacterControl/SagaControl_Quater.SagaControl_Quater'"));
-    if (QuaterDataRef.Object)
-    {
-        CharacterControlManager.Add(ECharacterControlType::Quater, QuaterDataRef.Object);
-    }
+	//ìƒì„±í•œ ë‘ê°€ì§€ ì»¨íŠ¸ë¡¤ ë°ì´í„°ë“¤ì„ Mapì— ì¶”ê°€
+	static ConstructorHelpers::FObjectFinder<USagaCharacterControlData> SoulderDataRef(TEXT("/Script/SagaGame.SagaCharacterControlData'/Game/CharacterControl/SagaControl_Shoulder.SagaControl_Shoulder'"));
+	if (SoulderDataRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterControlType::Shoulder, SoulderDataRef.Object);
+	}
 
-    //Combo
-    static ConstructorHelpers::FObjectFinder<UAnimMontage> ComboActionMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Animation/AM_ComboAttack.AM_ComboAttack'"));
-    if (ComboActionMontageRef.Object)
-    {
-        ComboActionMontage = ComboActionMontageRef.Object;
-    }
+	static ConstructorHelpers::FObjectFinder<USagaCharacterControlData> QuaterDataRef(TEXT("/Script/SagaGame.SagaCharacterControlData'/Game/CharacterControl/SagaControl_Quater.SagaControl_Quater'"));
+	if (QuaterDataRef.Object)
+	{
+		CharacterControlManager.Add(ECharacterControlType::Quater, QuaterDataRef.Object);
+	}
 
-    static ConstructorHelpers::FObjectFinder<USagaComboActionData> ComboActionDataRef(TEXT("/Script/SagaGame.SagaComboActionData'/Game/CharacterAction/Saga_ComboAttack.Saga_ComboAttack'"));
-    if (ComboActionDataRef.Object)
-    {
-        ComboActionData = ComboActionDataRef.Object;
-    }
+	//Combo
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ComboActionMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Animation/AM_ComboAttack.AM_ComboAttack'"));
+	if (ComboActionMontageRef.Object)
+	{
+		ComboActionMontage = ComboActionMontageRef.Object;
+	}
 
-    static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMontageRef(TEXT(""));
-    if (DeadMontageRef.Object)
-    {
-        DeadMontage = DeadMontageRef.Object; //
-    }
+	static ConstructorHelpers::FObjectFinder<USagaComboActionData> ComboActionDataRef(TEXT("/Script/SagaGame.SagaComboActionData'/Game/CharacterAction/Saga_ComboAttack.Saga_ComboAttack'"));
+	if (ComboActionDataRef.Object)
+	{
+		ComboActionData = ComboActionDataRef.Object;
+	}
 
-    //¾ÆÀÌÅÛ ¾×¼Ç
-    TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::DrinkEnergyDrink)));
-    TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::InstallGumball)));
-    TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::EquipWeapons)));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> DeadMontageRef(TEXT(""));
+	if (DeadMontageRef.Object)
+	{
+		DeadMontage = DeadMontageRef.Object; //
+	}
 
-    //¹«±â ÄÄÆ÷³ÍÆ®(Weapon Component)
-    Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
-    //¹«±âºÎÂø
-    Weapon->SetupAttachment(GetMesh(), TEXT("hand_rSocket")); //Ä³¸¯ÅÍÀÇ Æ¯Á¤ º»¿¡ Ç×»ó ºÎÂøµÇ¾î µ¹¾Æ´Ù´Ò ¼ö ÀÖµµ·Ï ¼ÒÄÏÀÌ¸§À» ÁöÁ¤ÇØÁØ´Ù.
-    //Ä³¸¯ÅÍ ¾Ö¼Â¿¡ ¼ÒÄÏ ÀÌ¸§ÀÌ ÁöÁ¤µÇ¾î ÀÖ¾î¾ß ÇÑ´Ù.
+	//ì•„ì´í…œ ì•¡ì…˜
+	TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::DrinkEnergyDrink)));
+	TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::InstallGumball)));
+	TakeItemActions.Add(FTakeItemDelegateWrapper(FOnTakeItemDelegate::CreateUObject(this, &ASagaCharacterBase::EquipWeapons)));
+
+	//ë¬´ê¸° ì»´í¬ë„ŒíŠ¸(Weapon Component)
+	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Weapon"));
+	//ë¬´ê¸°ë¶€ì°©
+	Weapon->SetupAttachment(GetMesh(), TEXT("hand_rSocket")); //ìºë¦­í„°ì˜ íŠ¹ì • ë³¸ì— í•­ìƒ ë¶€ì°©ë˜ì–´ ëŒì•„ë‹¤ë‹ ìˆ˜ ìˆë„ë¡ ì†Œì¼“ì´ë¦„ì„ ì§€ì •í•´ì¤€ë‹¤.
+	//ìºë¦­í„° ì• ì…‹ì— ì†Œì¼“ ì´ë¦„ì´ ì§€ì •ë˜ì–´ ìˆì–´ì•¼ í•œë‹¤.
 
 
-    //½ºÅÈ ÄÄÆ÷³ÍÆ®
-    Stat = CreateDefaultSubobject<USagaCharacterStatComponent>(TEXT("Stat"));
+	//ìŠ¤íƒ¯ ì»´í¬ë„ŒíŠ¸
+	Stat = CreateDefaultSubobject<USagaCharacterStatComponent>(TEXT("Stat"));
 
-    //À§Á¬ ÄÄÆ÷³ÍÆ®
-    HpBar = CreateDefaultSubobject<USagaWidgetComponent>(TEXT("Widget"));
-    HpBar->SetupAttachment(GetMesh());
-    HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
-    static ConstructorHelpers::FClassFinder<UUserWidget>HpBarWidgetRef(TEXT("/Game/UI/WBP_HpBar.WBP_HpBar_C"));
-    if (HpBarWidgetRef.Class)
-    {
-        HpBar->SetWidgetClass(HpBarWidgetRef.Class);
-        HpBar->SetWidgetSpace(EWidgetSpace::Screen);
-        HpBar->SetDrawSize(FVector2D(150.f, 15.0f));
-        HpBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    }
+	//ìœ„ì ¯ ì»´í¬ë„ŒíŠ¸
+	HpBar = CreateDefaultSubobject<USagaWidgetComponent>(TEXT("Widget"));
+	HpBar->SetupAttachment(GetMesh());
+	HpBar->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+	static ConstructorHelpers::FClassFinder<UUserWidget>HpBarWidgetRef(TEXT("/Game/UI/WBP_HpBar.WBP_HpBar_C"));
+	if (HpBarWidgetRef.Class)
+	{
+		HpBar->SetWidgetClass(HpBarWidgetRef.Class);
+		HpBar->SetWidgetSpace(EWidgetSpace::Screen);
+		HpBar->SetDrawSize(FVector2D(150.f, 15.0f));
+		HpBar->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
-void ASagaCharacterBase::PostInitializeComponents()
+void
+ASagaCharacterBase::PostInitializeComponents()
 {
-    Super::PostInitializeComponents();
-    
-    Stat->OnHpZero.AddUObject(this, &ASagaCharacterBase::SetDead);
+	Super::PostInitializeComponents();
+
+	Stat->OnHpZero.AddUObject(this, &ASagaCharacterBase::SetDead);
 }
 
-void ASagaCharacterBase::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
+void
+ASagaCharacterBase::SetCharacterControlData(const USagaCharacterControlData* CharacterControlData)
 {
-    //Pawn
-    bUseControllerRotationYaw = CharacterControlData->bUseControllerRotationYaw;
+	//Pawn
+	bUseControllerRotationYaw = CharacterControlData->bUseControllerRotationYaw;
 
-    // CharacterMovement
-    GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
-    GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
-    GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
+	// CharacterMovement
+	GetCharacterMovement()->bOrientRotationToMovement = CharacterControlData->bOrientRotationToMovement;
+	GetCharacterMovement()->bUseControllerDesiredRotation = CharacterControlData->bUseControllerDesiredRotation;
+	GetCharacterMovement()->RotationRate = CharacterControlData->RotationRate;
 }
 
-void ASagaCharacterBase::ProcessComboCommand() //ÀÌ°Í°ú SagaCharacterPlayerÀÇ AttackÇÔ¼ö°¡ ¿¬µ¿µÇµµ·Ï AttackÇÔ¼ö¿¡ ÀÛ¼º
+void
+ASagaCharacterBase::ProcessComboCommand() //ì´ê²ƒê³¼ SagaCharacterPlayerì˜ Attackí•¨ìˆ˜ê°€ ì—°ë™ë˜ë„ë¡ Attackí•¨ìˆ˜ì— ì‘ì„±
 {
-    if (CurrentCombo == 0)
-    {
-        ComboActionBegin();
-        return;
-    }
+	if (CurrentCombo == 0)
+	{
+		ComboActionBegin();
+		return;
+	}
 
-    //ÀÔ·ÂÀÌ µé¾î¿Ã ¶§
-    if (!ComboTimerHandle.IsValid()) //Å¸ÀÌ¸Ó°¡ ¼³Á¤ ¾ÈµÇ¾îÀÖÀ»‹š ÀÔ·ÂÀÌ µé¾î¿Ã¶§¿¡´Â ÀÌ¹Ì Å¸ÀÌ¸Ó°¡ ¹ßµ¿µÇ¾î ½Ã±â¸¦ ³õÃÆ°Å³ª ´õÀÌ»ó ÁøÇàÇÒ ÇÊ¿ä°¡ ¾ø´Ù´Â ¶æ
-    {
-        HasNextComboCommand = false;
-    }
-    else
-    {
-        HasNextComboCommand = true;
-    }
+	//ì…ë ¥ì´ ë“¤ì–´ì˜¬ ë•Œ
+	if (!ComboTimerHandle.IsValid()) //íƒ€ì´ë¨¸ê°€ ì„¤ì • ì•ˆë˜ì–´ìˆì„ë–„ ì…ë ¥ì´ ë“¤ì–´ì˜¬ë•Œì—ëŠ” ì´ë¯¸ íƒ€ì´ë¨¸ê°€ ë°œë™ë˜ì–´ ì‹œê¸°ë¥¼ ë†“ì³¤ê±°ë‚˜ ë”ì´ìƒ ì§„í–‰í•  í•„ìš”ê°€ ì—†ë‹¤ëŠ” ëœ»
+	{
+		HasNextComboCommand = false;
+	}
+	else
+	{
+		HasNextComboCommand = true;
+	}
 }
 
-void ASagaCharacterBase::ComboActionBegin()
+void
+ASagaCharacterBase::ComboActionBegin()
 {
-    //ÇöÀç ÄŞº¸ »óÅÂ
-    CurrentCombo = 1;
+	//í˜„ì¬ ì½¤ë³´ ìƒíƒœ
+	CurrentCombo = 1;
 
-    //Movement ¼³Á¤
-    //GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None); //NoneÀ¸·Î ¼³Á¤ ½Ã--> °ø°İÇÏ´Â µ¿¾È ÀÌµ¿ºÒ°¡
+	//Movement ì„¤ì •
+	//GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None); //Noneìœ¼ë¡œ ì„¤ì • ì‹œ--> ê³µê²©í•˜ëŠ” ë™ì•ˆ ì´ë™ë¶ˆê°€
 
-    //¾Ö´Ï¸ŞÀÌ¼Ç ¼³Á¤
-    const float AttackSpeedRate = 1.0f;
-    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    AnimInstance->Montage_Play(ComboActionMontage, AttackSpeedRate);
+	//ì• ë‹ˆë©”ì´ì…˜ ì„¤ì •
+	const float AttackSpeedRate = 1.0f;
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->Montage_Play(ComboActionMontage, AttackSpeedRate);
 
-    FOnMontageEnded EndDelegate;
-    EndDelegate.BindUObject(this, &ASagaCharacterBase::ComboActionEnd);
-    AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboActionMontage);
+	FOnMontageEnded EndDelegate;
+	EndDelegate.BindUObject(this, &ASagaCharacterBase::ComboActionEnd);
+	AnimInstance->Montage_SetEndDelegate(EndDelegate, ComboActionMontage);
 
-    ComboTimerHandle.Invalidate();
-    SetComboCheckTimer();
+	ComboTimerHandle.Invalidate();
+	SetComboCheckTimer();
 }
 
-void ASagaCharacterBase::ComboActionEnd(UAnimMontage* TargetMontage, bool IsProperlyEnded)
+void
+ASagaCharacterBase::ComboActionEnd(UAnimMontage* TargetMontage, bool IsProperlyEnded)
 {
-    ensure(CurrentCombo != 0);// current combo°¡ 0ÀÌ ¾Æ´ÑÁö¸¦ °Ë»ç
-    CurrentCombo = 0;
-    GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	ensure(CurrentCombo != 0);// current comboê°€ 0ì´ ì•„ë‹Œì§€ë¥¼ ê²€ì‚¬
+	CurrentCombo = 0;
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }
 
-void ASagaCharacterBase::SetComboCheckTimer()
+void
+ASagaCharacterBase::SetComboCheckTimer()
 {
-    int32 ComboIndex = CurrentCombo - 1;
-    ensure(ComboActionData->EffectiveFrameCount.IsValidIndex(ComboIndex));
+	int32 ComboIndex = CurrentCombo - 1;
+	ensure(ComboActionData->EffectiveFrameCount.IsValidIndex(ComboIndex));
 
-    const float AttackSpeedRate = 1.0f;
-    float ComboEffectiveTime = (ComboActionData->EffectiveFrameCount[ComboIndex] / ComboActionData->FrameRate) / AttackSpeedRate;
-    if (ComboEffectiveTime > 0.0f)
-    {
-        GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &ASagaCharacterBase::ComboCheck, ComboEffectiveTime, false);
-    }
+	const float AttackSpeedRate = 1.0f;
+	float ComboEffectiveTime = (ComboActionData->EffectiveFrameCount[ComboIndex] / ComboActionData->FrameRate) / AttackSpeedRate;
+	if (ComboEffectiveTime > 0.0f)
+	{
+		GetWorld()->GetTimerManager().SetTimer(ComboTimerHandle, this, &ASagaCharacterBase::ComboCheck, ComboEffectiveTime, false);
+	}
 }
 
-void ASagaCharacterBase::ComboCheck()
+void
+ASagaCharacterBase::ComboCheck()
 {
-    ComboTimerHandle.Invalidate();
-    if (HasNextComboCommand) //Å¸ÀÌ¸Ó ¹ßµ¿ Àü ÀÔ·ÂÀÌ µé¾î¿Í HasNextComboCommand°¡ true°ªÀÌ µÇ¸é ´ÙÀ½ ¼½¼ÇÀ¸·Î ³Ñ¾î°¡±â
-    {
-        UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	ComboTimerHandle.Invalidate();
+	if (HasNextComboCommand) //íƒ€ì´ë¨¸ ë°œë™ ì „ ì…ë ¥ì´ ë“¤ì–´ì™€ HasNextComboCommandê°€ trueê°’ì´ ë˜ë©´ ë‹¤ìŒ ì„¹ì…˜ìœ¼ë¡œ ë„˜ì–´ê°€ê¸°
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-        CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, ComboActionData->MaxComboCount); //ÁöÁ¤ÇÑ ÄŞº¸°ª ¹ş¾î³ªÁö ¾Êµµ·Ï.
-        FName NextSection = *FString::Printf(TEXT("%s%d"), *ComboActionData->MontageSectionNamePrefix, CurrentCombo);
-        AnimInstance->Montage_JumpToSection(NextSection, ComboActionMontage);
-        SetComboCheckTimer();
-        HasNextComboCommand = false;
-    }
+		CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, ComboActionData->MaxComboCount); //ì§€ì •í•œ ì½¤ë³´ê°’ ë²—ì–´ë‚˜ì§€ ì•Šë„ë¡.
+		FName NextSection = *FString::Printf(TEXT("%s%d"), *ComboActionData->MontageSectionNamePrefix, CurrentCombo);
+		AnimInstance->Montage_JumpToSection(NextSection, ComboActionMontage);
+		SetComboCheckTimer();
+		HasNextComboCommand = false;
+	}
 }
 
-void ASagaCharacterBase::AttackHitCheck() //trace È°¿ëÇÏ¿© ¹°Ã¼°¡ ¼­·Î Ãæµ¹µÇ´ÂÁö °Ë»çÇÏ´Â ·ÎÁ÷ ±¸Çö
+void
+ASagaCharacterBase::AttackHitCheck() //trace í™œìš©í•˜ì—¬ ë¬¼ì²´ê°€ ì„œë¡œ ì¶©ëŒë˜ëŠ”ì§€ ê²€ì‚¬í•˜ëŠ” ë¡œì§ êµ¬í˜„
 {
-    FHitResult OutHitResult;
-    FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);//false-> º¹ÀâÇÑ Ãæµ¹Ã¼Å© »ç¿ë¾ÈÇÔ, this-> ¹«½ÃÇÒ ¾×ÅÍ´Â ÀÚ±â ÀÚ½Å»ÓÀÌ¶ó this »ç¿ë
+	FHitResult OutHitResult;
+	FCollisionQueryParams Params(SCENE_QUERY_STAT(Attack), false, this);//false-> ë³µì¡í•œ ì¶©ëŒì²´í¬ ì‚¬ìš©ì•ˆí•¨, this-> ë¬´ì‹œí•  ì•¡í„°ëŠ” ìê¸° ìì‹ ë¿ì´ë¼ this ì‚¬ìš©
 
-    const float AttackRange = 40.0f;
-    const float AttackRadius = 50.0f;
-    const float AttackDamage = 30.0f;
-    const FVector Start = GetActorLocation() + GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
-    const FVector End = Start + GetActorForwardVector() * AttackRange;
+	const float AttackRange = 40.0f;
+	const float AttackRadius = 50.0f;
+	const float AttackDamage = 30.0f;
+	const FVector Start = GetActorLocation() + GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius();
+	const FVector End = Start + GetActorForwardVector() * AttackRange;
 
-    bool HitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, CCHANNEL_SAGAACTION, FCollisionShape::MakeSphere(AttackRadius), Params);
-    if (HitDetected)
-    {
-        FDamageEvent DamageEvent;
-        OutHitResult.GetActor()->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
-    }
+	bool HitDetected = GetWorld()->SweepSingleByChannel(OutHitResult, Start, End, FQuat::Identity, CCHANNEL_SAGAACTION, FCollisionShape::MakeSphere(AttackRadius), Params);
+	if (HitDetected)
+	{
+		FDamageEvent DamageEvent;
+		OutHitResult.GetActor()->TakeDamage(AttackDamage, DamageEvent, GetController(), this);
+	}
 
 #if ENABLE_DRAW_DEBUG
 
-    FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
-    float CapsuleHalfHeight = AttackRange * 0.5f;
-    FColor DrawColor = HitDetected ? FColor::Green : FColor::Red;
-    DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
+	FVector CapsuleOrigin = Start + (End - Start) * 0.5f;
+	float CapsuleHalfHeight = AttackRange * 0.5f;
+	FColor DrawColor = HitDetected ? FColor::Green : FColor::Red;
+	DrawDebugCapsule(GetWorld(), CapsuleOrigin, CapsuleHalfHeight, AttackRadius, FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(), DrawColor, false, 5.0f);
 
 #endif
 }
 
-float ASagaCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+float
+ASagaCharacterBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-    Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-    Stat->ApplyDamage(DamageAmount);
+	Stat->ApplyDamage(DamageAmount);
 
-    return DamageAmount;
+	return DamageAmount;
 }
 
-void ASagaCharacterBase::SetDead()
+void
+ASagaCharacterBase::SetDead()
 {
-    GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-    PlayDeadAnimation();
-    SetActorEnableCollision(false);
-    HpBar->SetHiddenInGame(true);
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+	PlayDeadAnimation();
+	SetActorEnableCollision(false);
+	HpBar->SetHiddenInGame(true);
 }
 
-void ASagaCharacterBase::PlayDeadAnimation()
+void
+ASagaCharacterBase::PlayDeadAnimation()
 {
-    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    AnimInstance->StopAllMontages(0.0f);
-    AnimInstance->Montage_Play(DeadMontage, 1.0f);
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	AnimInstance->StopAllMontages(0.0f);
+	AnimInstance->Montage_Play(DeadMontage, 1.0f);
 }
 
-void ASagaCharacterBase::TakeItem(USagaItemData* InItemData)
+void
+ASagaCharacterBase::TakeItem(USagaItemData* InItemData)
 {
-    if (InItemData)
-    {
-        TakeItemActions[(uint8)InItemData->Type].ItemDelegate.ExecuteIfBound(InItemData); //ExecuteIfBoundÇÔ¼ö·Î InItemData¸¦ ³Ñ°ÜÁØ´Ù.
-    }
+	if (InItemData)
+	{
+		TakeItemActions[(uint8)InItemData->Type].ItemDelegate.ExecuteIfBound(InItemData); //ExecuteIfBoundí•¨ìˆ˜ë¡œ InItemDataë¥¼ ë„˜ê²¨ì¤€ë‹¤.
+	}
 }
 
-void ASagaCharacterBase::DrinkEnergyDrink(USagaItemData* InItemData)
+void
+ASagaCharacterBase::DrinkEnergyDrink(USagaItemData* InItemData)
 {
-    UE_LOG(LogSagaCharacter, Log, TEXT("Drink EnergyDrink"));
+	UE_LOG(LogSagaCharacter, Log, TEXT("Drink EnergyDrink"));
 }
 
-void ASagaCharacterBase::EquipWeapons(USagaItemData* InItemData)
+void
+ASagaCharacterBase::EquipWeapons(USagaItemData* InItemData)
 {
-    USagaWeaponItemData* WeaponItemData = Cast<USagaWeaponItemData>(InItemData);
-    if (WeaponItemData)
-    {
-        if (WeaponItemData->WeaponMesh.IsPending()) //¾ÆÁ÷ ·ÎµåµÇÁö ¾Ê¾Ò´Ù¸é
-        {
-            WeaponItemData->WeaponMesh.LoadSynchronous();
-        }
-        Weapon->SetSkeletalMesh(WeaponItemData->WeaponMesh.Get());
-    }
-    /*if (InItemData)
-    {
-        Weapon->SetSkeletalMesh(WeaponItemData->WeaponMesh);
-    }*/
+	USagaWeaponItemData* WeaponItemData = Cast<USagaWeaponItemData>(InItemData);
+	if (WeaponItemData)
+	{
+		if (WeaponItemData->WeaponMesh.IsPending()) //ì•„ì§ ë¡œë“œë˜ì§€ ì•Šì•˜ë‹¤ë©´
+		{
+			WeaponItemData->WeaponMesh.LoadSynchronous();
+		}
+		Weapon->SetSkeletalMesh(WeaponItemData->WeaponMesh.Get());
+	}
+	/*if (InItemData)
+	{
+		Weapon->SetSkeletalMesh(WeaponItemData->WeaponMesh);
+	}*/
 }
 
-void ASagaCharacterBase::InstallGumball(USagaItemData* InItemData)
+void
+ASagaCharacterBase::InstallGumball(USagaItemData* InItemData)
 {
-    UE_LOG(LogSagaCharacter, Log, TEXT("Install Gumball"));
+	UE_LOG(LogSagaCharacter, Log, TEXT("Install Gumball"));
 }
 
-void ASagaCharacterBase::SetupCharacterWidget(USagaUserWidget* InUserWidget)
+void
+ASagaCharacterBase::SetupCharacterWidget(USagaUserWidget* InUserWidget)
 {
-    USagaHpBarWidget* HpBarWidget = Cast<USagaHpBarWidget>(InUserWidget);
-    if (HpBarWidget)
-    {
-        HpBarWidget->SetMaxHp(Stat->GetMaxHp());
-        HpBarWidget->UpdateHpBar(Stat->GetCurrentHp());
-        Stat->OnHpChanged.AddUObject(HpBarWidget, &USagaHpBarWidget::UpdateHpBar);
-    }
+	USagaHpBarWidget* HpBarWidget = Cast<USagaHpBarWidget>(InUserWidget);
+	if (HpBarWidget)
+	{
+		HpBarWidget->SetMaxHp(Stat->GetMaxHp());
+		HpBarWidget->UpdateHpBar(Stat->GetCurrentHp());
+		Stat->OnHpChanged.AddUObject(HpBarWidget, &USagaHpBarWidget::UpdateHpBar);
+	}
 }
