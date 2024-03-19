@@ -41,40 +41,40 @@ public:
 	virtual void PostInitializeComponents() override;
 
 protected:
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	virtual void SetCharacterControlData(const class USagaCharacterControlData* CharacterControlData); //캐릭터컨트롤데이터에셋을 입력으로 받음
 
-	UPROPERTY(EditAnywhere, Category = CharacterControl, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, Category = "CandyLandSaga|Game|Character", Meta = (AllowPrivateAccess = "true"))
 	TMap<ECharacterControlType, class USagaCharacterControlData*> CharacterControlManager;
 
 //Animation Mantage 관련
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Game|Character")
 	TObjectPtr<class UAnimMontage> ComboActionMontage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Game|Character", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USagaComboActionData> ComboActionData;
 
 	UFUNCTION()
 	void ProcessComboCommand();
 
 	//몽타주 시작될때 호출하는 함수
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	void ComboActionBegin();
 
 	//몽타주 모두 종료시 호출
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	void ComboActionEnd(class UAnimMontage* TargetMontage, bool IsProperlyEnded);
 
 	//타이머 발동
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	void SetComboCheckTimer();
 
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	void ComboCheck();
 
 	//현재 콤보가 어디까지 진행되었는지 저장을 위함
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "CandyLandSaga|Game|Character")
 	int32 CurrentCombo = 0;
 
 	FTimerHandle ComboTimerHandle;
@@ -86,48 +86,48 @@ protected:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Game|Character", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UAnimMontage> DeadMontage;
 
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	virtual void SetDead();
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	void PlayDeadAnimation();
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "CandyLandSaga|Game|Character")
 	float DeadEventDelayTime = 5.0f;
 
 protected:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "CandyLandSaga|Game|Character")
 	float WalkSpeed = 500.f;
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, Category = "CandyLandSaga|Game|Character")
 	float SprintSpeed = 1000.0f;
 
 	//아이템관련
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Equipment, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Game|Character", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USkeletalMeshComponent> Weapon; //생성자에서도 생성해준다.
 
 	UPROPERTY()
 	TArray<FTakeItemDelegateWrapper> TakeItemActions; //함수들이 바인딩 된다.
 
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	virtual void TakeItem(class USagaItemData* InItemData) override;
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	virtual void DrinkEnergyDrink(class USagaItemData* InItemData);
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	virtual void EquipWeapons(class USagaItemData* InItemData);
-	UFUNCTION()
+	UFUNCTION(Category = "CandyLandSaga|Game|Character")
 	virtual void InstallGumball(class USagaItemData* InItemData);
 
 	//스탯부분
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Game|Character", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class USagaCharacterStatComponent> Stat;
 
 	//UI위젯부분
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Stat, Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Game|Character", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UWidgetComponent> HpBar;
 
 	virtual void SetupCharacterWidget(class USagaUserWidget* InUserWidget) override;
