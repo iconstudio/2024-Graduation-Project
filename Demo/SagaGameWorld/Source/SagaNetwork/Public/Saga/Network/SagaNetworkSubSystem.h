@@ -105,8 +105,6 @@ public:
 	void AddUser(const FSagaVirtualUser& client);
 	bool FindUser(int32 id, FSagaVirtualUser& outpin) noexcept;
 	bool RemoveUser(int32 id) noexcept;
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	const TArray<FSagaVirtualUser>& GetUserList() const noexcept;
 	void ClearUserList() noexcept;
 	bool HasUser(int32 id) const noexcept;
 #pragma endregion
@@ -117,13 +115,17 @@ public:
 	bool FindRoom(int32 id, FSagaVirtualRoom& outpin) noexcept;
 	bool RoomAt(int32 index, FSagaVirtualRoom& outpin) noexcept;
 	bool RemoveRoom(int32 id) noexcept;
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
-	const TArray<FSagaVirtualRoom>& GetRoomList() const noexcept;
 	void ClearRoomList() noexcept;
 	bool HasRoom(int32 id) const noexcept;
 #pragma endregion
 
 	/* Getters */
+#pragma region =========================
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	const TArray<FSagaVirtualUser>& GetUserList() const noexcept;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	const TArray<FSagaVirtualRoom>& GetRoomList() const noexcept;
+#pragma endregion
 
 	/* Observers */
 #pragma region =========================
@@ -194,7 +196,10 @@ public:
 
 	friend class FSagaNetworkWorker;
 
-	/* Local Properties */
+	/* Public Properties */
+#pragma region =========================
+
+	/* Local Session's Properties */
 #pragma region =========================
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
 	int32 localUserId;
@@ -246,6 +251,7 @@ public:
 
 	static TQueue<UE::Tasks::TTask<int32>> taskQueue;
 	FGraphEventArray TaskCompletionEvents;
+#pragma endregion
 
 protected:
 	/* Internal Functions */
