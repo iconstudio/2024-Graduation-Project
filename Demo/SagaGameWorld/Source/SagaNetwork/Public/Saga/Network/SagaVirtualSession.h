@@ -1,7 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
-#include "Containers/UnrealString.h"
-#include "Templates/UnrealTemplate.h"
+#include "SagaNetwork.h"
 
 #include "SagaVirtualSession.generated.h"
 

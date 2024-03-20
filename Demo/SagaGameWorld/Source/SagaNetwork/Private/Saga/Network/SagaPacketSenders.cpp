@@ -1,5 +1,4 @@
 #include "Saga/Network/SagaPacketSenders.h"
-#include "Containers/UnrealString.h"
 
 #include "Saga/Network/SagaNetworkUtility.h"
 #include "Saga/Network/SagaClientPacketPrefabs.h"

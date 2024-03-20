@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 
 namespace saga

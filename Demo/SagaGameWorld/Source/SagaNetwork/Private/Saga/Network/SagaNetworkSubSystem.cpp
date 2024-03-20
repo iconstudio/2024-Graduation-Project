@@ -1,5 +1,4 @@
 #include "Saga/Network/SagaNetworkSubSystem.h"
-#include "UObject/Object.h"
 #include "Kismet/GameplayStatics.h"
 #include "Containers/Queue.h"
 #include "Delegates/Delegate.h"
@@ -46,12 +45,10 @@ USagaNetworkSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 	if (InitializeNetwork_Implementation())
 	{
-		UE_LOG(LogNet, Log, TEXT("The network subsystem is initialized."));
 		BroadcastOnNetworkInitialized();
 	}
 	else
 	{
-		UE_LOG(LogNet, Error, TEXT("Cannot initialize the network subsystem."));
 		BroadcastOnFailedToInitializeNetwork();
 	}
 }
@@ -65,19 +62,53 @@ USagaNetworkSubSystem::Deinitialize()
 	{
 		if (IsSocketAvailable())
 		{
-			UE_LOG(LogNet, Warning, TEXT("Closing network system..."));
+			UE_LOG(LogSagaNetwork, Warning, TEXT("Closing network system..."));
 			//clientSocket->Shutdown(ESocketShutdownMode::ReadWrite);
 
 			std::exchange(clientSocket, nullptr)->Close();
 		}
 		else
 		{
-			UE_LOG(LogNet, Warning, TEXT("The network system has been destroyed."));
+			UE_LOG(LogSagaNetwork, Warning, TEXT("The network system has been destroyed."));
 		}
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("The network system has been destroyed. (Offline Mode)"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("The network system has been destroyed. (Offline Mode)"));
+	}
+}
+
+bool
+USagaNetworkSubSystem::ShouldCreateSubsystem(UObject* Outer)
+const
+{
+	if (Outer)
+	{
+		// https://forums.unrealengine.com/t/solved-getworld-from-static-function-without-pass-an-object/245939
+		//UWorld* world = GEngine->GameViewport->GetWorld();
+		//float TimeSinceCreation = world->GetFirstPlayerController()->GetGameTimeSinceCreation();
+
+		FString name{ 20, TEXT("") };
+		Outer->GetWorld()->GetCurrentLevel()->GetName(name);
+
+		static const FString non_network_levels[] =
+		{
+			TEXT("InitializationLevel")
+		};
+
+		for (auto& non_network_level : non_network_levels)
+		{
+			if (name == non_network_level)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 
@@ -92,18 +123,18 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 		{
 			if (InitializeNetwork_Implementation())
 			{
-				UE_LOG(LogNet, Warning, TEXT("The network system was not initialized."));
+				UE_LOG(LogSagaNetwork, Warning, TEXT("The network system was not initialized."));
 			}
 			else
 			{
-				UE_LOG(LogNet, Error, TEXT("Could not initialize network system."));
+				UE_LOG(LogSagaNetwork, Error, TEXT("Could not initialize network system."));
 				return false;
 			}
 		}
 
 		USagaNetworkSubSystem::SetLocalUserName(nickname);
 
-		UE_LOG(LogNet, Log, TEXT("Connecting..."));
+		UE_LOG(LogSagaNetwork, Log, TEXT("Connecting..."));
 
 		auto connect_r = ConnectToServer_Implementation();
 		if (connect_r == ESagaConnectionContract::Success)
@@ -117,7 +148,7 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 		{
 			auto str = UEnum::GetValueAsString(connect_r);
 
-			UE_LOG(LogNet, Error, TEXT("Could not connect to the server, due to `%s`"), *str);
+			UE_LOG(LogSagaNetwork, Error, TEXT("Could not connect to the server, due to `%s`"), *str);
 			BroadcastOnFailedToConnect(connect_r);
 			return false;
 		}
@@ -387,7 +418,7 @@ void
 USagaNetworkSubSystem::BroadcastOnNetworkInitialized()
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnNetworkInitialized`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnNetworkInitialized`"));
 
 	if (OnNetworkInitialized.IsBound())
 	{
@@ -395,7 +426,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnFailedToInitializeNetwork` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnFailedToInitializeNetwork` was not bound"));
 	}
 }
 
@@ -403,7 +434,7 @@ void
 USagaNetworkSubSystem::BroadcastOnFailedToInitializeNetwork()
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnFailedToInitializeNetwork`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnFailedToInitializeNetwork`"));
 
 	if (OnNetworkInitialized.IsBound())
 	{
@@ -411,7 +442,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnFailedToInitializeNetwork` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnFailedToInitializeNetwork` was not bound"));
 	}
 }
 
@@ -419,7 +450,7 @@ void
 USagaNetworkSubSystem::BroadcastOnConnected()
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnConnected`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnConnected`"));
 
 	if (OnConnected.IsBound())
 	{
@@ -427,7 +458,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnConnected` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnConnected` was not bound"));
 	}
 }
 
@@ -435,7 +466,7 @@ void
 USagaNetworkSubSystem::BroadcastOnFailedToConnect(ESagaConnectionContract reason)
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnFailedToConnect`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnFailedToConnect`"));
 
 	if (OnFailedToConnect.IsBound())
 	{
@@ -443,7 +474,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnFailedToConnect` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnFailedToConnect` was not bound"));
 	}
 }
 
@@ -451,7 +482,7 @@ void
 USagaNetworkSubSystem::BroadcastOnDisconnected()
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnDisconnected`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnDisconnected`"));
 
 	if (OnDisconnected.IsBound())
 	{
@@ -459,7 +490,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnDisconnected` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnDisconnected` was not bound"));
 	}
 }
 
@@ -467,7 +498,7 @@ void
 USagaNetworkSubSystem::BroadcastOnRoomCreated(int32 room_id)
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnRoomCreated`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnRoomCreated`"));
 
 	if (OnRoomCreated.IsBound())
 	{
@@ -475,7 +506,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnRoomCreated` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnRoomCreated` was not bound"));
 	}
 }
 
@@ -483,7 +514,7 @@ void
 USagaNetworkSubSystem::BroadcastOnJoinedRoom(int32 user_id)
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnJoinedRoom`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnJoinedRoom`"));
 
 	if (OnJoinedRoom.IsBound())
 	{
@@ -491,7 +522,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnJoinedRoom` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnJoinedRoom` was not bound"));
 	}
 }
 
@@ -499,7 +530,7 @@ void
 USagaNetworkSubSystem::BroadcastOnLeftRoomBySelf()
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnLeftRoomBySelf`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnLeftRoomBySelf`"));
 
 	if (OnLeftRoomBySelf.IsBound())
 	{
@@ -507,7 +538,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnLeftRoomBySelf` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnLeftRoomBySelf` was not bound"));
 	}
 }
 
@@ -515,7 +546,7 @@ void
 USagaNetworkSubSystem::BroadcastOnLeftRoom(int32 id)
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnLeftRoom`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnLeftRoom`"));
 
 	if (OnLeftRoom.IsBound())
 	{
@@ -523,7 +554,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnLeftRoom` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnLeftRoom` was not bound"));
 	}
 }
 
@@ -531,7 +562,7 @@ void
 USagaNetworkSubSystem::BroadcastOnRespondVersion(const FString& version_string)
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnRespondVersion`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnRespondVersion`"));
 
 	if (OnRespondVersion.IsBound())
 	{
@@ -539,7 +570,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnRespondVersion` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnRespondVersion` was not bound"));
 	}
 }
 
@@ -547,7 +578,7 @@ void
 USagaNetworkSubSystem::BroadcastOnUpdateRoomList(const TArray<FSagaVirtualRoom>& list)
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnUpdateRoomList`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnUpdateRoomList`"));
 
 	if (OnUpdateRoomList.IsBound())
 	{
@@ -555,7 +586,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnUpdateRoomList` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnUpdateRoomList` was not bound"));
 	}
 }
 
@@ -563,7 +594,7 @@ void
 USagaNetworkSubSystem::BroadcastOnUpdateMembers(const TArray<FSagaVirtualUser>& list)
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnUpdateMembers`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnUpdateMembers`"));
 
 	if (OnUpdateMembers.IsBound())
 	{
@@ -571,7 +602,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnUpdateMembers` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnUpdateMembers` was not bound"));
 	}
 }
 
@@ -579,7 +610,7 @@ void
 USagaNetworkSubSystem::BroadcastOnUpdatePosition(int32 user_id, float x, float y, float z)
 const
 {
-	UE_LOG(LogNet, Log, TEXT("Brodcasting `OnUpdatePosition`"));
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnUpdatePosition`"));
 
 	if (OnUpdatePosition.IsBound())
 	{
@@ -587,7 +618,7 @@ const
 	}
 	else
 	{
-		UE_LOG(LogNet, Warning, TEXT("`OnUpdatePosition` was not bound"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnUpdatePosition` was not bound"));
 	}
 }
 
@@ -596,17 +627,17 @@ USagaNetworkSubSystem::TryLoginToServer(const FString& nickname)
 {
 	if (Start(nickname))
 	{
-		UE_LOG(LogNet, Log, TEXT("The network subsystem is started."));
+		UE_LOG(LogSagaNetwork, Log, TEXT("The network subsystem is started."));
 		return true;
 	}
 	else if (IsConnected())
 	{
-		UE_LOG(LogNet, Warning, TEXT("The network subsystem had been started."));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("The network subsystem had been started."));
 		return true;
 	}
 	else
 	{
-		UE_LOG(LogNet, Error, TEXT("Cannot start the network subsystem."));
+		UE_LOG(LogSagaNetwork, Error, TEXT("Cannot start the network subsystem."));
 		return false;
 	}
 }
@@ -685,7 +716,7 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 {
 	if (not IsSocketAvailable())
 	{
-		UE_LOG(LogNet, Error, TEXT("The socket is not available."));
+		UE_LOG(LogSagaNetwork, Error, TEXT("The socket is not available."));
 		return ESagaConnectionContract::NoSocket;
 	}
 
@@ -696,7 +727,7 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 		if (not remote_endpoint->IsValid())
 		{
 			auto err_msg = saga::GetLastErrorContents();
-			UE_LOG(LogNet, Error, TEXT("The endpoint has fault, due to '%s'"), err_msg);
+			UE_LOG(LogSagaNetwork, Error, TEXT("The endpoint has fault, due to '%s'"), err_msg);
 
 			return ESagaConnectionContract::WrongAddress;
 		}
@@ -705,7 +736,7 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 		{
 			// 연결 실패 처리
 			auto err_msg = saga::GetLastErrorContents();
-			UE_LOG(LogNet, Error, TEXT("Cannot connect to the server, due to '%s'"), err_msg);
+			UE_LOG(LogSagaNetwork, Error, TEXT("Cannot connect to the server, due to '%s'"), err_msg);
 
 			return ESagaConnectionContract::OtherError;
 		}
@@ -713,25 +744,24 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 		// #1
 		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
 
-
 		auto sent_r = SendSignInPacket(localUserName);
 		if (sent_r <= 0)
 		{
 			auto err_msg = saga::GetLastErrorContents();
-			UE_LOG(LogNet, Error, TEXT("First try of sending signin packet has been failed, due to '%s'"), err_msg);
+			UE_LOG(LogSagaNetwork, Error, TEXT("First try of sending signin packet has been failed, due to '%s'"), err_msg);
 
 			return ESagaConnectionContract::SignInFailed;
 		}
 		else
 		{
-			UE_LOG(LogNet, Log, TEXT("User's nickname is %s."), *localUserName);
+			UE_LOG(LogSagaNetwork, Log, TEXT("User's nickname is %s."), *localUserName);
 		}
 	}
 
 	netWorker = MakeUnique<FSagaNetworkWorker>(this);
 	if (netWorker == nullptr)
 	{
-		UE_LOG(LogNet, Error, TEXT("Has failed to create the worker thread."));
+		UE_LOG(LogSagaNetwork, Error, TEXT("Has failed to create the worker thread."));
 		return ESagaConnectionContract::CannotCreateWorker;
 	}
 
@@ -741,6 +771,14 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 void
 USagaNetworkSubSystem::OnNetworkInitialized_Implementation(bool succeed)
 {
+	if (succeed)
+	{
+		UE_LOG(LogSagaNetwork, Log, TEXT("The network subsystem is initialized."));
+	}
+	else
+	{
+		UE_LOG(LogSagaNetwork, Error, TEXT("Cannot initialize the network subsystem."));
+	}
 }
 
 void

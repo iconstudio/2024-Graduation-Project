@@ -2,7 +2,7 @@
 #ifndef SAGAFRAMEWORK_NET_SC_PACKET_PREFABS_H
 #define SAGAFRAMEWORK_NET_SC_PACKET_PREFABS_H
 
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 #include <string>
 #include <string_view>
 #include <utility>

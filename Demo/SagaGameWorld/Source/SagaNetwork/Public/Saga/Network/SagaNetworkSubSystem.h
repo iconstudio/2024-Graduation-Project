@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Tasks/Task.h"
 #include "HAL/Runnable.h"
@@ -53,15 +53,25 @@ class SAGANETWORK_API USagaNetworkSubSystem : public UGameInstanceSubsystem
 public:
 	USagaNetworkSubSystem();
 
-	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
-	virtual void Deinitialize() override;
-
-	virtual bool ShouldCreateSubsystem(UObject* Outer) const override { return true; }
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 
 	/* State Machines */
 #pragma region =========================
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
+
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	bool Start(const FString& nickname);
+#pragma endregion
+
+	/* Complicated Network Methods */
+#pragma region =========================
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Phase")
+	bool TryLoginToServer(const FString& nickname);
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	void UpdatePlayerList();
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	void UpdateRoomList();
 #pragma endregion
 
 	/* General Methods */
@@ -110,16 +120,6 @@ public:
 	const TArray<FSagaVirtualRoom>& GetRoomList() const noexcept;
 	void ClearRoomList() noexcept;
 	bool HasRoom(int32 id) const noexcept;
-#pragma endregion
-
-	/* Complicated Network Methods */
-#pragma region =========================
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Phase")
-	bool TryLoginToServer(const FString& nickname);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	void UpdatePlayerList();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	void UpdateRoomList();
 #pragma endregion
 
 	/* Getters */
