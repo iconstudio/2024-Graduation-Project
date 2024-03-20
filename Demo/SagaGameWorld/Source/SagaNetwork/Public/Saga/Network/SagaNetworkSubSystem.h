@@ -63,6 +63,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	bool Start(const FString& nickname);
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	bool Close();
 #pragma endregion
 
 	/* Complicated Network Methods */
@@ -262,6 +264,9 @@ protected:
 	UFUNCTION()
 	ESagaConnectionContract ConnectToServer_Implementation();
 	UFUNCTION()
+	bool CloseNetwork_Implementation();
+
+	UFUNCTION()
 	void OnNetworkInitialized_Implementation(bool succeed);
 	UFUNCTION()
 	void OnConnected_Implementation();
@@ -289,6 +294,7 @@ protected:
 	void OnStartGame_Implementation();
 	UFUNCTION()
 	void OnUpdatePosition_Implementation(int32 id, float x, float y, float z);
+
 	void RouteEvents(const std::byte* packet_buffer, EPacketProtocol protocol, int16 packet_size);
 #pragma endregion
 

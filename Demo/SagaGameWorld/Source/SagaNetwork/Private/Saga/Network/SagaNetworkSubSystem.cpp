@@ -72,19 +72,16 @@ USagaNetworkSubSystem::Deinitialize()
 	{
 		if (IsSocketAvailable())
 		{
-			UE_LOG(LogSagaNetwork, Warning, TEXT("Closing network system..."));
-			//clientSocket->Shutdown(ESocketShutdownMode::ReadWrite);
-
-			std::exchange(clientSocket, nullptr)->Close();
+			Close();
 		}
 		else
 		{
-			UE_LOG(LogSagaNetwork, Warning, TEXT("The network system has been destroyed."));
+			UE_LOG(LogSagaNetwork, Warning, TEXT("The network subsystem has been destroyed."));
 		}
 	}
 	else
 	{
-		UE_LOG(LogSagaNetwork, Warning, TEXT("The network system has been destroyed. (Offline Mode)"));
+		UE_LOG(LogSagaNetwork, Warning, TEXT("The network subsystem has been destroyed. (Offline Mode)"));
 	}
 }
 
@@ -133,11 +130,11 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 		{
 			if (InitializeNetwork_Implementation())
 			{
-				UE_LOG(LogSagaNetwork, Warning, TEXT("The network system was not initialized."));
+				UE_LOG(LogSagaNetwork, Warning, TEXT("The network subsystem was not initialized."));
 			}
 			else
 			{
-				UE_LOG(LogSagaNetwork, Error, TEXT("Could not initialize network system."));
+				UE_LOG(LogSagaNetwork, Error, TEXT("Could not initialize network subsystem."));
 				return false;
 			}
 		}
@@ -165,6 +162,37 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 	}
 	else
 	{
+		return true;
+	}
+}
+
+bool
+USagaNetworkSubSystem::Close()
+{
+	if constexpr (not saga::IsOfflineMode)
+	{
+		if (not IsSocketAvailable())
+		{
+			UE_LOG(LogSagaNetwork, Warning, TEXT("The socket of client is null."));
+			return true;
+		}
+		else if (not IsConnected())
+		{
+			clientSocket = nullptr;
+
+			UE_LOG(LogSagaNetwork, Warning, TEXT("The network subsystem had been closed."));
+			return true;
+		}
+		else
+		{
+			UE_LOG(LogSagaNetwork, Warning, TEXT("Closing the network subsystem..."));
+
+			return CloseNetwork_Implementation();
+		}
+	}
+	else
+	{
+		UE_LOG(LogSagaNetwork, Warning, TEXT("Closing the network subsystem... (Offline Mode)"));
 		return true;
 	}
 }
@@ -827,6 +855,13 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 	}
 
 	return ESagaConnectionContract::Success;
+}
+
+bool USagaNetworkSubSystem::CloseNetwork_Implementation()
+{
+	clientSocket->Shutdown(ESocketShutdownMode::ReadWrite);
+
+	return CloseNetwork_Implementation(); std::exchange(clientSocket, nullptr)->Close();
 }
 
 void
