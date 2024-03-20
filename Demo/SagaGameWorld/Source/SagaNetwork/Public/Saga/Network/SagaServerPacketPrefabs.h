@@ -19,7 +19,7 @@ namespace saga::datagrams
 	{
 		static inline constexpr size_t nameLength = 16;
 
-		std::int32_t id;
+		int32 id;
 		wchar_t title[nameLength];
 		size_t members;
 	};
@@ -27,7 +27,7 @@ namespace saga::datagrams
 	{
 		static inline constexpr size_t nameLength = 16;
 
-		std::int32_t id;
+		int32 id;
 		wchar_t nickname[nameLength];
 	};
 }
@@ -67,7 +67,7 @@ namespace saga::inline sc
 		{
 		}
 
-		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t* begin, const wchar_t* end)
+		explicit constexpr SC_RpcPacket(int32 id, const wchar_t* begin, const wchar_t* end)
 			noexcept
 			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
 			, clientId(id), rpcScript()
@@ -76,7 +76,7 @@ namespace saga::inline sc
 			std::copy(begin, end, rpcScript);
 		}
 
-		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t* nts, const size_t length)
+		explicit constexpr SC_RpcPacket(int32 id, const wchar_t* nts, const size_t length)
 			noexcept
 			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
 			, clientId(id), rpcScript()
@@ -86,7 +86,7 @@ namespace saga::inline sc
 		}
 
 		template<size_t Length>
-		explicit constexpr SC_RpcPacket(std::int32_t id, const wchar_t(&str)[Length])
+		explicit constexpr SC_RpcPacket(int32 id, const wchar_t(&str)[Length])
 			noexcept
 			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
 			, clientId(id), rpcScript()
@@ -96,7 +96,7 @@ namespace saga::inline sc
 		}
 
 		template<size_t Length>
-		explicit constexpr SC_RpcPacket(std::int32_t id, wchar_t(&& str)[Length])
+		explicit constexpr SC_RpcPacket(int32 id, wchar_t(&& str)[Length])
 			noexcept
 			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
 			, clientId(id), rpcScript()
@@ -108,7 +108,7 @@ namespace saga::inline sc
 		MAKE_SERIALIZE_METHOD();
 		MAKE_RW_METHODS();
 
-		std::int32_t clientId;
+		int32 clientId;
 		wchar_t rpcScript[msgLength];
 		long long rpcArgument;
 	};
@@ -127,7 +127,7 @@ namespace saga::inline sc
 	/// </summary>
 	/// <param name="errCause">- Cause of the failure</param>
 	/// <remarks>Server would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_1VAR(SC_FailedGameStartingPacket, EPacketProtocol::SC_FAILED_GAME_START, int, errCause, error, true);
+	MAKE_EMPTY_PACKET_1VAR(SC_FailedGameStartingPacket, EPacketProtocol::SC_FAILED_GAME_START, int32, errCause, error, true);
 	/// <summary>
 	/// Creating a client packet for server
 	/// </summary>
@@ -221,12 +221,12 @@ namespace saga::inline sc
 		}
 
 		constexpr SC_RespondRoomsPacket() noexcept
-			: Super(EPacketProtocol::SC_RESPOND_ROOMS, static_cast<std::int16_t>(SignedWannabeSize()))
+			: Super(EPacketProtocol::SC_RESPOND_ROOMS, static_cast<int16>(SignedWannabeSize()))
 			, serializedRooms()
 		{
 		}
 
-		constexpr void AddMember(std::int32_t room_id, std::wstring_view title, size_t members_count)
+		constexpr void AddMember(int32 room_id, std::wstring_view title, size_t members_count)
 		{
 			datagrams::SerializedRoom room{ room_id };
 
@@ -240,7 +240,7 @@ namespace saga::inline sc
 			room.members = members_count;
 
 			serializedRooms.emplace_back(std::move(room));
-			mySize = static_cast<std::int16_t>(WannabeSize());
+			mySize = static_cast<int16>(WannabeSize());
 		}
 
 		MAKE_SERIALIZE_METHOD();
@@ -276,12 +276,12 @@ namespace saga::inline sc
 		}
 
 		constexpr SC_RespondMembersPacket() noexcept
-			: Super(EPacketProtocol::SC_RESPOND_USERS, static_cast<std::int16_t>(SignedWannabeSize()))
+			: Super(EPacketProtocol::SC_RESPOND_USERS, static_cast<int16>(SignedWannabeSize()))
 			, serializedMembers()
 		{
 		}
 
-		constexpr void AddMember(std::int32_t id, std::wstring_view name)
+		constexpr void AddMember(int32 id, std::wstring_view name)
 		{
 			datagrams::SerializedMember member{ id };
 
@@ -294,7 +294,7 @@ namespace saga::inline sc
 			}
 
 			serializedMembers.emplace_back(std::move(member));
-			mySize = static_cast<std::int16_t>(WannabeSize());
+			mySize = static_cast<int16>(WannabeSize());
 		}
 
 		MAKE_SERIALIZE_METHOD();
@@ -307,7 +307,7 @@ namespace saga::inline sc
 	/// </summary>
 	/// <param name="roomId">- An id of the created room</param>
 	/// <remarks>Server would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_1VAR(SC_RoomCreatedPacket, EPacketProtocol::SC_ROOM_CREATED, std::int32_t, roomId, room_id, true);
+	MAKE_EMPTY_PACKET_1VAR(SC_RoomCreatedPacket, EPacketProtocol::SC_ROOM_CREATED, int32, roomId, room_id, true);
 	/// <summary>
 	/// Failed to join to a room packet for server
 	/// </summary>
@@ -320,7 +320,7 @@ namespace saga::inline sc
 	/// <param name="clientId">- An id of client</param>
 	/// <param name="roomId">- An id of the room</param>
 	/// <remarks>Server would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT(SC_RoomJoinedPacket, EPacketProtocol::SC_ROOM_JOINED, std::int32_t, clientId, user_id, -1, std::int32_t, roomId, room_id, -1);
+	MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT(SC_RoomJoinedPacket, EPacketProtocol::SC_ROOM_JOINED, int32, clientId, user_id, -1, int32, roomId, room_id, -1);
 	/// <summary>
 	/// Failed to join to a room packet for server
 	/// </summary>
@@ -332,7 +332,7 @@ namespace saga::inline sc
 	/// </summary>
 	/// <param name="clientId">- An id of client</param>
 	/// <remarks>Server would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(SC_RoomLeftPacket, EPacketProtocol::SC_ROOM_LEFT, std::int32_t, clientId, user_id, -1);
+	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(SC_RoomLeftPacket, EPacketProtocol::SC_ROOM_LEFT, int32, clientId, user_id, -1);
 	/// <summary>
 	/// Creating a client packet for server
 	/// </summary>
@@ -362,7 +362,7 @@ namespace saga::inline sc
 		{
 		}
 
-		constexpr SC_CreatePlayerPacket(std::int32_t id) noexcept
+		constexpr SC_CreatePlayerPacket(int32 id) noexcept
 			: Super(EPacketProtocol::SC_CREATE_PLAYER, SignedWannabeSize())
 			, clientId(id), userName()
 		{
@@ -371,7 +371,7 @@ namespace saga::inline sc
 		MAKE_SERIALIZE_METHOD();
 		MAKE_RW_METHODS();
 
-		std::int32_t clientId;
+		int32 clientId;
 		wchar_t userName[nickNameLength];
 	};
 	/// <summary>
@@ -379,13 +379,13 @@ namespace saga::inline sc
 	/// </summary>
 	/// <param name="clientId">- An id of client</param>
 	/// <remarks>Server would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_1VAR(SC_DestroyPlayerPacket, EPacketProtocol::SC_REMOVE_PLAYER, std::int32_t, clientId, user_id, true);
+	MAKE_EMPTY_PACKET_1VAR(SC_DestroyPlayerPacket, EPacketProtocol::SC_REMOVE_PLAYER, int32, clientId, user_id, true);
 	/// <summary>
 	/// Assigning ID to client packet for server
 	/// </summary>
 	/// <param name="clientId">- An id of client</param>
 	/// <remarks>Server would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(SC_SucceedSignInPacket, EPacketProtocol::SC_SIGNIN_SUCCESS, std::int32_t, clientId, user_id, -1);
+	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(SC_SucceedSignInPacket, EPacketProtocol::SC_SIGNIN_SUCCESS, int32, clientId, user_id, -1);
 	/// <summary>
 	/// Assigning ID to client packet for server
 	/// </summary>
@@ -407,7 +407,7 @@ namespace saga::inline sc
 		[[nodiscard]]
 		static consteval size_t WannabeSize() noexcept
 		{
-			return Super::MinSize() + sizeof(int) + sizeof(float) * 3;
+			return Super::MinSize() + sizeof(int32) + sizeof(float) * 3;
 		}
 
 		[[nodiscard]]
@@ -421,7 +421,7 @@ namespace saga::inline sc
 		{
 		}
 
-		constexpr SC_UpdatePositionPacket(std::int32_t id, float px, float py, float pz) noexcept
+		constexpr SC_UpdatePositionPacket(int32 id, float px, float py, float pz) noexcept
 			: Super(EPacketProtocol::SC_MOVE_CHARACTER, SignedWannabeSize())
 			, clientId(id), x(px), y(py), z(pz)
 		{
@@ -430,7 +430,7 @@ namespace saga::inline sc
 		MAKE_SERIALIZE_METHOD();
 		MAKE_RW_METHODS();
 
-		std::int32_t clientId;
+		int32 clientId;
 		float x, y, z;
 	};
 }
