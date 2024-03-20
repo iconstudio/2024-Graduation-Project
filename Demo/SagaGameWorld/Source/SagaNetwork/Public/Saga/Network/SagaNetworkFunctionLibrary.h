@@ -4,7 +4,7 @@
 
 #include "SagaNetworkFunctionLibrary.generated.h"
 
-UCLASS()
+UCLASS(Category = "CandyLandSaga|Network")
 class SAGANETWORK_API USagaNetworkFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
