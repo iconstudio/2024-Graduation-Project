@@ -25,6 +25,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnRespondVersion, const FS
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateRoomList, const TArray<FSagaVirtualRoom>&, list);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateUserList, const TArray<FSagaVirtualUser>&, list);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnGetPreparedGame);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnStartGame);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSagaEventOnUpdatePosition, int32, id, float, x, float, y, float, z);
 
 class SAGANETWORK_API FSagaNetworkWorker final : public FRunnable, public FNoncopyable
@@ -182,6 +185,10 @@ public:
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnUpdateMembers(UPARAM(ref) const TArray<FSagaVirtualUser>& list) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnGetPreparedGame() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnStartGame() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnUpdatePosition(int32 user_id, float x, float y, float z) const;
 #pragma endregion
 
@@ -229,6 +236,11 @@ public:
 	FSagaEventOnUpdateUserList OnUpdateMembers;
 
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
+	FSagaEventOnGetPreparedGame OnGetPreparedGame;
+	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
+	FSagaEventOnStartGame OnStartGame;
+
+	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnUpdatePosition OnUpdatePosition;
 #pragma endregion
 
@@ -264,6 +276,10 @@ protected:
 	void OnUpdateRoomList_Implementation(UPARAM(ref) const TArray<FSagaVirtualRoom>& list);
 	UFUNCTION()
 	void OnUpdateMembers_Implementation(UPARAM(ref) const TArray<FSagaVirtualUser>& list);
+	UFUNCTION()
+	void OnGetPreparedGame_Implementation();
+	UFUNCTION()
+	void OnStartGame_Implementation();
 	UFUNCTION()
 	void OnUpdatePosition_Implementation(int32 id, float x, float y, float z);
 	void RouteEvents(const std::byte* packet_buffer, EPacketProtocol protocol, int16 packet_size);
