@@ -41,19 +41,12 @@ const noexcept
 
 void ASagaLevelScripterBase::TransitionLevel(FName level_name)
 {
-	if (IsInGameThread())
-	{
-		UGameplayStatics::OpenLevel(this, level_name);
-	}
-	else
-	{
-		AsyncTask(ENamedThreads::GameThread
-			, [this, level_name]()
-			{
-				UGameplayStatics::OpenLevel(this, level_name);
-			}
-		);
-	}
+	AsyncTask(ENamedThreads::GameThread
+		, [this, level_name]()
+		{
+			UGameplayStatics::OpenLevel(this, level_name);
+		}
+	);
 }
 
 void ASagaLevelScripterBase::SetPrevLevelName(FName level_name)
