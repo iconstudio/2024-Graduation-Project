@@ -343,20 +343,6 @@ noexcept
 	wasRoomsUpdated = true;
 }
 
-const TArray<FSagaVirtualUser>&
-USagaNetworkSubSystem::GetUserList()
-const noexcept
-{
-	return everyUsers;
-}
-
-const TArray<FSagaVirtualRoom>&
-USagaNetworkSubSystem::GetRoomList()
-const noexcept
-{
-	return everyRooms;
-}
-
 bool
 USagaNetworkSubSystem::HasUser(int32 id)
 const noexcept
@@ -369,6 +355,20 @@ USagaNetworkSubSystem::HasRoom(int32 id)
 const noexcept
 {
 	return everyRooms.ContainsByPredicate(FSagaSessionIdComparator{ id });
+}
+
+const TArray<FSagaVirtualUser>&
+USagaNetworkSubSystem::GetUserList()
+const noexcept
+{
+	return everyUsers;
+}
+
+const TArray<FSagaVirtualRoom>&
+USagaNetworkSubSystem::GetRoomList()
+const noexcept
+{
+	return everyRooms;
 }
 
 int32
