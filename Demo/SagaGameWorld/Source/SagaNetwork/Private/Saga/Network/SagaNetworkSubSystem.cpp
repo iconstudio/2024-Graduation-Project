@@ -46,6 +46,8 @@ USagaNetworkSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 	OnRespondVersion.AddDynamic(this, &USagaNetworkSubSystem::OnRespondVersion_Implementation);
 	OnUpdateRoomList.AddDynamic(this, &USagaNetworkSubSystem::OnUpdateRoomList_Implementation);
 	OnUpdateMembers.AddDynamic(this, &USagaNetworkSubSystem::OnUpdateMembers_Implementation);
+	OnGetPreparedGame.AddDynamic(this, &USagaNetworkSubSystem::OnGetPreparedGame_Implementation);
+	OnStartGame.AddDynamic(this, &USagaNetworkSubSystem::OnStartGame_Implementation);
 	OnUpdatePosition.AddDynamic(this, &USagaNetworkSubSystem::OnUpdatePosition_Implementation);
 
 	everyUsers.Reserve(100);
