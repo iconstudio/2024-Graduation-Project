@@ -1,6 +1,9 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "Tasks/Task.h"
+#include "HAL/Runnable.h"
+#include "HAL/RunnableThread.h"
 
 #include "Saga/Network/SagaPacketProtocol.h"
 #include "Saga/Network/SagaConnectionContract.h"
@@ -24,6 +27,24 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateUserList, const TA
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSagaEventOnUpdatePosition, int32, id, float, x, float, y, float, z);
 
+class SAGANETWORK_API FSagaNetworkWorker final : public FRunnable
+{
+public:
+	FSagaNetworkWorker(TObjectPtr<USagaNetworkSubSystem> instance);
+	~FSagaNetworkWorker();
+
+	virtual bool Init() override;
+	virtual uint32 Run() override;
+	virtual void Exit() override;
+	virtual void Stop() override;
+
+private:
+	void RouteEvents(const std::byte* packet_buffer, EPacketProtocol protocol, int16 packet_size);
+
+	FRunnableThread* MyThread;
+	TObjectPtr<USagaNetworkSubSystem> SubSystemInstance;
+};
+
 UCLASS(BlueprintType, Blueprintable, Category = "CandyLandSaga|Network")
 class SAGANETWORK_API USagaNetworkSubSystem : public UGameInstanceSubsystem
 {
@@ -32,16 +53,15 @@ class SAGANETWORK_API USagaNetworkSubSystem : public UGameInstanceSubsystem
 public:
 	USagaNetworkSubSystem();
 
-	virtual bool ShouldCreateSubsystem(UObject* Outer) const { return true; }
+	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
+
+	virtual bool ShouldCreateSubsystem(UObject* Outer) const override { return true; }
 
 	/* State Machines */
 #pragma region =========================
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	bool Awake();
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	bool Start(const FString& nickname);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	bool Destroy();
 #pragma endregion
 
 	/* General Methods */
@@ -171,13 +191,13 @@ public:
 
 	/* Local Properties */
 #pragma region =========================
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
 	int32 localUserId;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
 	FString localUserName;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
 	int32 currentRoomId;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CandyLandSaga|Network")
 	FString currentRoomTitle;
 #pragma endregion
 
@@ -213,6 +233,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnUpdatePosition OnUpdatePosition;
 #pragma endregion
+
+	static TQueue<UE::Tasks::TTask<int32>> taskQueue;
+	FGraphEventArray TaskCompletionEvents;
 
 protected:
 	/* Internal Functions */

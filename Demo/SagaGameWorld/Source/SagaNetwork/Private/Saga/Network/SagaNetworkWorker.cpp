@@ -101,6 +101,7 @@ FSagaNetworkWorker::Run()
 				}
 				else
 				{
+					UE_LOG(LogNet, Log, TEXT("A receive phase is done"));
 					break; // while (true) #2
 				}
 			} // while (true) #2
@@ -133,12 +134,13 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		UE_LOG(LogNet, Log, TEXT("Local client's id is %d"), my_id);
 
-		SubSystemInstance->CallFunctionOnGameThread([this, my_id]()
+		AsyncTask(ENamedThreads::GameThread
+			, [this, my_id]()
 			{
 				SubSystemInstance->SetLocalUserId(my_id);
-				SubSystemInstance->BroadcastOnConnected();
 			}
 		);
+		SubSystemInstance->BroadcastOnConnected();
 	}
 	break;
 
@@ -149,10 +151,10 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		UE_LOG(LogNet, Log, TEXT("Local client can't get an id from server due to %d"), error);
 
-		SubSystemInstance->CallFunctionOnGameThread([this]()
+		AsyncTask(ENamedThreads::GameThread, [this]()
 			{
-				SubSystemInstance->SetLocalUserId(-1);
 				SubSystemInstance->BroadcastOnFailedToConnect(ESagaConnectionContract::SignInFailed);
+				SubSystemInstance->SetLocalUserId(-1);
 			}
 		);
 	}
@@ -165,12 +167,12 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		UE_LOG(LogNet, Log, TEXT("A room %d is created"), room_id);
 
-		SubSystemInstance->CallFunctionOnGameThread([this, room_id]()
+		AsyncTask(ENamedThreads::GameThread, [this, room_id]()
 			{
-				SubSystemInstance->SetCurrentRoomId(room_id);
 				SubSystemInstance->BroadcastOnRoomCreated(room_id);
 			}
 		);
+		SubSystemInstance->SetCurrentRoomId(room_id);
 	}
 	break;
 
@@ -194,23 +196,23 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		{
 			UE_LOG(LogNet, Log, TEXT("Local client has joined to the room %d"), room_id);
 
-			SubSystemInstance->CallFunctionOnGameThread([this, room_id, newbie_id]()
+			AsyncTask(ENamedThreads::GameThread, [this, room_id, newbie_id]()
 				{
 					SubSystemInstance->SetCurrentRoomId(room_id);
-					SubSystemInstance->BroadcastOnJoinedRoom(newbie_id);
 				}
 			);
+			SubSystemInstance->BroadcastOnJoinedRoom(newbie_id);
 		}
 		else
 		{
 			UE_LOG(LogNet, Log, TEXT("Client %d has joined to the room %d"), newbie_id, room_id);
 
-			SubSystemInstance->CallFunctionOnGameThread([this, newbie_id]()
+			AsyncTask(ENamedThreads::GameThread, [this, newbie_id]()
 				{
 					SubSystemInstance->AddUser(FSagaVirtualUser{ newbie_id, TEXT("Member") });
-					SubSystemInstance->BroadcastOnJoinedRoom(newbie_id);
 				}
 			);
+			SubSystemInstance->BroadcastOnJoinedRoom(newbie_id);
 		}
 	}
 	break;
@@ -234,24 +236,24 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		{
 			UE_LOG(LogNet, Log, TEXT("Local client has been left from room"));
 
-			SubSystemInstance->CallFunctionOnGameThread([this]()
+			AsyncTask(ENamedThreads::GameThread, [this]()
 				{
 					SubSystemInstance->SetCurrentRoomId(-1);
 					SubSystemInstance->ClearUserList();
-					SubSystemInstance->BroadcastOnLeftRoomBySelf();
 				}
 			);
+			SubSystemInstance->BroadcastOnLeftRoomBySelf();
 		}
 		else
 		{
 			UE_LOG(LogNet, Log, TEXT("Remote client %d has been left from room"), left_client_id);
 
-			SubSystemInstance->CallFunctionOnGameThread([this, left_client_id]()
+			AsyncTask(ENamedThreads::GameThread, [this, left_client_id]()
 				{
 					SubSystemInstance->RemoveUser(left_client_id);
-					SubSystemInstance->BroadcastOnLeftRoom(left_client_id);
 				}
 			);
+			SubSystemInstance->BroadcastOnLeftRoom(left_client_id);
 		}
 	}
 	break;
@@ -264,11 +266,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		UE_LOG(LogNet, Log, TEXT("Version: %s"), version_string);
 
-		SubSystemInstance->CallFunctionOnGameThread([this, version_string]()
-			{
-				SubSystemInstance->BroadcastOnRespondVersion(version_string);
-			}
-		);
+		SubSystemInstance->BroadcastOnRespondVersion(version_string);
 	}
 	break;
 
@@ -280,7 +278,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		UE_LOG(LogNet, Log, TEXT("Rooms: %d"), rooms.size());
 
-		SubSystemInstance->CallFunctionOnGameThread([this, tr_rooms = std::move(rooms)]()
+		AsyncTask(ENamedThreads::GameThread, [this, tr_rooms = std::move(rooms)]()
 			{
 				SubSystemInstance->ClearRoomList();
 				for (auto& room : tr_rooms)
@@ -291,10 +289,10 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 						});
 					UE_LOG(LogNet, Log, TEXT("Room (%d): %s (%d/4)"), room.id, room.title, room.members);
 				}
-
-				SubSystemInstance->BroadcastOnUpdateRoomList(SubSystemInstance->GetRoomList());
 			}
 		);
+
+		SubSystemInstance->BroadcastOnUpdateRoomList(SubSystemInstance->everyRooms);
 	}
 	break;
 
@@ -306,7 +304,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		UE_LOG(LogNet, Log, TEXT("Members: %d"), users.size());
 
-		SubSystemInstance->CallFunctionOnGameThread([this, tr_users = std::move(users)]()
+		AsyncTask(ENamedThreads::GameThread, [this, tr_users = std::move(users)]()
 			{
 				SubSystemInstance->ClearUserList();
 				for (auto& user : tr_users)
@@ -318,10 +316,10 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 					UE_LOG(LogNet, Log, TEXT("User (%d): %s"), user.id, user.nickname);
 				}
-
-				SubSystemInstance->BroadcastOnUpdateMembers(SubSystemInstance->GetUserList());
 			}
 		);
+
+		SubSystemInstance->BroadcastOnUpdateMembers(SubSystemInstance->everyUsers);
 	}
 	break;
 
@@ -359,7 +357,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		UE_LOG(LogNet, Log, TEXT("A client %d is created"), pk.clientId);
 
-		SubSystemInstance->CallFunctionOnGameThread([this, pk]()
+		AsyncTask(ENamedThreads::GameThread, [this, pk]()
 			{
 			}
 		);
@@ -373,7 +371,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		UE_LOG(LogNet, Log, TEXT("A client %d is destroyed(disconnected)"), pk.clientId);
 
-		SubSystemInstance->CallFunctionOnGameThread([this, pk]()
+		AsyncTask(ENamedThreads::GameThread, [this, pk]()
 			{
 			}
 		);
@@ -390,11 +388,11 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		UE_LOG(LogNet, Log, TEXT("Client id %d: pos(%f,%f,%f)"), client_id, x, y, z);
 		UE_LOG(LogNet, Log, TEXT("Client id pos"));
 
-		SubSystemInstance->CallFunctionOnGameThread([this, client_id, x, y, z]()
+		AsyncTask(ENamedThreads::GameThread, [this, client_id, x, y, z]()
 			{
-				SubSystemInstance->BroadcastOnUpdatePosition(client_id, x, y, z);
 			}
 		);
+		SubSystemInstance->BroadcastOnUpdatePosition(client_id, x, y, z);
 	}
 	break;
 

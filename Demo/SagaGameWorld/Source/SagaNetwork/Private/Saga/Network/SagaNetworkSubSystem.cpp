@@ -1,6 +1,7 @@
 #include "Saga/Network/SagaNetworkSubSystem.h"
 #include "UObject/Object.h"
 #include "Kismet/GameplayStatics.h"
+#include "Containers/Queue.h"
 #include "Delegates/Delegate.h"
 #include "Delegates/DelegateInstanceInterface.h"
 #include "Async/Async.h"
@@ -11,6 +12,8 @@
 #include "Saga/Network/SagaNetworkUtility.h"
 #include "Saga/Network/SagaPacketSenders.h"
 
+TQueue<UE::Tasks::TTask<int32>> USagaNetworkSubSystem::taskQueue{};
+
 USagaNetworkSubSystem::USagaNetworkSubSystem()
 	: UGameInstanceSubsystem()
 	, localUserId(-1), localUserName(), currentRoomId(), currentRoomTitle()
@@ -20,11 +23,11 @@ USagaNetworkSubSystem::USagaNetworkSubSystem()
 	, OnUpdatePosition()
 {}
 
-[[nodiscard]] TSharedRef<FInternetAddr> CreateRemoteEndPoint();
-
-bool
-USagaNetworkSubSystem::Awake()
+void
+USagaNetworkSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 {
+	Super::Initialize(Collection);
+
 	OnNetworkInitialized.AddDynamic(this, &USagaNetworkSubSystem::OnNetworkInitialized_Implementation);
 	OnConnected.AddDynamic(this, &USagaNetworkSubSystem::OnConnected_Implementation);
 	OnFailedToConnect.AddDynamic(this, &USagaNetworkSubSystem::OnFailedToConnect_Implementation);
@@ -43,19 +46,42 @@ USagaNetworkSubSystem::Awake()
 
 	if (InitializeNetwork_Implementation())
 	{
-		UE_LOG(LogNet, Log, TEXT("The network system is initialized."));
+		UE_LOG(LogNet, Log, TEXT("The network subsystem is initialized."));
 		BroadcastOnNetworkInitialized();
-
-		return true;
 	}
 	else
 	{
-		UE_LOG(LogNet, Error, TEXT("Cannot initialize the network system."));
+		UE_LOG(LogNet, Error, TEXT("Cannot initialize the network subsystem."));
 		BroadcastOnFailedToInitializeNetwork();
-
-		return false;
 	}
 }
+
+void
+USagaNetworkSubSystem::Deinitialize()
+{
+	Super::Deinitialize();
+
+	if constexpr (not saga::IsOfflineMode)
+	{
+		if (IsSocketAvailable())
+		{
+			UE_LOG(LogNet, Warning, TEXT("Closing network system..."));
+			//clientSocket->Shutdown(ESocketShutdownMode::ReadWrite);
+
+			std::exchange(clientSocket, nullptr)->Close();
+		}
+		else
+		{
+			UE_LOG(LogNet, Warning, TEXT("The network system has been destroyed."));
+		}
+	}
+	else
+	{
+		UE_LOG(LogNet, Warning, TEXT("The network system has been destroyed. (Offline Mode)"));
+	}
+}
+
+[[nodiscard]] TSharedRef<FInternetAddr> CreateRemoteEndPoint();
 
 bool
 USagaNetworkSubSystem::Start(const FString& nickname)
@@ -64,7 +90,7 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 	{
 		if (not IsSocketAvailable())
 		{
-			if (Awake())
+			if (InitializeNetwork_Implementation())
 			{
 				UE_LOG(LogNet, Warning, TEXT("The network system was not initialized."));
 			}
@@ -102,31 +128,6 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 	}
 }
 
-bool
-USagaNetworkSubSystem::Destroy()
-{
-	if constexpr (not saga::IsOfflineMode)
-	{
-		if (IsSocketAvailable())
-		{
-			UE_LOG(LogNet, Warning, TEXT("Closing network system..."));
-			//clientSocket->Shutdown(ESocketShutdownMode::ReadWrite);
-
-			return std::exchange(clientSocket, nullptr)->Close();
-		}
-		else
-		{
-			UE_LOG(LogNet, Warning, TEXT("The network system has been destroyed."));
-			return true;
-		}
-	}
-	else
-	{
-		UE_LOG(LogNet, Warning, TEXT("The network system has been destroyed. (Offline Mode)"));
-		return true;
-	}
-}
-
 void
 USagaNetworkSubSystem::CallFunctionOnGameThread(TUniqueFunction<void()> function)
 {
@@ -134,7 +135,7 @@ USagaNetworkSubSystem::CallFunctionOnGameThread(TUniqueFunction<void()> function
 	FGraphEventRef Task = FFunctionGraphTask::CreateAndDispatchWhenReady(MoveTemp(function), TStatId(), nullptr, ENamedThreads::GameThread);
 	*/
 
-	AsyncTask(ENamedThreads::GameThread_Local, MoveTemp(function));
+	AsyncTask(ENamedThreads::GameThread, MoveTemp(function));
 }
 
 void
@@ -596,6 +597,11 @@ USagaNetworkSubSystem::TryLoginToServer(const FString& nickname)
 	if (Start(nickname))
 	{
 		UE_LOG(LogNet, Log, TEXT("The network subsystem is started."));
+		return true;
+	}
+	else if (IsConnected())
+	{
+		UE_LOG(LogNet, Warning, TEXT("The network subsystem had been started."));
 		return true;
 	}
 	else
