@@ -1,6 +1,4 @@
 #pragma once
-#include "CoreMinimal.h"
-
 #include "Saga/Network/SagaVirtualSession.h"
 #include "SagaVirtualUser.generated.h"
 

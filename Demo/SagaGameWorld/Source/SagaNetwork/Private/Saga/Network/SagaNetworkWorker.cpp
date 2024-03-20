@@ -29,7 +29,7 @@ FSagaNetworkWorker::~FSagaNetworkWorker()
 bool
 FSagaNetworkWorker::Init()
 {
-	UE_LOG(LogNet, Display, TEXT("Worker has been initialized"));
+	UE_LOG(LogSagaNetwork, Display, TEXT("Worker has been initialized"));
 
 	return (MyThread != nullptr);
 }
@@ -50,7 +50,7 @@ FSagaNetworkWorker::Run()
 		std::memset(recv_buffer + recv_bytes, 0, memsz);
 
 		recv_bytes -= packet_size;
-		UE_LOG(LogNet, Log, TEXT("Remained receive bytes are %d"), recv_bytes);
+		UE_LOG(LogSagaNetwork, Log, TEXT("Remained receive bytes are %d"), recv_bytes);
 		};
 
 	while (true)
@@ -65,12 +65,12 @@ FSagaNetworkWorker::Run()
 				, MaxReceiveSize - recv_bytes
 				, temp_recv_bytes))
 			{
-				UE_LOG(LogNet, Error, TEXT("Receiving has been failed!"));
+				UE_LOG(LogSagaNetwork, Error, TEXT("Receiving has been failed!"));
 				return 1;
 			}
 			else if (temp_recv_bytes <= 0)
 			{
-				UE_LOG(LogNet, Error, TEXT("Received 0 byte!"));
+				UE_LOG(LogSagaNetwork, Error, TEXT("Received 0 byte!"));
 				return 2;
 			}
 
@@ -84,24 +84,24 @@ FSagaNetworkWorker::Run()
 
 				if (basic_pk.mySize <= 0)
 				{
-					UE_LOG(LogNet, Error, TEXT("Packet's size was zero!"));
+					UE_LOG(LogSagaNetwork, Error, TEXT("Packet's size was zero!"));
 					return 3;
 				}
 
 				if (recv_bytes <= basic_pk.mySize)
 				{
 					auto ename = UEnum::GetValueAsString(basic_pk.myProtocol);
-					UE_LOG(LogNet, Log, TEXT("Received a packet (%s)"), *ename);
+					UE_LOG(LogSagaNetwork, Log, TEXT("Received a packet (%s)"), *ename);
 
 					RouteEvents(alt_buffer, basic_pk.myProtocol, basic_pk.mySize);
 
-					UE_LOG(LogNet, Log, TEXT("Packet's size was %d"), basic_pk.mySize);
+					UE_LOG(LogSagaNetwork, Log, TEXT("Packet's size was %d"), basic_pk.mySize);
 
 					PullReceiveBuffer(basic_pk.mySize);
 				}
 				else
 				{
-					UE_LOG(LogNet, Log, TEXT("A receive phase is done"));
+					UE_LOG(LogSagaNetwork, Log, TEXT("A receive phase is done"));
 					break; // while (true) #2
 				}
 			} // while (true) #2
@@ -132,7 +132,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		int32 my_id{};
 		saga::ReceiveSignInSucceedPacket(packet_buffer, my_id);
 
-		UE_LOG(LogNet, Log, TEXT("Local client's id is %d"), my_id);
+		UE_LOG(LogSagaNetwork, Log, TEXT("Local client's id is %d"), my_id);
 
 		AsyncTask(ENamedThreads::GameThread
 			, [this, my_id]()
@@ -149,7 +149,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		int32 error{};
 		saga::ReceiveSignInFailurePacket(packet_buffer, error);
 
-		UE_LOG(LogNet, Log, TEXT("Local client can't get an id from server due to %d"), error);
+		UE_LOG(LogSagaNetwork, Log, TEXT("Local client can't get an id from server due to %d"), error);
 
 		AsyncTask(ENamedThreads::GameThread, [this]()
 			{
@@ -165,7 +165,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		int32 room_id{};
 		saga::ReceiveRoomCreatedPacket(packet_buffer, room_id);
 
-		UE_LOG(LogNet, Log, TEXT("A room %d is created"), room_id);
+		UE_LOG(LogSagaNetwork, Log, TEXT("A room %d is created"), room_id);
 
 		AsyncTask(ENamedThreads::GameThread, [this, room_id]()
 			{
@@ -182,7 +182,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		saga::ReceiveRoomCreationFailedPacket(packet_buffer, error);
 
 		const auto msg = std::to_wstring(error);
-		UE_LOG(LogNet, Log, TEXT("Could not create a room due to %d"), msg.data());
+		UE_LOG(LogSagaNetwork, Log, TEXT("Could not create a room due to %d"), msg.data());
 	}
 	break;
 
@@ -194,7 +194,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		if (newbie_id == SubSystemInstance->GetLocalUserId())
 		{
-			UE_LOG(LogNet, Log, TEXT("Local client has joined to the room %d"), room_id);
+			UE_LOG(LogSagaNetwork, Log, TEXT("Local client has joined to the room %d"), room_id);
 
 			AsyncTask(ENamedThreads::GameThread, [this, room_id, newbie_id]()
 				{
@@ -205,7 +205,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		}
 		else
 		{
-			UE_LOG(LogNet, Log, TEXT("Client %d has joined to the room %d"), newbie_id, room_id);
+			UE_LOG(LogSagaNetwork, Log, TEXT("Client %d has joined to the room %d"), newbie_id, room_id);
 
 			AsyncTask(ENamedThreads::GameThread, [this, newbie_id]()
 				{
@@ -223,7 +223,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		saga::ReceiveRoomJoinFailedPacket(packet_buffer, error);
 
 		const auto msg = std::to_wstring(error);
-		UE_LOG(LogNet, Log, TEXT("Failed to join to a room due to %s"), msg.data());
+		UE_LOG(LogSagaNetwork, Log, TEXT("Failed to join to a room due to %s"), msg.data());
 	}
 	break;
 
@@ -234,7 +234,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		if (left_client_id == SubSystemInstance->GetLocalUserId())
 		{
-			UE_LOG(LogNet, Log, TEXT("Local client has been left from room"));
+			UE_LOG(LogSagaNetwork, Log, TEXT("Local client has been left from room"));
 
 			AsyncTask(ENamedThreads::GameThread, [this]()
 				{
@@ -246,7 +246,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		}
 		else
 		{
-			UE_LOG(LogNet, Log, TEXT("Remote client %d has been left from room"), left_client_id);
+			UE_LOG(LogSagaNetwork, Log, TEXT("Remote client %d has been left from room"), left_client_id);
 
 			AsyncTask(ENamedThreads::GameThread, [this, left_client_id]()
 				{
@@ -264,7 +264,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		saga::ReceiveRespondVersionPacket(packet_buffer, version_string, 16);
 
-		UE_LOG(LogNet, Log, TEXT("Version: %s"), version_string);
+		UE_LOG(LogSagaNetwork, Log, TEXT("Version: %s"), version_string);
 
 		SubSystemInstance->BroadcastOnRespondVersion(version_string);
 	}
@@ -276,7 +276,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		saga::ReceiveRespondRoomsPacket(packet_buffer, rooms);
 
-		UE_LOG(LogNet, Log, TEXT("Rooms: %d"), rooms.size());
+		UE_LOG(LogSagaNetwork, Log, TEXT("Rooms: %d"), rooms.size());
 
 		AsyncTask(ENamedThreads::GameThread, [this, tr_rooms = std::move(rooms)]()
 			{
@@ -287,7 +287,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 						{
 							room.id, room.title, static_cast<int>(room.members)
 						});
-					UE_LOG(LogNet, Log, TEXT("Room (%d): %s (%d/4)"), room.id, room.title, room.members);
+					UE_LOG(LogSagaNetwork, Log, TEXT("Room (%d): %s (%d/4)"), room.id, room.title, room.members);
 				}
 			}
 		);
@@ -302,7 +302,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		saga::ReceiveRespondUsersPacket(packet_buffer, users);
 
-		UE_LOG(LogNet, Log, TEXT("Members: %d"), users.size());
+		UE_LOG(LogSagaNetwork, Log, TEXT("Members: %d"), users.size());
 
 		AsyncTask(ENamedThreads::GameThread, [this, tr_users = std::move(users)]()
 			{
@@ -314,7 +314,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 							user.id, user.nickname
 						});
 
-					UE_LOG(LogNet, Log, TEXT("User (%d): %s"), user.id, user.nickname);
+					UE_LOG(LogSagaNetwork, Log, TEXT("User (%d): %s"), user.id, user.nickname);
 				}
 			}
 		);
@@ -328,7 +328,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		saga::SC_FailedGameStartingPacket pk{};
 		auto offset = pk.Read(packet_buffer);
 
-		UE_LOG(LogNet, Log, TEXT("Failed to start game due to %d"), pk.errCause);
+		UE_LOG(LogSagaNetwork, Log, TEXT("Failed to start game due to %d"), pk.errCause);
 	}
 	break;
 
@@ -337,7 +337,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		//SC_ReadyForGamePacket pk{};
 		//auto offset = pk.Read(packet_buffer);
 
-		UE_LOG(LogNet, Log, TEXT("Now start loading game..."));
+		UE_LOG(LogSagaNetwork, Log, TEXT("Now start loading game..."));
 	}
 	break;
 
@@ -346,7 +346,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		//SC_GameStartPacket pk{};
 		//auto offset = pk.Read(packet_buffer);
 
-		UE_LOG(LogNet, Log, TEXT("Now start game..."));
+		UE_LOG(LogSagaNetwork, Log, TEXT("Now start game..."));
 	}
 	break;
 
@@ -355,7 +355,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		saga::SC_CreatePlayerPacket pk{};
 		auto offset = pk.Read(packet_buffer);
 
-		UE_LOG(LogNet, Log, TEXT("A client %d is created"), pk.clientId);
+		UE_LOG(LogSagaNetwork, Log, TEXT("A client %d is created"), pk.clientId);
 
 		AsyncTask(ENamedThreads::GameThread, [this, pk]()
 			{
@@ -369,7 +369,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		saga::SC_DestroyPlayerPacket pk{};
 		auto offset = pk.Read(packet_buffer);
 
-		UE_LOG(LogNet, Log, TEXT("A client %d is destroyed(disconnected)"), pk.clientId);
+		UE_LOG(LogSagaNetwork, Log, TEXT("A client %d is destroyed(disconnected)"), pk.clientId);
 
 		AsyncTask(ENamedThreads::GameThread, [this, pk]()
 			{
@@ -385,8 +385,8 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 
 		saga::ReceivePositionPacket(packet_buffer, client_id, x, y, z);
 
-		UE_LOG(LogNet, Log, TEXT("Client id %d: pos(%f,%f,%f)"), client_id, x, y, z);
-		UE_LOG(LogNet, Log, TEXT("Client id pos"));
+		UE_LOG(LogSagaNetwork, Log, TEXT("Client id %d: pos(%f,%f,%f)"), client_id, x, y, z);
+		UE_LOG(LogSagaNetwork, Log, TEXT("Client id pos"));
 
 		AsyncTask(ENamedThreads::GameThread, [this, client_id, x, y, z]()
 			{
@@ -408,7 +408,7 @@ FSagaNetworkWorker::RouteEvents(const std::byte* packet_buffer, EPacketProtocol 
 		wchar_t buffer[sizeof(pk.rpcScript) / sizeof(wchar_t)]{};
 		std::copy(std::cbegin(pk.rpcScript), std::cend(pk.rpcScript), std::begin(buffer));
 
-		UE_LOG(LogNet, Log, TEXT("RPC from client %d: %s(%lld))"), pk.clientId, pk.rpcScript, pk.rpcArgument);
+		UE_LOG(LogSagaNetwork, Log, TEXT("RPC from client %d: %s(%lld))"), pk.clientId, pk.rpcScript, pk.rpcArgument);
 	}
 	break;
 	}

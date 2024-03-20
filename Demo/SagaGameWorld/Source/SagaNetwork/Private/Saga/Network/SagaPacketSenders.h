@@ -2,7 +2,7 @@
 #ifndef SAGAFRAMEWORK_NET_PACKET_SENDERS_H
 #define SAGAFRAMEWORK_NET_PACKET_SENDERS_H
 
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 #include <optional>
 
 namespace saga

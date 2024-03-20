@@ -2,7 +2,7 @@
 #ifndef SAGAFRAMEWORK_NET_PACKET_PROCESSOR_H
 #define SAGAFRAMEWORK_NET_PACKET_PROCESSOR_H
 
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 #include <cstddef>
 
 #include "Saga/Network/SagaRoomContract.h"
@@ -14,9 +14,9 @@ namespace saga
 	const std::byte* ReceiveSignInFailurePacket(const std::byte* buffer, int32& error);
 
 	const std::byte* ReceiveRoomCreatedPacket(const std::byte* buffer, int32& room_id);
-	const std::byte* ReceiveRoomCreationFailedPacket(const std::byte* buffer, RoomContract& error);
+	const std::byte* ReceiveRoomCreationFailedPacket(const std::byte* buffer, ERoomContract& error);
 	const std::byte* ReceiveRoomJoinedPacket(const std::byte* buffer, int32& client_id, int32& room_id);
-	const std::byte* ReceiveRoomJoinFailedPacket(const std::byte* buffer, RoomContract& error);
+	const std::byte* ReceiveRoomJoinFailedPacket(const std::byte* buffer, ERoomContract& error);
 	const std::byte* ReceiveRoomLeftPacket(const std::byte* buffer, int32& client_id);
 
 	const std::byte* ReceiveRespondVersionPacket(const std::byte* buffer, wchar_t* version_str_buffer, const size_t& str_length);

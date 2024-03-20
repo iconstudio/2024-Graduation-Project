@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 #include "UObject/Interface.h"
 
 #include "Saga/Network/SagaConnectionContract.h"
