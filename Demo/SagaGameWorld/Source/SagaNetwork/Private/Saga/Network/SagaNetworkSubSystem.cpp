@@ -617,6 +617,36 @@ const
 }
 
 void
+USagaNetworkSubSystem::BroadcastOnGetPreparedGame() const
+{
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnGetPreparedGame`"));
+
+	if (OnGetPreparedGame.IsBound())
+	{
+		OnGetPreparedGame.Broadcast();
+	}
+	else
+	{
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnGetPreparedGame` was not bound"));
+	}
+}
+
+void
+USagaNetworkSubSystem::BroadcastOnStartGame() const
+{
+	UE_LOG(LogSagaNetwork, Log, TEXT("Brodcasting `OnStartGame`"));
+
+	if (OnStartGame.IsBound())
+	{
+		OnStartGame.Broadcast();
+	}
+	else
+	{
+		UE_LOG(LogSagaNetwork, Warning, TEXT("`OnStartGame` was not bound"));
+	}
+}
+
+void
 USagaNetworkSubSystem::BroadcastOnUpdatePosition(int32 user_id, float x, float y, float z)
 const
 {
@@ -848,6 +878,16 @@ USagaNetworkSubSystem::OnUpdateMembers_Implementation(const TArray<FSagaVirtualU
 }
 
 void
+USagaNetworkSubSystem::OnGetPreparedGame_Implementation()
+{
+}
+
+void
+USagaNetworkSubSystem::OnStartGame_Implementation()
+{
+}
+
+void
 USagaNetworkSubSystem::OnUpdatePosition_Implementation(int32 id, float x, float y, float z)
 {
 }
@@ -1068,6 +1108,8 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 		BroadcastOnUpdateMembers(everyUsers);
 	}
+		);
+	}
 	break;
 
 	case EPacketProtocol::SC_FAILED_GAME_START:
@@ -1094,6 +1136,12 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 		//auto offset = pk.Read(packet_buffer);
 
 		UE_LOG(LogSagaNetwork, Log, TEXT("Now start game..."));
+
+		CallFunctionOnGameThread([this]()
+			{
+				BroadcastOnStartGame();
+			}
+		);
 	}
 	break;
 
