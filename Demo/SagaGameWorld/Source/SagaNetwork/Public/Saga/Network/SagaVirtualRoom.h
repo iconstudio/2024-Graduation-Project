@@ -29,6 +29,6 @@ public:
 		, MembersCount(member_count)
 	{}
 
-	UPROPERTY(VisibleAnywhere, meta = (NoResetToDefault, NoSpinbox = true, ClampMin = 0, UIMin = 0, ClampMax = 4, UIMax = 4))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (NoResetToDefault, NoSpinbox = true, ClampMin = 0, UIMin = 0, ClampMax = 4, UIMax = 4))
 	int32 MembersCount;
 };
