@@ -7,16 +7,16 @@
 
 namespace saga
 {
-	std::optional<int32> SendSignInPacket(FStringView nickname);
-	std::optional<int32> SendCreateRoomPacket(FStringView title);
-	std::optional<int32> SendJoinRoomPacket(int32 room_id);
-	std::optional<int32> SendLeaveRoomPacket();
-	std::optional<int32> SendRequestVersionPacket();
-	std::optional<int32> SendRequestRoomsPacket();
-	std::optional<int32> SendRequestMembersPacket();
-	std::optional<int32> SendGameStartPacket();
-	std::optional<int32> SendGameIsLoadedPacket();
-	std::optional<int32> SendPositionPacket(float x, float y, float z);
+	std::optional<int32> SendSignInPacket(FSocket* socket, FStringView nickname);
+	std::optional<int32> SendCreateRoomPacket(FSocket* socket, FStringView title);
+	std::optional<int32> SendJoinRoomPacket(FSocket* socket, int32 room_id);
+	std::optional<int32> SendLeaveRoomPacket(FSocket* socket);
+	std::optional<int32> SendRequestVersionPacket(FSocket* socket);
+	std::optional<int32> SendRequestRoomsPacket(FSocket* socket);
+	std::optional<int32> SendRequestMembersPacket(FSocket* socket);
+	std::optional<int32> SendGameStartPacket(FSocket* socket);
+	std::optional<int32> SendGameIsLoadedPacket(FSocket* socket);
+	std::optional<int32> SendPositionPacket(FSocket* socket, float x, float y, float z);
 }
 
 #endif // !SAGAFRAMEWORK_NET_PACKET_SENDERS_H

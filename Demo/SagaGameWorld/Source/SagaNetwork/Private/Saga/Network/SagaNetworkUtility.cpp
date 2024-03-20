@@ -10,6 +10,21 @@ saga::CreateTcpSocket()
 	return ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, TEXT("default"), false);
 }
 
+ESocketErrors
+saga::GetLastError()
+noexcept
+{
+	return ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLastErrorCode();
+}
+
+const TCHAR*
+saga::GetLastErrorContents()
+noexcept
+{
+	auto err_code = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLastErrorCode();
+	return ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetSocketError(err_code);
+}
+
 TSharedRef<FInternetAddr>
 saga::MakeEndPoint(const FIPv4Address IpAddress, const int32 Port)
 {

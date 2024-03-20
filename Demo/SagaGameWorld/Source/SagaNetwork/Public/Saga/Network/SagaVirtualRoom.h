@@ -4,15 +4,29 @@
 #include "Saga/Network/SagaVirtualSession.h"
 #include "SagaVirtualRoom.generated.h"
 
-USTRUCT(BlueprintType, Category = "CandyLandSaga|Network|Session")
+USTRUCT(BlueprintType, Atomic, Category = "CandyLandSaga|Level|UI|Element")
 struct SAGANETWORK_API FSagaVirtualRoom : public FSagaVirtualSession
 {
 	GENERATED_BODY()
 
 public:
-	using FSagaVirtualSession::FSagaVirtualSession;
+	FSagaVirtualRoom()
+		: FSagaVirtualSession()
+	{
+	}
 
-	FSagaVirtualRoom(int32 id, FStringView title, int32 member_count)
+	FSagaVirtualRoom(int32 id)
+		: FSagaVirtualSession(id)
+	{
+	}
+
+	FSagaVirtualRoom(int32 id, const FString& title)
+		: FSagaVirtualSession(id, title)
+		, MembersCount(0)
+	{
+	}
+
+	FSagaVirtualRoom(int32 id, const FString& title, int32 member_count)
 		: FSagaVirtualSession(id, title)
 		, MembersCount(member_count)
 	{}
