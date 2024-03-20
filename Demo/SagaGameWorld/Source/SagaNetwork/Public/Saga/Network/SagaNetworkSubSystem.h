@@ -27,7 +27,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateUserList, const TA
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSagaEventOnUpdatePosition, int32, id, float, x, float, y, float, z);
 
-class SAGANETWORK_API FSagaNetworkWorker final : public FRunnable
+class SAGANETWORK_API FSagaNetworkWorker final : public FRunnable, public FNoncopyable
 {
 public:
 	FSagaNetworkWorker(TObjectPtr<USagaNetworkSubSystem> instance);
@@ -39,8 +39,6 @@ public:
 	virtual void Stop() override;
 
 private:
-	void RouteEvents(const std::byte* packet_buffer, EPacketProtocol protocol, int16 packet_size);
-
 	FRunnableThread* MyThread;
 	TObjectPtr<USagaNetworkSubSystem> SubSystemInstance;
 };
@@ -268,6 +266,7 @@ protected:
 	void OnUpdateMembers_Implementation(UPARAM(ref) const TArray<FSagaVirtualUser>& list);
 	UFUNCTION()
 	void OnUpdatePosition_Implementation(int32 id, float x, float y, float z);
+	void RouteEvents(const std::byte* packet_buffer, EPacketProtocol protocol, int16 packet_size);
 #pragma endregion
 
 	FSocket* clientSocket;
