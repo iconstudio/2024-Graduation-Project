@@ -935,10 +935,10 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 		CallFunctionOnGameThread([this, my_id]()
 			{
 				SetLocalUserId(my_id);
+
+				BroadcastOnConnected();
 			}
 		);
-
-		BroadcastOnConnected();
 	}
 	break;
 
@@ -950,10 +950,10 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 		CallFunctionOnGameThread([this]()
 			{
 				SetLocalUserId(-1);
+
+				BroadcastOnFailedToConnect(ESagaConnectionContract::SignInFailed);
 			}
 		);
-
-		BroadcastOnFailedToConnect(ESagaConnectionContract::SignInFailed);
 	}
 	break;
 
@@ -964,11 +964,11 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 		CallFunctionOnGameThread([this, room_id]()
 			{
+				SetCurrentRoomId(room_id);
+
 				BroadcastOnRoomCreated(room_id);
 			}
 		);
-
-		SetCurrentRoomId(room_id);
 	}
 	break;
 
@@ -995,10 +995,10 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 			CallFunctionOnGameThread([this, room_id, newbie_id]()
 				{
 					SetCurrentRoomId(room_id);
+
+					BroadcastOnJoinedRoom(newbie_id);
 				}
 			);
-
-			BroadcastOnJoinedRoom(newbie_id);
 		}
 		else
 		{
@@ -1007,10 +1007,10 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 			CallFunctionOnGameThread([this, newbie_id]()
 				{
 					AddUser(FSagaVirtualUser{ newbie_id, TEXT("Member") });
+
+					BroadcastOnJoinedRoom(newbie_id);
 				}
 			);
-
-			BroadcastOnJoinedRoom(newbie_id);
 		}
 	}
 	break;
@@ -1036,20 +1036,20 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 				{
 					SetCurrentRoomId(-1);
 					ClearUserList();
+
+					BroadcastOnLeftRoomBySelf();
 				}
 			);
-
-			BroadcastOnLeftRoomBySelf();
 		}
 		else
 		{
 			CallFunctionOnGameThread([this, left_client_id]()
 				{
 					RemoveUser(left_client_id);
+
+					BroadcastOnLeftRoom(left_client_id);
 				}
 			);
-
-			BroadcastOnLeftRoom(left_client_id);
 		}
 	}
 	break;
@@ -1060,7 +1060,11 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 		saga::ReceiveRespondVersionPacket(packet_buffer, version_string, 16);
 
-		BroadcastOnRespondVersion(version_string);
+		CallFunctionOnGameThread([this, version_string]()
+			{
+				BroadcastOnRespondVersion(version_string);
+			}
+		);
 	}
 	break;
 
@@ -1083,10 +1087,10 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 						});
 					UE_LOG(LogSagaNetwork, Log, TEXT("Room (%d): %s (%d/4)"), room.id, room.title, room.members);
 				}
+
+				BroadcastOnUpdateRoomList(everyRooms);
 			}
 		);
-
-		BroadcastOnUpdateRoomList(everyRooms);
 	}
 	break;
 
@@ -1110,11 +1114,9 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 					UE_LOG(LogSagaNetwork, Log, TEXT("User (%d): %s"), user.id, user.nickname);
 				}
-			}
-		);
 
-		BroadcastOnUpdateMembers(everyUsers);
-	}
+				BroadcastOnUpdateMembers(everyUsers);
+			}
 		);
 	}
 	break;
@@ -1134,6 +1136,12 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 		//auto offset = pk.Read(packet_buffer);
 
 		UE_LOG(LogSagaNetwork, Log, TEXT("Now start loading game..."));
+
+		CallFunctionOnGameThread([this]()
+			{
+				BroadcastOnGetPreparedGame();
+			}
+		);
 	}
 	break;
 
