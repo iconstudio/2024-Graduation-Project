@@ -77,7 +77,8 @@ public:
 
 	/* General Methods */
 #pragma region =========================
-	void CallFunctionOnGameThread(TUniqueFunction<void()> function);
+	void CallFunctionOnGameThread(TUniqueFunction<void()>&& function);
+	void CallPureFunctionOnGameThread(TUniqueFunction<void()>&& function) const;
 #pragma endregion
 
 	/* Local Client Methods */

@@ -170,7 +170,7 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 }
 
 void
-USagaNetworkSubSystem::CallFunctionOnGameThread(TUniqueFunction<void()> function)
+USagaNetworkSubSystem::CallFunctionOnGameThread(TUniqueFunction<void()>&& function)
 {
 	/*
 	FGraphEventRef Task = FFunctionGraphTask::CreateAndDispatchWhenReady(MoveTemp(function), TStatId(), nullptr, ENamedThreads::GameThread);
@@ -178,11 +178,25 @@ USagaNetworkSubSystem::CallFunctionOnGameThread(TUniqueFunction<void()> function
 
 	if (IsInGameThread())
 	{
-		CallFunctionOnGameThread(MoveTemp(function));
+		function();
 	}
 	else
 	{
+		AsyncTask(ENamedThreads::GameThread, MoveTemp(function));
+	}
+}
+
+void
+USagaNetworkSubSystem::CallPureFunctionOnGameThread(TUniqueFunction<void()>&& function)
+const
+{
+	if (IsInGameThread())
+	{
 		function();
+	}
+	else
+	{
+		AsyncTask(ENamedThreads::GameThread, MoveTemp(function));
 	}
 }
 
@@ -1060,7 +1074,7 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 		saga::ReceiveRespondVersionPacket(packet_buffer, version_string, 16);
 
-		CallFunctionOnGameThread([this, version_string]()
+		CallPureFunctionOnGameThread([this, version_string]()
 			{
 				BroadcastOnRespondVersion(version_string);
 			}
@@ -1137,7 +1151,7 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 		UE_LOG(LogSagaNetwork, Log, TEXT("Now start loading game..."));
 
-		CallFunctionOnGameThread([this]()
+		CallPureFunctionOnGameThread([this]()
 			{
 				BroadcastOnGetPreparedGame();
 			}
@@ -1152,7 +1166,7 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 		UE_LOG(LogSagaNetwork, Log, TEXT("Now start game..."));
 
-		CallFunctionOnGameThread([this]()
+		CallPureFunctionOnGameThread([this]()
 			{
 				BroadcastOnStartGame();
 			}
@@ -1200,9 +1214,9 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 		CallFunctionOnGameThread([this, client_id, x, y, z]()
 			{
+				BroadcastOnUpdatePosition(client_id, x, y, z);
 			}
 		);
-		BroadcastOnUpdatePosition(client_id, x, y, z);
 	}
 	break;
 
