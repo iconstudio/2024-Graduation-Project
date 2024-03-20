@@ -22,7 +22,12 @@ USagaNetworkSubSystem::USagaNetworkSubSystem()
 	, OnNetworkInitialized(), OnConnected(), OnFailedToConnect(), OnDisconnected()
 	, OnRoomCreated(), OnJoinedRoom(), OnLeftRoomBySelf(), OnLeftRoom()
 	, OnRespondVersion(), OnUpdateRoomList(), OnUpdateMembers()
+	, OnGetPreparedGame(), OnStartGame()
 	, OnUpdatePosition()
+	, TaskCompletionEvents()
+	, clientSocket(nullptr), netWorker(nullptr)
+	, everyUsers(), wasUsersUpdated(true)
+	, everyRooms(), wasRoomsUpdated(true)
 {}
 
 void
