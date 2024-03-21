@@ -10,6 +10,6 @@ class SAGAUTILITY_API USagaStringBpFunctionLibrary : public UBlueprintFunctionLi
 	GENERATED_BODY()
 	
 public:
-	[[nodiscard]] UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Utility|String")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Utility|String")
 	static FString SubString(const FString& string, int32 first_index, int32 last_index);
 };

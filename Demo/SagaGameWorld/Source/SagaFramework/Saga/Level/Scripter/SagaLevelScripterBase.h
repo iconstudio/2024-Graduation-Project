@@ -4,7 +4,7 @@
 
 #include "SagaLevelScripterBase.generated.h"
 
-UCLASS(Category = "CandyLandSaga|Framework|Level")
+UCLASS(Blueprintable, BlueprintType, Category = "CandyLandSaga|Framework|Level")
 class SAGAFRAMEWORK_API ASagaLevelScripterBase : public ALevelScriptActor
 {
 	GENERATED_BODY()
@@ -15,10 +15,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
 	void GotoPrevLevel();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
-	void GotoNextLevel();
-	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
 	bool CanGotoPrevLevel() const noexcept;
-	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
 	bool CanGotoNextLevel() const noexcept;
 
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
