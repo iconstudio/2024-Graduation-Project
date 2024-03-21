@@ -1,5 +1,6 @@
 #include "Saga/Level/Scripter/SagaLevelScripterBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "EngineLogs.h"
 
 ASagaLevelScripterBase::ASagaLevelScripterBase()
 	: ALevelScriptActor()
@@ -8,7 +9,8 @@ ASagaLevelScripterBase::ASagaLevelScripterBase()
 }
 
 void
-ASagaLevelScripterBase::GotoPrevLevel()
+ASagaLevelScripterBase::GotoPrevLevel_Implementation()
+const
 {
 	if (CanGotoPrevLevel())
 	{
@@ -17,7 +19,8 @@ ASagaLevelScripterBase::GotoPrevLevel()
 }
 
 void
-ASagaLevelScripterBase::GotoNextLevel()
+ASagaLevelScripterBase::GotoNextLevel_Implementation()
+const
 {
 	if (CanGotoNextLevel())
 	{
@@ -40,36 +43,44 @@ const noexcept
 }
 
 void
-ASagaLevelScripterBase::TransitionLevel(FName level_name)
-{
-	AsyncTask(ENamedThreads::GameThread
-		, [this, level_name]()
-		{
-			UGameplayStatics::OpenLevel(this, level_name);
-		}
-	);
-}
-
-void
-ASagaLevelScripterBase::SetPrevLevelName(FName level_name)
+ASagaLevelScripterBase::SetPrevLevelName(const FName& level_name)
 {
 	PrevLevelName = level_name;
 }
 
 void
-ASagaLevelScripterBase::SetNextLevelName(FName level_name)
+ASagaLevelScripterBase::SetNextLevelName(const FName& level_name)
 {
 	NextLevelName = level_name;
 }
 
 void
-ASagaLevelScripterBase::SetPrevLevelNameFrom(ULevel* level)
+ASagaLevelScripterBase::SetPrevLevelNameFrom(const ULevel* level)
 {
 	PrevLevelName = level->GetFName();
 }
 
 void
-ASagaLevelScripterBase::SetNextLevelNameFrom(ULevel* level)
+ASagaLevelScripterBase::SetNextLevelNameFrom(const ULevel* level)
 {
 	NextLevelName = level->GetFName();
+}
+
+void
+ASagaLevelScripterBase::TransitionLevel(const FName& level_name)
+const
+{
+	if (GetName() != level_name)
+	{
+		AsyncTask(ENamedThreads::GameThread
+			, [this, level_name]()
+			{
+				UGameplayStatics::OpenLevel(this, level_name);
+			}
+		);
+	}
+	else
+	{
+		UE_LOG(LogLevel, Warning, TEXT("Same level has been translated by `TransitionLevel`."));
+	}
 }
