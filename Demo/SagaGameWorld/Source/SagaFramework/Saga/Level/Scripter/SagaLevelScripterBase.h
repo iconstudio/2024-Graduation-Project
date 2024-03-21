@@ -1,6 +1,9 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "UObject/ObjectMacros.h"
 #include "Engine/LevelScriptActor.h"
+#include "Engine/Level.h"
+#include "UObject/NameTypes.h"
+#include "Misc/Optional.h"
 
 #include "SagaLevelScripterBase.generated.h"
 
@@ -12,24 +15,27 @@ class SAGAFRAMEWORK_API ASagaLevelScripterBase : public ALevelScriptActor
 public:
 	ASagaLevelScripterBase();
 
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
-	void GotoPrevLevel();
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, BlueprintPure = false, Category = "CandyLandSaga|Level")
+	void GotoPrevLevel() const;
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, BlueprintPure = false, Category = "CandyLandSaga|Level")
+	void GotoNextLevel() const;
+
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
 	bool CanGotoPrevLevel() const noexcept;
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
 	bool CanGotoNextLevel() const noexcept;
 
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
-	void SetPrevLevelName(FName level_name);
+	void SetPrevLevelName(const FName& level_name);
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
-	void SetNextLevelName(FName level_name);
+	void SetNextLevelName(const FName& level_name);
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
-	void SetPrevLevelNameFrom(ULevel* level);
+	void SetPrevLevelNameFrom(const ULevel* level);
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
-	void SetNextLevelNameFrom(ULevel* level);
+	void SetNextLevelNameFrom(const ULevel* level);
 
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Level")
-	void TransitionLevel(FName level_name);
+	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "CandyLandSaga|Level")
+	void TransitionLevel(const FName& level_name) const;
 
 private:
 	TOptional<FName> PrevLevelName;
