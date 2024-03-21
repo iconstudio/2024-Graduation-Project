@@ -857,7 +857,8 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 	return ESagaConnectionContract::Success;
 }
 
-bool USagaNetworkSubSystem::CloseNetwork_Implementation()
+bool
+USagaNetworkSubSystem::CloseNetwork_Implementation()
 {
 	//clientSocket->Shutdown(ESocketShutdownMode::ReadWrite);
 
