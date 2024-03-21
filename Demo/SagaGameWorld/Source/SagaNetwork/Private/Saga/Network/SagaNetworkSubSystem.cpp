@@ -815,7 +815,7 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 		if (not remote_endpoint->IsValid())
 		{
 			auto err_msg = saga::GetLastErrorContents();
-			UE_LOG(LogSagaNetwork, Error, TEXT("The endpoint has fault, due to '%s'"), err_msg);
+			UE_LOG(LogSagaNetwork, Error, TEXT("The endpoint has fault, due to '%s'"), *err_msg);
 
 			return ESagaConnectionContract::WrongAddress;
 		}
@@ -824,7 +824,7 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 		{
 			// 연결 실패 처리
 			auto err_msg = saga::GetLastErrorContents();
-			UE_LOG(LogSagaNetwork, Error, TEXT("Cannot connect to the server, due to '%s'"), err_msg);
+			UE_LOG(LogSagaNetwork, Error, TEXT("Cannot connect to the server, due to '%s'"), *err_msg);
 
 			return ESagaConnectionContract::OtherError;
 		}
@@ -836,7 +836,7 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 		if (sent_r <= 0)
 		{
 			auto err_msg = saga::GetLastErrorContents();
-			UE_LOG(LogSagaNetwork, Error, TEXT("First try of sending signin packet has been failed, due to '%s'"), err_msg);
+			UE_LOG(LogSagaNetwork, Error, TEXT("First try of sending signin packet has been failed, due to '%s'"), *err_msg);
 
 			return ESagaConnectionContract::SignInFailed;
 		}
