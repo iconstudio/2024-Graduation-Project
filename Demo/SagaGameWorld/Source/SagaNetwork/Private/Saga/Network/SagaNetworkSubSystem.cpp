@@ -859,9 +859,9 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 
 bool USagaNetworkSubSystem::CloseNetwork_Implementation()
 {
-	clientSocket->Shutdown(ESocketShutdownMode::ReadWrite);
+	//clientSocket->Shutdown(ESocketShutdownMode::ReadWrite);
 
-	return CloseNetwork_Implementation(); std::exchange(clientSocket, nullptr)->Close();
+	return std::exchange(clientSocket, nullptr)->Close();
 }
 
 void
