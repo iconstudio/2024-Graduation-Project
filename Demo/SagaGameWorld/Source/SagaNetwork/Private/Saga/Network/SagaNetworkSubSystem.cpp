@@ -146,7 +146,7 @@ USagaNetworkSubSystem::Start(const FString& nickname)
 		auto connect_r = ConnectToServer_Implementation();
 		if (connect_r == ESagaConnectionContract::Success)
 		{
-			// #2
+			// #4
 			// 서버가 닉네임 패킷을 받으면 서버는 ID 부여 패킷을 보낸다.
 			// 클라는 ID 부여 패킷을 받아서 갱신하고, 게임 or 메뉴 레벨로 넘어가야 한다.
 			return true;
@@ -808,7 +808,7 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 		return ESagaConnectionContract::NoSocket;
 	}
 
-	// 연결 부분
+	// #1 연결 부분
 	if constexpr (not saga::IsOfflineMode)
 	{
 		auto remote_endpoint = CreateRemoteEndPoint();
@@ -828,8 +828,19 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 
 			return ESagaConnectionContract::OtherError;
 		}
+	}
 
-		// #1
+	// #2
+	netWorker = MakeUnique<FSagaNetworkWorker>(this);
+	if (netWorker == nullptr)
+	{
+		UE_LOG(LogSagaNetwork, Error, TEXT("Has failed to create the worker thread."));
+		return ESagaConnectionContract::CannotCreateWorker;
+	}
+
+	if constexpr (not saga::IsOfflineMode)
+	{
+		// #3
 		// 클라는 접속 이후에 닉네임 패킷을 보내야 한다.
 
 		auto sent_r = SendSignInPacket(localUserName);
@@ -844,13 +855,6 @@ USagaNetworkSubSystem::ConnectToServer_Implementation()
 		{
 			UE_LOG(LogSagaNetwork, Log, TEXT("User's nickname is %s."), *localUserName);
 		}
-	}
-
-	netWorker = MakeUnique<FSagaNetworkWorker>(this);
-	if (netWorker == nullptr)
-	{
-		UE_LOG(LogSagaNetwork, Error, TEXT("Has failed to create the worker thread."));
-		return ESagaConnectionContract::CannotCreateWorker;
 	}
 
 	return ESagaConnectionContract::Success;
