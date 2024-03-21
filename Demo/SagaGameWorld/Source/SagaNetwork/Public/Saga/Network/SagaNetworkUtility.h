@@ -11,7 +11,7 @@ namespace saga
 	ESocketErrors GetLastError() noexcept;
 
 	[[nodiscard]]
-	const TCHAR* GetLastErrorContents() noexcept;
+	FString GetLastErrorContents();
 
 	[[nodiscard]]
 	TSharedRef<FInternetAddr> MakeEndPoint(const FIPv4Address IpAddress, const int32 Port);
