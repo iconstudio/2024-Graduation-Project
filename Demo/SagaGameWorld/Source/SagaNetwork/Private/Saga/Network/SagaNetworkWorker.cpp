@@ -27,7 +27,7 @@ FSagaNetworkWorker::~FSagaNetworkWorker()
 bool
 FSagaNetworkWorker::Init()
 {
-	UE_LOG(LogSagaNetwork, Display, TEXT("Worker has been initialized"));
+	UE_LOG(LogSagaNetwork, Display, TEXT("Worker has been initialized."));
 
 	return (MyThread != nullptr);
 }
