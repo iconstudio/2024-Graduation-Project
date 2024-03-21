@@ -178,10 +178,9 @@ USagaNetworkSubSystem::Close()
 		}
 		else if (not IsConnected())
 		{
-			clientSocket = nullptr;
-
 			UE_LOG(LogSagaNetwork, Warning, TEXT("The network subsystem had been closed."));
-			return true;
+
+			return CloseNetwork_Implementation();
 		}
 		else
 		{
