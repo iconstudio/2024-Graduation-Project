@@ -101,5 +101,8 @@
 			"Name": "AppleMoviePlayer",
 			"Enabled": false
 		}
+	],
+	"TargetPlatforms": [
+		"Windows"
 	]
 }
