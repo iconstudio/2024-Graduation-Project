@@ -171,6 +171,18 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 
 			return iconer::app::RoomContract::InvalidOperation;
 		}
+		
+		auto sent_r = user.SendRoomJoinedPacket(user.GetID(), room_id);
+		if (not sent_r.first.has_value())
+		{
+			// rollback
+			user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+			user.myRoomId.CompareAndSet(room_id, -1);
+			::RemoveRoomMember(*this, room, user.GetID());
+			SetRoomModifiedFlag();
+
+			return iconer::app::RoomContract::ServerError;
+		}
 
 		SetRoomModifiedFlag();
 
