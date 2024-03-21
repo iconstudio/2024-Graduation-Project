@@ -65,14 +65,22 @@ FSagaNetworkWorker::Run()
 			{
 				UE_LOG(LogSagaNetwork, Error, TEXT("Receiving has been failed!"));
 
-				SubSystemInstance->BroadcastOnDisconnected();
+				SubSystemInstance->CallPureFunctionOnGameThread([this]()
+					{
+						SubSystemInstance->BroadcastOnDisconnected();
+					}
+				);
 				return 1;
 			}
 			else if (temp_recv_bytes <= 0)
 			{
 				UE_LOG(LogSagaNetwork, Error, TEXT("Received 0 byte!"));
 
-				SubSystemInstance->BroadcastOnDisconnected();
+				SubSystemInstance->CallPureFunctionOnGameThread([this]()
+					{
+						SubSystemInstance->BroadcastOnDisconnected();
+					}
+				);
 				return 2;
 			}
 
