@@ -892,6 +892,10 @@ USagaNetworkSubSystem::OnFailedToConnect_Implementation(ESagaConnectionContract 
 void
 USagaNetworkSubSystem::OnDisconnected_Implementation()
 {
+	if (IsSocketAvailable())
+	{
+		(void)CloseNetwork_Implementation();
+	}
 }
 
 void
