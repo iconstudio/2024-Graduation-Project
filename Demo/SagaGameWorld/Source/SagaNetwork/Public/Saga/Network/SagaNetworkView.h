@@ -58,6 +58,9 @@ public:
 	void OnFailedToStartGame(int32 reason);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnTeamChanged(int32 user_id, bool is_red_team);
+	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnBeginPrepareGame();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
