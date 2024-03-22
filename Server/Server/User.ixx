@@ -159,6 +159,7 @@ export namespace iconer::app
 		/// <param name="who">- Not only local client</param>
 		BorrowedIoResult SendRoomLeftPacket(IdType who, bool is_self) const;
 		BorrowedIoResult SendCannotStartGamePacket(int reason) const;
+		BorrowedIoResult SendChangeTeamPacket(bool is_red_team) const;
 		BorrowedIoResult SendMakeGameReadyPacket() const;
 		BorrowedIoResult SendGameJustStartedPacket() const;
 
