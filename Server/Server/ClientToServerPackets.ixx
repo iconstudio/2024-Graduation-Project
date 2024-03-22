@@ -95,7 +95,7 @@ export namespace iconer::app::packets::inline cs
 	/// </summary>
 	/// <param name="teamId">Team's id of user</param>
 	/// <remarks>Client would send it to the server</remarks>
-	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(CS_SetTeamPacket, PacketProtocol::CS_ROOM_JOIN, std::int8_t, teamId, team_id, 0);
+	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(CS_SetTeamPacket, PacketProtocol::CS_SET_TEAM, std::int8_t, teamId, team_id, 0);
 	/// <summary>
 	/// Requesting game version packet for client
 	/// </summary>

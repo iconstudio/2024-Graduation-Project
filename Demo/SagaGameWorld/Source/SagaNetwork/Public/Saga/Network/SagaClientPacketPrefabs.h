@@ -99,6 +99,12 @@ namespace saga::inline cs
 		long long rpcArgument;
 	};
 	/// <summary>
+	/// Team setter packet for client
+	/// </summary>
+	/// <param name="teamId">Team's id of user</param>
+	/// <remarks>Client would send it to the server</remarks>
+	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(CS_SetTeamPacket, EPacketProtocol::CS_SET_TEAM, int8, teamId, team_id, 0);
+	/// <summary>
 	/// Requesting game version packet for client
 	/// </summary>
 	/// <remarks>Client would send it to the server</remarks>

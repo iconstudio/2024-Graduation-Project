@@ -113,6 +113,12 @@ namespace saga::inline sc
 		long long rpcArgument;
 	};
 	/// <summary>
+	/// Team setter packet for server
+	/// </summary>
+	/// <param name="teamId">Team's id of user</param>
+	/// <remarks>Aerver would send it to the client</remarks>
+	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(SC_SetTeamPacket, EPacketProtocol::SC_SET_TEAM, int8, teamId, team_id, 0);
+	/// <summary>
 	/// Getting game ready notification packet for server
 	/// </summary>
 	/// <remarks>Server would send it to the client</remarks>
