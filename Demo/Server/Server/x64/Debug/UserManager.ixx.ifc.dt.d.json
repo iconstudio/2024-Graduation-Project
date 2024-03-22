@@ -1,0 +1,24 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\onedrive - 한국공학대학교\\대학교\\2024-graduation-project\\demo\\server\\server\\iconer\\network\\usermanager.ixx",
+        "ProvidedModule": "Iconer.Network.UserManager",
+        "Includes": [],
+        "ImportedModules": [
+            {
+                "Name": "Iconer.Declarations",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\Declarations.ixx.ifc.dt"
+            }
+        ],
+        "ImportedHeaderUnits": [
+            {
+                "Header": "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\memory",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\memory_B6F17046F483C3A0.ifc.dt"
+            },
+            {
+                "Header": "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\cstdint",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\cstdint_85090BCFDE12E216.ifc.dt"
+            }
+        ]
+    }
+}
