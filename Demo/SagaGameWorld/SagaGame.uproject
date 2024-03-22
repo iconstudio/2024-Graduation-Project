@@ -100,6 +100,10 @@
 		{
 			"Name": "AppleMoviePlayer",
 			"Enabled": false
+		},
+		{
+			"Name": "Text3D",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
