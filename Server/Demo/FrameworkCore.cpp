@@ -286,6 +286,15 @@ demo::Framework::RouteEvent(bool is_succeed
 			{
 				myLogger.Log(L"\tUser {} entered to room {}\n", user_id, room_id);
 
+				user->roomContext.SetOperation(iconer::app::AsyncOperations::OpNotifyMember);
+				std::span<std::byte> members = room->SerializeMembers();
+				auto smr = user->SendGeneralData(std::addressof(user->roomContext), members.data(), members.size());
+				if (not smr)
+				{
+					user->roomContext.SetOperation(iconer::app::AsyncOperations::None);
+					user->roomContext.Clear();
+				}
+
 				room->ForEach([&user, &room_id](iconer::app::User& member) {
 					if (member.GetID() != user->GetID())
 					{
