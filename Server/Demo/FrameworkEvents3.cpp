@@ -186,14 +186,6 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 
 		SetRoomModifiedFlag();
 
-		user.roomContext.SetOperation(iconer::app::AsyncOperations::OpNotifyMember);
-		std::span<std::byte> members = room.SerializeMembers();
-		auto smr = user.SendGeneralData(std::addressof(user.roomContext), members.data(), members.size());
-		if (not smr)
-		{
-			user.roomContext.SetOperation(iconer::app::AsyncOperations::None);
-		}
-
 		return iconer::app::RoomContract::Success;
 	}
 }
