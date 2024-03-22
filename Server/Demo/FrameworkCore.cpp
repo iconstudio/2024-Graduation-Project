@@ -275,24 +275,31 @@ demo::Framework::RouteEvent(bool is_succeed
 			if (not is_succeed)
 			{
 				myLogger.LogError(L"\tUser {} could not enter to room {}\n", user_id, room_id);
+
 				OnFailedToJoinRoom(*room, *user, iconer::app::RoomContract::ServerError);
 			}
 			else if (auto result = OnJoiningRoom(*room, *user); iconer::app::RoomContract::Success != result)
 			{
 				myLogger.LogError(L"\tUser {} could not enter to room {} due to {}\n", user_id, room_id, result);
+
 				OnFailedToJoinRoom(*room, *user, result);
 			}
 			else
 			{
 				myLogger.Log(L"\tUser {} entered to room {}\n", user_id, room_id);
 
-				user->roomContext.SetOperation(iconer::app::AsyncOperations::OpNotifyMember);
 				std::span<std::byte> members = room->SerializeMembers();
-				auto smr = user->SendGeneralData(std::addressof(user->roomContext), members.data(), members.size());
-				if (not smr)
+
+				auto [sent_r, ctx]= user->SendGeneralData(members.data(), members.size());
+				if (not sent_r.has_value())
 				{
-					user->roomContext.SetOperation(iconer::app::AsyncOperations::None);
-					user->roomContext.Clear();
+					ctx.Complete();
+
+					myLogger.LogError(L"\tUser {} has failed to notify members in the room due to {}\n", user_id, sent_r.error());
+				}
+				else
+				{
+					myLogger.LogError(L"\tUser {} has failed to notify members in the room\n", user_id);
 				}
 
 				room->ForEach([&user, &room_id](iconer::app::User& member) {
