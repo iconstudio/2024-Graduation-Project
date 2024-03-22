@@ -36,6 +36,7 @@ export namespace iconer::app
 		CS_RPC,
 		CS_GAME_LOADED,
 		CS_READY,
+		CS_SET_TEAM,
 
 		SC_SIGNIN_SUCCESS = 120,
 		SC_SIGNIN_FAILURE,
@@ -79,5 +80,6 @@ export namespace iconer::app
 		SC_REMOVE_PLAYER,
 		SC_GAME_GETTING_READY,
 		SC_FAILED_GAME_START,
+		SC_SET_TEAM,
 	};
 }
