@@ -1,0 +1,11 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "e:\\onedrive - 한국공학대학교\\대학교\\2024-graduation-project\\demo\\server\\server\\iconer\\network\\private\\usermanager.cpp",
+        "ProvidedModule": "",
+        "ImportedModules": [
+            "Iconer.Network.UserManager"
+        ],
+        "ImportedHeaderUnits": []
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "e:\\onedrive - 한국공학대학교\\대학교\\2024-graduation-project\\demo\\server\\server\\iconer\\network\\usermanager.ixx",
+        "ProvidedModule": "Iconer.Network.UserManager",
+        "ImportedModules": [
+            "Iconer.Declarations",
+            "Iconer.Network.EntityManager",
+            "Iconer.Network.User"
+        ],
+        "ImportedHeaderUnits": [
+            "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.38.33130\\include\\memory"
+        ]
+    }
+}

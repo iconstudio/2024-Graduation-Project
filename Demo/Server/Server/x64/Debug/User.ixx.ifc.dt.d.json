@@ -1,0 +1,46 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\onedrive - 한국공학대학교\\대학교\\2024-graduation-project\\demo\\server\\server\\iconer\\network\\user.ixx",
+        "ProvidedModule": "Iconer.Network.User",
+        "Includes": [
+            "e:\\onedrive - 한국공학대학교\\대학교\\2024-graduation-project\\demo\\server\\server\\iconer\\utility\\behaviourtreehelper.hpp"
+        ],
+        "ImportedModules": [
+            {
+                "Name": "Iconer.Declarations",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\Declarations.ixx.ifc.dt"
+            },
+            {
+                "Name": "Iconer.Utility.BehaviourTree",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\BehaviourTree.ixx.ifc.dt"
+            },
+            {
+                "Name": "Net.Handler",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Modern Network\\Modern Network\\x64\\Debug\\Handler.ixx.ifc.dt"
+            },
+            {
+                "Name": "Net.Constraints",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Modern Network\\Modern Network\\x64\\Debug\\Constraints.ixx.ifc.dt"
+            },
+            {
+                "Name": "Net.Traits",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Modern Network\\Modern Network\\x64\\Debug\\Traits.ixx.ifc.dt"
+            }
+        ],
+        "ImportedHeaderUnits": [
+            {
+                "Header": "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\cstdint",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\cstdint_85090BCFDE12E216.ifc.dt"
+            },
+            {
+                "Header": "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\variant",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\variant_53F3CFCA941F2988.ifc.dt"
+            },
+            {
+                "Header": "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\atomic",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\atomic_855D45BF55DAC022.ifc.dt"
+            }
+        ]
+    }
+}
