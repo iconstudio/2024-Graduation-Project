@@ -42,7 +42,7 @@ demo::OnRequestRoomList(Framework& framework, iconer::app::User& user)
 {
 	if (user.GetState() != iconer::app::UserStates::None)
 	{
-		framework.Schedule(user.requestContext, user.GetID());
+		(void)framework.Schedule(user.requestContext, user.GetID());
 	}
 }
 
@@ -51,7 +51,7 @@ demo::OnRequestMemberList(Framework& framework, iconer::app::User& user)
 {
 	if (user.GetState() != iconer::app::UserStates::None)
 	{
-		framework.Schedule(user.requestMemberContext, user.GetID());
+		(void)framework.Schedule(user.requestMemberContext, user.GetID());
 	}
 }
 
@@ -230,7 +230,7 @@ demo::OnReceivePosition(demo::Framework& framework, iconer::app::User& user, flo
 		{
 			ctx.Complete();
 		}
-	});
+		});
 }
 
 void
@@ -249,5 +249,5 @@ demo::OnReceiveRotation(Framework& framework, iconer::app::User& user, float rol
 		{
 			ctx.Complete();
 		}
-	});
+		});
 }
