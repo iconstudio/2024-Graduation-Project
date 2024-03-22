@@ -122,6 +122,9 @@ export namespace iconer::app
 			myName.clear();
 			recvOffset = 0;
 			myRoomId = -1;
+			myTeamId = Team::Unknown;
+			myWeaponId = 0;
+			isRidingGuardian = false;
 		}
 
 		template<size_t Size>
