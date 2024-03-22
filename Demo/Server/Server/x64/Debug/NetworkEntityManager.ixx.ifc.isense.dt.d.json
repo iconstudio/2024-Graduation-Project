@@ -1,0 +1,31 @@
+{
+    "Version": "1.2",
+    "Data": {
+        "Source": "e:\\onedrive - 한국공학대학교\\대학교\\2024-graduation-project\\demo\\server\\server\\iconer\\network\\networkentitymanager.ixx",
+        "ProvidedModule": "Iconer.Network.EntityManager",
+        "Includes": [],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": [
+            {
+                "Header": "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\vector",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\vector_ACBBE4190EC2CAF4.ifc.dt"
+            },
+            {
+                "Header": "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\algorithm",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\algorithm_5674B16E42E0A3C4.ifc.dt"
+            },
+            {
+                "Header": "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\iterator",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\iterator_4F6B88C7374062CD.ifc.dt"
+            },
+            {
+                "Header": "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\memory",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\memory_B6F17046F483C3A0.ifc.dt"
+            },
+            {
+                "Header": "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\shared_mutex",
+                "BMI": "E:\\OneDrive - 한국공학대학교\\대학교\\2024-Graduation-Project\\Demo\\Server\\Server\\x64\\Debug\\shared_mutex_6B6E1D96E1C41346.ifc.dt"
+            }
+        ]
+    }
+}

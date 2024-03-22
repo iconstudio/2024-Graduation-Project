@@ -35,6 +35,9 @@ ASagaCharacterPlayer::ASagaCharacterPlayer()
 	//상호작용
 	InteractionBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionBox"));
 	InteractionBox->SetupAttachment(RootComponent);
+	InteractionBox->SetCollisionProfileName(TEXT("Trigger"));
+	InteractionBox->OnComponentBeginOverlap.AddDynamic(this, &ASagaCharacterPlayer::OnOverlapBegin);
+	InteractionBox->OnComponentEndOverlap.AddDynamic(this, &ASagaCharacterPlayer::OnOverlapEnd);
 
 	//입력
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionJumpRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Jump.IA_Jump'"));
@@ -94,7 +97,7 @@ void ASagaCharacterPlayer::BeginPlay()
 
 	SetCharacterControl(CurrentCharacterControlType);
 
-	InteractionBox->OnComponentBeginOverlap.AddDynamic(this, &ASagaCharacterPlayer::OnBoxBeginOverlap);
+
 }
 
 void ASagaCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -125,10 +128,27 @@ void ASagaCharacterPlayer::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 }
 
-void ASagaCharacterPlayer::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ASagaCharacterPlayer::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	if (OtherActor && (OtherActor != this) && OtherComp)
+	{
+		//오버랩된게 NPC인지 확인
+		ASagaCharacterNPC* OverlappedNPC = Cast<ASagaCharacterNPC>(OtherActor);
+		if (OverlappedNPC)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("NPC is around"));
+			NearbyNPC = OverlappedNPC;
+			bIsNPCAround = 1;
+		}
+	}
 }
+
+void ASagaCharacterPlayer::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	bIsNPCAround = 0;
+}
+
+
 
 void ASagaCharacterPlayer::ChangeCharacterControl()
 {
@@ -273,12 +293,22 @@ void ASagaCharacterPlayer::GetOnNPC()
 {
 	//오버랩 된 NPC를 가져온 뒤 해당 NPC로 플레이어의 입력을 전달해야 함!!! 구현할 것.
 
-
-	/*ASagaCharacterNPC* NearestNPC;
-	if (NearestNPC)
+	
+	if (NearbyNPC && bIsNPCAround == 1)
 	{
-		AttachToActor(NearestNPC, FAttachmentTransformRules::KeepWorldTransform);
-	}*/
+		UE_LOG(LogTemp, Warning, TEXT("GettingOnNPC"));
+		AttachToActor(NearbyNPC, FAttachmentTransformRules::KeepWorldTransform);
+		// SnapToTargetIncludingScale을 사용하여 대상의 위치, 회전, 스케일을 그대로 따르도록 함
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+		AttachToActor(NearbyNPC, AttachmentRules, TEXT("clavicle_r"));
+
+
+		APlayerController* PlayerController = Cast<APlayerController>(GetController());
+		if (PlayerController)
+		{
+			PlayerController->Possess(NearbyNPC);
+		}
+	}
 
 	UE_LOG(LogTemp, Warning, TEXT("OnNPC"));
 }
