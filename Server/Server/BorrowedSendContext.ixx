@@ -62,11 +62,13 @@ export namespace iconer::app
 			Complete();
 		}
 
+		[[nodiscard]]
 		BorrowedSendContext* Release() noexcept
 		{
 			return std::exchange(borrowedContext, nullptr);
 		}
 
+		[[nodiscard]]
 		BorrowedSendContext* Release() volatile noexcept
 		{
 			return std::exchange(borrowedContext, nullptr);
