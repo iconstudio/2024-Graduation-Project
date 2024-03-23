@@ -335,7 +335,7 @@ namespace saga::inline deserializers
 	{
 		output = std::bit_cast<bool>(buffer[0]);
 
-		return buffer + 1;
+		return buffer + sizeof(bool);
 	}
 
 	/// <summary>Read a character from the byte buffer</summary>
@@ -347,7 +347,19 @@ namespace saga::inline deserializers
 	{
 		output = std::bit_cast<char>(buffer[0]);
 
-		return buffer + 1;
+		return buffer + sizeof(char);
+	}
+	
+	/// <summary>Read a character from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
+	static constexpr
+		const std::byte*
+		Deserialize(const std::byte* buffer, signed char& output)
+	{
+		output = std::bit_cast<signed char>(buffer[0]);
+
+		return buffer + sizeof(signed char);
 	}
 
 	/// <summary>Read an unsigned character from the byte buffer</summary>
@@ -359,7 +371,7 @@ namespace saga::inline deserializers
 	{
 		output = std::bit_cast<unsigned char>(buffer[0]);
 
-		return buffer + 1;
+		return buffer + sizeof(unsigned char);
 	}
 
 	/// <summary>Read an utf-8 character from the byte buffer</summary>
@@ -371,7 +383,7 @@ namespace saga::inline deserializers
 	{
 		output = std::bit_cast<char8_t>(buffer[0]);
 
-		return buffer + 1;
+		return buffer + sizeof(char8_t);
 	}
 
 	/// <summary>Read a 16-bit integer value from the byte buffer</summary>
@@ -386,7 +398,7 @@ namespace saga::inline deserializers
 
 		output = static_cast<int16>(mid);
 
-		return buffer + 2;
+		return buffer + sizeof(int16);
 	}
 
 	/// <summary>Read an unsigned 16-bit integer value from the byte buffer</summary>
@@ -401,7 +413,7 @@ namespace saga::inline deserializers
 
 		output = static_cast<uint16>(mid);
 
-		return buffer + 2;
+		return buffer + sizeof(uint16);
 	}
 
 	/// <summary>Read a wide character from the byte buffer</summary>
@@ -416,7 +428,7 @@ namespace saga::inline deserializers
 
 		output = static_cast<wchar_t>(mid);
 
-		return buffer + 2;
+		return buffer + sizeof(wchar_t);
 	}
 
 	/// <summary>Read an utf-16 character from the byte buffer</summary>
@@ -431,7 +443,7 @@ namespace saga::inline deserializers
 
 		output = static_cast<char16_t>(mid);
 
-		return buffer + 2;
+		return buffer + sizeof(char16_t);
 	}
 
 	/// <summary>Read a 32-bit integer value from the byte buffer</summary>
@@ -448,7 +460,7 @@ namespace saga::inline deserializers
 
 		output = static_cast<int32>(mid);
 
-		return buffer + 4;
+		return buffer + sizeof(int32);
 	}
 
 	/// <summary>Read an unsigned 32-bit integer value from the byte buffer</summary>
@@ -465,7 +477,7 @@ namespace saga::inline deserializers
 
 		output = static_cast<uint32>(mid);
 
-		return buffer + 4;
+		return buffer + sizeof(uint32);
 	}
 
 	/// <summary>Read a 32-bit integer value from the byte buffer</summary>
@@ -482,7 +494,7 @@ namespace saga::inline deserializers
 
 		output = static_cast<long>(mid);
 
-		return buffer + 4;
+		return buffer + sizeof(long);
 	}
 
 	/// <summary>Read an unsigned 32-bit integer value from the byte buffer</summary>
@@ -499,7 +511,7 @@ namespace saga::inline deserializers
 
 		output = static_cast<unsigned long>(mid);
 
-		return buffer + 4;
+		return buffer + sizeof(unsigned long);
 	}
 
 	/// <summary>Read an utf-32 character from the byte buffer</summary>
@@ -516,7 +528,7 @@ namespace saga::inline deserializers
 
 		output = static_cast<char32_t>(mid);
 
-		return buffer + 4;
+		return buffer + sizeof(char32_t);
 	}
 
 	/// <summary>Read a 64-bit integer value from the byte buffer</summary>
@@ -535,7 +547,7 @@ namespace saga::inline deserializers
 			| (static_cast<uint64>(static_cast<uint8>(buffer[1])) << 8U)
 			| static_cast<uint64>(static_cast<uint8>(buffer[0])));
 
-		return buffer + 8;
+		return buffer + sizeof(int64);
 	}
 
 	/// <summary>Read an unsigned 64-bit integer value from the byte buffer</summary>
@@ -554,7 +566,7 @@ namespace saga::inline deserializers
 			| (static_cast<uint64>(static_cast<uint8>(buffer[1])) << 8U)
 			| static_cast<uint64>(static_cast<uint8>(buffer[0]));
 
-		return buffer + 8;
+		return buffer + sizeof(uint64);
 	}
 
 	/// <summary>Read a 32-bit floating point value from the byte buffer</summary>
