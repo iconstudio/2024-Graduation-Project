@@ -455,6 +455,12 @@ USagaNetworkSubSystem::SendRequestMembersPacket()
 }
 
 int32
+USagaNetworkSubSystem::SendChangeTeamPacket(int32 user_id, bool is_red_team)
+{
+	return saga::SendChangeTeamPacket(clientSocket, is_red_team).value_or(0);
+}
+
+int32
 USagaNetworkSubSystem::SendGameStartPacket()
 {
 	return saga::SendGameStartPacket(clientSocket).value_or(0);
