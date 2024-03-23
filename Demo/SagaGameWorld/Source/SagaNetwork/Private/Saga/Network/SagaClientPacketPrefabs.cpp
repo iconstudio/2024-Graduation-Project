@@ -85,3 +85,7 @@ saga::cs::CS_SignInPacket::Read(const std::byte* buffer)
 IMPL_SERIALIZE_METHOD(saga::cs::CS_EnterRoomPacket, roomId);
 IMPL_READ_METHODS(saga::cs::CS_EnterRoomPacket, roomId);
 IMPL_WRITE_METHODS_V1(saga::cs::CS_EnterRoomPacket, roomId);
+
+IMPL_SERIALIZE_METHOD(saga::cs::CS_SetTeamPacket, teamId);
+IMPL_READ_METHODS(saga::cs::CS_SetTeamPacket, teamId);
+IMPL_WRITE_METHODS_V1(saga::cs::CS_SetTeamPacket, teamId);
