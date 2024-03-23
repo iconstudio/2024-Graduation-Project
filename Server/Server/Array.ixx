@@ -1,12 +1,12 @@
 module;
 #include <stdexcept>
-#include <memory>
-#include <ranges>
 
 export module Iconer.Collection.Array;
 export import :ArrayIterator;
 import Iconer.Utility.Constraints;
-export import <initializer_list>;
+import <memory>;
+import <ranges>;
+import <initializer_list>;
 
 export namespace std
 {
