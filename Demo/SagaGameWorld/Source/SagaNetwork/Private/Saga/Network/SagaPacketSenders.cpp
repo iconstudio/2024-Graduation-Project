@@ -109,6 +109,35 @@ saga::SendRequestMembersPacket(FSocket* socket)
 }
 
 std::optional<int32>
+saga::SendChangeTeamPacket(FSocket* socket, bool is_red_team)
+{
+	if (is_red_team)
+	{
+		static constexpr saga::CS_SetTeamPacket pk1{ 0 };
+		static auto ptr = pk1.Serialize();
+
+		const int32 sent_bytes = saga::RawSend(socket, ptr.get(), pk1.WannabeSize());
+		if (0 < sent_bytes)
+		{
+			return sent_bytes;
+		}
+	}
+	else
+	{
+		static constexpr saga::CS_SetTeamPacket pk2{ 1 };
+		static auto ptr = pk2.Serialize();
+
+		const int32 sent_bytes = saga::RawSend(socket, ptr.get(), pk2.WannabeSize());
+		if (0 < sent_bytes)
+		{
+			return sent_bytes;
+		}
+	}
+
+	return std::nullopt;
+}
+
+std::optional<int32>
 saga::SendGameStartPacket(FSocket* socket)
 {
 	static constexpr saga::CS_GameStartPacket pk{};

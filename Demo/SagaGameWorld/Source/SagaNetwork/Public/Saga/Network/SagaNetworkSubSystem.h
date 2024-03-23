@@ -155,6 +155,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	int32 SendRequestMembersPacket();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
+	int32 SendChangeTeamPacket(int32 user_id, bool is_red_team);
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	int32 SendGameStartPacket();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	int32 SendGameIsLoadedPacket();
