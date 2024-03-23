@@ -1,8 +1,7 @@
 module;
-#include <memory>
-
 export module Iconer.Application.BorrowedSendContext;
 import Iconer.Application.BlobSendContext;
+import <memory>;
 
 export namespace iconer::app
 {
