@@ -20,7 +20,7 @@ public:
 	uint8 bIsNPCAround = 0;
 
 private:
-	int8 bIsRiding;
+	int8 bIsRiding = false;
 
 protected:
 	virtual void BeginPlay() override;
@@ -101,15 +101,29 @@ protected:
 	/*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<class UInputAction> SprintReleaseAction;*/
 
-	void ShoulderMove(const FInputActionValue& Value);
-	void ShoulderLook(const FInputActionValue& Value);
+	void StartShoulderMove(const FInputActionValue& Value);
+	void EndShoulderMove(const FInputActionValue& Value);
 
-	void QuaterMove(const FInputActionValue& Value);
+	void StartQuaterMove(const FInputActionValue& Value);
+	void EndQuaterMove(const FInputActionValue& Value);
+
+	void ExecuteMove();
+	void TerminateMove();
+
+	void ShoulderLook(const FInputActionValue& Value);
+	
 
 	ECharacterControlType CurrentCharacterControlType;
 
-	void Attack();
+	void StartAttack();
+	void EndAttack();
 
-	void OnStartSprinting();
-	void OnStopSprinting();
+	void ExecuteAttack();
+	void TerminateAttack();
+
+	void StartSprinting();
+	void StopSprinting();
+
+	void ExecuteSprinting();
+	void TerminateSprinting();
 };
