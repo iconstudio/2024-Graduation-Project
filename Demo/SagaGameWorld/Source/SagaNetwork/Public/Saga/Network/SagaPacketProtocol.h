@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 
 #include "SagaPacketProtocol.generated.h"
 
@@ -7,6 +7,7 @@ UENUM(BlueprintType)
 enum class [[nodiscard]] EPacketProtocol : uint8
 {
 	UNKNOWN = 0,
+
 	CS_SIGNIN,
 	CS_SIGNOUT,
 	CS_SIGNUP,
@@ -35,6 +36,7 @@ enum class [[nodiscard]] EPacketProtocol : uint8
 	CS_RPC,
 	CS_GAME_LOADED,
 	CS_READY,
+	CS_SET_TEAM,
 
 	SC_SIGNIN_SUCCESS = 120,
 	SC_SIGNIN_FAILURE,
@@ -78,4 +80,5 @@ enum class [[nodiscard]] EPacketProtocol : uint8
 	SC_REMOVE_PLAYER,
 	SC_GAME_GETTING_READY,
 	SC_FAILED_GAME_START,
+	SC_SET_TEAM,
 };

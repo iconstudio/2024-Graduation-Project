@@ -157,6 +157,19 @@ const
 }
 
 iconer::app::User::BorrowedIoResult
+iconer::app::User::SendChangeTeamPacket(bool is_red_team)
+const
+{
+	static constinit packets::SC_SetTeamPacket pk{};
+	static const auto buffer = pk.Serialize();
+	static constexpr auto size = packets::SC_SetTeamPacket::WannabeSize();
+
+	auto ctx = SendContextPool::Pop();
+
+	return { mySocket.Send(*ctx, buffer.get(), size), std::move(ctx) };
+}
+
+iconer::app::User::BorrowedIoResult
 iconer::app::User::SendMakeGameReadyPacket()
 const
 {

@@ -31,11 +31,6 @@ demo::Worker(demo::Framework& framework, size_t nth)
 		if (not framework.RouteEvent(io_event.isSucceed, io_id, io_bytes, ctx)) [[unlikely]] {
 			break;
 		};
-
-		if (ctx)
-		{
-			ctx->Clear();
-		}
 	}
 
 	logger.DebugLog(iconer::app::GetResourceString<2>(), nth);

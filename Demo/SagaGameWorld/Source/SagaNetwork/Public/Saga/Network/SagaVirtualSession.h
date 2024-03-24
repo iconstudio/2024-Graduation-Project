@@ -1,7 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
-#include "Containers/UnrealString.h"
-#include "Templates/UnrealTemplate.h"
+#include "SagaNetwork.h"
 
 #include "SagaVirtualSession.generated.h"
 
@@ -62,9 +60,9 @@ public:
 		return MyName;
 	}
 
-	UPROPERTY(VisibleAnywhere, meta = (NoResetToDefault, NoSpinbox = true, ClampMin = 2, UIMin = 2, ClampMax = 21, UIMax = 21))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (NoResetToDefault, NoSpinbox = true, ClampMin = 2, UIMin = 2, ClampMax = 21, UIMax = 21))
 	int32 MyID;
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString MyName;
 };
 

@@ -1,10 +1,10 @@
 #pragma once
-#include "CoreMinimal.h"
-
 #include "Saga/Network/SagaVirtualSession.h"
+
 #include "SagaVirtualUser.generated.h"
 
 class ASagaCharacterPlayer;
+enum class EUserTeam : uint8;
 
 USTRUCT(BlueprintType, Atomic, Category = "CandyLandSaga|Level|UI|Element")
 struct SAGANETWORK_API FSagaVirtualUser : public FSagaVirtualSession
@@ -16,4 +16,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Network|Session")
 	ASagaCharacterPlayer* ownedCharacter;
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "CandyLandSaga|Network|Session")
+	EUserTeam myTeam;
 };
