@@ -44,30 +44,18 @@ export namespace iconer::app
 
 		explicit User() = default;
 
+		template<typename ForwardedId>
 		[[nodiscard]]
-		explicit User(const IdType& id, iconer::net::Socket&& socket)
-			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_move_constructibles<iconer::net::Socket>)
-			: Super(id)
+		explicit User(ForwardedId&& id, iconer::net::Socket&& socket)
+			noexcept(nothrow_constructible<Super, ForwardedId> and nothrow_move_constructibles<iconer::net::Socket>)
+			: Super(std::forward<ForwardedId>(id))
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
 			, roomContext(), myRoomId(-1), isRidingGuardian(false)
 			, myTeamId(Team::Unknown), myWeaponId(0)
 			, requestContext(AsyncOperations::OpNotifyRoom)
 			, requestMemberContext(AsyncOperations::OpNotifyMember)
-			, myTransform()
-			, preSignInPacket(), preRoomCreationPacket()
-		{
-		}
-
-		[[nodiscard]]
-		explicit User(IdType&& id, iconer::net::Socket&& socket)
-			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_move_constructibles<iconer::net::Socket>)
-			: Super(std::move(id))
-			, mySocket(std::exchange(socket, iconer::net::Socket{}))
-			, recvOffset(0)
-			, roomContext(), myRoomId(-1)
-			, requestContext(AsyncOperations::OpNotifyRoom)
-			, requestMemberContext(AsyncOperations::OpNotifyMember)
+			, gameContext(AsyncOperations::OpCreateGame)
 			, myTransform()
 			, preSignInPacket(), preRoomCreationPacket()
 		{
@@ -453,6 +441,7 @@ export namespace iconer::app
 
 		IContext roomContext;
 		IContext requestContext, requestMemberContext;
+		IContext gameContext;
 		iconer::util::MovableAtomic<IdType> myRoomId;
 		glm::mat4 myTransform;
 
