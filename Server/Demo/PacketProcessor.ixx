@@ -29,6 +29,7 @@ export namespace demo
 	void OnLeaveRoom(Framework& framework, iconer::app::User& user);
 	void OnGameStartSignal(Framework& framework, iconer::app::User& user);
 	void OnGameLoadedSignal(Framework& framework, iconer::app::User& user);
+	void OnTeamChanged(Framework& framework, iconer::app::User& user, bool is_red_team);
 	void OnReceivePosition(Framework& framework, iconer::app::User& user, float x, float y, float z);
 	void OnReceiveRotation(Framework& framework, iconer::app::User& user, float roll, float yaw, float pitch);
 }

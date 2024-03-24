@@ -215,6 +215,11 @@ demo::OnGameLoadedSignal(demo::Framework& framework, iconer::app::User& user)
 }
 
 void
+demo::OnTeamChanged(demo::Framework& framework, iconer::app::User& user, bool is_red_team)
+{
+}
+
+void
 demo::OnReceivePosition(demo::Framework& framework, iconer::app::User& user, float x, float y, float z)
 {
 	user.PositionX(x);
@@ -226,11 +231,11 @@ demo::OnReceivePosition(demo::Framework& framework, iconer::app::User& user, flo
 
 	room->ForEach([&user, x, y, z](iconer::app::User& member)
 		{
-		auto [io, ctx] = member.SendPositionPacket(user.GetID(), x, y, z);
-		if (not io)
-		{
-			ctx.Complete();
-		}
+			auto [io, ctx] = member.SendPositionPacket(user.GetID(), x, y, z);
+			if (not io)
+			{
+				ctx.Complete();
+			}
 		}
 	);
 }
@@ -431,9 +436,13 @@ demo::PacketProcessor(demo::Framework& framework
 		{
 		}
 		break;
-		
+
 		case iconer::app::PacketProtocol::CS_SET_TEAM:
 		{
+			std::int8_t team_id{};
+			iconer::util::Deserialize(last_buf, team_id);
+
+			OnTeamChanged(framework, user, team_id == 0);
 		}
 		break;
 
