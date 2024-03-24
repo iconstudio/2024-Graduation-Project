@@ -88,7 +88,7 @@ ASagaCharacterPlayer::ASagaCharacterPlayer()
 		InteractionWithNPC = InteractWithNPCRef.Object;
 	}
 
-	CurrentCharacterControlType = ECharacterControlType::Quater;
+	CurrentCharacterControlType = ECharacterControlType::Shoulder;
 }
 
 void ASagaCharacterPlayer::BeginPlay()
@@ -109,18 +109,20 @@ void ASagaCharacterPlayer::SetupPlayerInputComponent(class UInputComponent* Play
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 	EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	EnhancedInputComponent->BindAction(ChangeControlAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::ChangeCharacterControl);
-	EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::ShoulderMove);
+	EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::StartShoulderMove);
+	EnhancedInputComponent->BindAction(ShoulderMoveAction, ETriggerEvent::Completed, this, &ASagaCharacterPlayer::EndShoulderMove);
 	EnhancedInputComponent->BindAction(ShoulderLookAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::ShoulderLook);
-	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::QuaterMove);
-	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::Attack);
+	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::StartQuaterMove);
+	EnhancedInputComponent->BindAction(QuaterMoveAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::EndQuaterMove);
+	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::StartAttack);
+	EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Completed, this, &ASagaCharacterPlayer::EndAttack);
 
 	//달리기
-	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ASagaCharacterPlayer::OnStartSprinting);
-	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASagaCharacterPlayer::OnStopSprinting);
+	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &ASagaCharacterPlayer::StartSprinting);
+	EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &ASagaCharacterPlayer::StopSprinting);
 	
 	//NPC와 상호작용
 	EnhancedInputComponent->BindAction(InteractionWithNPC, ETriggerEvent::Triggered, this, &ASagaCharacterPlayer::GetOnNPC);
-
 }
 
 void ASagaCharacterPlayer::Tick(float DeltaSeconds)
@@ -206,8 +208,9 @@ void ASagaCharacterPlayer::SetCharacterControlData(const USagaCharacterControlDa
 	CameraBoom->bDoCollisionTest = CharacterControlData->bDoCollisionTest;
 }
 
-void ASagaCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
+void ASagaCharacterPlayer::StartShoulderMove(const FInputActionValue& Value)
 {
+	ExecuteMove();
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	const FRotator Rotation = Controller->GetControlRotation();
@@ -220,6 +223,11 @@ void ASagaCharacterPlayer::ShoulderMove(const FInputActionValue& Value)
 	AddMovementInput(RightDirection, MovementVector.Y);
 }
 
+void ASagaCharacterPlayer::EndShoulderMove(const FInputActionValue& Value)
+{
+	TerminateMove();
+}
+
 void ASagaCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 {
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
@@ -228,8 +236,9 @@ void ASagaCharacterPlayer::ShoulderLook(const FInputActionValue& Value)
 	AddControllerPitchInput(LookAxisVector.Y);
 }
 
-void ASagaCharacterPlayer::QuaterMove(const FInputActionValue& Value)
+void ASagaCharacterPlayer::StartQuaterMove(const FInputActionValue& Value)
 {
+	ExecuteMove();
 	FVector2D MovementVector = Value.Get<FVector2D>();
 	
 	//movement벡터를 받아 크기를 1로 조정한뒤 Forward방향을 사용해 지정하면 movement component에서 설정한 옵션에 의해 캐릭터가 자동으로 이동하는 방향으로 회전하게 된다.
@@ -253,11 +262,40 @@ void ASagaCharacterPlayer::QuaterMove(const FInputActionValue& Value)
 
 }
 
-void ASagaCharacterPlayer::Attack()
+void ASagaCharacterPlayer::EndQuaterMove(const FInputActionValue& Value)
 {
-	ProcessComboCommand();
+	TerminateMove();
 }
 
+void ASagaCharacterPlayer::ExecuteMove()
+{
+
+}
+
+void ASagaCharacterPlayer::TerminateMove()
+{
+}
+
+void ASagaCharacterPlayer::StartAttack()
+{
+	ProcessComboCommand();
+	ExecuteAttack();
+}
+
+void ASagaCharacterPlayer::EndAttack()
+{
+	TerminateAttack();
+}
+
+void ASagaCharacterPlayer::ExecuteAttack()
+{
+
+}
+
+void ASagaCharacterPlayer::TerminateAttack()
+{
+
+}
 
 //void ASagaCharacterPlayer::InteractWithNPC()
 //{
@@ -277,38 +315,67 @@ void ASagaCharacterPlayer::Attack()
 //	}
 //}
 
-void ASagaCharacterPlayer::OnStartSprinting() //Shift로 달리기
+void ASagaCharacterPlayer::StartSprinting() //Shift로 달리기
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Started Sprinting"));
 	GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
+	ExecuteSprinting();
 }
 
-void ASagaCharacterPlayer::OnStopSprinting() //Shift 안누를시 달리기 해제
+void ASagaCharacterPlayer::StopSprinting() //Shift 안누를시 달리기 해제
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Stopped Sprinting"));
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	TerminateSprinting();
+}
+
+void ASagaCharacterPlayer::ExecuteSprinting()
+{
+
+}
+
+void ASagaCharacterPlayer::TerminateSprinting()
+{
+
 }
 
 void ASagaCharacterPlayer::GetOnNPC()
 {
 	//오버랩 된 NPC를 가져온 뒤 해당 NPC로 플레이어의 입력을 전달해야 함!!! 구현할 것.
-
-	
-	if (NearbyNPC && bIsNPCAround == 1)
+	if (bIsRiding)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("GettingOnNPC"));
-		AttachToActor(NearbyNPC, FAttachmentTransformRules::KeepWorldTransform);
-		// SnapToTargetIncludingScale을 사용하여 대상의 위치, 회전, 스케일을 그대로 따르도록 함
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
-		AttachToActor(NearbyNPC, AttachmentRules, TEXT("clavicle_r"));
+		// Detach 로직작성하기
+		DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+		UE_LOG(LogTemp, Warning, TEXT("Getting off from NPC"));
 
-
-		APlayerController* PlayerController = Cast<APlayerController>(GetController());
-		if (PlayerController)
+		// NPC 클래스에 구현된 DetachPlayer 함수를 호출
+		if (NearbyNPC)
 		{
-			PlayerController->Possess(NearbyNPC);
+			NearbyNPC->DetachPlayer(Cast<APlayerController>(GetController()), this);
+		}
+
+		bIsRiding = false;
+	}
+	else {
+		if (NearbyNPC && bIsNPCAround == 1)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("GettingOnNPC"));
+			//AttachToActor(NearbyNPC, FAttachmentTransformRules::KeepWorldTransform);
+			// SnapToTargetIncludingScale을 사용하여 대상의 위치, 회전, 스케일을 그대로 따르도록 함
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+			AttachToActor(NearbyNPC, AttachmentRules, TEXT("clavicle_r"));
+
+
+			APlayerController* PlayerController = Cast<APlayerController>(GetController());
+			if (PlayerController)
+			{
+				PlayerController->Possess(NearbyNPC);
+			}
+			bIsRiding = true;
 		}
 	}
+	
+	
 
 	UE_LOG(LogTemp, Warning, TEXT("OnNPC"));
 }

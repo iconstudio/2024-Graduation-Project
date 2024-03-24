@@ -39,6 +39,14 @@ ASagaCharacterNPC::InteractWithMe()
 	UE_LOG(LogTemp, Warning, TEXT("Interacted With NPC"));
 }
 
+void ASagaCharacterNPC::DetachPlayer(APlayerController* PlayerController, APawn* OriginalPlayerPawn)
+{
+	if (PlayerController && OriginalPlayerPawn)
+	{
+		PlayerController->Possess(OriginalPlayerPawn);
+	}
+}
+
 void
 ASagaCharacterNPC::SetDead() //NPC 사망처리
 {
