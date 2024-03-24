@@ -51,12 +51,13 @@ export namespace iconer::app
 			: Super(std::forward<ForwardedId>(id))
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
-			, roomContext(), myRoomId(-1), isRidingGuardian(false)
-			, myTeamId(Team::Unknown), myWeaponId(0)
+			, roomContext()
 			, requestContext(AsyncOperations::OpNotifyRoom)
 			, requestMemberContext(AsyncOperations::OpNotifyMember)
 			, gameContext(AsyncOperations::OpCreateGame)
 			, myTransform()
+			, myRoomId(-1), myTeamId(Team::Unknown), myWeaponId(0)
+			, isRidingGuardian(false)
 			, preSignInPacket(), preRoomCreationPacket()
 		{
 		}
@@ -442,9 +443,9 @@ export namespace iconer::app
 		IContext roomContext;
 		IContext requestContext, requestMemberContext;
 		IContext gameContext;
-		iconer::util::MovableAtomic<IdType> myRoomId;
-		glm::mat4 myTransform;
 
+		glm::mat4 myTransform;
+		iconer::util::MovableAtomic<IdType> myRoomId;
 		iconer::util::MovableAtomic<Team> myTeamId;
 		iconer::util::MovableAtomic<std::uint8_t> myWeaponId;
 		iconer::util::MovableAtomic<bool> isRidingGuardian;
