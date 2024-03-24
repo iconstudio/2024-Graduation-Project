@@ -452,11 +452,19 @@ demo::Framework::RouteEvent(bool is_succeed
 			ctx->Clear();
 
 			// TODO
-
-			// NOTICE: just start game now
-
-			auto sender = static_cast<iconer::app::BorrowedSendContext*>(ctx);
-			sender->ReturnToBase();
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUser {}'s operation of preparing the game has failed!\n", user_id);
+			}
+			else if (not OnGameIsLoaded(*user))
+			{
+				// NOTICE: just start game now
+				myLogger.LogError(L"\tUser {} has failed on preparing the game\n", user_id);
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} preparing the game has completed\n", user_id);
+			}
 		}
 		break;
 

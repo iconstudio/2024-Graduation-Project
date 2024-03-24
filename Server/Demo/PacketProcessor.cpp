@@ -3,6 +3,7 @@ module Demo.PacketProcessor;
 import Iconer.Utility.Chronograph;
 import Iconer.Application.RoomContract;
 import Iconer.Application.User;
+import Iconer.Application.Room;
 import Demo.Framework;
 
 #define SEND(user_var, method, ...)\
@@ -169,7 +170,7 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 {
 	if (user.myRoomId == -1)
 	{
-		// cannot start a game: The client is not in a room
+		// cannot prepare the game: The client is not in a room
 		SEND(user, SendCannotStartGamePacket, 0);
 	}
 	else if (auto room = framework.FindRoom(user.myRoomId); nullptr != room)
@@ -177,12 +178,12 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 		IGNORE_DISCARDED_BEGIN;
 		if (not user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
 		{
-			// cannot start a game: The client is busy
+			// cannot prepare the game: The client is busy
 			SEND(user, SendCannotStartGamePacket, 2);
 		}
 		else if (not room->CanStartGame())
 		{
-			// cannot start a game: The room is lack of members
+			// cannot prepare the game: The room is lack of members
 			SEND(user, SendCannotStartGamePacket, 3);
 		}
 		else
@@ -193,7 +194,7 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 				// rollback
 				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
 
-				// cannot start a game: server error
+				// cannot prepare the game: server error
 				SEND(user, SendCannotStartGamePacket, 1000);
 			}
 		}
@@ -201,7 +202,7 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 	}
 	else
 	{
-		// cannot start a game: The client has a invalid room
+		// cannot prepare the game: The client has a invalid room
 		SEND(user, SendCannotStartGamePacket, 1);
 	}
 }
@@ -209,6 +210,37 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 void
 demo::OnGameLoadedSignal(demo::Framework& framework, iconer::app::User& user)
 {
+	if (user.myRoomId == -1)
+	{
+		// cannot start a game: The client is not in a room
+		SEND(user, SendCannotStartGamePacket, 0);
+	}
+	else if (framework.FindRoom(user.myRoomId) != nullptr)
+	{
+		// this client is ready for game, mark actually ready
+		if (not user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
+		{
+			if (not framework.Schedule(user.loadingContext, user.GetID()))
+			{
+				// rollback
+				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+
+				// cannot prepare the game: server error
+				SEND(user, SendCannotStartGamePacket, 1000);
+			}
+		}
+		else
+		{
+			// cannot prepare the game: The client is busy
+			SEND(user, SendCannotStartGamePacket, 2);
+		}
+		//room->ReadyMember(user);
+	}
+	else
+	{
+		// cannot start a game: The client has a invalid room
+		SEND(user, SendCannotStartGamePacket, 1);
+	}
 }
 
 void

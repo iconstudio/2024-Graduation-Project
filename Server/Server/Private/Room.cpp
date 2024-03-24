@@ -235,6 +235,32 @@ volatile noexcept
 	return result;
 }
 
+size_t
+iconer::app::Room::UnreadyMember(iconer::app::User& user)
+volatile noexcept
+{
+	size_t result{};
+	for (auto& [member, is_ready] : myMembers)
+	{
+		if (nullptr != member)
+		{
+			if (user.GetID() == member->GetID())
+			{
+				if (is_ready.CompareAndSet(true, false))
+				{
+					++result;
+				}
+				else if (is_ready)
+				{
+					++result;
+				}
+			}
+		}
+	}
+
+	return result;
+}
+
 void
 iconer::app::Room::ClearMembers()
 volatile noexcept
@@ -249,12 +275,16 @@ volatile noexcept
 	Dirty(true);
 }
 
-void iconer::app::Room::Dirty(bool flag) volatile noexcept
+void
+iconer::app::Room::Dirty(bool flag) 
+volatile noexcept
 {
 	isMemberUpdated = flag;
 }
 
-bool iconer::app::Room::Dirty() volatile noexcept
+bool
+iconer::app::Room::Dirty()
+const volatile noexcept
 {
 	return isMemberUpdated;
 }
