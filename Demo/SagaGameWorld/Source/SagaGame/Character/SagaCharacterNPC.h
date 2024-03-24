@@ -24,6 +24,8 @@ public:
 
 	virtual void InteractWithMe() override;
 
+	void DetachPlayer(APlayerController* PlayerController, APawn* OriginalPlayerPawn);
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Game|NPC")
 	TSubclassOf<UUserWidget> NPCInteractionWidget;
