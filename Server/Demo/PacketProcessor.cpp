@@ -224,13 +224,15 @@ demo::OnReceivePosition(demo::Framework& framework, iconer::app::User& user, flo
 	auto room_id = user.myRoomId.Load();
 	auto room = framework.FindRoom(room_id);
 
-	room->ForEach([&user, x, y, z](iconer::app::User& member) {
+	room->ForEach([&user, x, y, z](iconer::app::User& member)
+		{
 		auto [io, ctx] = member.SendPositionPacket(user.GetID(), x, y, z);
 		if (not io)
 		{
 			ctx.Complete();
 		}
-		});
+		}
+	);
 }
 
 void
