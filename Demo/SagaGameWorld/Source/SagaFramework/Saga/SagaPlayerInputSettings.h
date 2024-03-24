@@ -10,31 +10,31 @@ class SAGAFRAMEWORK_API USagaPlayerInputSettings : public UBlueprintFunctionLibr
 	GENERATED_BODY()
 
 public:
-	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	static FKey GetMoveForwardKey() noexcept
 	{
 		return "W";
 	}
 
-	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	static FKey GetMoveBackwardKey() noexcept
 	{
 		return "S";
 	}
 
-	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	static FKey GetMoveLeftKey() noexcept
 	{
 		return "A";
 	}
 
-	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	static FKey GetMoveRightKey() noexcept
 	{
 		return "D";
 	}
 
-	[[nodiscard]] UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
+	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	static FKey GetJumpKey() noexcept
 	{
 		return "SpaceBar";

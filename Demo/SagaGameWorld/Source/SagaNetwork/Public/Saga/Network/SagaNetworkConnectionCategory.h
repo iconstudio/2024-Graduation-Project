@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 
 #include "SagaNetworkConnectionCategory.generated.h"
 

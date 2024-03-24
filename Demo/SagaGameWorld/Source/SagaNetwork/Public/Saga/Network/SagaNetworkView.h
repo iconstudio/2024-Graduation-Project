@@ -1,5 +1,5 @@
 #pragma once
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 #include "UObject/Interface.h"
 
 #include "Saga/Network/SagaConnectionContract.h"
@@ -57,6 +57,9 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnFailedToStartGame(int32 reason);
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
+	void OnTeamChanged(int32 user_id, bool is_red_team);
+	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnBeginPrepareGame();
 

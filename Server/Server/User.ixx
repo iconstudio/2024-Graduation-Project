@@ -17,6 +17,11 @@ import <span>;
 
 export namespace iconer::app
 {
+	enum class Team
+	{
+		Unknown, Red, Blue
+	};
+
 	enum class [[nodiscard]] UserStates
 	{
 		None
@@ -45,7 +50,8 @@ export namespace iconer::app
 			: Super(id)
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
-			, roomContext(), myRoomId(-1)
+			, roomContext(), myRoomId(-1), isRidingGuardian(false)
+			, myTeamId(Team::Unknown), myWeaponId(0)
 			, requestContext(AsyncOperations::OpNotifyRoom)
 			, requestMemberContext(AsyncOperations::OpNotifyMember)
 			, myTransform()
@@ -116,6 +122,9 @@ export namespace iconer::app
 			myName.clear();
 			recvOffset = 0;
 			myRoomId = -1;
+			myTeamId = Team::Unknown;
+			myWeaponId = 0;
+			isRidingGuardian = false;
 		}
 
 		template<size_t Size>
@@ -150,6 +159,7 @@ export namespace iconer::app
 		/// <param name="who">- Not only local client</param>
 		BorrowedIoResult SendRoomLeftPacket(IdType who, bool is_self) const;
 		BorrowedIoResult SendCannotStartGamePacket(int reason) const;
+		BorrowedIoResult SendChangeTeamPacket(bool is_red_team) const;
 		BorrowedIoResult SendMakeGameReadyPacket() const;
 		BorrowedIoResult SendGameJustStartedPacket() const;
 
@@ -446,7 +456,7 @@ export namespace iconer::app
 		iconer::util::MovableAtomic<IdType> myRoomId;
 		glm::mat4 myTransform;
 
-		iconer::util::MovableAtomic<std::uint8_t> myRoommyTeamId;
+		iconer::util::MovableAtomic<Team> myTeamId;
 		iconer::util::MovableAtomic<std::uint8_t> myWeaponId;
 		iconer::util::MovableAtomic<bool> isRidingGuardian;
 

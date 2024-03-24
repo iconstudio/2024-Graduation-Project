@@ -1,7 +1,5 @@
 #include "Saga/Network/SagaPacketProcessor.h"
 
-#include "Saga/Network/SagaNetworkSystem.h"
-#include "Saga/Network/SagaNetworkUtility.h"
 #include "Saga/Network/SagaServerPacketPrefabs.h"
 
 const std::byte*
@@ -47,8 +45,7 @@ saga::ReceiveRoomCreatedPacket(const std::byte* buffer
 
 const std::byte*
 saga::ReceiveRoomCreationFailedPacket(const std::byte* buffer
-	, saga::
-	RoomContract& error)
+	, ERoomContract& error)
 {
 	auto seek = buffer;
 
@@ -78,7 +75,7 @@ saga::ReceiveRoomJoinedPacket(const std::byte* buffer
 
 const std::byte*
 saga::ReceiveRoomJoinFailedPacket(const std::byte* buffer
-	, saga::RoomContract& error)
+	, ERoomContract& error)
 {
 	auto seek = buffer;
 

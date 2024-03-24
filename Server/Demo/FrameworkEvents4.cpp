@@ -40,6 +40,7 @@ demo::Framework::OnCreateGame(iconer::app::User& user)
 	{
 		// rollback
 		room->TryCancelReady();
+		user.myRoomId = -1;
 
 		return false;
 	}

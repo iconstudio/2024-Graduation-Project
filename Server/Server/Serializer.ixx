@@ -613,7 +613,7 @@ export namespace iconer::util
 	{
 		output = std::bit_cast<char>(buffer[0]);
 
-		return buffer + 1;
+		return buffer + sizeof(bool);
 	}
 
 	/// <summary>Read a character from the byte buffer</summary>
@@ -623,7 +623,17 @@ export namespace iconer::util
 	{
 		output = std::bit_cast<char>(buffer[0]);
 
-		return buffer + 1;
+		return buffer + sizeof(char);
+	}
+
+	/// <summary>Read a signed character from the byte buffer</summary>
+	/// <returns>last buffer pointer after read dest</returns>
+	/// <exception cref="std::out_of_range"/>
+	constexpr const std::byte* Deserialize(const std::byte* buffer, signed char& output)
+	{
+		output = std::bit_cast<signed char>(buffer[0]);
+
+		return buffer + sizeof(signed char);
 	}
 
 	/// <summary>Read an unsigned character from the byte buffer</summary>
@@ -633,7 +643,7 @@ export namespace iconer::util
 	{
 		output = std::bit_cast<unsigned char>(buffer[0]);
 
-		return buffer + 1;
+		return buffer + sizeof(unsigned char);
 	}
 
 	/// <summary>Read an utf-8 character from the byte buffer</summary>

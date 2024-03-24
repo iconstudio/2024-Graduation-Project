@@ -2,7 +2,7 @@
 #ifndef SAGAFRAMEWORK_NET_PACKET_SENDERS_H
 #define SAGAFRAMEWORK_NET_PACKET_SENDERS_H
 
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 #include <optional>
 
 namespace saga
@@ -14,6 +14,7 @@ namespace saga
 	std::optional<int32> SendRequestVersionPacket(FSocket* socket);
 	std::optional<int32> SendRequestRoomsPacket(FSocket* socket);
 	std::optional<int32> SendRequestMembersPacket(FSocket* socket);
+	std::optional<int32> SendChangeTeamPacket(FSocket* socket, bool is_red_team);
 	std::optional<int32> SendGameStartPacket(FSocket* socket);
 	std::optional<int32> SendGameIsLoadedPacket(FSocket* socket);
 	std::optional<int32> SendPositionPacket(FSocket* socket, float x, float y, float z);

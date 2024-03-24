@@ -17,12 +17,12 @@ noexcept
 	return ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLastErrorCode();
 }
 
-const TCHAR*
+FString
 saga::GetLastErrorContents()
-noexcept
 {
 	auto err_code = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLastErrorCode();
-	return ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetSocketError(err_code);
+
+	return FString{ ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetSocketError(err_code) };
 }
 
 TSharedRef<FInternetAddr>

@@ -120,6 +120,12 @@ export namespace iconer::app::packets::inline sc
 		long long rpcArgument;
 	};
 	/// <summary>
+	/// Team setter packet for server
+	/// </summary>
+	/// <param name="teamId">Team's id of user</param>
+	/// <remarks>Aerver would send it to the client</remarks>
+	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(SC_SetTeamPacket, PacketProtocol::SC_SET_TEAM, std::int8_t, teamId, team_id, 0);
+	/// <summary>
 	/// Getting game ready notification packet for server
 	/// </summary>
 	/// <remarks>Server would send it to the client</remarks>

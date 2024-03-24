@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "CoreMinimal.h"
+#include "SagaNetwork.h"
 #include <cstdint>
 #include <string>
 #include <string_view>
