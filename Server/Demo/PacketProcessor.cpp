@@ -187,14 +187,11 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 		}
 		else
 		{
-			user.roomContext.SetOperation(iconer::app::AsyncOperations::OpCreateGame);
-
 			// make clients getting ready for game
-			if (not framework.Schedule(user.roomContext, user.GetID()))
+			if (not framework.Schedule(user.gameContext, user.GetID()))
 			{
 				// rollback
 				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
-				user.roomContext.SetOperation(iconer::app::AsyncOperations::None);
 
 				// cannot start a game: server error
 				SEND(user, SendCannotStartGamePacket, 1000);
