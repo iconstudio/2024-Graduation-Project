@@ -360,6 +360,12 @@
     <ClCompile Include="RoomBase.ixx">
       <Filter>Collection</Filter>
     </ClCompile>
+    <ClCompile Include="NativeTimer.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\NativeTimer.cpp">
+      <Filter>Application\Implementain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="..\Server.natvis" />

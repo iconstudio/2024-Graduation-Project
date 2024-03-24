@@ -213,8 +213,17 @@ export namespace demo
 		[[nodiscard]] IoResult OnNotifyRoomsList(iconer::app::User& user);
 		[[nodiscard]] bool OnNotifyMemberOfRoom(iconer::app::User& user) noexcept;
 		void OnFailedNotifyRoomMember(iconer::app::User& user) noexcept;
+		/// <summary>
+		/// 방장이 게임 시작 메시지를 보내면 실행
+		/// </summary>
+		/// <param name="user">방장</param>
 		[[nodiscard]] bool OnCreateGame(iconer::app::User& user);
 		void OnFailedToCreateGame(iconer::app::User& user) noexcept;
+		/// <summary>
+		/// 각 클라이언트의 게임 로딩을 완료 시 실행
+		/// </summary>
+		/// <param name="user">방의 각각의 멤버</param>
+		[[nodiscard]] bool OnGameIsLoaded(iconer::app::User& user);
 		[[nodiscard]]
 		AcceptResult OnUserDisconnected(iconer::app::User& user);
 

@@ -54,7 +54,7 @@ export namespace iconer::app
 			, roomContext()
 			, requestContext(AsyncOperations::OpNotifyRoom)
 			, requestMemberContext(AsyncOperations::OpNotifyMember)
-			, gameContext(AsyncOperations::OpCreateGame)
+			, gameContext(AsyncOperations::OpCreateGame), loadingContext(AsyncOperations::OpReadyGame)
 			, myTransform()
 			, myRoomId(-1), myTeamId(Team::Unknown), myWeaponId(0)
 			, isRidingGuardian(false)
@@ -442,7 +442,7 @@ export namespace iconer::app
 
 		IContext roomContext;
 		IContext requestContext, requestMemberContext;
-		IContext gameContext;
+		IContext gameContext, loadingContext;
 
 		glm::mat4 myTransform;
 		iconer::util::MovableAtomic<IdType> myRoomId;

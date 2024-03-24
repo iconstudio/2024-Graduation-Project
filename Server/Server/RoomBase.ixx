@@ -91,6 +91,21 @@ export namespace iconer::app::detail
 		{
 			return TryChangeState(RoomStates::Ready, next_state);
 		}
+		
+		bool TryBeginGame() volatile noexcept
+		{
+			return TryChangeState(RoomStates::Ready, RoomStates::InGame);
+		}
+
+		bool TryCancelBeginGame(RoomStates next_state = RoomStates::Idle) volatile noexcept
+		{
+			return TryChangeState(RoomStates::Ready, next_state);
+		}
+		
+		bool TryCancelBeginGameInGame(RoomStates next_state = RoomStates::Idle) volatile noexcept
+		{
+			return TryChangeState(RoomStates::InGame, next_state);
+		}
 
 		void BeginClose() volatile noexcept
 		{
