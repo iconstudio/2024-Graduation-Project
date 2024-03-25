@@ -7,6 +7,7 @@
 
 #include "Saga/Network/SagaPacketProtocol.h"
 #include "Saga/Network/SagaConnectionContract.h"
+#include "Saga/Network/SagaGameContract.h"
 #include "Saga/Network/SagaVirtualRoom.h"
 #include "Saga/Network/SagaVirtualUser.h"
 #include "SagaNetworkSubSystem.generated.h"
@@ -24,6 +25,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnRespondVersion, const FS
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateRoomList, const TArray<FSagaVirtualRoom>&, list);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateUserList, const TArray<FSagaVirtualUser>&, list);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnFailedToStartGame, ESagaGameContract, reason);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnGetPreparedGame);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnStartGame);
 
@@ -193,6 +195,8 @@ public:
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnGetPreparedGame() const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnFailedToStartGame(ESagaGameContract reason) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnStartGame() const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnUpdatePosition(int32 user_id, float x, float y, float z) const;
@@ -245,6 +249,8 @@ public:
 	FSagaEventOnUpdateUserList OnUpdateMembers;
 
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
+	FSagaEventOnFailedToStartGame OnFailedToStartGame;
+	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnGetPreparedGame OnGetPreparedGame;
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnStartGame OnStartGame;
@@ -291,6 +297,8 @@ protected:
 	void OnUpdateMembers_Implementation(UPARAM(ref) const TArray<FSagaVirtualUser>& list);
 	UFUNCTION()
 	void OnGetPreparedGame_Implementation();
+	UFUNCTION()
+	void OnFailedToStartGame_Implementation(ESagaGameContract reason);
 	UFUNCTION()
 	void OnStartGame_Implementation();
 	UFUNCTION()
