@@ -8,7 +8,7 @@ saga::ReceiveSignInSucceedPacket(const std::byte* buffer, int32& my_id)
 	auto seek = buffer;
 
 	SC_SucceedSignInPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	my_id = pk.clientId;
 
@@ -22,7 +22,7 @@ saga::ReceiveSignInFailurePacket(const std::byte* buffer
 	auto seek = buffer;
 
 	SC_FailedSignInPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	error = pk.errCause;
 
@@ -36,7 +36,7 @@ saga::ReceiveRoomCreatedPacket(const std::byte* buffer
 	auto seek = buffer;
 
 	SC_RoomCreatedPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	room_id = pk.roomId;
 
@@ -50,7 +50,7 @@ saga::ReceiveRoomCreationFailedPacket(const std::byte* buffer
 	auto seek = buffer;
 
 	SC_RoomCreationFailedPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	error = pk.errCause;
 
@@ -65,7 +65,7 @@ saga::ReceiveRoomJoinedPacket(const std::byte* buffer
 	auto seek = buffer;
 
 	SC_RoomJoinedPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	client_id = pk.clientId;
 	room_id = pk.roomId;
@@ -80,7 +80,7 @@ saga::ReceiveRoomJoinFailedPacket(const std::byte* buffer
 	auto seek = buffer;
 
 	SC_RoomJoinFailedPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	error = pk.errCause;
 
@@ -94,7 +94,7 @@ saga::ReceiveRoomLeftPacket(const std::byte* buffer
 	auto seek = buffer;
 
 	SC_RoomLeftPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	client_id = pk.clientId;
 
@@ -108,7 +108,7 @@ saga::ReceiveRespondVersionPacket(const std::byte* buffer
 	auto seek = buffer;
 
 	SC_RespondVersionPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	std::copy(std::cbegin(pk.gameVersion), std::cend(pk.gameVersion), version_str_buffer);
 
@@ -122,7 +122,7 @@ saga::ReceiveRespondRoomsPacket(const std::byte* buffer
 	auto seek = buffer;
 
 	SC_RespondRoomsPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	rooms = std::move(pk.serializedRooms);
 
@@ -136,7 +136,7 @@ saga::ReceiveRespondUsersPacket(const std::byte* buffer
 	auto seek = buffer;
 
 	SC_RespondMembersPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	users = std::move(pk.serializedMembers);
 
@@ -151,12 +151,43 @@ saga::ReceivePositionPacket(const std::byte* buffer
 	auto seek = buffer;
 
 	SC_UpdatePositionPacket pk{};
-	pk.Read(buffer);
+	seek = pk.Read(buffer);
 
 	client_id = pk.clientId;
 	x = pk.x;
 	y = pk.y;
 	z = pk.z;
+
+	return seek;
+}
+
+const std::byte*
+saga::ReceiveRpcPacket(const std::byte* buffer
+	, int32& client_id, wchar_t(&contents)[10], long long& argument)
+{
+	auto seek = buffer;
+
+	SC_RpcPacket pk{};
+	seek = pk.Read(buffer);
+
+	client_id = pk.clientId;
+	std::copy(std::cbegin(pk.rpcScript), std::cend(pk.rpcScript), std::begin(contents));
+	argument = pk.rpcArgument;
+
+	return seek;
+}
+
+const std::byte*
+saga::ReceiveRpcPacket(const std::byte* buffer
+	, int32& client_id, wchar_t(&contents)[10])
+{
+	auto seek = buffer;
+
+	SC_RpcPacket pk{};
+	seek = pk.Read(buffer);
+
+	client_id = pk.clientId;
+	std::copy(std::cbegin(pk.rpcScript), std::cend(pk.rpcScript), std::begin(contents));
 
 	return seek;
 }
