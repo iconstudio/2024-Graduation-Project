@@ -3,6 +3,7 @@
 #include "UObject/Interface.h"
 
 #include "Saga/Network/SagaConnectionContract.h"
+#include "Saga/Network/SagaGameContract.h"
 #include "Saga/Network/SagaVirtualRoom.h"
 #include "Saga/Network/SagaVirtualUser.h"
 #include "SagaNetworkView.generated.h"
@@ -55,7 +56,7 @@ public:
 	void OnUpdatePosition(int32 id, float x, float y, float z);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
-	void OnFailedToStartGame(int32 reason);
+	void OnFailedToStartGame(ESagaGameContract reason);
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CandyLandSaga|Network|Event")
 	void OnTeamChanged(int32 user_id, bool is_red_team);
