@@ -165,13 +165,28 @@ demo::OnLeaveRoom(demo::Framework& framework, iconer::app::User& user)
 	}
 }
 
+namespace ESagaGameContract
+{
+	enum [[nodiscard]] Type : std::uint8_t
+	{
+		Unknown = 0
+		, NotInRoom
+		, ClientIsBusy // The client's state is unmatched
+		, LackOfMember
+		, InvalidRoom
+		, InvalidOperation // Room task is invalid
+		, UnstableRoom // Room's state is changed at time
+		, ServerError // Unknown internal error
+	};
+}
+
 void
 demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 {
 	if (user.myRoomId == -1)
 	{
 		// cannot prepare the game: The client is not in a room
-		SEND(user, SendCannotStartGamePacket, 0);
+		SEND(user, SendCannotStartGamePacket, ESagaGameContract::NotInRoom);
 	}
 	else if (auto room = framework.FindRoom(user.myRoomId); nullptr != room)
 	{
@@ -179,12 +194,12 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 		if (not user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
 		{
 			// cannot prepare the game: The client is busy
-			SEND(user, SendCannotStartGamePacket, 2);
+			SEND(user, SendCannotStartGamePacket, ESagaGameContract::ClientIsBusy);
 		}
 		else if (not room->CanStartGame())
 		{
 			// cannot prepare the game: The room is lack of members
-			SEND(user, SendCannotStartGamePacket, 3);
+			SEND(user, SendCannotStartGamePacket, ESagaGameContract::LackOfMember);
 		}
 		else
 		{
@@ -195,7 +210,7 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
 
 				// cannot prepare the game: server error
-				SEND(user, SendCannotStartGamePacket, 1000);
+				SEND(user, SendCannotStartGamePacket, ESagaGameContract::ServerError);
 			}
 		}
 		IGNORE_DISCARDED_END;
@@ -203,7 +218,7 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 	else
 	{
 		// cannot prepare the game: The client has a invalid room
-		SEND(user, SendCannotStartGamePacket, 1);
+		SEND(user, SendCannotStartGamePacket, ESagaGameContract::InvalidRoom);
 	}
 }
 
@@ -213,33 +228,38 @@ demo::OnGameLoadedSignal(demo::Framework& framework, iconer::app::User& user)
 	if (user.myRoomId == -1)
 	{
 		// cannot start a game: The client is not in a room
-		SEND(user, SendCannotStartGamePacket, 0);
+		SEND(user, SendCannotStartGamePacket, ESagaGameContract::NotInRoom);
 	}
-	else if (framework.FindRoom(user.myRoomId) != nullptr)
+	else if (auto room = framework.FindRoom(user.myRoomId); room != nullptr)
 	{
-		// this client is ready for game, mark actually ready
-		if (not user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
+		if (not room->CanStartGame())
 		{
+			// cannot prepare the game: not qualified conditions
+			SEND(user, SendCannotStartGamePacket, ESagaGameContract::LackOfMember);
+		}
+		else if (not user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
+		{
+			// this client is ready for game, mark actually ready
 			if (not framework.Schedule(user.loadingContext, user.GetID()))
 			{
 				// rollback
 				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
 
 				// cannot prepare the game: server error
-				SEND(user, SendCannotStartGamePacket, 1000);
+				SEND(user, SendCannotStartGamePacket, ESagaGameContract::ServerError);
 			}
 		}
 		else
 		{
 			// cannot prepare the game: The client is busy
-			SEND(user, SendCannotStartGamePacket, 2);
+			SEND(user, SendCannotStartGamePacket, ESagaGameContract::ClientIsBusy);
 		}
 		//room->ReadyMember(user);
 	}
 	else
 	{
 		// cannot start a game: The client has a invalid room
-		SEND(user, SendCannotStartGamePacket, 1);
+		SEND(user, SendCannotStartGamePacket, ESagaGameContract::InvalidRoom);
 	}
 }
 
@@ -412,8 +432,6 @@ demo::PacketProcessor(demo::Framework& framework
 		case iconer::app::PacketProtocol::CS_GAME_LOADED:
 		{
 			// Empty packet
-
-			// now start game
 			OnGameLoadedSignal(framework, user);
 		}
 		break;
