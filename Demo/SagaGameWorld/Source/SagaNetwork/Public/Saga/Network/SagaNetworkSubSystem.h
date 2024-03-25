@@ -9,7 +9,6 @@
 #include "Saga/Network/SagaConnectionContract.h"
 #include "Saga/Network/SagaVirtualRoom.h"
 #include "Saga/Network/SagaVirtualUser.h"
-#include "Saga/Network/SagaNetworkView.h"
 #include "SagaNetworkSubSystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnNetworkInitialized, bool, was_succeed);
