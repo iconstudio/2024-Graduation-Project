@@ -1,4 +1,3 @@
-#include "Saga/Network/SagaNetworkWorker.h"
 #include "Sockets.h"
 
 #include "Saga/Network/SagaNetworkSettings.h"
