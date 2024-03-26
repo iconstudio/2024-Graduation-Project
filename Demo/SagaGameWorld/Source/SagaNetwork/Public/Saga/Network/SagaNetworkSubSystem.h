@@ -2,9 +2,10 @@
 #include <cstddef>
 #include "SagaNetwork.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "Tasks/Task.h"
 #include "HAL/Runnable.h"
 #include "HAL/RunnableThread.h"
+#include "Tasks/Task.h"
+#include "Async/Async.h"
 
 #include "Saga/Network/SagaPacketProtocol.h"
 #include "Saga/Network/SagaConnectionContract.h"
@@ -81,8 +82,28 @@ public:
 
 	/* General Methods */
 #pragma region =========================
-	void CallFunctionOnGameThread(TUniqueFunction<void()>&& function);
-	void CallPureFunctionOnGameThread(TUniqueFunction<void()>&& function) const;
+	FORCEINLINE void CallFunctionOnGameThread(TUniqueFunction<void()>&& function)
+	{
+		if (IsInGameThread())
+		{
+			function();
+		}
+		else
+		{
+			AsyncTask(ENamedThreads::GameThread, MoveTemp(function));
+		}
+	}
+	FORCEINLINE	void CallPureFunctionOnGameThread(TUniqueFunction<void()>&& function) const
+	{
+		if (IsInGameThread())
+		{
+			function();
+		}
+		else
+		{
+			AsyncTask(ENamedThreads::GameThread, MoveTemp(function));
+		}
+	}
 #pragma endregion
 
 	/* Local Client Methods */
@@ -273,7 +294,7 @@ public:
 	//static TMap<FStringView, TUniqueFunction<void()>> rpcDatabase;
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CandyLandSaga|Network")
 	TMap<FString, FSagaEventOnRpc> rpcDatabase;
-	
+
 #pragma endregion
 
 protected:
