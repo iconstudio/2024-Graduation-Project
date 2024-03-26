@@ -119,51 +119,6 @@ const
 [[nodiscard]] TSharedRef<FInternetAddr> CreateRemoteEndPoint();
 
 bool
-USagaNetworkSubSystem::Start(const FString& nickname)
-{
-	if constexpr (not saga::IsOfflineMode)
-	{
-		if (not IsSocketAvailable())
-		{
-			if (InitializeNetwork_Implementation())
-			{
-				UE_LOG(LogSagaNetwork, Warning, TEXT("The network subsystem was not initialized."));
-			}
-			else
-			{
-				UE_LOG(LogSagaNetwork, Error, TEXT("Could not initialize network subsystem."));
-				return false;
-			}
-		}
-
-		USagaNetworkSubSystem::SetLocalUserName(nickname);
-
-		UE_LOG(LogSagaNetwork, Log, TEXT("Connecting..."));
-
-		auto connect_r = ConnectToServer_Implementation();
-		if (connect_r == ESagaConnectionContract::Success)
-		{
-			// #4
-			// 서버가 닉네임 패킷을 받으면 서버는 ID 부여 패킷을 보낸다.
-			// 클라는 ID 부여 패킷을 받아서 갱신하고, 게임 or 메뉴 레벨로 넘어가야 한다.
-			return true;
-		}
-		else
-		{
-			auto str = UEnum::GetValueAsString(connect_r);
-
-			UE_LOG(LogSagaNetwork, Error, TEXT("Could not connect to the server, due to `%s`"), *str);
-			BroadcastOnFailedToConnect(connect_r);
-			return false;
-		}
-	}
-	else
-	{
-		return true;
-	}
-}
-
-bool
 USagaNetworkSubSystem::Close()
 {
 	if constexpr (not saga::IsOfflineMode)
@@ -732,20 +687,58 @@ const
 bool
 USagaNetworkSubSystem::TryLoginToServer(const FString& nickname)
 {
-	if (Start(nickname))
+	if constexpr (not saga::IsOfflineMode)
 	{
-		UE_LOG(LogSagaNetwork, Log, TEXT("The network subsystem is started."));
-		return true;
-	}
-	else if (IsConnected())
-	{
-		UE_LOG(LogSagaNetwork, Warning, TEXT("The network subsystem had been started."));
-		return true;
+		if (IsConnected())
+		{
+			UE_LOG(LogSagaNetwork, Warning, TEXT("The network subsystem had been started."));
+			return true;
+		}
+		else
+		{
+			if (not IsSocketAvailable())
+			{
+				UE_LOG(LogSagaNetwork, Warning, TEXT("The network subsystem was not initialized."));
+
+				if (not InitializeNetwork_Implementation())
+				{
+					UE_LOG(LogSagaNetwork, Error, TEXT("The network subsystem could not be initialized!"));
+
+					return false;
+				}
+			}
+
+			USagaNetworkSubSystem::SetLocalUserName(nickname);
+
+			UE_LOG(LogSagaNetwork, Log, TEXT("Connecting..."));
+
+			auto connect_r = ConnectToServer_Implementation();
+			if (connect_r == ESagaConnectionContract::Success)
+			{
+				// #4
+				// 서버가 닉네임 패킷을 받으면 서버는 ID 부여 패킷을 보낸다.
+				// 클라는 ID 부여 패킷을 받아서 갱신하고, 게임 or 메뉴 레벨로 넘어가야 한다.
+				UE_LOG(LogSagaNetwork, Log, TEXT("The network subsystem is started."));
+
+				return true;
+			}
+			else
+			{
+				auto str = UEnum::GetValueAsString(connect_r);
+
+				UE_LOG(LogSagaNetwork, Error, TEXT("Cannot start the network subsystem!"));
+				UE_LOG(LogSagaNetwork, Error, TEXT("Could not connect to the server, due to `%s`"), *str);
+
+				BroadcastOnFailedToConnect(connect_r);
+				return false;
+			}
+		}
 	}
 	else
 	{
-		UE_LOG(LogSagaNetwork, Error, TEXT("Cannot start the network subsystem."));
-		return false;
+		UE_LOG(LogSagaNetwork, Log, TEXT("The network subsystem is started. (Offline Mode)"));
+
+		return true;
 	}
 }
 
