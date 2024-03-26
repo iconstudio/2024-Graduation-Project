@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include "SagaNetwork.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 #include "Tasks/Task.h"
@@ -28,6 +29,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateUserList, const TA
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnFailedToStartGame, ESagaGameContract, reason);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnGetPreparedGame);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnStartGame);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnRpc, int64, argument);
+DECLARE_EVENT_OneParam(FSagaNetworkWorker, FSagaEventOnRpc, int64);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSagaEventOnUpdatePosition, int32, id, float, x, float, y, float, z);
 
@@ -259,8 +262,20 @@ public:
 	FSagaEventOnUpdatePosition OnUpdatePosition;
 #pragma endregion
 
+	/* Tasks */
+#pragma region =========================
+	void AddRpcCallback(const FString& id, FSagaEventOnRpc& delegate)
+	{
+		rpcDatabase.Add(id) = delegate;
+	}
+
 	static TQueue<UE::Tasks::TTask<int32>> taskQueue;
 	FGraphEventArray TaskCompletionEvents;
+
+	//static TMap<FStringView, TUniqueFunction<void()>> rpcDatabase;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CandyLandSaga|Network")
+	TMap<FString, FSagaEventOnRpc> rpcDatabase;
+	
 #pragma endregion
 
 protected:

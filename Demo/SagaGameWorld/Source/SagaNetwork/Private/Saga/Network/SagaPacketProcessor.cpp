@@ -1,4 +1,5 @@
 #include "Saga/Network/SagaPacketProcessor.h"
+#include "Containers/UnrealString.h"
 
 #include "Saga/Network/SagaServerPacketPrefabs.h"
 
@@ -163,7 +164,7 @@ saga::ReceivePositionPacket(const std::byte* buffer
 
 const std::byte*
 saga::ReceiveRpcPacket(const std::byte* buffer
-	, int32& client_id, wchar_t(&contents)[10], long long& argument)
+	, int32& client_id, FString& contents, long long& argument)
 {
 	auto seek = buffer;
 
@@ -171,7 +172,9 @@ saga::ReceiveRpcPacket(const std::byte* buffer
 	seek = pk.Read(buffer);
 
 	client_id = pk.clientId;
-	std::copy(std::cbegin(pk.rpcScript), std::cend(pk.rpcScript), std::begin(contents));
+	contents = FString{ pk.rpcScript };
+
+	//std::copy(std::cbegin(pk.rpcScript), std::cend(pk.rpcScript), std::begin(contents));
 	argument = pk.rpcArgument;
 
 	return seek;
@@ -179,7 +182,7 @@ saga::ReceiveRpcPacket(const std::byte* buffer
 
 const std::byte*
 saga::ReceiveRpcPacket(const std::byte* buffer
-	, int32& client_id, wchar_t(&contents)[10])
+	, int32& client_id, FString& contents)
 {
 	auto seek = buffer;
 
@@ -187,7 +190,9 @@ saga::ReceiveRpcPacket(const std::byte* buffer
 	seek = pk.Read(buffer);
 
 	client_id = pk.clientId;
-	std::copy(std::cbegin(pk.rpcScript), std::cend(pk.rpcScript), std::begin(contents));
+	contents = FString{ pk.rpcScript };
+
+	//std::copy(std::cbegin(pk.rpcScript), std::cend(pk.rpcScript), std::begin(contents));
 
 	return seek;
 }
