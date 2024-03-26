@@ -26,6 +26,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnLeftRoom, int32, id);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnRespondVersion, const FString&, version_string);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateRoomList, const TArray<FSagaVirtualRoom>&, list);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateUserList, const TArray<FSagaVirtualUser>&, list);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSagaEventOnTeamChanged, int32, user_id, bool, is_red_team);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnFailedToStartGame, ESagaGameContract, reason);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnGetPreparedGame);
@@ -178,7 +179,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	int32 SendRequestMembersPacket();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
-	int32 SendChangeTeamPacket(int32 user_id, bool is_red_team);
+	int32 SendChangeTeamPacket(bool is_red_team);
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	int32 SendGameStartPacket();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
@@ -214,6 +215,8 @@ public:
 	void BroadcastOnUpdateRoomList(UPARAM(ref) const TArray<FSagaVirtualRoom>& list) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnUpdateMembers(UPARAM(ref) const TArray<FSagaVirtualUser>& list) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnTeamChanged(int32 id, bool is_red_team) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnGetPreparedGame() const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
@@ -269,6 +272,8 @@ public:
 	FSagaEventOnUpdateRoomList OnUpdateRoomList;
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnUpdateUserList OnUpdateMembers;
+	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
+	FSagaEventOnTeamChanged OnTeamChanged;
 
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnFailedToStartGame OnFailedToStartGame;
@@ -329,6 +334,8 @@ protected:
 	void OnUpdateRoomList_Implementation(UPARAM(ref) const TArray<FSagaVirtualRoom>& list);
 	UFUNCTION()
 	void OnUpdateMembers_Implementation(UPARAM(ref) const TArray<FSagaVirtualUser>& list);
+	UFUNCTION()
+	void OnTeamChanged_Implementation(int32 user_id, bool is_red_team);
 	UFUNCTION()
 	void OnGetPreparedGame_Implementation();
 	UFUNCTION()
