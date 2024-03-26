@@ -66,8 +66,6 @@ public:
 	virtual void Deinitialize() override;
 
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	bool Start(const FString& nickname);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	bool Close();
 #pragma endregion
 
