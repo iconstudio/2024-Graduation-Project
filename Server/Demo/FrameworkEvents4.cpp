@@ -14,7 +14,7 @@ struct RoomProcedure : public iconer::app::TimerProcedure
 
 	virtual bool operator()() override
 	{
-		std::println("uUdate room {}...", myRoom->GetID());
+		std::println("Update room {}...", myRoom->GetID());
 
 		return true;
 	}
