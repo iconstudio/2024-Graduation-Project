@@ -42,6 +42,7 @@ export namespace iconer::app::detail
 		{
 			SetState(RoomStates::None);
 			SetOperation(AsyncOperations::None);
+			membersCount = 0;
 			loadCount = 0;
 		}
 
@@ -49,6 +50,7 @@ export namespace iconer::app::detail
 		{
 			SetState(RoomStates::None);
 			SetOperation(AsyncOperations::None);
+			membersCount = 0;
 			loadCount = 0;
 		}
 
