@@ -1,5 +1,6 @@
 #include "Saga/Network/SagaNetworkSubSystem.h"
 #include "Containers/Queue.h"
+#include "Containers/Map.h"
 #include "Delegates/Delegate.h"
 #include "Async/Async.h"
 #include "Sockets.h"
@@ -9,6 +10,7 @@
 #include "Saga/Network/SagaPacketSenders.h"
 
 TQueue<UE::Tasks::TTask<int32>> USagaNetworkSubSystem::taskQueue{};
+//TMap<FStringView, TUniqueFunction<void()>> USagaNetworkSubSystem::rpcDatabase{};
 
 USagaNetworkSubSystem::USagaNetworkSubSystem()
 	: UGameInstanceSubsystem()
@@ -19,6 +21,7 @@ USagaNetworkSubSystem::USagaNetworkSubSystem()
 	, OnGetPreparedGame(), OnStartGame()
 	, OnUpdatePosition()
 	, TaskCompletionEvents()
+	, rpcDatabase()
 	, clientSocket(nullptr), netWorker(nullptr)
 	, everyUsers(), wasUsersUpdated(true)
 	, everyRooms(), wasRoomsUpdated(true)
