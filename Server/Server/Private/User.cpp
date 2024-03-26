@@ -157,16 +157,12 @@ const
 }
 
 iconer::app::User::BorrowedIoResult
-iconer::app::User::SendChangeTeamPacket(bool is_red_team)
+iconer::app::User::SendChangeTeamPacket(IdType user_id, bool is_red_team)
 const
 {
-	static constinit packets::SC_SetTeamPacket pk{};
-	static const auto buffer = pk.Serialize();
-	static constexpr auto size = packets::SC_SetTeamPacket::WannabeSize();
+	const packets::SC_SetTeamPacket pk{ user_id, is_red_team ? 0 : 1 };
 
-	auto ctx = SendContextPool::Pop();
-
-	return { mySocket.Send(*ctx, buffer.get(), size), std::move(ctx) };
+	return SendGeneralData(pk.Serialize(), pk.WannabeSize());
 }
 
 iconer::app::User::BorrowedIoResult
