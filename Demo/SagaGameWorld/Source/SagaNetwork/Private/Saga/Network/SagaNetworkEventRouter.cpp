@@ -279,18 +279,28 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 	case EPacketProtocol::SC_MOVE_CHARACTER:
 	{
 		int32 client_id{};
-		float x, y, z;
+		float x{}, y{}, z{};
 
 		saga::ReceivePositionPacket(packet_buffer, client_id, x, y, z);
 
 		UE_LOG(LogSagaNetwork, Log, TEXT("Client id %d: pos(%f,%f,%f)"), client_id, x, y, z);
-		UE_LOG(LogSagaNetwork, Log, TEXT("Client id pos"));
 
 		CallFunctionOnGameThread([this, client_id, x, y, z]()
 			{
 				BroadcastOnUpdatePosition(client_id, x, y, z);
 			}
 		);
+	}
+	break;
+
+	case EPacketProtocol::SC_SET_TEAM:
+	{
+		int32 client_id{};
+		bool is_red_team{};
+
+		saga::ReceiveTeamChangerPacket(packet_buffer, client_id, is_red_team);
+
+		UE_LOG(LogSagaNetwork, Log, TEXT("Client %d's team changed to"), client_id, is_red_team ? TEXT("Red") : TEXT("Blue"));
 	}
 	break;
 
