@@ -222,6 +222,6 @@ IMPL_SERIALIZE_METHOD(saga::sc::SC_FailedSignInPacket, errCause);
 IMPL_READ_METHODS(saga::sc::SC_FailedSignInPacket, errCause);
 IMPL_WRITE_METHODS_V1(saga::sc::SC_FailedSignInPacket, errCause);
 
-IMPL_SERIALIZE_METHOD(saga::sc::SC_SetTeamPacket, teamId);
-IMPL_READ_METHODS(saga::sc::SC_SetTeamPacket, teamId);
-IMPL_WRITE_METHODS_V1(saga::sc::SC_SetTeamPacket, teamId);
+IMPL_SERIALIZE_METHOD(saga::sc::SC_SetTeamPacket, clientId, teamId);
+IMPL_READ_METHODS(saga::sc::SC_SetTeamPacket, clientId, teamId);
+IMPL_WRITE_METHODS_V2(saga::sc::SC_SetTeamPacket, clientId, teamId);
