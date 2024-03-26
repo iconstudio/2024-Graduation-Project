@@ -6,7 +6,7 @@
 UENUM(BlueprintType)
 enum class [[nodiscard]] ESagaGameContract : uint8
 {
-	Success = 0
+	Unknown = 0
 	, NotInRoom
 	, ClientIsBusy // The client's state is unmatched
 	, LackOfMember
