@@ -2,7 +2,6 @@
 #include "Containers/Queue.h"
 #include "Containers/Map.h"
 #include "Delegates/Delegate.h"
-#include "Async/Async.h"
 #include "Sockets.h"
 
 #include "Saga/Network/SagaNetworkSettings.h"
@@ -145,37 +144,6 @@ USagaNetworkSubSystem::Close()
 	{
 		UE_LOG(LogSagaNetwork, Warning, TEXT("Closing the network subsystem... (Offline Mode)"));
 		return true;
-	}
-}
-
-void
-USagaNetworkSubSystem::CallFunctionOnGameThread(TUniqueFunction<void()>&& function)
-{
-	/*
-	FGraphEventRef Task = FFunctionGraphTask::CreateAndDispatchWhenReady(MoveTemp(function), TStatId(), nullptr, ENamedThreads::GameThread);
-	*/
-
-	if (IsInGameThread())
-	{
-		function();
-	}
-	else
-	{
-		AsyncTask(ENamedThreads::GameThread, MoveTemp(function));
-	}
-}
-
-void
-USagaNetworkSubSystem::CallPureFunctionOnGameThread(TUniqueFunction<void()>&& function)
-const
-{
-	if (IsInGameThread())
-	{
-		function();
-	}
-	else
-	{
-		AsyncTask(ENamedThreads::GameThread, MoveTemp(function));
 	}
 }
 
