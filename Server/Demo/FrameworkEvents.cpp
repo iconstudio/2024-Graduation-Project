@@ -50,9 +50,9 @@ demo::Framework::OnUserDisconnected(iconer::app::User& user)
 
 		user.Cleanup();
 
+		user.SetOperation(iconer::app::AsyncOperations::OpReserveSession);
 		if (Schedule(user, user.GetID()))
 		{
-			user.SetOperation(iconer::app::AsyncOperations::OpReserveSession);
 			return std::nullopt;
 		}
 	}
