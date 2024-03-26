@@ -176,10 +176,6 @@ noexcept
 	{
 		return false;
 	}
-	else if (user.GetState() != iconer::app::UserStates::InRoom)
-	{
-		return false;
-	}
 
 	return true;
 }
@@ -188,5 +184,5 @@ void
 demo::Framework::OnFailedNotifyRoomMember(iconer::app::User& user)
 noexcept
 {
-	user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
+	//user.TryChangeState(iconer::app::UserStates::EnteringRoom, iconer::app::UserStates::Idle);
 }
