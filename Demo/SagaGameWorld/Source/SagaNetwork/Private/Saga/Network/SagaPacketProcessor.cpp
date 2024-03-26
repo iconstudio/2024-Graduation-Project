@@ -145,6 +145,12 @@ saga::ReceiveRespondUsersPacket(const std::byte* buffer
 }
 
 const std::byte*
+saga::ReceiveTeamChangerPacket(const std::byte* buffer, int32& client_id, bool& is_red_team)
+{
+	return nullptr;
+}
+
+const std::byte*
 saga::ReceivePositionPacket(const std::byte* buffer
 	, int32& client_id
 	, float& x, float& y, float& z)
