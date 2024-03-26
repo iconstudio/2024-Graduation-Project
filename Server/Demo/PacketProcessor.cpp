@@ -266,6 +266,28 @@ demo::OnGameLoadedSignal(demo::Framework& framework, iconer::app::User& user)
 void
 demo::OnTeamChanged(demo::Framework& framework, iconer::app::User& user, bool is_red_team)
 {
+	if (user.myRoomId != -1)
+	{
+		const auto& user_id = user.GetID();
+
+		if (auto room = framework.FindRoom(user.myRoomId); room != nullptr)
+		{
+			if (room->GetState() != iconer::app::RoomStates::Idle)
+			{
+				return;
+			}
+
+			if (room->HasMember(user.GetID()))
+			{
+				user.myTeamId = is_red_team ? iconer::app::Team::Red : iconer::app::Team::Blue;
+				room->ForEach([user_id, is_red_team](iconer::app::User& user)
+					{
+						SEND(user, SendChangeTeamPacket, user_id, is_red_team);
+					}
+				);
+			}
+		}
+	}
 }
 
 void
@@ -489,6 +511,8 @@ demo::PacketProcessor(demo::Framework& framework
 			std::int8_t team_id{};
 			iconer::util::Deserialize(last_buf, team_id);
 
+			// 0 :  red team
+			// 1 : blue team
 			OnTeamChanged(framework, user, team_id == 0);
 		}
 		break;
