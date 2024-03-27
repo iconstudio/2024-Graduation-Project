@@ -14,6 +14,8 @@ export import Iconer.Application.NativeTimer;
 
 export namespace iconer::app
 {
+	class User;
+
 	class [[nodiscard]] Room : public detail::RoomBase
 	{
 	public:
@@ -48,20 +50,8 @@ export namespace iconer::app
 		}
 
 		void Awake() noexcept;
-
-		void Cleanup() noexcept
-		{
-			ClearMembers();
-			Clear();
-			Super::Cleanup();
-		}
-
-		void Cleanup() volatile noexcept
-		{
-			ClearMembers();
-			Clear();
-			Super::Cleanup();
-		}
+		void Cleanup() noexcept;
+		void Cleanup() volatile noexcept;
 
 		void SetTimer(NativeTimer&& timer) noexcept
 		{
