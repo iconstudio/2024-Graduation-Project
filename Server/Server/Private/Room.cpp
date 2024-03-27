@@ -56,6 +56,24 @@ noexcept
 	preRespondMembersPacket = std::make_unique_for_overwrite<std::byte[]>(packets::SC_RespondMembersPacket::MaxSize());
 }
 
+void
+iconer::app::Room::Cleanup()
+noexcept
+{
+	ClearMembers();
+	Clear();
+	Super::Cleanup();
+}
+
+void
+iconer::app::Room::Cleanup()
+volatile noexcept
+{
+	ClearMembers();
+	Clear();
+	Super::Cleanup();
+}
+
 size_t
 iconer::app::Room::Broadcast(std::span<iconer::app::IContext*> ctxes, const std::byte* buffer, size_t size)
 const
