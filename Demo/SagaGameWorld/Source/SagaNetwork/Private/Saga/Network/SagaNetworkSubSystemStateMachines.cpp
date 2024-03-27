@@ -36,6 +36,7 @@ USagaNetworkSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 	OnUpdateRoomList.AddDynamic(this, &USagaNetworkSubSystem::OnUpdateRoomList_Implementation);
 	OnUpdateMembers.AddDynamic(this, &USagaNetworkSubSystem::OnUpdateMembers_Implementation);
 	OnTeamChanged.AddDynamic(this, &USagaNetworkSubSystem::OnTeamChanged_Implementation);
+	OnFailedToStartGame.AddDynamic(this, &USagaNetworkSubSystem::OnFailedToStartGame_Implementation);
 	OnGetPreparedGame.AddDynamic(this, &USagaNetworkSubSystem::OnGetPreparedGame_Implementation);
 	OnStartGame.AddDynamic(this, &USagaNetworkSubSystem::OnStartGame_Implementation);
 	OnUpdatePosition.AddDynamic(this, &USagaNetworkSubSystem::OnUpdatePosition_Implementation);
