@@ -132,7 +132,7 @@ void
 USagaNetworkSubSystem::OnFailedToConnect_Implementation(ESagaConnectionContract reason)
 {
 	auto msg = UEnum::GetValueAsString(reason);
-	UE_LOG(LogSagaNetwork, Log, TEXT("Local client can't get an id from server due to %d"), *msg);
+	UE_LOG(LogSagaNetwork, Log, TEXT("Local client can't get an id from server due to %s"), *msg);
 }
 
 void

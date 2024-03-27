@@ -60,7 +60,7 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 		saga::ReceiveRoomCreationFailedPacket(packet_buffer, error);
 
 		const auto msg = std::to_wstring(error);
-		UE_LOG(LogSagaNetwork, Log, TEXT("Could not create a room due to %d"), msg.data());
+		UE_LOG(LogSagaNetwork, Log, TEXT("Could not create a room due to %s"), msg.data());
 	}
 	break;
 
