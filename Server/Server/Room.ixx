@@ -8,7 +8,6 @@ import :RoomMember;
 import :RoomBase;
 export import :RoomStates;
 import Iconer.Utility.Constraints;
-import Iconer.Utility.AtomicSwitcher;
 import Iconer.Collection.Array;
 export import Iconer.Application.NativeTimer;
 
@@ -92,12 +91,6 @@ export namespace iconer::app
 
 		size_t ReadyMember(iconer::app::User& user) volatile noexcept;
 		size_t UnreadyMember(iconer::app::User& user) volatile noexcept;
-
-		[[nodiscard]]
-		auto CaptureMemberCount() volatile noexcept
-		{
-			return iconer::util::AtomicSwitcher{ membersCount };
-		}
 
 		[[nodiscard]] std::vector<User*> AcquireMemberList() const;
 		[[nodiscard]] std::vector<User*> AcquireMemberList() const volatile;

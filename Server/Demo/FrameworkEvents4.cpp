@@ -83,7 +83,7 @@ demo::Framework::OnCreateGame(iconer::app::User& user)
 	}
 	else
 	{
-		room->SetTimer(iconer::app::StartTimer(room_id, RoomProcedure{ room, 100 }));
+		room->SetTimer(iconer::app::StartTimer(room_id, RoomProcedure{ room, 10 }));
 
 		room->ForEach([&user, &room_id](iconer::app::User& member)
 			{

@@ -7,6 +7,7 @@ module;
 module Iconer.Application.Room;
 import :RoomMember;
 import Iconer.Utility.Constraints;
+import Iconer.Utility.AtomicSwitcher;
 import Iconer.Application.User;
 import Iconer.Application.Packet;
 
@@ -16,7 +17,7 @@ namespace iconer::app
 	bool Remover(volatile Room& room, const iconer::app::User::IdType& user_id, Predicate&& predicate)
 		noexcept(nothrow_invocables<Predicate, volatile Room&, size_t>)
 	{
-		auto capture = room.CaptureMemberCount();
+		auto capture = iconer::util::AtomicSwitcher{ room.membersCount };
 		unsigned long long& count = capture.GetValue();
 
 		auto it = room.begin();
@@ -164,7 +165,7 @@ bool
 iconer::app::Room::TryAddMember(iconer::app::User& user)
 volatile noexcept
 {
-	auto capture = CaptureMemberCount();
+	auto capture = iconer::util::AtomicSwitcher{ membersCount };
 	unsigned long long& count = capture.GetValue();
 
 	if (count < maxUsersNumberInRoom)
