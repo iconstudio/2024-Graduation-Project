@@ -208,11 +208,14 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 		saga::SC_FailedGameStartingPacket pk{};
 		auto offset = pk.Read(packet_buffer);
 
-		UE_LOG(LogSagaNetwork, Log, TEXT("Failed to start game due to %d"), pk.errCause);
+		const ESagaGameContract cause = static_cast<ESagaGameContract>(static_cast<uint8>(pk.errCause));
+		auto str = UEnum::GetValueAsString(cause);
 
-		CallPureFunctionOnGameThread([this, pk]()
+		UE_LOG(LogSagaNetwork, Log, TEXT("Failed to start game due to %s"), *str);
+
+		CallPureFunctionOnGameThread([this, cause]()
 			{
-				BroadcastOnFailedToStartGame(static_cast<ESagaGameContract>(static_cast<uint8>(pk.errCause)));
+				BroadcastOnFailedToStartGame(cause);
 			}
 		);
 	}
