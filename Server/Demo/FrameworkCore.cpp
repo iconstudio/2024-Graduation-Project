@@ -453,7 +453,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			}
 			else
 			{
-				myLogger.Log(L"\tUser {} preparing the game has completed\n", user_id);
+				myLogger.Log(L"\tUser {} has prepared the game\n", user_id);
 			}
 		}
 		break;

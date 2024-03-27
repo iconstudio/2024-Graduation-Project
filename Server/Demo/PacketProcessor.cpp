@@ -43,7 +43,7 @@ demo::OnRequestRoomList(Framework& framework, iconer::app::User& user)
 {
 	if (user.GetState() != iconer::app::UserStates::None)
 	{
-		(void)framework.Schedule(user.requestContext, user.GetID());
+		(void) framework.Schedule(user.requestContext, user.GetID());
 	}
 }
 
@@ -52,7 +52,7 @@ demo::OnRequestMemberList(Framework& framework, iconer::app::User& user)
 {
 	if (user.GetState() != iconer::app::UserStates::None)
 	{
-		(void)framework.Schedule(user.requestMemberContext, user.GetID());
+		(void) framework.Schedule(user.requestMemberContext, user.GetID());
 	}
 }
 
@@ -204,6 +204,15 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 			// cannot prepare the game: The room is lack of members
 			SEND(user, SendCannotStartGamePacket, ESagaGameContract::LackOfMember);
 		}
+		else if (not room->TryGettingReady())
+		{
+			// rollback
+			user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+			room->TryCancelReady();
+
+			// cannot prepare the game: Not proper operation
+			SEND(user, SendCannotStartGamePacket, ESagaGameContract::InvalidOperation);
+		}
 		else
 		{
 			// make clients getting ready for game
@@ -211,6 +220,7 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 			{
 				// rollback
 				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+				room->TryCancelReady();
 
 				// cannot prepare the game: server error
 				SEND(user, SendCannotStartGamePacket, ESagaGameContract::ServerError);
@@ -237,16 +247,33 @@ demo::OnGameLoadedSignal(demo::Framework& framework, iconer::app::User& user)
 	{
 		if (not room->CanStartGame())
 		{
+			// rollback
+			room->TryCancelReady();
+
 			// cannot prepare the game: not qualified conditions
 			SEND(user, SendCannotStartGamePacket, ESagaGameContract::LackOfMember);
 		}
-		else if (not user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
+		else if (user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
 		{
 			// this client is ready for game, mark actually ready
 			if (not framework.Schedule(user.loadingContext, user.GetID()))
 			{
 				// rollback
 				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+				room->TryCancelReady();
+
+				// cannot prepare the game: server error
+				SEND(user, SendCannotStartGamePacket, ESagaGameContract::ServerError);
+			}
+		}
+		else if (user.GetState() == iconer::app::UserStates::MakingGame)
+		{
+			// room master
+			if (not framework.Schedule(user.loadingContext, user.GetID()))
+			{
+				// rollback
+				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+				room->TryCancelReady();
 
 				// cannot prepare the game: server error
 				SEND(user, SendCannotStartGamePacket, ESagaGameContract::ServerError);
@@ -254,6 +281,10 @@ demo::OnGameLoadedSignal(demo::Framework& framework, iconer::app::User& user)
 		}
 		else
 		{
+			// rollback
+			user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+			room->TryCancelReady();
+
 			// cannot prepare the game: The client is busy
 			SEND(user, SendCannotStartGamePacket, ESagaGameContract::ClientIsBusy);
 		}
@@ -283,10 +314,9 @@ demo::OnTeamChanged(demo::Framework& framework, iconer::app::User& user, bool is
 			if (room->HasMember(user.GetID()))
 			{
 				user.myTeamId = is_red_team ? iconer::app::Team::Red : iconer::app::Team::Blue;
-				room->ForEach([user_id, is_red_team](iconer::app::User& user)
-					{
-						SEND(user, SendChangeTeamPacket, user_id, is_red_team);
-					}
+				room->ForEach([user_id, is_red_team](iconer::app::User& user) {
+					SEND(user, SendChangeTeamPacket, user_id, is_red_team);
+				}
 				);
 			}
 		}
@@ -303,14 +333,13 @@ demo::OnReceivePosition(demo::Framework& framework, iconer::app::User& user, flo
 	auto room_id = user.myRoomId.Load();
 	auto room = framework.FindRoom(room_id);
 
-	room->ForEach([&user, x, y, z](iconer::app::User& member)
+	room->ForEach([&user, x, y, z](iconer::app::User& member) {
+		auto [io, ctx] = member.SendPositionPacket(user.GetID(), x, y, z);
+		if (not io)
 		{
-			auto [io, ctx] = member.SendPositionPacket(user.GetID(), x, y, z);
-			if (not io)
-			{
-				ctx.Complete();
-			}
+			ctx.Complete();
 		}
+	}
 	);
 }
 
@@ -330,7 +359,7 @@ demo::OnReceiveRotation(Framework& framework, iconer::app::User& user, float rol
 		{
 			ctx.Complete();
 		}
-		});
+	});
 }
 
 #define ICONER_UNLIKELY [[unlikely]]
