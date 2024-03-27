@@ -288,30 +288,20 @@ demo::Framework::RouteEvent(bool is_succeed
 			{
 				myLogger.Log(L"\tUser {} entered to room {}\n", user_id, room_id);
 
-				std::span<std::byte> members = room->SerializeMembers();
-
-				auto [sent_r, ctx]= user->SendGeneralData(members.data(), members.size());
-				if (not sent_r.has_value())
-				{
-					ctx.Complete();
-
-					myLogger.LogError(L"\tUser {} has failed to notify members in the room due to {}\n", user_id, sent_r.error());
-				}
-				else
-				{
-					myLogger.LogError(L"\tUser {} has failed to notify members in the room\n", user_id);
-				}
-
-				room->ForEach([&user, &room_id](iconer::app::User& member) {
-					if (member.GetID() != user->GetID())
+				room->ForEach([&user, user_id, room_id](iconer::app::User& member)
 					{
-						auto [io, ctx] = member.SendRoomJoinedPacket(user->GetID(), room_id);
-						if (not io)
+						if (member.GetID() != user_id)
 						{
-							ctx.Complete();
+							auto [io, ctx] = member.SendRoomJoinedPacket(user_id, room_id);
+							if (not io)
+							{
+								ctx.Complete();
+							}
 						}
 					}
-				});
+				);
+
+				(void)Schedule(user->requestMemberContext, user_id);
 			}
 		}
 		break;
@@ -380,12 +370,12 @@ demo::Framework::RouteEvent(bool is_succeed
 
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tUser {} has failed to send a member notifying packet\n", user_id);
+				myLogger.LogError(L"\tUser {} has failed to notify members in the room\n", user_id);
 				OnFailedNotifyRoomMember(*user);
 			}
-			else if (not OnNotifyMemberOfRoom(*user))
+			else if (auto error = OnNotifyMemberOfRoom(*user); not error.has_value())
 			{
-				myLogger.LogError(L"\tUser {} has failed to notify members in the room\n", user_id);
+				myLogger.LogError(L"\tUser {} has failed to notify members in the room, due to {}\n", user_id, error.error());
 				OnFailedNotifyRoomMember(*user);
 			}
 			else

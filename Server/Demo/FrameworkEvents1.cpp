@@ -89,11 +89,11 @@ demo::Framework::OnUserSignedIn(iconer::app::User& user, const ptrdiff_t& bytes)
 			user.SetOperation(iconer::app::AsyncOperations::OpAssignID);
 
 			return user.SendSignInPacket();
-		}
+			}
 		else [[unlikely]] {
 			// TODO: send sign in failed packet
 			return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
-		};
+			};
 	}
 	else
 	{
@@ -168,16 +168,31 @@ demo::Framework::OnNotifyRoomsList(iconer::app::User& user)
 	return std::move(io);
 }
 
-bool
+demo::Framework::IoResult
 demo::Framework::OnNotifyMemberOfRoom(iconer::app::User& user)
 noexcept
 {
-	if (user.myRoomId == -1)
+	const auto room_id = user.myRoomId.Load();
+	if (room_id == -1)
 	{
-		return false;
+		return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
 	}
 
-	return true;
+	auto room = FindRoom(room_id);
+	if (room == nullptr)
+	{
+		return std::unexpected{ iconer::net::ErrorCode::OPERATION_ABORTED };
+	}
+
+	std::span<std::byte> members = room->SerializeMembers();
+
+	auto [sent_r, ctx] = user.SendGeneralData(members.data(), members.size());
+	if (not sent_r.has_value())
+	{
+		ctx.Complete();
+	}
+
+	return std::move(sent_r);
 }
 
 void
