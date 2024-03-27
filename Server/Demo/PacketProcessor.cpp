@@ -198,6 +198,9 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 		}
 		else if (not room->CanStartGame())
 		{
+			// rollback
+			user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom)
+
 			// cannot prepare the game: The room is lack of members
 			SEND(user, SendCannotStartGamePacket, ESagaGameContract::LackOfMember);
 		}
