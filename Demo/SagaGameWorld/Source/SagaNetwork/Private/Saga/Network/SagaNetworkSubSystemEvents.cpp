@@ -148,6 +148,8 @@ void
 USagaNetworkSubSystem::OnRoomCreated_Implementation(int32 id)
 {
 	UE_LOG(LogSagaNetwork, Log, TEXT("A room %d is created"), id);
+
+	SendRequestMembersPacket();
 }
 
 void
