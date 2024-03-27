@@ -28,17 +28,27 @@ demo::Framework::OnCreateGame(iconer::app::User& user)
 	const auto room_id = user.myRoomId.Load();
 	if (-1 == room_id)
 	{
+		// rollback
+		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
+		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+
 		return false;
 	}
 
 	auto room = FindRoom(room_id);
 	if (nullptr == room)
 	{
+		// rollback
+		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
+		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+
 		return false;
 	}
 	else if (room->GetMembersCount() == 0)
 	{
 		// rollback
+		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
+		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
 		user.myRoomId = -1;
 
 		return false;
@@ -46,16 +56,29 @@ demo::Framework::OnCreateGame(iconer::app::User& user)
 	else if (not room->HasMember(user.GetID()))
 	{
 		// rollback
+		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
+		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
 		user.myRoomId = -1;
 
 		return false;
 	}
 	else if (not room->TryGettingReady())
 	{
+		// rollback
+		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
+		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+		user.myRoomId = -1;
+
 		return false;
 	}
 	else if (room->GetState() != iconer::app::RoomStates::Ready)
 	{
+		// rollback
+		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
+		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+		user.myRoomId = -1;
+		room->TryCancelReady();
+
 		return false;
 	}
 	else
