@@ -130,7 +130,6 @@ export namespace iconer::app::detail
 		[[nodiscard]] bool IsFull() const volatile noexcept;
 		[[nodiscard]] bool CanStartGame() const volatile noexcept;
 
-	protected:
 		size_t IncreaseReadies() volatile noexcept
 		{
 			return loadCount.fetch_add(1);
