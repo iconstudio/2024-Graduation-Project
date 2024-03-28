@@ -3,7 +3,7 @@
 
 namespace saga
 {
-	class SAGANETWORK_API USagaNetwork final
+	class USagaNetwork final
 	{
 	public:
 		[[nodiscard]] static bool Start(FStringView nickname) noexcept { return true; }
