@@ -12,7 +12,7 @@ public class SagaNetwork : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "Networking", "Sockets", "OnlineSubsystem" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "Networking", "Sockets" });
 
 		PublicDependencyModuleNames.AddRange(new string[] { "SagaUtility" });
 

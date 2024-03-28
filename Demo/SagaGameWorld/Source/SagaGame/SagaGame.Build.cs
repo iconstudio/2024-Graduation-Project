@@ -13,7 +13,7 @@ public class SagaGame : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "UMG" });
 
 		// Uncomment if you are using Slate UI
-		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "Networking", "Sockets", "OnlineSubsystem" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "Networking", "Sockets" });
 		
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
