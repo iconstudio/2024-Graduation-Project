@@ -9,21 +9,6 @@ struct SAGANETWORK_API FSagaVirtualSession
 	GENERATED_BODY()
 
 public:
-	FSagaVirtualSession()
-		: MyID(-1), MyName(TEXT("Empty Client"))
-	{
-	}
-
-	FSagaVirtualSession(int32 id)
-		: MyID(id), MyName(TEXT("Empty Client"))
-	{
-	}
-	
-	FSagaVirtualSession(int32 id, const FString& name)
-		: MyID(id), MyName(name)
-	{
-	}
-
 	void Name(const FString& name)
 	{
 		if (name.Len() == 0)
@@ -61,9 +46,9 @@ public:
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (NoResetToDefault, NoSpinbox = true, ClampMin = 2, UIMin = 2, ClampMax = 21, UIMax = 21))
-	int32 MyID;
+	int32 MyID = -1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString MyName;
+	FString MyName = TEXT("Empty Client");
 };
 
 struct SAGANETWORK_API FSagaSessionComparator final

@@ -12,10 +12,8 @@ struct SAGANETWORK_API FSagaVirtualUser : public FSagaVirtualSession
 	GENERATED_BODY()
 
 public:
-	using FSagaVirtualSession::FSagaVirtualSession;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CandyLandSaga|Network|Session")
-	ASagaCharacterPlayer* ownedCharacter;
+	ASagaCharacterPlayer* ownedCharacter = nullptr;
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "CandyLandSaga|Network|Session")
-	EUserTeam myTeam;
+	EUserTeam myTeam = {};
 };
