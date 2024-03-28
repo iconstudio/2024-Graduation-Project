@@ -74,7 +74,7 @@ public:
 	/* Complicated Network Methods */
 #pragma region =========================
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Phase")
-	bool TryLoginToServer(const FString& nickname);
+	bool ConnectToServer(const FString& nickname);
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	void UpdatePlayerList();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")

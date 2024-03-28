@@ -194,7 +194,7 @@ const noexcept
 }
 
 bool
-USagaNetworkSubSystem::TryLoginToServer(const FString& nickname)
+USagaNetworkSubSystem::ConnectToServer(const FString& nickname)
 {
 	if constexpr (not saga::IsOfflineMode)
 	{
