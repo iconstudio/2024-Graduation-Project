@@ -303,7 +303,13 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 		saga::ReceiveTeamChangerPacket(packet_buffer, client_id, is_red_team);
 
-		UE_LOG(LogSagaNetwork, Log, TEXT("Client %d's team changed to"), client_id, is_red_team ? TEXT("Red") : TEXT("Blue"));
+		UE_LOG(LogSagaNetwork, Log, TEXT("Client %d's team changed to %s"), client_id, is_red_team ? TEXT("Red") : TEXT("Blue"));
+
+		CallFunctionOnGameThread([this, client_id, is_red_team]()
+			{
+				BroadcastOnTeamChanged(client_id, is_red_team);
+			}
+		);
 	}
 	break;
 
