@@ -8,7 +8,7 @@ ASagaInGameController::BeginPlay()
 	FInputModeGameOnly GameOnlyInputMode;
 	SetInputMode(GameOnlyInputMode);
 
-	SetShowMouseCursor(true);
+	SetShowMouseCursor(false);
 }
 
 void
