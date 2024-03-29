@@ -160,7 +160,7 @@ iconer::app::User::BorrowedIoResult
 iconer::app::User::SendChangeTeamPacket(IdType user_id, bool is_red_team)
 const
 {
-	const packets::SC_SetTeamPacket pk{ user_id, is_red_team ? 0 : 1 };
+	const packets::SC_SetTeamPacket pk{ user_id, is_red_team ? 1 : 2 };
 
 	return SendGeneralData(pk.Serialize(), pk.WannabeSize());
 }
