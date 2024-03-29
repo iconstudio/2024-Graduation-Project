@@ -52,7 +52,7 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 	{
 		if (auto room = FindRoom(room_id); nullptr != room)
 		{
-			if (auto rr = room->RemoveMember(user.GetID()
+			if (bool removed = room->RemoveMember(user.GetID()
 				, [](volatile iconer::app::Room& room, const size_t& members_count) noexcept {
 				if (0 == members_count)
 				{
@@ -61,11 +61,14 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 						room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
 					}
 				}
-			}); rr)
+			}); removed)
 			{
-				if (not Schedule(room, room->GetID()))
+				if (room->IsEmpty())
 				{
-					room->Cleanup();
+					if (not Schedule(room, room->GetID()))
+					{
+						room->Cleanup();
+					}
 				}
 
 				SetRoomModifiedFlag();

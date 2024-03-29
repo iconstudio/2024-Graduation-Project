@@ -8,11 +8,13 @@ import :RoomMember;
 import :RoomBase;
 export import :RoomStates;
 import Iconer.Utility.Constraints;
-import Iconer.Utility.AtomicSwitcher;
 import Iconer.Collection.Array;
+export import Iconer.Application.NativeTimer;
 
 export namespace iconer::app
 {
+	class User;
+
 	class [[nodiscard]] Room : public detail::RoomBase
 	{
 	public:
@@ -25,7 +27,7 @@ export namespace iconer::app
 		};
 
 		using Super = detail::RoomBase;
-		using Super::IdType;
+		using IdType = Super::IdType;
 		using MemberStorageType = iconer::collection::Array<RoomMember, maxUsersNumberInRoom>;
 		using iterator = MemberStorageType::iterator;
 		using const_iterator = MemberStorageType::const_iterator;
@@ -34,6 +36,7 @@ export namespace iconer::app
 			noexcept(nothrow_constructible<Super, const IdType&>)
 			: Super(id)
 			, myMembers()
+			, myTimer()
 		{
 		}
 
@@ -41,23 +44,22 @@ export namespace iconer::app
 			noexcept(nothrow_constructible<Super, IdType&&>)
 			: Super(std::move(id))
 			, myMembers()
+			, myTimer()
 		{
 		}
 
 		void Awake() noexcept;
+		void Cleanup() noexcept;
+		void Cleanup() volatile noexcept;
 
-		void Cleanup() noexcept
+		void SetTimer(NativeTimer&& timer) noexcept
 		{
-			ClearMembers();
-			Clear();
-			Super::Cleanup();
+			myTimer = std::exchange(timer, NativeTimer{});
 		}
 
-		void Cleanup() volatile noexcept
+		bool UnsetTimer() noexcept
 		{
-			ClearMembers();
-			Clear();
-			Super::Cleanup();
+			return std::exchange(myTimer, NativeTimer{}).Stop();
 		}
 
 		bool TryAddMember(iconer::app::User& user) volatile noexcept;
@@ -69,7 +71,7 @@ export namespace iconer::app
 		void ClearMembers() volatile noexcept;
 
 		void Dirty(bool flag) volatile noexcept;
-		[[nodiscard]] bool Dirty() volatile noexcept;
+		[[nodiscard]] bool Dirty() const volatile noexcept;
 
 		template<invocables<User&> Predicate>
 		void ForEach(Predicate&& predicate) const
@@ -89,6 +91,13 @@ export namespace iconer::app
 
 		size_t ReadyMember(iconer::app::User& user) volatile noexcept;
 		size_t UnreadyMember(iconer::app::User& user) volatile noexcept;
+
+		[[nodiscard]] std::vector<User*> AcquireMemberList() const;
+		[[nodiscard]] std::vector<User*> AcquireMemberList() const volatile;
+		[[nodiscard]] std::span<std::byte> SerializeMembers() volatile;
+
+		[[nodiscard]] bool HasMember(const IdType& id) const volatile noexcept;
+		[[nodiscard]] bool IsEveryMemberIsLoaded() const volatile noexcept;
 
 		[[nodiscard]]
 		constexpr iterator begin() noexcept
@@ -162,18 +171,7 @@ export namespace iconer::app
 			return myMembers.cend();
 		}
 
-		[[nodiscard]]
-		auto CaptureMemberCount() volatile noexcept
-		{
-			return iconer::util::AtomicSwitcher{ membersCount };
-		}
-
-		[[nodiscard]] std::vector<User*> AcquireMemberList() const;
-		[[nodiscard]] std::vector<User*> AcquireMemberList() const volatile;
-		[[nodiscard]] std::span<std::byte> SerializeMembers() volatile;
-
-		[[nodiscard]] bool HasMember(const IdType& id) const volatile noexcept;
-		[[nodiscard]] bool IsEveryMemberIsLoaded() const volatile noexcept;
+		NativeTimer myTimer;
 
 	private:
 		MemberStorageType myMembers;
