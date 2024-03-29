@@ -43,7 +43,7 @@ demo::OnRequestRoomList(Framework& framework, iconer::app::User& user)
 {
 	if (user.GetState() != iconer::app::UserStates::None)
 	{
-		(void) framework.Schedule(user.requestContext, user.GetID());
+		(void)framework.Schedule(user.requestContext, user.GetID());
 	}
 }
 
@@ -52,7 +52,7 @@ demo::OnRequestMemberList(Framework& framework, iconer::app::User& user)
 {
 	if (user.GetState() != iconer::app::UserStates::None)
 	{
-		(void) framework.Schedule(user.requestMemberContext, user.GetID());
+		(void)framework.Schedule(user.requestMemberContext, user.GetID());
 	}
 }
 
