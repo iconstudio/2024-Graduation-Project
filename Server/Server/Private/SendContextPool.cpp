@@ -1,12 +1,29 @@
 module;
 #include <memory>
+#include <mutex>
+#include <unordered_set>
 #include <concurrent_queue.h>
+#include <concurrent_unordered_set.h>
 module Iconer.Application.SendContextPool;
 
 namespace
 {
 	using queue_type = Concurrency::concurrent_queue<iconer::app::BorrowedSendContext*>;
 	constinit queue_type* queue;
+
+	using set_type = Concurrency::concurrent_unordered_set<iconer::app::BorrowedSendContext*>;
+	constinit set_type* set;
+	
+	using sync_set_type = std::unordered_set<iconer::app::BorrowedSendContext*>;
+	constinit sync_set_type* syncset;
+
+	using cont_type = sync_set_type;
+
+#if 1941 <= _MSC_VER
+	constinit std::mutex contLock{};
+#else
+	std::mutex contLock{};
+#endif
 }
 
 void
@@ -35,37 +52,52 @@ iconer::app::SendContextPool::Awake()
 		node_memory[i] = init_memory + i;
 	}
 
-	queue = new queue_type{ node_memory, node_memory + initSendContextsNumber };
+	//queue = new cont_type{ node_memory, node_memory + initSendContextsNumber };
+
+	//set = new cont_type{ node_memory, node_memory + initSendContextsNumber };
+
+	syncset = new cont_type{ node_memory, node_memory + initSendContextsNumber };
 }
 
 void
 iconer::app::SendContextPool::Add(iconer::app::Borrower&& context)
 {
-	queue->push(std::exchange(context, nullptr));
+	std::lock_guard guard{ contLock };
+	syncset->insert(std::exchange(context, Borrower{}));
+	//set->insert(std::exchange(context, Borrower{}));
+	//queue->push(std::exchange(context, nullptr));
 }
 
 iconer::app::Borrower
 iconer::app::SendContextPool::Pop()
 {
 	pointer out = nullptr;
-	while (not queue->try_pop(out));
-	return Borrower{ out };
+
+	std::lock_guard guard{ contLock };
+	//while (not queue->try_pop(out));
+
+	return Borrower{ syncset->extract(syncset->begin()).value() };
+	//return Borrower{ out };
 }
 
 bool
 iconer::app::SendContextPool::TryPop(iconer::app::Borrower& out)
 {
 	pointer outro = nullptr;
-	const auto result = queue->try_pop(outro);
-	out = outro;
-	return result;
+	//const auto result = queue->try_pop(outro);
+	//out = outro;
+	//return result;
+	return false;
 }
 
 void
 iconer::app::BorrowedSendContext::ReturnToBase()
 {
 	Destroy();
-	queue->push(this);
+
+	std::lock_guard guard{ contLock };
+	syncset->insert(this);
+	//queue->push(this);
 }
 
 #if false
