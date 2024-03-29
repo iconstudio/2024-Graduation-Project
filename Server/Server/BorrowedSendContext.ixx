@@ -58,7 +58,7 @@ export namespace iconer::app
 
 		~Borrower()
 		{
-			Complete();
+			//Complete();
 		}
 
 		[[nodiscard]]

@@ -235,7 +235,7 @@ demo::Framework::OnLeavingRoom(iconer::app::User& user)
 							}
 						}
 					}
-				});
+					});
 
 				return true;
 			}
