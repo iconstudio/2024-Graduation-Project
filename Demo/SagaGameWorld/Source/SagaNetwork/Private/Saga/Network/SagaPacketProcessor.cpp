@@ -147,7 +147,15 @@ saga::ReceiveRespondUsersPacket(const std::byte* buffer
 const std::byte*
 saga::ReceiveTeamChangerPacket(const std::byte* buffer, int32& client_id, bool& is_red_team)
 {
-	return nullptr;
+	auto seek = buffer;
+
+	SC_SetTeamPacket pk{};
+	seek = pk.Read(buffer);
+
+	client_id = pk.clientId;
+	is_red_team = pk.teamId == 1;
+
+	return seek;
 }
 
 const std::byte*
