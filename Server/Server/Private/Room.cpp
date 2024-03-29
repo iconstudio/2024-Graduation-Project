@@ -7,6 +7,7 @@ module;
 module Iconer.Application.Room;
 import :RoomMember;
 import Iconer.Utility.Constraints;
+import Iconer.Utility.AtomicSwitcher;
 import Iconer.Application.User;
 import Iconer.Application.Packet;
 
@@ -16,7 +17,7 @@ namespace iconer::app
 	bool Remover(volatile Room& room, const iconer::app::User::IdType& user_id, Predicate&& predicate)
 		noexcept(nothrow_invocables<Predicate, volatile Room&, size_t>)
 	{
-		auto capture = room.CaptureMemberCount();
+		auto capture = iconer::util::AtomicSwitcher{ room.membersCount };
 		unsigned long long& count = capture.GetValue();
 
 		auto it = room.begin();
@@ -54,6 +55,24 @@ iconer::app::Room::Awake()
 noexcept
 {
 	preRespondMembersPacket = std::make_unique_for_overwrite<std::byte[]>(packets::SC_RespondMembersPacket::MaxSize());
+}
+
+void
+iconer::app::Room::Cleanup()
+noexcept
+{
+	ClearMembers();
+	Clear();
+	Super::Cleanup();
+}
+
+void
+iconer::app::Room::Cleanup()
+volatile noexcept
+{
+	ClearMembers();
+	Clear();
+	Super::Cleanup();
 }
 
 size_t
@@ -146,7 +165,7 @@ bool
 iconer::app::Room::TryAddMember(iconer::app::User& user)
 volatile noexcept
 {
-	auto capture = CaptureMemberCount();
+	auto capture = iconer::util::AtomicSwitcher{ membersCount };
 	unsigned long long& count = capture.GetValue();
 
 	if (count < maxUsersNumberInRoom)
@@ -235,6 +254,32 @@ volatile noexcept
 	return result;
 }
 
+size_t
+iconer::app::Room::UnreadyMember(iconer::app::User& user)
+volatile noexcept
+{
+	size_t result{};
+	for (auto& [member, is_ready] : myMembers)
+	{
+		if (nullptr != member)
+		{
+			if (user.GetID() == member->GetID())
+			{
+				if (is_ready.CompareAndSet(true, false))
+				{
+					++result;
+				}
+				else if (is_ready)
+				{
+					++result;
+				}
+			}
+		}
+	}
+
+	return result;
+}
+
 void
 iconer::app::Room::ClearMembers()
 volatile noexcept
@@ -249,12 +294,16 @@ volatile noexcept
 	Dirty(true);
 }
 
-void iconer::app::Room::Dirty(bool flag) volatile noexcept
+void
+iconer::app::Room::Dirty(bool flag) 
+volatile noexcept
 {
 	isMemberUpdated = flag;
 }
 
-bool iconer::app::Room::Dirty() volatile noexcept
+bool
+iconer::app::Room::Dirty()
+const volatile noexcept
 {
 	return isMemberUpdated;
 }

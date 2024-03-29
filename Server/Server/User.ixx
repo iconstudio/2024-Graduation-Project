@@ -44,31 +44,20 @@ export namespace iconer::app
 
 		explicit User() = default;
 
+		template<typename ForwardedId>
 		[[nodiscard]]
-		explicit User(const IdType& id, iconer::net::Socket&& socket)
-			noexcept(nothrow_constructible<Super, const IdType&> and nothrow_move_constructibles<iconer::net::Socket>)
-			: Super(id)
+		explicit User(ForwardedId&& id, iconer::net::Socket&& socket)
+			noexcept(nothrow_constructible<Super, ForwardedId> and nothrow_move_constructibles<iconer::net::Socket>)
+			: Super(std::forward<ForwardedId>(id))
 			, mySocket(std::exchange(socket, iconer::net::Socket{}))
 			, recvOffset(0)
-			, roomContext(), myRoomId(-1), isRidingGuardian(false)
-			, myTeamId(Team::Unknown), myWeaponId(0)
+			, roomContext()
 			, requestContext(AsyncOperations::OpNotifyRoom)
 			, requestMemberContext(AsyncOperations::OpNotifyMember)
+			, gameContext(AsyncOperations::OpCreateGame), loadingContext(AsyncOperations::OpReadyGame)
 			, myTransform()
-			, preSignInPacket(), preRoomCreationPacket()
-		{
-		}
-
-		[[nodiscard]]
-		explicit User(IdType&& id, iconer::net::Socket&& socket)
-			noexcept(nothrow_constructible<Super, IdType&&> and nothrow_move_constructibles<iconer::net::Socket>)
-			: Super(std::move(id))
-			, mySocket(std::exchange(socket, iconer::net::Socket{}))
-			, recvOffset(0)
-			, roomContext(), myRoomId(-1)
-			, requestContext(AsyncOperations::OpNotifyRoom)
-			, requestMemberContext(AsyncOperations::OpNotifyMember)
-			, myTransform()
+			, myRoomId(-1), myTeamId(Team::Unknown), myWeaponId(0)
+			, isRidingGuardian(false)
 			, preSignInPacket(), preRoomCreationPacket()
 		{
 		}
@@ -159,7 +148,7 @@ export namespace iconer::app
 		/// <param name="who">- Not only local client</param>
 		BorrowedIoResult SendRoomLeftPacket(IdType who, bool is_self) const;
 		BorrowedIoResult SendCannotStartGamePacket(int reason) const;
-		BorrowedIoResult SendChangeTeamPacket(bool is_red_team) const;
+		BorrowedIoResult SendChangeTeamPacket(IdType user_id, bool is_red_team) const;
 		BorrowedIoResult SendMakeGameReadyPacket() const;
 		BorrowedIoResult SendGameJustStartedPacket() const;
 
@@ -453,9 +442,10 @@ export namespace iconer::app
 
 		IContext roomContext;
 		IContext requestContext, requestMemberContext;
-		iconer::util::MovableAtomic<IdType> myRoomId;
-		glm::mat4 myTransform;
+		IContext gameContext, loadingContext;
 
+		glm::mat4 myTransform;
+		iconer::util::MovableAtomic<IdType> myRoomId;
 		iconer::util::MovableAtomic<Team> myTeamId;
 		iconer::util::MovableAtomic<std::uint8_t> myWeaponId;
 		iconer::util::MovableAtomic<bool> isRidingGuardian;

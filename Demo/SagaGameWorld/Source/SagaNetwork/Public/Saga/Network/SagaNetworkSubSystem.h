@@ -1,15 +1,17 @@
 #pragma once
+#include <cstddef>
 #include "SagaNetwork.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "Tasks/Task.h"
 #include "HAL/Runnable.h"
 #include "HAL/RunnableThread.h"
+#include "Tasks/Task.h"
+#include "Async/Async.h"
 
 #include "Saga/Network/SagaPacketProtocol.h"
 #include "Saga/Network/SagaConnectionContract.h"
+#include "Saga/Network/SagaGameContract.h"
 #include "Saga/Network/SagaVirtualRoom.h"
 #include "Saga/Network/SagaVirtualUser.h"
-#include "Saga/Network/SagaNetworkView.h"
 #include "SagaNetworkSubSystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnNetworkInitialized, bool, was_succeed);
@@ -24,9 +26,13 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnLeftRoom, int32, id);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnRespondVersion, const FString&, version_string);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateRoomList, const TArray<FSagaVirtualRoom>&, list);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnUpdateUserList, const TArray<FSagaVirtualUser>&, list);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSagaEventOnTeamChanged, int32, user_id, bool, is_red_team);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnFailedToStartGame, ESagaGameContract, reason);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnGetPreparedGame);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnStartGame);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnRpc, int64, argument);
+DECLARE_EVENT_OneParam(FSagaNetworkWorker, FSagaEventOnRpc, int64);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSagaEventOnUpdatePosition, int32, id, float, x, float, y, float, z);
 
@@ -62,8 +68,6 @@ public:
 	virtual void Deinitialize() override;
 
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
-	bool Start(const FString& nickname);
-	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network")
 	bool Close();
 #pragma endregion
 
@@ -79,8 +83,28 @@ public:
 
 	/* General Methods */
 #pragma region =========================
-	void CallFunctionOnGameThread(TUniqueFunction<void()>&& function);
-	void CallPureFunctionOnGameThread(TUniqueFunction<void()>&& function) const;
+	FORCEINLINE void CallFunctionOnGameThread(TUniqueFunction<void()>&& function)
+	{
+		if (IsInGameThread())
+		{
+			function();
+		}
+		else
+		{
+			AsyncTask(ENamedThreads::GameThread, MoveTemp(function));
+		}
+	}
+	FORCEINLINE	void CallPureFunctionOnGameThread(TUniqueFunction<void()>&& function) const
+	{
+		if (IsInGameThread())
+		{
+			function();
+		}
+		else
+		{
+			AsyncTask(ENamedThreads::GameThread, MoveTemp(function));
+		}
+	}
 #pragma endregion
 
 	/* Local Client Methods */
@@ -155,7 +179,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	int32 SendRequestMembersPacket();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
-	int32 SendChangeTeamPacket(int32 user_id, bool is_red_team);
+	int32 SendChangeTeamPacket(bool is_red_team);
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
 	int32 SendGameStartPacket();
 	UFUNCTION(BlueprintCallable, Category = "CandyLandSaga|Network|Packet")
@@ -192,7 +216,11 @@ public:
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnUpdateMembers(UPARAM(ref) const TArray<FSagaVirtualUser>& list) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnTeamChanged(int32 id, bool is_red_team) const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnGetPreparedGame() const;
+	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
+	void BroadcastOnFailedToStartGame(ESagaGameContract reason) const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
 	void BroadcastOnStartGame() const;
 	UFUNCTION(Category = "CandyLandSaga|Network|Internal")
@@ -244,7 +272,11 @@ public:
 	FSagaEventOnUpdateRoomList OnUpdateRoomList;
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnUpdateUserList OnUpdateMembers;
+	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
+	FSagaEventOnTeamChanged OnTeamChanged;
 
+	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
+	FSagaEventOnFailedToStartGame OnFailedToStartGame;
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnGetPreparedGame OnGetPreparedGame;
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
@@ -254,8 +286,20 @@ public:
 	FSagaEventOnUpdatePosition OnUpdatePosition;
 #pragma endregion
 
+	/* Tasks */
+#pragma region =========================
+	void AddRpcCallback(const FString& id, FSagaEventOnRpc& delegate)
+	{
+		rpcDatabase.Add(id) = delegate;
+	}
+
 	static TQueue<UE::Tasks::TTask<int32>> taskQueue;
 	FGraphEventArray TaskCompletionEvents;
+
+	//static TMap<FStringView, TUniqueFunction<void()>> rpcDatabase;
+	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CandyLandSaga|Network")
+	TMap<FString, FSagaEventOnRpc> rpcDatabase;
+
 #pragma endregion
 
 protected:
@@ -291,7 +335,11 @@ protected:
 	UFUNCTION()
 	void OnUpdateMembers_Implementation(UPARAM(ref) const TArray<FSagaVirtualUser>& list);
 	UFUNCTION()
+	void OnTeamChanged_Implementation(int32 user_id, bool is_red_team);
+	UFUNCTION()
 	void OnGetPreparedGame_Implementation();
+	UFUNCTION()
+	void OnFailedToStartGame_Implementation(ESagaGameContract reason);
 	UFUNCTION()
 	void OnStartGame_Implementation();
 	UFUNCTION()

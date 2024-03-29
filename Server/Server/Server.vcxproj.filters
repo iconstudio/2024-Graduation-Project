@@ -357,8 +357,14 @@
     <ClCompile Include="RoomStates.ixx">
       <Filter>Collection</Filter>
     </ClCompile>
+    <ClCompile Include="NativeTimer.ixx">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\NativeTimer.cpp">
+      <Filter>Application\Implementain</Filter>
+    </ClCompile>
     <ClCompile Include="RoomBase.ixx">
-      <Filter>Collection</Filter>
+      <Filter>Application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

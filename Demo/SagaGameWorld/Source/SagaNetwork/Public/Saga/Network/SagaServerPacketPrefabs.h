@@ -117,7 +117,7 @@ namespace saga::inline sc
 	/// </summary>
 	/// <param name="teamId">Team's id of user</param>
 	/// <remarks>Aerver would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(SC_SetTeamPacket, EPacketProtocol::SC_SET_TEAM, int8, teamId, team_id, 0);
+	MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT(SC_SetTeamPacket, EPacketProtocol::SC_SET_TEAM, std::int32_t, clientId, user_id, 0, std::int8_t, teamId, team_id, 0);
 	/// <summary>
 	/// Getting game ready notification packet for server
 	/// </summary>

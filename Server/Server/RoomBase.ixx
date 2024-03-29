@@ -42,6 +42,7 @@ export namespace iconer::app::detail
 		{
 			SetState(RoomStates::None);
 			SetOperation(AsyncOperations::None);
+			membersCount = 0;
 			loadCount = 0;
 		}
 
@@ -49,6 +50,7 @@ export namespace iconer::app::detail
 		{
 			SetState(RoomStates::None);
 			SetOperation(AsyncOperations::None);
+			membersCount = 0;
 			loadCount = 0;
 		}
 
@@ -90,6 +92,21 @@ export namespace iconer::app::detail
 		bool TryCancelReady(RoomStates next_state = RoomStates::Idle) volatile noexcept
 		{
 			return TryChangeState(RoomStates::Ready, next_state);
+		}
+		
+		bool TryBeginGame() volatile noexcept
+		{
+			return TryChangeState(RoomStates::Ready, RoomStates::InGame);
+		}
+
+		bool TryCancelBeginGame(RoomStates next_state = RoomStates::Idle) volatile noexcept
+		{
+			return TryChangeState(RoomStates::Ready, next_state);
+		}
+		
+		bool TryCancelBeginGameInGame(RoomStates next_state = RoomStates::Idle) volatile noexcept
+		{
+			return TryChangeState(RoomStates::InGame, next_state);
 		}
 
 		void BeginClose() volatile noexcept

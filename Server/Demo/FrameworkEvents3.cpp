@@ -248,10 +248,7 @@ demo::Framework::OnLeavingRoom(iconer::app::User& user)
 void
 demo::Framework::OnClosingRoom(iconer::app::Room& room)
 {
-	if (room.TryEndClose())
-	{
-		room.Cleanup();
-	}
+	room.Cleanup();
 }
 
 bool

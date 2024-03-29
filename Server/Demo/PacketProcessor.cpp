@@ -3,6 +3,7 @@ module Demo.PacketProcessor;
 import Iconer.Utility.Chronograph;
 import Iconer.Application.RoomContract;
 import Iconer.Application.User;
+import Iconer.Application.Room;
 import Demo.Framework;
 
 #define SEND(user_var, method, ...)\
@@ -42,7 +43,7 @@ demo::OnRequestRoomList(Framework& framework, iconer::app::User& user)
 {
 	if (user.GetState() != iconer::app::UserStates::None)
 	{
-		(void)framework.Schedule(user.requestContext, user.GetID());
+		(void) framework.Schedule(user.requestContext, user.GetID());
 	}
 }
 
@@ -51,7 +52,7 @@ demo::OnRequestMemberList(Framework& framework, iconer::app::User& user)
 {
 	if (user.GetState() != iconer::app::UserStates::None)
 	{
-		(void)framework.Schedule(user.requestMemberContext, user.GetID());
+		(void) framework.Schedule(user.requestMemberContext, user.GetID());
 	}
 }
 
@@ -164,59 +165,162 @@ demo::OnLeaveRoom(demo::Framework& framework, iconer::app::User& user)
 	}
 }
 
+namespace ESagaGameContract
+{
+	enum [[nodiscard]] Type : std::uint8_t
+	{
+		Unknown = 0
+		, NotInRoom
+		, ClientIsBusy // The client's state is unmatched
+		, LackOfMember
+		, InvalidRoom
+		, InvalidOperation // Room task is invalid
+		, UnstableRoom // Room's state is changed at time
+		, ServerError // Unknown internal error
+	};
+}
+
 void
 demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 {
 	if (user.myRoomId == -1)
 	{
-		// cannot start a game: The client is not in a room
-		SEND(user, SendCannotStartGamePacket, 0);
+		// cannot prepare the game: The client is not in a room
+		SEND(user, SendCannotStartGamePacket, ESagaGameContract::NotInRoom);
 	}
 	else if (auto room = framework.FindRoom(user.myRoomId); nullptr != room)
 	{
 		IGNORE_DISCARDED_BEGIN;
 		if (not user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
 		{
-			// cannot start a game: The client is busy
-			SEND(user, SendCannotStartGamePacket, 2);
+			// cannot prepare the game: The client is busy
+			SEND(user, SendCannotStartGamePacket, ESagaGameContract::ClientIsBusy);
 		}
 		else if (not room->CanStartGame())
 		{
-			// cannot start a game: The room is lack of members
-			SEND(user, SendCannotStartGamePacket, 3);
+			// rollback
+			user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+
+			// cannot prepare the game: The room is lack of members
+			SEND(user, SendCannotStartGamePacket, ESagaGameContract::LackOfMember);
+		}
+		else if (not room->TryGettingReady())
+		{
+			// rollback
+			user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+			room->TryCancelReady();
+
+			// cannot prepare the game: Not proper operation
+			SEND(user, SendCannotStartGamePacket, ESagaGameContract::InvalidOperation);
 		}
 		else
 		{
-			user.roomContext.SetOperation(iconer::app::AsyncOperations::OpCreateGame);
-
 			// make clients getting ready for game
-			if (not framework.Schedule(user.roomContext, user.GetID()))
+			if (not framework.Schedule(user.gameContext, user.GetID()))
 			{
 				// rollback
 				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
-				user.roomContext.SetOperation(iconer::app::AsyncOperations::None);
+				room->TryCancelReady();
 
-				// cannot start a game: server error
-				SEND(user, SendCannotStartGamePacket, 1000);
+				// cannot prepare the game: server error
+				SEND(user, SendCannotStartGamePacket, ESagaGameContract::ServerError);
 			}
 		}
 		IGNORE_DISCARDED_END;
 	}
 	else
 	{
-		// cannot start a game: The client has a invalid room
-		SEND(user, SendCannotStartGamePacket, 1);
+		// cannot prepare the game: The client has a invalid room
+		SEND(user, SendCannotStartGamePacket, ESagaGameContract::InvalidRoom);
 	}
 }
 
 void
 demo::OnGameLoadedSignal(demo::Framework& framework, iconer::app::User& user)
 {
+	if (user.myRoomId == -1)
+	{
+		// cannot start a game: The client is not in a room
+		SEND(user, SendCannotStartGamePacket, ESagaGameContract::NotInRoom);
+	}
+	else if (auto room = framework.FindRoom(user.myRoomId); room != nullptr)
+	{
+		if (not room->CanStartGame())
+		{
+			// rollback
+			room->TryCancelReady();
+
+			// cannot prepare the game: not qualified conditions
+			SEND(user, SendCannotStartGamePacket, ESagaGameContract::LackOfMember);
+		}
+		else if (user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::MakingGame))
+		{
+			// this client is ready for game, mark actually ready
+			if (not framework.Schedule(user.loadingContext, user.GetID()))
+			{
+				// rollback
+				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+				room->TryCancelReady();
+
+				// cannot prepare the game: server error
+				SEND(user, SendCannotStartGamePacket, ESagaGameContract::ServerError);
+			}
+		}
+		else if (user.GetState() == iconer::app::UserStates::MakingGame)
+		{
+			// room master
+			if (not framework.Schedule(user.loadingContext, user.GetID()))
+			{
+				// rollback
+				user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+				room->TryCancelReady();
+
+				// cannot prepare the game: server error
+				SEND(user, SendCannotStartGamePacket, ESagaGameContract::ServerError);
+			}
+		}
+		else
+		{
+			// rollback
+			user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+			room->TryCancelReady();
+
+			// cannot prepare the game: The client is busy
+			SEND(user, SendCannotStartGamePacket, ESagaGameContract::ClientIsBusy);
+		}
+		//room->ReadyMember(user);
+	}
+	else
+	{
+		// cannot start a game: The client has a invalid room
+		SEND(user, SendCannotStartGamePacket, ESagaGameContract::InvalidRoom);
+	}
 }
 
 void
 demo::OnTeamChanged(demo::Framework& framework, iconer::app::User& user, bool is_red_team)
 {
+	if (user.myRoomId != -1)
+	{
+		const auto& user_id = user.GetID();
+
+		if (auto room = framework.FindRoom(user.myRoomId); room != nullptr)
+		{
+			if (room->GetState() != iconer::app::RoomStates::Idle)
+			{
+				return;
+			}
+
+			if (room->HasMember(user.GetID()))
+			{
+				user.myTeamId = is_red_team ? iconer::app::Team::Red : iconer::app::Team::Blue;
+				room->ForEach([user_id, is_red_team](iconer::app::User& user) {
+					SEND(user, SendChangeTeamPacket, user_id, is_red_team);
+				}
+				);
+			}
+		}
+	}
 }
 
 void
@@ -229,14 +333,13 @@ demo::OnReceivePosition(demo::Framework& framework, iconer::app::User& user, flo
 	auto room_id = user.myRoomId.Load();
 	auto room = framework.FindRoom(room_id);
 
-	room->ForEach([&user, x, y, z](iconer::app::User& member)
+	room->ForEach([&user, x, y, z](iconer::app::User& member) {
+		auto [io, ctx] = member.SendPositionPacket(user.GetID(), x, y, z);
+		if (not io)
 		{
-			auto [io, ctx] = member.SendPositionPacket(user.GetID(), x, y, z);
-			if (not io)
-			{
-				ctx.Complete();
-			}
+			ctx.Complete();
 		}
+	}
 	);
 }
 
@@ -256,7 +359,7 @@ demo::OnReceiveRotation(Framework& framework, iconer::app::User& user, float rol
 		{
 			ctx.Complete();
 		}
-		});
+	});
 }
 
 #define ICONER_UNLIKELY [[unlikely]]
@@ -383,8 +486,6 @@ demo::PacketProcessor(demo::Framework& framework
 		case iconer::app::PacketProtocol::CS_GAME_LOADED:
 		{
 			// Empty packet
-
-			// now start game
 			OnGameLoadedSignal(framework, user);
 		}
 		break;
@@ -442,6 +543,8 @@ demo::PacketProcessor(demo::Framework& framework
 			std::int8_t team_id{};
 			iconer::util::Deserialize(last_buf, team_id);
 
+			// 0 :  red team
+			// 1 : blue team
 			OnTeamChanged(framework, user, team_id == 0);
 		}
 		break;
