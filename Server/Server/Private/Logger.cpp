@@ -44,13 +44,13 @@ void
 iconer::util::Logger::LogInternal(std::wstring_view msg)
 const noexcept
 {
-	const auto str = msg.data();
+	const auto str = std::wstring{ msg.data() };
 
 	iconer::util::cfc::Palette before = iconer::util::cfc::GetConsoleColour();
 
 	std::scoped_lock lock { consoleLock };
 	iconer::util::cfc::SetConsoleColour(logPalette);
-	std::fwprintf(stdout, str);
+	std::fwprintf(stdout, str.c_str());
 	iconer::util::cfc::SetConsoleColour(before);
 
 	GetHandle().Write(str);
