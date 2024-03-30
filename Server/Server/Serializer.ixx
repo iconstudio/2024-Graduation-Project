@@ -33,7 +33,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(bool));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a character to the byte buffer</summary>
@@ -51,7 +51,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(char));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer an unsigned character to the byte buffer</summary>
@@ -69,7 +69,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(unsigned char));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer an utf-8 character to the byte buffer</summary>
@@ -87,7 +87,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(char8_t));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a 16-bit integer value to the byte buffer</summary>
@@ -108,7 +108,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(std::int16_t));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer an unsigned 16-bit integer value to the byte buffer</summary>
@@ -129,7 +129,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(std::uint16_t));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer an utf-16 character to the byte buffer</summary>
@@ -150,7 +150,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(char16_t));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a wide character to the byte buffer</summary>
@@ -171,7 +171,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(wchar_t));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a 32-bit integer value to the byte buffer</summary>
@@ -194,7 +194,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(std::int32_t));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer an unsigned 32-bit integer value to the byte buffer</summary>
@@ -217,7 +217,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(std::uint32_t));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a 32-bit integer value to the byte buffer</summary>
@@ -240,7 +240,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(long));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer an unsigned 32-bit integer value to the byte buffer</summary>
@@ -263,7 +263,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(unsigned long));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer an utf-32 character to the byte buffer</summary>
@@ -286,7 +286,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(char32_t));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a 64-bit integer value to the byte buffer</summary>
@@ -309,7 +309,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(std::int64_t));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer an unsigned 64-bit integer value to the byte buffer</summary>
@@ -332,7 +332,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(std::uint64_t));
 		Serialize(buffer.get(), value);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a 32-bit floating point value to the byte buffer</summary>
@@ -349,7 +349,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(std::int32_t));
 		Serialize(buffer.get(), std::bit_cast<std::int32_t>(value));
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a 32-bit floating point value to the byte buffer</summary>
@@ -366,7 +366,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(std::int64_t));
 		Serialize(buffer.get(), std::bit_cast<std::int64_t>(value));
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a string to the byte buffer</summary>
@@ -386,7 +386,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(char) * str.length());
 		Serialize(buffer.get(), str);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a wide string to the byte buffer</summary>
@@ -407,7 +407,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(wchar_t) * str.length());
 		Serialize(buffer.get(), str);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer an utf-8 string to the byte buffer</summary>
@@ -427,7 +427,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(char8_t) * str.length());
 		Serialize(buffer.get(), str);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a wide string to the byte buffer</summary>
@@ -448,7 +448,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(char16_t) * str.length());
 		Serialize(buffer.get(), str);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a wide string to the byte buffer</summary>
@@ -469,7 +469,7 @@ export namespace iconer::util
 	{
 		auto buffer = std::make_unique<std::byte[]>(sizeof(value));
 		Serialize(buffer.get(), std::to_underlying(value));
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a enumeration to the byte buffer</summary>
@@ -540,7 +540,7 @@ export namespace iconer::util
 
 		std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(bfsize);
 		Serialize(buffer.get(), tuple);
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a copied tuple to the byte buffer</summary>
@@ -568,7 +568,7 @@ export namespace iconer::util
 
 		std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(bfsize);
 		Serialize(buffer.get(), std::move(tuple));
-		return buffer;
+		return std::move(buffer);
 	}
 
 	/// <summary>Transfer a moved tuple to the byte buffer</summary>
