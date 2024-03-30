@@ -5,7 +5,6 @@ module;
 #include <ranges>
 
 module Iconer.Application.Room;
-import :RoomMember;
 import Iconer.Utility.Constraints;
 import Iconer.Utility.AtomicSwitcher;
 import Iconer.Application.User;
@@ -73,92 +72,6 @@ volatile noexcept
 	ClearMembers();
 	Clear();
 	Super::Cleanup();
-}
-
-size_t
-iconer::app::Room::Broadcast(std::span<iconer::app::IContext*> ctxes, const std::byte* buffer, size_t size)
-const
-{
-	std::vector<iconer::app::User*> list = AcquireMemberList();
-
-	if (ctxes.size() < list.size() or size == 0)
-	{
-		return 0;
-	}
-
-	auto it = ctxes.begin();
-
-	size_t result{};
-	for (auto ptr : list)
-	{
-		if (nullptr != ptr)
-		{
-			iconer::app::User& user = *ptr;
-
-			if (user.GetState() != iconer::app::UserStates::None)
-			{
-				iconer::app::IContext*& ctx = *it;
-
-				if (not user.SendGeneralData(ctx, buffer, size))
-				{
-					delete std::exchange(ctx, nullptr);
-				}
-				else
-				{
-					(void)++result;
-				}
-			}
-		}
-	}
-
-	return result;
-}
-
-size_t
-iconer::app::Room::BroadcastExcept(std::span<iconer::app::IContext*> ctxes, const std::byte* buffer, size_t size, std::initializer_list<iconer::app::User::IdType> exceptions)
-const
-{
-	std::vector<iconer::app::User*> list = AcquireMemberList();
-
-	if (ctxes.size() < list.size() or size == 0)
-	{
-		return 0;
-	}
-
-	auto it = ctxes.begin();
-
-	size_t result{};
-	for (auto ptr : list)
-	{
-		if (nullptr != ptr)
-		{
-			iconer::app::User& user = *ptr;
-
-			if (exceptions.end() != std::find_if(exceptions.begin(), exceptions.end()
-				, [&user](const iconer::app::User::IdType& rhs) noexcept -> bool {
-					return user.GetID() == rhs;
-				}))
-			{
-				continue;
-			}
-
-			if (user.GetState() != iconer::app::UserStates::None)
-			{
-				iconer::app::IContext*& ctx = *it;
-
-				if (not user.SendGeneralData(ctx, buffer, size))
-				{
-					delete std::exchange(ctx, nullptr);
-				}
-				else
-				{
-					(void)++result;
-				}
-			}
-		}
-	}
-
-	return result;
 }
 
 bool
@@ -306,40 +219,6 @@ iconer::app::Room::Dirty()
 const volatile noexcept
 {
 	return isMemberUpdated;
-}
-
-std::vector<iconer::app::User*>
-iconer::app::Room::AcquireMemberList()
-const
-{
-	return std::vector<User*>{ std::from_range
-		, myMembers | std::views::transform([](auto& member) noexcept -> User*
-				{
-					return member.myHandle;
-				}
-			) | std::views::take_while([](const User* user) noexcept -> bool
-				{
-					return user != nullptr;
-				}
-			)
-	};
-}
-
-std::vector<iconer::app::User*>
-iconer::app::Room::AcquireMemberList()
-const volatile
-{
-	return std::vector<User*>{ std::from_range
-		, myMembers | std::views::transform([](auto& member) noexcept -> User*
-			{
-				return member.myHandle;
-			}
-		) | std::views::take_while([](const User* user) noexcept -> bool
-			{
-				return user != nullptr;
-			}
-		)
-	};
 }
 
 std::span<std::byte>

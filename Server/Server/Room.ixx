@@ -4,16 +4,21 @@ module;
 #include <span>
 
 export module Iconer.Application.Room;
-import :RoomMember;
 import :RoomBase;
 export import :RoomStates;
 import Iconer.Utility.Constraints;
-import Iconer.Collection.Array;
+import Iconer.Utility.MovableAtomic;
 export import Iconer.Application.NativeTimer;
 
 export namespace iconer::app
 {
-	class User;
+	class [[nodiscard]] User;
+
+	struct [[nodiscard]] RoomMember
+	{
+		User* myHandle;
+		iconer::util::MovableAtomic<bool> isReady;
+	};
 
 	class [[nodiscard]] Room : public detail::RoomBase
 	{
@@ -28,9 +33,13 @@ export namespace iconer::app
 
 		using Super = detail::RoomBase;
 		using IdType = Super::IdType;
-		using MemberStorageType = iconer::collection::Array<RoomMember, maxUsersNumberInRoom>;
-		using iterator = MemberStorageType::iterator;
-		using const_iterator = MemberStorageType::const_iterator;
+		//using MemberStorageType = iconer::collection::Array<RoomMember, maxUsersNumberInRoom>;
+		//using iterator = MemberStorageType::iterator;
+		//using const_iterator = MemberStorageType::const_iterator;
+		using iterator = RoomMember*;
+		using volatile_iterator = volatile RoomMember*;
+		using const_iterator = const RoomMember*;
+		using const_volatile_iterator = const volatile RoomMember*;
 
 		explicit constexpr Room(const IdType& id)
 			noexcept(nothrow_constructible<Super, const IdType&>)
@@ -84,14 +93,10 @@ export namespace iconer::app
 				}
 			}
 		}
-		size_t Broadcast(std::span<IContext*> ctxes, const std::byte* buffer, size_t size) const;
-		size_t BroadcastExcept(std::span<IContext*> ctxes, const std::byte* buffer, size_t size, std::initializer_list<IdType> exceptions) const;
 
 		size_t ReadyMember(iconer::app::User& user) volatile noexcept;
 		size_t UnreadyMember(iconer::app::User& user) volatile noexcept;
 
-		[[nodiscard]] std::vector<User*> AcquireMemberList() const;
-		[[nodiscard]] std::vector<User*> AcquireMemberList() const volatile;
 		[[nodiscard]] std::span<std::byte> SerializeMembers() volatile;
 
 		[[nodiscard]] bool HasMember(const IdType& id) const volatile noexcept;
@@ -100,78 +105,79 @@ export namespace iconer::app
 		[[nodiscard]]
 		constexpr iterator begin() noexcept
 		{
-			return myMembers.begin();
+			return myMembers;
 		}
 		
 		[[nodiscard]]
 		constexpr iterator end() noexcept
 		{
-			return myMembers.end();
+			return myMembers + maxUsersNumberInRoom;
 		}
 		
 		[[nodiscard]]
 		constexpr const_iterator begin() const noexcept
 		{
-			return myMembers.begin();
+			return myMembers;
 		}
 		
 		[[nodiscard]]
 		constexpr const_iterator end() const noexcept
 		{
-			return myMembers.end();
+			return myMembers + maxUsersNumberInRoom;
 		}
 		
 		[[nodiscard]]
 		constexpr const_iterator cbegin() const noexcept
 		{
-			return myMembers.cbegin();
+			return myMembers;
 		}
 		
 		[[nodiscard]]
 		constexpr const_iterator cend() const noexcept
 		{
-			return myMembers.cend();
+			return myMembers + maxUsersNumberInRoom;
 		}
 		
 		[[nodiscard]]
-		constexpr iterator begin() volatile noexcept
+		constexpr volatile_iterator begin() volatile noexcept
 		{
-			return myMembers.begin();
+			return myMembers;
 		}
 		
 		[[nodiscard]]
-		constexpr iterator end() volatile noexcept
+		constexpr volatile_iterator end() volatile noexcept
 		{
-			return myMembers.end();
+			return myMembers + maxUsersNumberInRoom;
 		}
 		
 		[[nodiscard]]
-		constexpr const_iterator begin() const volatile noexcept
+		constexpr const_volatile_iterator begin() const volatile noexcept
 		{
-			return myMembers.begin();
+			return myMembers;
 		}
 		
 		[[nodiscard]]
-		constexpr const_iterator end() const volatile noexcept
+		constexpr const_volatile_iterator end() const volatile noexcept
 		{
-			return myMembers.end();
+			return myMembers + maxUsersNumberInRoom;
 		}
 		
 		[[nodiscard]]
-		constexpr const_iterator cbegin() const volatile noexcept
+		constexpr const_volatile_iterator cbegin() const volatile noexcept
 		{
-			return myMembers.cbegin();
+			return myMembers;
 		}
 		
 		[[nodiscard]]
-		constexpr const_iterator cend() const volatile noexcept
+		constexpr const_volatile_iterator cend() const volatile noexcept
 		{
-			return myMembers.cend();
+			return myMembers + maxUsersNumberInRoom;
 		}
 
 		NativeTimer myTimer;
 
 	private:
-		MemberStorageType myMembers;
+		//MemberStorageType myMembers;
+		RoomMember myMembers[maxUsersNumberInRoom];
 	};
 }
