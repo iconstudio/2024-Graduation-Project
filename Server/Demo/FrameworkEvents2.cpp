@@ -37,6 +37,9 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 		{
 			myLogger.DebugLog(iconer::app::GetResourceString<9>());
 
+			const auto last_off = user_buffer.size_bytes() - proceed_bytes;
+			std::memcpy(user_buffer.data() + proceed_bytes, user_buffer.data(), last_off);
+			std::memset(user_buffer.data() + last_off, 0, static_cast<size_t>(last_off));
 			user_recv_offset -= proceed_bytes;
 		};
 	}
