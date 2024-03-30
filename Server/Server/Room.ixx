@@ -76,13 +76,11 @@ export namespace iconer::app
 		template<invocables<User&> Predicate>
 		void ForEach(Predicate&& predicate) const
 		{
-			auto list = AcquireMemberList();
-
-			for (auto& member : list)
+			for (auto& [user, _] : myMembers)
 			{
-				if (nullptr != member)
+				if (nullptr != user)
 				{
-					std::invoke(std::move(predicate), *member);
+					std::invoke(std::move(predicate), *user);
 				}
 			}
 		}
