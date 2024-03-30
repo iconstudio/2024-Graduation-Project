@@ -95,48 +95,7 @@ export namespace iconer::app::packets::inline cs
 	/// </summary>
 	/// <param name="teamId">Team's id of user</param>
 	/// <remarks>Client would send it to the server</remarks>
-	struct [[nodiscard]] CS_SetTeamPacket : public BasicPacket {
-		using Super = BasicPacket;
-
-		[[nodiscard]] static consteval size_t WannabeSize() noexcept
-		{
-			return Super::MinSize() + sizeof(std::int8_t);
-		}
-
-		[[nodiscard]] static consteval ptrdiff_t SignedWannabeSize() noexcept
-		{
-			return static_cast<ptrdiff_t>(WannabeSize());
-		}
-
-		template<std::enable_if_t<std::is_constructible_v<std::int8_t, decltype((0))>, int> = 0>
-		constexpr CS_SetTeamPacket() noexcept(std::is_nothrow_constructible_v<std::int8_t, decltype((0))>) : Super((PacketProtocol::CS_SET_TEAM), static_cast<std::int16_t>(SignedWannabeSize())), teamId(((0)))
-		{}
-
-		template<std::enable_if_t<std::is_copy_constructible_v<std::int8_t>, int> = 0>
-		constexpr CS_SetTeamPacket(const std::int8_t& team_id) noexcept(std::is_nothrow_copy_constructible_v<std::int8_t>) : Super((PacketProtocol::CS_SET_TEAM), static_cast<std::int16_t>(SignedWannabeSize())), teamId((team_id))
-		{}
-
-		template<std::enable_if_t<std::is_move_constructible_v<std::int8_t>, int> = 0>
-		constexpr CS_SetTeamPacket(std::int8_t&& team_id) noexcept(std::is_nothrow_move_constructible_v<std::int8_t>) : Super((PacketProtocol::CS_SET_TEAM), static_cast<std::int16_t>(SignedWannabeSize())), teamId(std::move(team_id))
-		{}
-
-		constexpr std::byte* Write(std::byte* buffer) const
-		{
-			return iconer::util::Serialize(Super::Write(buffer), teamId);
-		}
-
-		constexpr const std::byte* Read(const std::byte* buffer)
-		{
-			return iconer::util::Deserialize(Super::Read(buffer), teamId);
-		}
-
-		[[nodiscard]] constexpr auto Serialize() const
-		{
-			return iconer::util::Serializes(myProtocol, mySize, teamId);
-		};
-
-		std::int8_t teamId;
-	};
+	MAKE_EMPTY_PACKET_1VAR_WITH_DEFAULT(CS_SetTeamPacket, PacketProtocol::CS_SET_TEAM, std::int8_t, teamId, team_id, 0);
 	/// <summary>
 	/// Requesting game version packet for client
 	/// </summary>
