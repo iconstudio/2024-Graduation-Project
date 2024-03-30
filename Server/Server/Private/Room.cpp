@@ -136,8 +136,8 @@ const
 
 			if (exceptions.end() != std::find_if(exceptions.begin(), exceptions.end()
 				, [&user](const iconer::app::User::IdType& rhs) noexcept -> bool {
-				return user.GetID() == rhs;
-			}))
+					return user.GetID() == rhs;
+				}))
 			{
 				continue;
 			}
@@ -197,7 +197,7 @@ volatile noexcept
 }
 
 bool
-iconer::app::Room::RemoveMember(const IdType& id, function_t<void, volatile Room&, const size_t&> predicate) 
+iconer::app::Room::RemoveMember(const IdType& id, function_t<void, volatile Room&, const size_t&> predicate)
 volatile
 {
 	return Remover(*this, id, predicate);
@@ -295,7 +295,7 @@ volatile noexcept
 }
 
 void
-iconer::app::Room::Dirty(bool flag) 
+iconer::app::Room::Dirty(bool flag)
 volatile noexcept
 {
 	isMemberUpdated = flag;
@@ -313,9 +313,15 @@ iconer::app::Room::AcquireMemberList()
 const
 {
 	return std::vector<User*>{ std::from_range
-		, myMembers | std::views::transform([](auto& member) noexcept -> User* {
-		return member.myHandle;
-	})
+		, myMembers | std::views::transform([](auto& member) noexcept -> User*
+				{
+					return member.myHandle;
+				}
+			) | std::views::take_while([](const User* user) noexcept -> bool
+				{
+					return user != nullptr;
+				}
+			)
 	};
 }
 
@@ -324,9 +330,15 @@ iconer::app::Room::AcquireMemberList()
 const volatile
 {
 	return std::vector<User*>{ std::from_range
-		, myMembers | std::views::transform([](auto& member) noexcept -> User* {
-		return member.myHandle;
-	})
+		, myMembers | std::views::transform([](auto& member) noexcept -> User*
+			{
+				return member.myHandle;
+			}
+		) | std::views::take_while([](const User* user) noexcept -> bool
+			{
+				return user != nullptr;
+			}
+		)
 	};
 }
 
