@@ -20,6 +20,19 @@ export namespace iconer::app
 		{
 		}
 
+		constexpr BlobSendContext(BlobSendContext&& other) noexcept
+			: Super(std::move(other.GetOperation()))
+			, myBlob(std::exchange(other.myBlob, nullptr)), mySize(std::move(other.mySize))
+		{}
+
+		constexpr BlobSendContext& operator=(BlobSendContext&& other) noexcept
+		{
+			lastOperation = std::move(other).GetOperation();
+			myBlob = std::exchange(other.myBlob, nullptr);
+			mySize = std::move(other.mySize);
+			return *this;
+		}
+
 		constexpr std::byte* Detach() noexcept
 		{
 			mySize = 0;
@@ -28,7 +41,10 @@ export namespace iconer::app
 
 		constexpr void Destroy() noexcept
 		{
-			myBlob.reset();
+			if (myBlob != nullptr)
+			{
+				myBlob.reset();
+			}
 			mySize = 0;
 		}
 
@@ -61,9 +77,6 @@ export namespace iconer::app
 		{
 			return static_cast<ptrdiff_t>(mySize);
 		}
-
-		constexpr BlobSendContext(BlobSendContext&&) noexcept = default;
-		constexpr BlobSendContext& operator=(BlobSendContext&&) noexcept = default;
 
 	protected:
 		std::unique_ptr<std::byte[]> myBlob;

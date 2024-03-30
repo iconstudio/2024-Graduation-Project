@@ -1,31 +1,43 @@
-module;
 export module Iconer.Application.BorrowedSendContext;
-import Iconer.Application.BlobSendContext;
+import Iconer.Application.IContext;
+import <cstddef>;
+import <utility>;
 import <memory>;
 
 export namespace iconer::app
 {
-	class [[nodiscard]] BorrowedSendContext : public BlobSendContext
+	class [[nodiscard]] BorrowedSendContext : public IContext
 	{
 	public:
-		using Super = BlobSendContext;
+		using Super = IContext;
 
 		explicit constexpr BorrowedSendContext() noexcept
-			: Super()
-		{
-			SetOperation(AsyncOperations::OpSendBorrowed);
-		}
+			: Super(AsyncOperations::OpSendBorrowed)
+			, myBlob(), mySize(0)
+		{}
 
 		explicit constexpr BorrowedSendContext(std::unique_ptr<std::byte[]>&& ptr, const size_t& size) noexcept
-			: Super(std::move(ptr), size)
+			: Super(AsyncOperations::OpSendBorrowed)
+			, myBlob(std::exchange(ptr, nullptr)), mySize(size)
+		{}
+
+		constexpr BorrowedSendContext(BorrowedSendContext&& other) noexcept
+			: Super(std::move(other).GetOperation())
+			, myBlob(std::exchange(other.myBlob, nullptr)), mySize(std::move(other.mySize))
+		{}
+
+		constexpr BorrowedSendContext& operator=(BorrowedSendContext&& other) noexcept
 		{
-			SetOperation(AsyncOperations::OpSendBorrowed);
+			lastOperation = std::move(other).GetOperation();
+			myBlob = std::exchange(other.myBlob, nullptr);
+			mySize = std::move(other.mySize);
+			return *this;
 		}
 
 		[[nodiscard]]
 		constexpr void SetBlob(std::unique_ptr<std::byte[]>&& buffer) noexcept
 		{
-			myBlob = std::move(buffer);
+			myBlob = std::exchange(buffer, nullptr);
 		}
 
 		[[nodiscard]]
@@ -35,6 +47,56 @@ export namespace iconer::app
 		}
 
 		void ReturnToBase();
+
+		constexpr std::byte* Detach() noexcept
+		{
+			mySize = 0;
+			return myBlob.release();
+		}
+
+		constexpr void Destroy() noexcept
+		{
+			myBlob.reset();
+			mySize = 0;
+		}
+
+		[[nodiscard]]
+		constexpr const std::unique_ptr<std::byte[]>& GetBlob() const& noexcept
+		{
+			return myBlob;
+		}
+
+		[[nodiscard]]
+		constexpr std::unique_ptr<std::byte[]>&& GetBlob() && noexcept
+		{
+			return std::move(myBlob);
+		}
+
+		[[nodiscard]]
+		constexpr const size_t& GetSize() const& noexcept
+		{
+			return mySize;
+		}
+
+		[[nodiscard]]
+		constexpr size_t&& GetSize() && noexcept
+		{
+			return std::move(mySize);
+		}
+
+		[[nodiscard]]
+		constexpr ptrdiff_t GetSignedSize() const noexcept
+		{
+			return static_cast<ptrdiff_t>(mySize);
+		}
+
+	protected:
+		std::unique_ptr<std::byte[]> myBlob;
+		size_t mySize;
+
+	private:
+		BorrowedSendContext(const BorrowedSendContext&) = delete;
+		BorrowedSendContext& operator=(const BorrowedSendContext&) = delete;
 	};
 
 	class [[nodiscard]] Borrower final
