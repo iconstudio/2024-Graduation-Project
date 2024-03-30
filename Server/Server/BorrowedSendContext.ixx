@@ -48,6 +48,7 @@ export namespace iconer::app
 
 		void ReturnToBase();
 
+		[[nodiscard]]
 		constexpr std::byte* Detach() noexcept
 		{
 			mySize = 0;

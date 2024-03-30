@@ -33,6 +33,7 @@ export namespace iconer::app
 			return *this;
 		}
 
+		[[nodiscard]]
 		constexpr std::byte* Detach() noexcept
 		{
 			mySize = 0;
