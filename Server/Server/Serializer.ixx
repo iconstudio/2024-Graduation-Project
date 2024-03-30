@@ -375,8 +375,8 @@ export namespace iconer::util
 	{
 		return std::ranges::transform(str.cbegin(), str.cend(), dest
 			, [](const char& ch) noexcept {
-			return std::bit_cast<std::byte>(ch);
-		}).out;
+				return std::bit_cast<std::byte>(ch);
+			}).out;
 	}
 
 	/// <summary>Allocate a byte buffer for a string</summary>
@@ -395,7 +395,7 @@ export namespace iconer::util
 	{
 		std::ranges::for_each(str, [&dest](const wchar_t& ch) {
 			dest = Serialize(dest, ch);
-		});
+			});
 
 		return dest;
 	}
@@ -416,8 +416,8 @@ export namespace iconer::util
 	{
 		return std::ranges::transform(str.cbegin(), str.cend(), dest
 			, [](const char8_t& ch) {
-			return std::bit_cast<std::byte>(ch);
-		}).out;
+				return std::bit_cast<std::byte>(ch);
+			}).out;
 	}
 
 	/// <summary>Allocate a byte buffer for an utf-8 string</summary>
@@ -436,7 +436,7 @@ export namespace iconer::util
 	{
 		std::ranges::for_each(str, [&dest](const char16_t& ch) {
 			dest = Serialize(dest, ch);
-		});
+			});
 
 		return dest;
 	}
@@ -457,7 +457,7 @@ export namespace iconer::util
 	{
 		std::ranges::for_each(str, [&dest](const char32_t& ch) {
 			dest = Serialize(dest, ch);
-		});
+			});
 
 		return dest;
 	}
@@ -653,7 +653,7 @@ export namespace iconer::util
 	{
 		output = std::bit_cast<char8_t>(buffer[0]);
 
-		return buffer + 1;
+		return buffer + sizeof(char8_t);
 	}
 
 	/// <summary>Read a 16-bit integer value from the byte buffer</summary>
@@ -666,7 +666,7 @@ export namespace iconer::util
 
 		output = static_cast<std::int16_t>(mid);
 
-		return buffer + 2;
+		return buffer + sizeof(std::int16_t);
 	}
 
 	/// <summary>Read an unsigned 16-bit integer value from the byte buffer</summary>
@@ -679,7 +679,7 @@ export namespace iconer::util
 
 		output = static_cast<std::uint16_t>(mid);
 
-		return buffer + 2;
+		return buffer + sizeof(std::uint16_t);
 	}
 
 	/// <summary>Read a wide character from the byte buffer</summary>
@@ -692,7 +692,7 @@ export namespace iconer::util
 
 		output = static_cast<wchar_t>(mid);
 
-		return buffer + 2;
+		return buffer + sizeof(wchar_t);
 	}
 
 	/// <summary>Read an utf-16 character from the byte buffer</summary>
@@ -705,7 +705,7 @@ export namespace iconer::util
 
 		output = static_cast<char16_t>(mid);
 
-		return buffer + 2;
+		return buffer + sizeof(char16_t);
 	}
 
 	/// <summary>Read a 32-bit integer value from the byte buffer</summary>
@@ -720,7 +720,7 @@ export namespace iconer::util
 
 		output = static_cast<std::int32_t>(mid);
 
-		return buffer + 4;
+		return buffer + sizeof(std::int32_t);
 	}
 
 	/// <summary>Read an unsigned 32-bit integer value from the byte buffer</summary>
@@ -735,7 +735,7 @@ export namespace iconer::util
 
 		output = static_cast<std::uint32_t>(mid);
 
-		return buffer + 4;
+		return buffer + sizeof(std::uint32_t);
 	}
 
 	/// <summary>Read a 32-bit integer value from the byte buffer</summary>
@@ -750,7 +750,7 @@ export namespace iconer::util
 
 		output = static_cast<long>(mid);
 
-		return buffer + 4;
+		return buffer + sizeof(long);
 	}
 
 	/// <summary>Read an unsigned 32-bit integer value from the byte buffer</summary>
@@ -765,7 +765,7 @@ export namespace iconer::util
 
 		output = static_cast<unsigned long>(mid);
 
-		return buffer + 4;
+		return buffer + sizeof(unsigned long);
 	}
 
 	/// <summary>Read an utf-32 character from the byte buffer</summary>
@@ -780,7 +780,7 @@ export namespace iconer::util
 
 		output = static_cast<char32_t>(mid);
 
-		return buffer + 4;
+		return buffer + sizeof(char32_t);
 	}
 
 	/// <summary>Read a 64-bit integer value from the byte buffer</summary>
@@ -797,7 +797,7 @@ export namespace iconer::util
 			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
 			| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0])));
 
-		return buffer + 8;
+		return buffer + sizeof(std::int64_t);
 	}
 
 	/// <summary>Read an unsigned 64-bit integer value from the byte buffer</summary>
@@ -814,7 +814,7 @@ export namespace iconer::util
 			| (static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[1])) << 8U)
 			| static_cast<std::uint64_t>(static_cast<std::uint8_t>(buffer[0]));
 
-		return buffer + 8;
+		return buffer + sizeof(std::uint64_t);
 	}
 
 	/// <summary>Read a 32-bit floating point value from the byte buffer</summary>

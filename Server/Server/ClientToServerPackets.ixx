@@ -39,7 +39,8 @@ export namespace iconer::app::packets::inline cs
 		constexpr CS_RpcPacket() noexcept
 			: Super(PacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
 			, rpcScript()
-		{}
+		{
+		}
 
 		explicit constexpr CS_RpcPacket(const wchar_t* begin, const wchar_t* end)
 			: Super(PacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
@@ -187,7 +188,8 @@ export namespace iconer::app::packets::inline cs
 		constexpr CS_CreateRoomPacket() noexcept
 			: Super(PacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
 			, roomTitle()
-		{}
+		{
+		}
 
 		explicit constexpr CS_CreateRoomPacket(const wchar_t* begin, const wchar_t* end)
 			: Super(PacketProtocol::CS_ROOM_CREATE, SignedWannabeSize())
@@ -273,12 +275,14 @@ export namespace iconer::app::packets::inline cs
 
 		constexpr CS_UpdatePositionPacket() noexcept
 			: CS_UpdatePositionPacket(0, 0, 0)
-		{}
+		{
+		}
 
 		constexpr CS_UpdatePositionPacket(float px, float py, float pz) noexcept
 			: Super(PacketProtocol::CS_MY_POSITION, SignedWannabeSize())
 			, x(px), y(py), z(pz)
-		{}
+		{
+		}
 
 		[[nodiscard]]
 		constexpr auto Serialize() const
@@ -324,7 +328,8 @@ export namespace iconer::app::packets::inline cs
 		constexpr CS_SignInPacket() noexcept
 			: Super(PacketProtocol::CS_SIGNIN, SignedWannabeSize())
 			, userName()
-		{}
+		{
+		}
 
 		explicit constexpr CS_SignInPacket(const wchar_t* begin, const wchar_t* end)
 			: Super(PacketProtocol::CS_SIGNIN, SignedWannabeSize())
