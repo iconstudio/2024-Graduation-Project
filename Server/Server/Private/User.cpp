@@ -47,10 +47,12 @@ iconer::app::User::SendGeneralData(std::unique_ptr<std::byte[]>&& buffer, size_t
 const
 {
 	auto ctx = SendContextPool::Pop();
-	ctx->SetBlob(std::exchange(buffer, nullptr));
+	auto buf = buffer.get();
+
+	ctx->SetBlob(std::move(buffer));
 	ctx->SetSize(size);
 
-	return { SendGeneralData(ctx, ctx->GetBlob().get(), size), std::move(ctx) };
+	return BorrowedIoResult{ SendGeneralData(ctx, buf, size), std::move(ctx) };
 }
 
 iconer::app::User::IoResult
