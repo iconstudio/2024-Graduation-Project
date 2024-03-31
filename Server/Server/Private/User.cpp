@@ -174,13 +174,12 @@ const
 {
 	static constinit packets::SC_ReadyForGamePacket pk{};
 	static const auto buffer = pk.Serialize();
-	static constexpr auto size = packets::SC_ReadyForGamePacket::WannabeSize();
 
 	auto ctx = SendContextPool::Pop();
 
 	ctx->SetOperation(AsyncOperations::OpReadyGame);
 
-	return { mySocket.Send(*ctx, buffer.get(), size), std::move(ctx) };
+	return { mySocket.Send(*ctx, buffer.get(), pk.WannabeSize()), std::move(ctx) };
 }
 
 iconer::app::User::BorrowedIoResult
