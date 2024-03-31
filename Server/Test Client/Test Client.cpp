@@ -176,6 +176,17 @@ test::Receiver()
 						}
 						break;
 
+						case iconer::app::PacketProtocol::SC_SET_TEAM:
+						{
+							iconer::app::packets::SC_SetTeamPacket pk{};
+							auto offset = pk.Read(recv_space);
+
+							std::println("User {}'s team is {}", pk.clientId, pk.teamId);
+
+							PullReceiveBuffer(offset);
+						}
+						break;
+
 						case iconer::app::PacketProtocol::SC_GAME_GETTING_READY:
 						{
 							iconer::app::packets::SC_ReadyForGamePacket pk{};
