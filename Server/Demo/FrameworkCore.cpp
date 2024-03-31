@@ -345,7 +345,7 @@ demo::Framework::RouteEvent(bool is_succeed
 
 				if (not is_succeed)
 				{
-					myLogger.LogError(L"\tRoom {}'s closing operation is failed\n", room_id);
+					myLogger.LogError(L"\tRoom {}'s operation that closes room is failed\n", room_id);
 				}
 				else
 				{
@@ -369,7 +369,7 @@ demo::Framework::RouteEvent(bool is_succeed
 
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tUser {} has failed to notify members in the room\n", user_id);
+				myLogger.LogError(L"\tUser {}'s operation that notifies members in the room has been failed\n", user_id);
 				OnFailedNotifyRoomMember(*user);
 			}
 			else if (auto error = OnNotifyMemberOfRoom(*user); not error.has_value())
@@ -394,7 +394,7 @@ demo::Framework::RouteEvent(bool is_succeed
 
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tUser {}'s notifying rooms operation is failed\n", user_id);
+				myLogger.LogError(L"\tUser {}'s operation that notifies rooms has been failed\n", user_id);
 			}
 			else if (auto error = OnNotifyRoomsList(*user); not error.has_value())
 			{
@@ -417,17 +417,20 @@ demo::Framework::RouteEvent(bool is_succeed
 
 			if (not is_succeed)
 			{
-				myLogger.LogError(L"\tUser {}'s the operation of making a game is failed\n", user_id);
+				myLogger.LogError(L"\tUser {}'s operation that makes a game has been failed\n", user_id);
 				OnFailedToCreateGame(*user);
 			}
 			else if (not OnCreateGame(*user))
 			{
-				myLogger.LogError(L"\tUser {}'s the operation of making a game is failed\n", user_id);
+				myLogger.LogError(L"\tUser {}'s operation that makes a game is failed\n", user_id);
 				OnFailedToCreateGame(*user);
 			}
 			else
 			{
-				myLogger.Log(L"\tUser {} the operation of making a game is done\n", user_id);
+				myLogger.Log(L"\tUser {} made a game\n", user_id);
+			}
+		}
+		break;
 			}
 		}
 		break;
@@ -452,7 +455,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			}
 			else
 			{
-				myLogger.Log(L"\tUser {} has prepared the game\n", user_id);
+				myLogger.Log(L"\tUser {} prepared the game\n", user_id);
 			}
 		}
 		break;
