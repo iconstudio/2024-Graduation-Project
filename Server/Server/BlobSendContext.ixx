@@ -11,77 +11,55 @@ export namespace iconer::app
 	public:
 		using Super = IContext;
 
-		[[nodiscard]] explicit constexpr BlobSendContext() noexcept = default;
-		constexpr ~BlobSendContext() noexcept = default;
-
-		explicit constexpr BlobSendContext(std::unique_ptr<std::byte[]>&& ptr, const size_t& size) noexcept
+		explicit constexpr BlobSendContext() noexcept
 			: Super(AsyncOperations::OpSend)
-			, myBlob(std::exchange(ptr, nullptr)), mySize(size)
+			, myBlob()
+		{}
+
+		constexpr ~BlobSendContext() noexcept
 		{
+			Destroy();
 		}
+
+		explicit constexpr BlobSendContext(std::byte* ptr) noexcept
+			: Super(AsyncOperations::OpSend)
+			, myBlob(ptr)
+		{}
 
 		constexpr BlobSendContext(BlobSendContext&& other) noexcept
 			: Super(std::move(other.GetOperation()))
-			, myBlob(std::exchange(other.myBlob, nullptr)), mySize(std::move(other.mySize))
+			, myBlob(std::exchange(other.myBlob, nullptr))
 		{}
 
 		constexpr BlobSendContext& operator=(BlobSendContext&& other) noexcept
 		{
 			lastOperation = std::move(other).GetOperation();
 			myBlob = std::exchange(other.myBlob, nullptr);
-			mySize = std::move(other.mySize);
 			return *this;
 		}
 
 		[[nodiscard]]
 		constexpr std::byte* Detach() noexcept
 		{
-			mySize = 0;
-			return myBlob.release();
+			return std::exchange(myBlob, nullptr);
 		}
 
 		constexpr void Destroy() noexcept
 		{
 			if (myBlob != nullptr)
 			{
-				myBlob.reset();
+				delete[] std::exchange(myBlob, nullptr);
 			}
-			mySize = 0;
 		}
 
 		[[nodiscard]]
-		constexpr const std::unique_ptr<std::byte[]>& GetBlob() const& noexcept
+		constexpr std::byte* GetBlob() const noexcept
 		{
 			return myBlob;
 		}
 
-		[[nodiscard]]
-		constexpr std::unique_ptr<std::byte[]>&& GetBlob() && noexcept
-		{
-			return std::move(myBlob);
-		}
-
-		[[nodiscard]]
-		constexpr const size_t& GetSize() const& noexcept
-		{
-			return mySize;
-		}
-
-		[[nodiscard]]
-		constexpr size_t&& GetSize() && noexcept
-		{
-			return std::move(mySize);
-		}
-
-		[[nodiscard]]
-		constexpr ptrdiff_t GetSignedSize() const noexcept
-		{
-			return static_cast<ptrdiff_t>(mySize);
-		}
-
 	protected:
-		std::unique_ptr<std::byte[]> myBlob;
-		size_t mySize;
+		std::byte* myBlob;
 
 	private:
 		BlobSendContext(const BlobSendContext&) = delete;
