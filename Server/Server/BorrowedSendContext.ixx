@@ -18,18 +18,18 @@ export namespace iconer::app
 
 		explicit constexpr BorrowedSendContext(std::unique_ptr<std::byte[]>&& ptr, const size_t& size) noexcept
 			: Super(AsyncOperations::OpSendBorrowed)
-			, myBlob(std::exchange(ptr, nullptr)), mySize(size)
+			, myBlob(std::move(ptr)), mySize(size)
 		{}
 
 		constexpr BorrowedSendContext(BorrowedSendContext&& other) noexcept
-			: Super(std::move(other).GetOperation())
-			, myBlob(std::exchange(other.myBlob, nullptr)), mySize(std::move(other.mySize))
+			: Super(std::move(other.GetOperation()))
+			, myBlob(std::move(other.myBlob)), mySize(std::move(other.mySize))
 		{}
 
 		constexpr BorrowedSendContext& operator=(BorrowedSendContext&& other) noexcept
 		{
 			lastOperation = std::move(other).GetOperation();
-			myBlob = std::exchange(other.myBlob, nullptr);
+			myBlob = std::move(other.myBlob);
 			mySize = std::move(other.mySize);
 			return *this;
 		}
@@ -37,7 +37,7 @@ export namespace iconer::app
 		[[nodiscard]]
 		constexpr void SetBlob(std::unique_ptr<std::byte[]>&& buffer) noexcept
 		{
-			myBlob = std::exchange(buffer, nullptr);
+			myBlob = std::move(buffer);
 		}
 
 		[[nodiscard]]
