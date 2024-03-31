@@ -431,6 +431,26 @@ demo::Framework::RouteEvent(bool is_succeed
 			}
 		}
 		break;
+
+		// Phase 7
+		case iconer::app::AsyncOperations::OpNotifyTeam:
+		{
+			const IdType user_id = static_cast<IdType>(io_id);
+			auto user = FindUser(user_id);
+
+			ctx->Clear();
+
+			if (not is_succeed)
+			{
+				myLogger.LogError(L"\tUser {}'s operation that notifies its team has been failed\n", user_id);
+			}
+			else if (not OnNotifyTeam(*user))
+			{
+				myLogger.LogError(L"\tUser {}'s operation that notifies its team is failed\n", user_id);
+			}
+			else
+			{
+				myLogger.Log(L"\tUser {} broadcasted its team\n", user_id);
 			}
 		}
 		break;

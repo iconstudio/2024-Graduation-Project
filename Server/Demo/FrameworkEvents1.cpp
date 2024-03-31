@@ -195,6 +195,51 @@ noexcept
 	return std::move(sent_r);
 }
 
+bool
+demo::Framework::OnNotifyTeam(iconer::app::User& user)
+{
+	const auto room_id = user.myRoomId.Load();
+	const auto& user_id = user.GetID();
+
+	if (room_id != -1)
+	{
+		if (auto room = FindRoom(room_id); room != nullptr)
+		{
+			if (room->GetState() != iconer::app::RoomStates::Idle)
+			{
+				// fixup
+				user.myRoomId.CompareAndSet(room_id, -1);
+
+				return false;
+			}
+			else if (not room->HasMember(user_id))
+			{
+				// fixup
+				user.myRoomId.CompareAndSet(room_id, -1);
+
+				return false;
+			}
+			else
+			{
+				room->ForEach(
+					[](iconer::app::User& user)
+					{
+						auto [io, ctx] = user.SendChangeTeamPacket(user.GetID(), user.myTeamId == iconer::app::Team::Red);
+						if (not io)
+						{
+							delete ctx;
+						};
+					}
+				);
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void
 demo::Framework::OnFailedNotifyRoomMember(iconer::app::User& user)
 noexcept

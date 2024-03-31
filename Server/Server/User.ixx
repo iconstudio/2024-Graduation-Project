@@ -12,6 +12,7 @@ import Iconer.Net.Socket;
 import Iconer.Application.IContext;
 import Iconer.Application.ISession;
 import Iconer.Application.RoomContract;
+import Iconer.Application.BlobSendContext;
 import Iconer.Application.BorrowedSendContext;
 import <span>;
 
@@ -38,6 +39,7 @@ export namespace iconer::app
 		using Super = ISession<UserStates>;
 		using Super::IdType;
 		using IoResult = iconer::net::Socket::AsyncResult;
+		using BlobIoResult = std::pair<IoResult, BlobSendContext*>;
 		using BorrowedIoResult = std::pair<IoResult, Borrower>;
 
 		static inline constexpr size_t nicknameLength = 16;
@@ -54,6 +56,7 @@ export namespace iconer::app
 			, roomContext()
 			, requestContext(AsyncOperations::OpNotifyRoom)
 			, requestMemberContext(AsyncOperations::OpNotifyMember)
+			, teamChangerContext(AsyncOperations::OpNotifyTeam)
 			, gameContext(AsyncOperations::OpCreateGame), loadingContext(AsyncOperations::OpReadyGame)
 			, myTransform()
 			, myRoomId(-1), myTeamId(Team::Unknown), myWeaponId(0)
@@ -442,6 +445,7 @@ export namespace iconer::app
 
 		IContext roomContext;
 		IContext requestContext, requestMemberContext;
+		IContext teamChangerContext;
 		IContext gameContext, loadingContext;
 
 		glm::mat4 myTransform;

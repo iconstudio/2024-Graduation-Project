@@ -212,6 +212,7 @@ export namespace demo
 		void OnClosingRoom(iconer::app::Room& room);
 		[[nodiscard]] IoResult OnNotifyRoomsList(iconer::app::User& user);
 		[[nodiscard]] IoResult OnNotifyMemberOfRoom(iconer::app::User& user) noexcept;
+		[[nodiscard]] bool OnNotifyTeam(iconer::app::User& user);
 		void OnFailedNotifyRoomMember(iconer::app::User& user) noexcept;
 		/// <summary>
 		/// 방장이 게임 시작 메시지를 보내면 실행
