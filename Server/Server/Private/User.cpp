@@ -203,5 +203,7 @@ const
 
 	auto ctx = SendContextPool::Pop();
 
+	ctx->SetOperation(AsyncOperations::OpStartGame);
+
 	return { mySocket.Send(*ctx, buffer.get(), size), std::move(ctx) };
 }
