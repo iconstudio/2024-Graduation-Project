@@ -147,8 +147,7 @@ demo::Framework::OnGameIsLoaded(iconer::app::User& user)
 			// rollback
 			user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
 			user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
-
-			user.myRoomId = -1;
+			user.myRoomId.CompareAndSet(room_id, -1);
 		}
 	}
 
