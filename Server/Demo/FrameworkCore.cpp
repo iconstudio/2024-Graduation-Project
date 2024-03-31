@@ -312,6 +312,7 @@ demo::Framework::RouteEvent(bool is_succeed
 			auto user = FindUser(user_id);
 
 			ctx->Clear();
+			ctx->SetOperation(iconer::app::AsyncOperations::OpSendBorrowed);
 
 			if (not is_succeed)
 			{
