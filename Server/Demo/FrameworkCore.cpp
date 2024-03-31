@@ -169,8 +169,7 @@ demo::Framework::RouteEvent(bool is_succeed
 				myLogger.Log(L"\tUser {} has sent {} bytes\n", io_id, io_bytes);
 			}
 
-			auto sender = static_cast<iconer::app::BlobSendContext*>(ctx);
-
+			auto sender = std::launder(static_cast<iconer::app::BlobSendContext*>(ctx));
 			delete sender;
 		}
 		break;
@@ -180,7 +179,7 @@ demo::Framework::RouteEvent(bool is_succeed
 		{
 			ctx->Clear();
 
-			auto sender = static_cast<iconer::app::BorrowedSendContext*>(ctx);
+			auto sender = std::launder(static_cast<iconer::app::BorrowedSendContext*>(ctx));
 			sender->ReturnToBase();
 		}
 		break;
