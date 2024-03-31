@@ -16,7 +16,7 @@ namespace
 	iconer::util::cfc::Palette wrnPalette{ iconer::util::cfc::colors::LightRed, iconer::util::cfc::colors::Black };
 	iconer::util::cfc::Palette errPalette{ iconer::util::cfc::colors::Red, iconer::util::cfc::colors::Black };
 
-	std::recursive_mutex consoleLock;
+	std::mutex consoleLock{};
 }
 
 void
