@@ -1,4 +1,6 @@
 module;
+#include <unordered_map>
+
 module Iconer.Application.User;
 import Iconer.Application.Packet;
 import Iconer.Application.SendContextPool;
@@ -163,9 +165,18 @@ iconer::app::User::BorrowedIoResult
 iconer::app::User::SendChangeTeamPacket(IdType user_id, bool is_red_team)
 const
 {
-	const packets::SC_SetTeamPacket pk{ user_id, is_red_team ? 1 : 2 };
+	static std::unordered_map<IdType, std::unique_ptr<std::byte[]>> packetmap{};
 
-	return SendGeneralData(pk.Serialize(), pk.WannabeSize());
+	const packets::SC_SetTeamPacket pk{ user_id, is_red_team ? 1 : 2 };
+	if (not packetmap.contains(user_id))
+	{
+		return SendGeneralData((packetmap[user_id] = pk.Serialize()).get(), pk.WannabeSize());
+	}
+	else
+	{
+		pk.Write(packetmap[user_id].get());
+		return SendGeneralData(packetmap[user_id].get(), pk.WannabeSize());
+	}
 }
 
 iconer::app::User::BorrowedIoResult
