@@ -57,7 +57,6 @@ export namespace iconer::app
 
 		constexpr void Destroy() noexcept
 		{
-			myBlob.reset();
 			mySize = 0;
 		}
 
