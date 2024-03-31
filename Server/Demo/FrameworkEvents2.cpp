@@ -6,6 +6,9 @@ import Iconer.Application.Packet;
 import Iconer.Application.Resources.String;
 import Demo.PacketProcessor;
 
+#define LIKELY [[likely]]
+#define UNLIKELY [[unlikely]]
+
 demo::Framework::IoResult
 demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 {
@@ -23,17 +26,18 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 	while (iconer::app::BasicPacket::SignedMinSize() <= user_recv_offset)
 	{
 		auto proceed_bytes = PacketProcessor(*this, user, user_buffer, user_recv_offset);
-		if (proceed_bytes < 0) [[unlikely]] {
+		if (proceed_bytes < 0) UNLIKELY
+		{
 			myLogger.LogWarning(iconer::app::GetResourceString<7>());
 
 			return std::unexpected{ iconer::net::ErrorCode::NoBufferStorage };
 		}
-		else if (0 == proceed_bytes)
+		else if (0 == proceed_bytes) UNLIKELY
 		{
 			myLogger.DebugLogWarning(iconer::app::GetResourceString<8>());
 			break;
 		}
-		else
+		else LIKELY
 		{
 			myLogger.DebugLog(iconer::app::GetResourceString<9>());
 
@@ -41,7 +45,7 @@ demo::Framework::OnReceived(iconer::app::User& user, const ptrdiff_t& bytes)
 			std::memcpy(user_buffer.data() + proceed_bytes, user_buffer.data(), last_off);
 			std::memset(user_buffer.data() + last_off, 0, static_cast<size_t>(last_off));
 			user_recv_offset -= proceed_bytes;
-		};
+		}
 	}
 
 	return user.Receive(user_buffer);
@@ -57,14 +61,14 @@ demo::Framework::OnFailedReceive(iconer::app::User& user)
 		{
 			if (bool removed = room->RemoveMember(user.GetID()
 				, [](volatile iconer::app::Room& room, const size_t& members_count) noexcept {
-				if (0 == members_count)
-				{
-					if (room.TryBeginClose(iconer::app::RoomStates::Idle))
+					if (0 == members_count)
 					{
-						room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
+						if (room.TryBeginClose(iconer::app::RoomStates::Idle))
+						{
+							room.SetOperation(iconer::app::AsyncOperations::OpCloseRoom);
+						}
 					}
-				}
-			}); removed)
+				}); removed)
 			{
 				if (room->IsEmpty())
 				{
