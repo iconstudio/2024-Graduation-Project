@@ -287,11 +287,11 @@ demo::Framework::RouteEvent(bool is_succeed
 			{
 				myLogger.Log(L"\tUser {} entered to room {}\n", user_id, room_id);
 
-				room->ForEach([&user, user_id, room_id](iconer::app::User& member)
+				room->ForEach([user, user_id, room_id](iconer::app::User& member)
 					{
 						if (member.GetID() != user_id)
 						{
-							auto [io, ctx] = member.SendRoomJoinedPacket(user_id, room_id);
+							auto [io, ctx] = member.SendRoomJoinedPacket(room_id, *user);
 							if (not io)
 							{
 								ctx.Complete();

@@ -1,6 +1,7 @@
 #include "Saga/Network/SagaNetworkSubSystem.h"
 #include "Saga/Network/SagaPacketProcessor.h"
 #include "Saga/Network/SagaGameContract.h"
+#include "Saga/Network/SagaVirtualUser.h"
 #include "Player/UserTeam.h"
 
 void
@@ -67,15 +68,15 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 	case EPacketProtocol::SC_ROOM_JOINED:
 	{
-		int32 newbie_id{};
+		saga::datagrams::SerializedMember newbie{};
 		int32 room_id{};
-		saga::ReceiveRoomJoinedPacket(packet_buffer, newbie_id, room_id);
+		saga::ReceiveRoomJoinedPacket(packet_buffer, newbie, room_id, GetLocalUserId());
 
-		if (newbie_id == GetLocalUserId())
+		if (newbie.id == GetLocalUserId())
 		{
 			UE_LOG(LogSagaNetwork, Log, TEXT("Local client has joined to the room %d"), room_id);
 
-			CallFunctionOnGameThread([this, room_id, newbie_id]()
+			CallFunctionOnGameThread([this, room_id, newbie_id = newbie.id]()
 				{
 					SetCurrentRoomId(room_id);
 
@@ -85,14 +86,22 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 		}
 		else
 		{
-			UE_LOG(LogSagaNetwork, Log, TEXT("Client %d has joined to the room %d"), newbie_id, room_id);
+			auto nickname = FString{ newbie.nickname };
+			UE_LOG(LogSagaNetwork, Log, TEXT("Client %d [%s] has joined to the room %d"), newbie.id, *nickname, room_id);
 
-			CallFunctionOnGameThread([this, newbie_id]()
+			CallFunctionOnGameThread(
+				[this, newbie = MoveTemp(newbie), nickname = MoveTemp(nickname)]()
 				{
-					// temporary member
-					AddUser(FSagaVirtualUser{ newbie_id, TEXT("Member") });
+					AddUser(FSagaVirtualUser
+						{
+							newbie.id,
+							MoveTemp(nickname),
+							nullptr,
+							static_cast<EUserTeam>(newbie.team_id)
+						}
+					);
 
-					BroadcastOnJoinedRoom(newbie_id);
+					BroadcastOnJoinedRoom(newbie.id);
 				}
 			);
 		}

@@ -18,8 +18,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnNetworkInitialized, bool
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnConnected);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnFailedToConnect, ESagaConnectionContract, reason);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnDisconnected);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnRoomCreated, int32, id);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnJoinedRoom, int32, id);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnRoomCreated, int32, room_id);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnJoinedRoom, int32, room_id);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FSagaEventOnOtherJoinedRoom, int32, user_id, const FString&, nickname, const EUserTeam&, team);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSagaEventOnLeftRoomBySelf);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSagaEventOnLeftRoom, int32, id);
 
@@ -265,6 +266,8 @@ public:
 	FSagaEventOnRoomCreated OnRoomCreated;
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnJoinedRoom OnJoinedRoom;
+	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
+	FSagaEventOnOtherJoinedRoom OnOtherJoinedRoom;
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")
 	FSagaEventOnLeftRoomBySelf OnLeftRoomBySelf;
 	UPROPERTY(BlueprintAssignable, Category = "CandyLandSaga|Network")

@@ -117,10 +117,14 @@ const
 }
 
 iconer::app::User::BorrowedIoResult
-iconer::app::User::SendRoomJoinedPacket(iconer::app::User::IdType who, iconer::app::User::IdType room_id)
+iconer::app::User::SendRoomJoinedPacket(iconer::app::User::IdType room_id, const User& newbie)
 const
 {
-	const iconer::app::packets::SC_RoomJoinedPacket pk{ who, room_id };
+	iconer::app::packets::SC_RoomOtherJoinedPacket pk{};
+
+	pk.memberInfo = { newbie.GetID(), static_cast<char>(newbie.myTeamId.Load()) };
+	std::copy(newbie.myName.cbegin(), newbie.myName.cend(), std::begin(pk.memberInfo.nickname));
+	pk.roomId = room_id;
 
 	return SendGeneralData(pk.Serialize(), pk.WannabeSize());
 }

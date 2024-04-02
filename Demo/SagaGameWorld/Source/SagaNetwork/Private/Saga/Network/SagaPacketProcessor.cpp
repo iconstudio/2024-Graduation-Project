@@ -1,6 +1,7 @@
 #include "Saga/Network/SagaPacketProcessor.h"
 #include "Containers/UnrealString.h"
 
+#include "Saga/Serializer.h"
 #include "Saga/Network/SagaServerPacketPrefabs.h"
 
 const std::byte*
@@ -60,15 +61,16 @@ saga::ReceiveRoomCreationFailedPacket(const std::byte* buffer
 
 const std::byte*
 saga::ReceiveRoomJoinedPacket(const std::byte* buffer
-	, int32& client_id
-	, int32& room_id)
+	, datagrams::SerializedMember& client
+	, int32& room_id
+	, const int32& my_id)
 {
 	auto seek = buffer;
 
-	SC_RoomJoinedPacket pk{};
+	SC_RoomOtherJoinedPacket pk{};
 	seek = pk.Read(buffer);
 
-	client_id = pk.clientId;
+	client = MoveTemp(pk.memberInfo);
 	room_id = pk.roomId;
 
 	return seek;

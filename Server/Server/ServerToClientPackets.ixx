@@ -170,8 +170,7 @@ export namespace iconer::app::packets::inline sc
 		constexpr SC_RespondVersionPacket() noexcept
 			: Super(PacketProtocol::CS_SIGNIN, SignedWannabeSize())
 			, gameVersion()
-		{
-		}
+		{}
 
 		explicit constexpr SC_RespondVersionPacket(const wchar_t* begin, const wchar_t* end)
 			: Super(PacketProtocol::CS_SIGNIN, SignedWannabeSize())
@@ -251,8 +250,7 @@ export namespace iconer::app::packets::inline sc
 		constexpr SC_RespondRoomsPacket() noexcept
 			: Super(PacketProtocol::SC_RESPOND_ROOMS, static_cast<std::int16_t>(SignedWannabeSize()))
 			, serializedRooms()
-		{
-		}
+		{}
 
 		constexpr void AddMember(std::int32_t room_id, std::wstring_view title, size_t members_count)
 		{
@@ -352,8 +350,7 @@ export namespace iconer::app::packets::inline sc
 		constexpr SC_RespondMembersPacket() noexcept
 			: Super(PacketProtocol::SC_RESPOND_USERS, static_cast<std::int16_t>(SignedWannabeSize()))
 			, serializedMembers()
-		{
-		}
+		{}
 
 		constexpr void AddMember(std::int32_t id, std::wstring_view name, bool is_red_team)
 		{
@@ -442,6 +439,95 @@ export namespace iconer::app::packets::inline sc
 	/// <remarks>Server would send it to the client</remarks>
 	MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT(SC_RoomJoinedPacket, PacketProtocol::SC_ROOM_JOINED, std::int32_t, clientId, user_id, -1, std::int32_t, roomId, room_id, -1);
 	/// <summary>
+	/// Notifying other joined to the current room packet for server
+	/// </summary>
+	/// <param name="clientId">- An id of the newie client</param>
+	/// <param name="memberInfo">- Information of the newie</param>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_RoomOtherJoinedPacket : public BasicPacket
+	{
+		using Super = BasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(std::int32_t) + sizeof(datagrams::SerializedMember);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(WannabeSize());
+		}
+
+		constexpr SC_RoomOtherJoinedPacket()
+			noexcept(std::conjunction_v<std::is_nothrow_default_constructible<std::int32_t>, std::is_nothrow_default_constructible<datagrams::SerializedMember>>)
+			: Super((PacketProtocol::SC_ROOM_JOINED), static_cast<std::int16_t>(SignedWannabeSize()))
+			, memberInfo(), roomId()
+		{}
+
+		constexpr SC_RoomOtherJoinedPacket(const std::int32_t& room_id, const datagrams::SerializedMember& info)
+			noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<std::int32_t>, std::is_nothrow_copy_constructible<datagrams::SerializedMember>>)
+			: Super((PacketProtocol::SC_ROOM_JOINED), static_cast<std::int16_t>(SignedWannabeSize()))
+			, memberInfo(info), roomId(room_id)
+		{}
+
+		constexpr SC_RoomOtherJoinedPacket(std::int32_t&& room_id, const datagrams::SerializedMember& info)
+			noexcept(std::conjunction_v<std::is_nothrow_move_constructible<std::int32_t>, std::is_nothrow_copy_constructible<datagrams::SerializedMember>>)
+			: Super((PacketProtocol::SC_ROOM_JOINED), static_cast<std::int16_t>(SignedWannabeSize()))
+			, memberInfo(info), roomId(std::move(room_id))
+		{}
+
+		constexpr SC_RoomOtherJoinedPacket(const std::int32_t& room_id, datagrams::SerializedMember&& info)
+			noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<std::int32_t>, std::is_nothrow_move_constructible<datagrams::SerializedMember>>)
+			: Super((PacketProtocol::SC_ROOM_JOINED), static_cast<std::int16_t>(SignedWannabeSize()))
+			, memberInfo(std::move(info)), roomId(room_id)
+		{}
+
+		constexpr SC_RoomOtherJoinedPacket(std::int32_t&& room_id, datagrams::SerializedMember&& info)
+			noexcept(std::conjunction_v<std::is_nothrow_move_constructible<std::int32_t>, std::is_nothrow_move_constructible<datagrams::SerializedMember>>)
+			: Super((PacketProtocol::SC_ROOM_JOINED), static_cast<std::int16_t>(SignedWannabeSize()))
+			, memberInfo(std::move(info)), roomId(std::move(room_id))
+		{}
+
+		constexpr std::byte* Write(std::byte* buffer) const
+		{
+			auto seek = iconer::util::Serialize(iconer::util::Serialize(buffer, myProtocol), static_cast<std::int16_t>(WannabeSize()));
+
+			seek = iconer::util::Serialize(seek, memberInfo.id);
+			seek = iconer::util::Serialize(seek, memberInfo.team_id);
+			seek = iconer::util::Serialize(seek, std::wstring_view{ memberInfo.nickname, memberInfo.nameLength });
+			seek = iconer::util::Serialize(seek, roomId);
+
+			return seek;
+		}
+
+		constexpr const std::byte* Read(const std::byte* buffer)
+		{
+			auto seek = Super::Read(buffer);
+
+			seek = iconer::util::Deserialize(seek, memberInfo.id);
+			seek = iconer::util::Deserialize(seek, memberInfo.team_id);
+			seek = iconer::util::Deserialize(seek, memberInfo.nameLength, memberInfo.nickname);
+			seek = iconer::util::Deserialize(seek, roomId);
+
+			return seek;
+		}
+
+		[[nodiscard]]
+		constexpr auto Serialize() const
+		{
+			std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(Super::MinSize() + sizeof(std::int32_t) + sizeof(datagrams::SerializedMember));
+
+			Write(buffer.get());
+
+			return std::move(buffer);
+		};
+
+		datagrams::SerializedMember memberInfo;
+		std::int32_t roomId;
+	};
+	/// <summary>
 	/// Failed to join to a room packet for server
 	/// </summary>
 	/// <param name="errCause">- Reason of couldn't join to the room</param>
@@ -479,14 +565,12 @@ export namespace iconer::app::packets::inline sc
 
 		constexpr SC_CreatePlayerPacket() noexcept
 			: SC_CreatePlayerPacket(-1)
-		{
-		}
+		{}
 
 		constexpr SC_CreatePlayerPacket(std::int32_t id) noexcept
 			: Super(PacketProtocol::SC_CREATE_PLAYER, SignedWannabeSize())
 			, clientId(id), userName()
-		{
-		}
+		{}
 
 		[[nodiscard]]
 		constexpr auto Serialize() const
@@ -551,14 +635,12 @@ export namespace iconer::app::packets::inline sc
 
 		constexpr SC_UpdatePositionPacket()
 			: SC_UpdatePositionPacket(-1, 0, 0, 0)
-		{
-		}
+		{}
 
 		constexpr SC_UpdatePositionPacket(std::int32_t id, float px, float py, float pz) noexcept
 			: Super(PacketProtocol::SC_MOVE_CHARACTER, SignedWannabeSize())
 			, clientId(id), x(px), y(py), z(pz)
-		{
-		}
+		{}
 
 		[[nodiscard]]
 		constexpr auto Serialize() const

@@ -114,7 +114,7 @@ export namespace iconer::app
 			myName.clear();
 			recvOffset = 0;
 			myRoomId = -1;
-			myTeamId = Team::Unknown;
+			myTeamId = GetID() % 2 == 0 ? Team::Red : Team::Blue;
 			myWeaponId = 0;
 			isRidingGuardian = false;
 		}
@@ -146,7 +146,7 @@ export namespace iconer::app
 		IoResult SendRoomCreatedPacket(IContext* room, IdType room_id) const;
 		BorrowedIoResult SendRoomCreationFailedPacket(RoomContract reason) const;
 		/// <param name="who">- Not only local client</param>
-		BorrowedIoResult SendRoomJoinedPacket(IdType who, IdType room_id) const;
+		BorrowedIoResult SendRoomJoinedPacket(IdType room_id, const User& newbie) const;
 		BorrowedIoResult SendRoomJoinFailedPacket(RoomContract reason) const;
 		/// <param name="who">- Not only local client</param>
 		BorrowedIoResult SendRoomLeftPacket(IdType who, bool is_self) const;

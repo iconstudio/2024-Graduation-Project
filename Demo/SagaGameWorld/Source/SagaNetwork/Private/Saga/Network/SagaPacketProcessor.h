@@ -15,7 +15,7 @@ namespace saga
 
 	const std::byte* ReceiveRoomCreatedPacket(const std::byte* buffer, int32& room_id);
 	const std::byte* ReceiveRoomCreationFailedPacket(const std::byte* buffer, ERoomContract& error);
-	const std::byte* ReceiveRoomJoinedPacket(const std::byte* buffer, int32& client_id, int32& room_id);
+	const std::byte* ReceiveRoomJoinedPacket(const std::byte* buffer, datagrams::SerializedMember& client, int32& room_id, const int32& my_id);
 	const std::byte* ReceiveRoomJoinFailedPacket(const std::byte* buffer, ERoomContract& error);
 	const std::byte* ReceiveRoomLeftPacket(const std::byte* buffer, int32& client_id);
 

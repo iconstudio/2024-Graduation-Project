@@ -188,6 +188,46 @@ saga::sc::SC_UpdatePositionPacket::Read(const std::byte* buffer)
 	return saga::Deserialize(saga::Deserialize(saga::Deserialize(saga::Deserialize(Super::Read(buffer), clientId), x), y), z);
 }
 
+std::byte*
+saga::sc::SC_RoomOtherJoinedPacket::Write(std::byte * buffer)
+const
+{
+	auto seek = saga::Serialize(saga::Serialize(buffer, myProtocol), static_cast<std::int16_t>(WannabeSize()));
+
+	seek = saga::Serialize(seek, memberInfo.id);
+	seek = saga::Serialize(seek, memberInfo.team_id);
+	seek = saga::Serialize(seek, std::wstring_view{ memberInfo.nickname, memberInfo.nameLength });
+	seek = saga::Serialize(seek, roomId);
+
+	return seek;
+}
+
+constexpr
+const std::byte*
+saga::sc::SC_RoomOtherJoinedPacket::Read(const std::byte* buffer)
+{
+	auto seek = Super::Read(buffer);
+
+	seek = saga::Deserialize(seek, memberInfo.id);
+	seek = saga::Deserialize(seek, memberInfo.team_id);
+	seek = saga::Deserialize(seek, memberInfo.nameLength, memberInfo.nickname);
+	seek = saga::Deserialize(seek, roomId);
+
+	return seek;
+}
+
+constexpr
+auto
+saga::sc::SC_RoomOtherJoinedPacket::Serialize()
+const
+{
+	std::unique_ptr<std::byte[]> buffer = std::make_unique<std::byte[]>(Super::MinSize() + sizeof(std::int32_t) + sizeof(datagrams::SerializedMember));
+
+	Write(buffer.get());
+
+	return std::move(buffer);
+};
+
 IMPL_SERIALIZE_METHOD(saga::sc::SC_FailedGameStartingPacket, errCause);
 IMPL_READ_METHODS(saga::sc::SC_FailedGameStartingPacket, errCause);
 IMPL_WRITE_METHODS_V1(saga::sc::SC_FailedGameStartingPacket, errCause);

@@ -172,7 +172,7 @@ demo::Framework::OnJoiningRoom(iconer::app::Room& room, iconer::app::User& user)
 			return iconer::app::RoomContract::InvalidOperation;
 		}
 		
-		auto sent_r = user.SendRoomJoinedPacket(user.GetID(), room_id);
+		auto sent_r = user.SendRoomJoinedPacket(room_id, user);
 		if (not sent_r.first.has_value())
 		{
 			// rollback

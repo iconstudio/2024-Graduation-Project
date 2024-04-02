@@ -65,8 +65,7 @@ namespace saga::inline sc
 			: Super(EPacketProtocol::SC_RPC, SignedWannabeSize())
 			, clientId(-1), rpcScript()
 			, rpcArgument()
-		{
-		}
+		{}
 
 		explicit constexpr SC_RpcPacket(int32 id, const wchar_t* begin, const wchar_t* end)
 			noexcept
@@ -118,7 +117,7 @@ namespace saga::inline sc
 	/// </summary>
 	/// <param name="teamId">Team's id of user</param>
 	/// <remarks>Aerver would send it to the client</remarks>
-	MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT(SC_SetTeamPacket, EPacketProtocol::SC_SET_TEAM, std::int32_t, clientId, user_id, 0, std::int8_t, teamId, team_id, 0);
+	MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT(SC_SetTeamPacket, EPacketProtocol::SC_SET_TEAM, int32, clientId, user_id, 0, std::int8_t, teamId, team_id, 0);
 	/// <summary>
 	/// Getting game ready notification packet for server
 	/// </summary>
@@ -162,8 +161,7 @@ namespace saga::inline sc
 		constexpr SC_RespondVersionPacket() noexcept
 			: Super(EPacketProtocol::CS_SIGNIN, SignedWannabeSize())
 			, gameVersion()
-		{
-		}
+		{}
 
 		explicit constexpr SC_RespondVersionPacket(const wchar_t* begin, const wchar_t* end)
 			: Super(EPacketProtocol::CS_SIGNIN, SignedWannabeSize())
@@ -230,8 +228,7 @@ namespace saga::inline sc
 		constexpr SC_RespondRoomsPacket() noexcept
 			: Super(EPacketProtocol::SC_RESPOND_ROOMS, static_cast<int16>(SignedWannabeSize()))
 			, serializedRooms()
-		{
-		}
+		{}
 
 		constexpr void AddMember(int32 room_id, std::wstring_view title, size_t members_count)
 		{
@@ -285,8 +282,7 @@ namespace saga::inline sc
 		constexpr SC_RespondMembersPacket() noexcept
 			: Super(EPacketProtocol::SC_RESPOND_USERS, static_cast<int16>(SignedWannabeSize()))
 			, serializedMembers()
-		{
-		}
+		{}
 
 		MAKE_SERIALIZE_METHOD();
 		MAKE_RW_METHODS();
@@ -312,6 +308,64 @@ namespace saga::inline sc
 	/// <param name="roomId">- An id of the room</param>
 	/// <remarks>Server would send it to the client</remarks>
 	MAKE_EMPTY_PACKET_2VAR_WITH_DEFAULT(SC_RoomJoinedPacket, EPacketProtocol::SC_ROOM_JOINED, int32, clientId, user_id, -1, int32, roomId, room_id, -1);
+	/// <summary>
+	/// Notifying other joined to the current room packet for server
+	/// </summary>
+	/// <param name="clientId">- An id of the newie client</param>
+	/// <param name="memberInfo">- Information of the newie</param>
+	/// <remarks>Server would send it to the client</remarks>
+	struct [[nodiscard]] SC_RoomOtherJoinedPacket : public FSagaBasicPacket
+	{
+		using Super = FSagaBasicPacket;
+
+		[[nodiscard]]
+		static consteval size_t WannabeSize() noexcept
+		{
+			return Super::MinSize() + sizeof(int32) + sizeof(datagrams::SerializedMember);
+		}
+
+		[[nodiscard]]
+		static consteval ptrdiff_t SignedWannabeSize() noexcept
+		{
+			return static_cast<ptrdiff_t>(WannabeSize());
+		}
+
+		constexpr SC_RoomOtherJoinedPacket()
+			noexcept(std::conjunction_v<std::is_nothrow_default_constructible<int32>, std::is_nothrow_default_constructible<datagrams::SerializedMember>>)
+			: Super((EPacketProtocol::SC_ROOM_JOINED), static_cast<int16>(SignedWannabeSize()))
+			, memberInfo(), roomId()
+		{}
+
+		constexpr SC_RoomOtherJoinedPacket(const int32& room_id, const datagrams::SerializedMember& info)
+			noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<int32>, std::is_nothrow_copy_constructible<datagrams::SerializedMember>>)
+			: Super((EPacketProtocol::SC_ROOM_JOINED), static_cast<int16>(SignedWannabeSize()))
+			, memberInfo(info), roomId(room_id)
+		{}
+
+		constexpr SC_RoomOtherJoinedPacket(int32&& room_id, const datagrams::SerializedMember& info)
+			noexcept(std::conjunction_v<std::is_nothrow_move_constructible<int32>, std::is_nothrow_copy_constructible<datagrams::SerializedMember>>)
+			: Super((EPacketProtocol::SC_ROOM_JOINED), static_cast<int16>(SignedWannabeSize()))
+			, memberInfo(info), roomId(std::move(room_id))
+		{}
+
+		constexpr SC_RoomOtherJoinedPacket(const int32& room_id, datagrams::SerializedMember&& info)
+			noexcept(std::conjunction_v<std::is_nothrow_copy_constructible<int32>, std::is_nothrow_move_constructible<datagrams::SerializedMember>>)
+			: Super((EPacketProtocol::SC_ROOM_JOINED), static_cast<int16>(SignedWannabeSize()))
+			, memberInfo(std::move(info)), roomId(room_id)
+		{}
+
+		constexpr SC_RoomOtherJoinedPacket(int32&& room_id, datagrams::SerializedMember&& info)
+			noexcept(std::conjunction_v<std::is_nothrow_move_constructible<int32>, std::is_nothrow_move_constructible<datagrams::SerializedMember>>)
+			: Super((EPacketProtocol::SC_ROOM_JOINED), static_cast<int16>(SignedWannabeSize()))
+			, memberInfo(std::move(info)), roomId(std::move(room_id))
+		{}
+
+		MAKE_SERIALIZE_METHOD();
+		MAKE_RW_METHODS();
+
+		datagrams::SerializedMember memberInfo;
+		int32 roomId;
+	};
 	/// <summary>
 	/// Failed to join to a room packet for server
 	/// </summary>
@@ -350,14 +404,12 @@ namespace saga::inline sc
 
 		constexpr SC_CreatePlayerPacket() noexcept
 			: SC_CreatePlayerPacket(-1)
-		{
-		}
+		{}
 
 		constexpr SC_CreatePlayerPacket(int32 id) noexcept
 			: Super(EPacketProtocol::SC_CREATE_PLAYER, SignedWannabeSize())
 			, clientId(id), userName()
-		{
-		}
+		{}
 
 		MAKE_SERIALIZE_METHOD();
 		MAKE_RW_METHODS();
@@ -409,14 +461,12 @@ namespace saga::inline sc
 
 		constexpr SC_UpdatePositionPacket()
 			: SC_UpdatePositionPacket(-1, 0, 0, 0)
-		{
-		}
+		{}
 
 		constexpr SC_UpdatePositionPacket(int32 id, float px, float py, float pz) noexcept
 			: Super(EPacketProtocol::SC_MOVE_CHARACTER, SignedWannabeSize())
 			, clientId(id), x(px), y(py), z(pz)
-		{
-		}
+		{}
 
 		MAKE_SERIALIZE_METHOD();
 		MAKE_RW_METHODS();
