@@ -65,14 +65,15 @@ demo::Framework::OnCreateGame(iconer::app::User& user)
 
 		return false;
 	}
-	else if (not room->TryGettingReady())
+	else if (room->GetState() != iconer::app::RoomStates::Ready)
 	{
 		// rollback
 		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+		room->TryCancelReady();
 
 		return false;
 	}
-	else if (room->GetState() != iconer::app::RoomStates::Ready)
+	else if (not room->CanStartGame())
 	{
 		// rollback
 		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
