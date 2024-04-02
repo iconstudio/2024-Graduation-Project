@@ -42,7 +42,8 @@ demo::Framework::OnCreateGame(iconer::app::User& user)
 	{
 		// rollback
 		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
-		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::Idle);
+		user.myRoomId = -1;
 
 		return false;
 	}
@@ -50,7 +51,7 @@ demo::Framework::OnCreateGame(iconer::app::User& user)
 	{
 		// rollback
 		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
-		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::Idle);
 		user.myRoomId = -1;
 
 		return false;
@@ -59,7 +60,7 @@ demo::Framework::OnCreateGame(iconer::app::User& user)
 	{
 		// rollback
 		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
-		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
+		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::Idle);
 		user.myRoomId = -1;
 
 		return false;
@@ -67,18 +68,14 @@ demo::Framework::OnCreateGame(iconer::app::User& user)
 	else if (not room->TryGettingReady())
 	{
 		// rollback
-		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
 		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
-		user.myRoomId = -1;
 
 		return false;
 	}
 	else if (room->GetState() != iconer::app::RoomStates::Ready)
 	{
 		// rollback
-		user.TryChangeState(iconer::app::UserStates::InRoom, iconer::app::UserStates::Idle);
 		user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
-		user.myRoomId = -1;
 		room->TryCancelReady();
 
 		return false;
@@ -100,9 +97,9 @@ demo::Framework::OnCreateGame(iconer::app::User& user)
 				}
 			}
 		);
-	}
 
-	return true;
+		return true;
+	}
 }
 
 void
