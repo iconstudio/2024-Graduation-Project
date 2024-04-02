@@ -470,14 +470,19 @@ demo::Framework::RouteEvent(bool is_succeed
 			{
 				myLogger.LogError(L"\tUser {}'s operation of preparing the game has failed!\n", user_id);
 			}
-			else if (not OnGameIsLoaded(*user))
-			{
-				// NOTICE: just start game now
-				myLogger.LogError(L"\tUser {} has failed on preparing the game\n", user_id);
-			}
-			else
+			else 
 			{
 				myLogger.Log(L"\tUser {} prepared the game\n", user_id);
+
+				if (not OnGameIsLoaded(*user))
+				{
+					myLogger.LogError(L"\tGames are not loaded yet\n", user_id);
+				}
+				else
+				{
+					// NOTICE: just start game now
+					myLogger.Log(L"\tLet's start the game\n", user_id);
+				}
 			}
 		}
 		break;
