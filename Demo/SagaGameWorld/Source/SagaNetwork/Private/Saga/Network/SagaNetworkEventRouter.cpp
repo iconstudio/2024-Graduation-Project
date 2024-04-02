@@ -89,6 +89,7 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 			CallFunctionOnGameThread([this, newbie_id]()
 				{
+					// temporary member
 					AddUser(FSagaVirtualUser{ newbie_id, TEXT("Member") });
 
 					BroadcastOnJoinedRoom(newbie_id);
