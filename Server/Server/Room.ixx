@@ -180,11 +180,10 @@ export namespace iconer::app
 
 		RoomMember myMembers[maxUsersNumberInRoom];
 		std::atomic_size_t membersCount;
-
-	private:
 		std::atomic_bool isMemberUpdated;
 		NativeTimer myTimer;
 
+	protected:
 		std::unique_ptr<std::byte[]> preRespondMembersPacket;
 	};
 }
