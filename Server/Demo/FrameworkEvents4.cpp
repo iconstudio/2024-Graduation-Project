@@ -5,7 +5,24 @@ module;
 module Demo.Framework;
 import Iconer.Application.NativeTimer;
 
-struct RoomProcedure;
+struct RoomProcedure : public iconer::app::TimerProcedure
+{
+	using Super = iconer::app::TimerProcedure;
+
+	RoomProcedure(iconer::app::Room* room, std::uint32_t milliseconds)
+		: Super(room->myTimer, milliseconds, true)
+		, myRoom(room)
+	{}
+
+	virtual bool operator()() override
+	{
+		std::println("Update room {}...", myRoom->GetID());
+
+		return true;
+	}
+
+	iconer::app::Room* myRoom;
+};
 
 bool
 demo::Framework::OnCreateGame(iconer::app::User& user)
@@ -126,22 +143,3 @@ demo::Framework::OnGameIsLoaded(iconer::app::User& user)
 
 	return false;
 }
-
-struct RoomProcedure : public iconer::app::TimerProcedure
-{
-	using Super = iconer::app::TimerProcedure;
-
-	RoomProcedure(iconer::app::Room* room, std::uint32_t milliseconds)
-		: Super(room->myTimer, milliseconds, true)
-		, myRoom(room)
-	{}
-
-	virtual bool operator()() override
-	{
-		std::println("Update room {}...", myRoom->GetID());
-
-		return true;
-	}
-
-	iconer::app::Room* myRoom;
-};
