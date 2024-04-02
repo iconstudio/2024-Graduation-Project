@@ -196,7 +196,7 @@ demo::OnGameStartSignal(demo::Framework& framework, iconer::app::User& user)
 			// cannot prepare the game: The client is busy
 			SEND(user, SendCannotStartGamePacket, ESagaGameContract::ClientIsBusy);
 		}
-		else if (not room->CanStartGame())
+		else if (not room->CanPrepareGame())
 		{
 			// rollback
 			user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
@@ -245,7 +245,7 @@ demo::OnGameLoadedSignal(demo::Framework& framework, iconer::app::User& user)
 	}
 	else if (auto room = framework.FindRoom(user.myRoomId); room != nullptr)
 	{
-		if (not room->CanStartGame())
+		if (not room->CanPrepareGame())
 		{
 			// rollback
 			room->TryCancelReady();

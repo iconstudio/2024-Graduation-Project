@@ -125,22 +125,10 @@ demo::Framework::OnGameIsLoaded(iconer::app::User& user)
 	{
 		if (auto room = FindRoom(room_id); room != nullptr)
 		{
-			if (room->GetMembersCount() <= room->ReadyMember(user))
-			{
-				if (room->TryBeginGame())
+			if (room->ReadyMember(user))
 				{
 					return true;
 				}
-				else
-				{
-					// rollback
-					user.TryChangeState(iconer::app::UserStates::MakingGame, iconer::app::UserStates::InRoom);
-
-					room->TryCancelBeginGame();
-				}
-			}
-
-			return true;
 		}
 		else
 		{

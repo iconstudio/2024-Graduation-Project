@@ -1,5 +1,6 @@
 module;
 #include <initializer_list>
+#include <memory>
 #include <vector>
 #include <span>
 
@@ -41,19 +42,16 @@ export namespace iconer::app
 		using const_iterator = const RoomMember*;
 		using const_volatile_iterator = const volatile RoomMember*;
 
-		explicit constexpr Room(const IdType& id)
-			noexcept(nothrow_constructible<Super, const IdType&>)
-			: Super(id)
-			, myMembers()
-			, myTimer()
-		{
-		}
+		static inline constexpr size_t maxUsersNumberInRoom = 4;
+		static inline constexpr size_t minUsersNumberForGame = 2;
 
-		explicit constexpr Room(IdType&& id)
-			noexcept(nothrow_constructible<Super, IdType&&>)
-			: Super(std::move(id))
-			, myMembers()
+		template<typename ForwardedId>
+		explicit constexpr Room(ForwardedId&& id)
+			noexcept(nothrow_constructible<Super, const IdType&>)
+			: Super(std::forward<ForwardedId>(id))
+			, myMembers(), membersCount()
 			, myTimer()
+			, preRespondMembersPacket()
 		{
 		}
 
@@ -94,90 +92,99 @@ export namespace iconer::app
 			}
 		}
 
-		size_t ReadyMember(iconer::app::User& user) volatile noexcept;
-		size_t UnreadyMember(iconer::app::User& user) volatile noexcept;
-
 		[[nodiscard]] std::span<std::byte> SerializeMembers() volatile;
 
-		[[nodiscard]] bool HasMember(const IdType& id) const volatile noexcept;
-		[[nodiscard]] bool IsEveryMemberIsLoaded() const volatile noexcept;
+		bool ReadyMember(iconer::app::User& user) volatile noexcept;
+		bool UnreadyMember(iconer::app::User& user) volatile noexcept;
 
 		[[nodiscard]]
 		constexpr iterator begin() noexcept
 		{
 			return myMembers;
 		}
-		
+
 		[[nodiscard]]
 		constexpr iterator end() noexcept
 		{
 			return myMembers + maxUsersNumberInRoom;
 		}
-		
+
 		[[nodiscard]]
 		constexpr const_iterator begin() const noexcept
 		{
 			return myMembers;
 		}
-		
+
 		[[nodiscard]]
 		constexpr const_iterator end() const noexcept
 		{
 			return myMembers + maxUsersNumberInRoom;
 		}
-		
+
 		[[nodiscard]]
 		constexpr const_iterator cbegin() const noexcept
 		{
 			return myMembers;
 		}
-		
+
 		[[nodiscard]]
 		constexpr const_iterator cend() const noexcept
 		{
 			return myMembers + maxUsersNumberInRoom;
 		}
-		
+
 		[[nodiscard]]
 		constexpr volatile_iterator begin() volatile noexcept
 		{
 			return myMembers;
 		}
-		
+
 		[[nodiscard]]
 		constexpr volatile_iterator end() volatile noexcept
 		{
 			return myMembers + maxUsersNumberInRoom;
 		}
-		
+
 		[[nodiscard]]
 		constexpr const_volatile_iterator begin() const volatile noexcept
 		{
 			return myMembers;
 		}
-		
+
 		[[nodiscard]]
 		constexpr const_volatile_iterator end() const volatile noexcept
 		{
 			return myMembers + maxUsersNumberInRoom;
 		}
-		
+
 		[[nodiscard]]
 		constexpr const_volatile_iterator cbegin() const volatile noexcept
 		{
 			return myMembers;
 		}
-		
+
 		[[nodiscard]]
 		constexpr const_volatile_iterator cend() const volatile noexcept
 		{
 			return myMembers + maxUsersNumberInRoom;
 		}
 
-		NativeTimer myTimer;
+		[[nodiscard]] size_t GetMembersCount() const volatile noexcept;
+
+		[[nodiscard]] bool IsEmpty() const volatile noexcept;
+		[[nodiscard]] bool IsFull() const volatile noexcept;
+		[[nodiscard]] bool HasMember(const IdType& id) const volatile noexcept;
+		[[nodiscard]] bool IsEveryMemberIsLoaded() const volatile noexcept;
+		[[nodiscard]] bool CanPrepareGame() const volatile noexcept;
+		[[nodiscard]] bool CanStartGame() const volatile noexcept;
+
+		RoomMember myMembers[maxUsersNumberInRoom];
+		std::atomic_size_t membersCount;
 
 	private:
-		//MemberStorageType myMembers;
-		RoomMember myMembers[maxUsersNumberInRoom];
+		std::atomic_bool isMemberUpdated;
+		NativeTimer myTimer;
+
+		std::unique_ptr<std::byte[]> preRespondMembersPacket;
 	};
 }
