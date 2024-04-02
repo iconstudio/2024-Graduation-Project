@@ -28,6 +28,7 @@ namespace saga::datagrams
 		static inline constexpr size_t nameLength = 16;
 
 		int32 id;
+		char team_id; // 1: red, 2: blue
 		wchar_t nickname[nameLength];
 	};
 }
@@ -285,22 +286,6 @@ namespace saga::inline sc
 			: Super(EPacketProtocol::SC_RESPOND_USERS, static_cast<int16>(SignedWannabeSize()))
 			, serializedMembers()
 		{
-		}
-
-		constexpr void AddMember(int32 id, std::wstring_view name)
-		{
-			datagrams::SerializedMember member{ id };
-
-			auto it = member.nickname;
-			for (auto ch : name)
-			{
-				*it = ch;
-
-				if (++it == member.nickname + sizeof(member.nickname)) break;
-			}
-
-			serializedMembers.emplace_back(std::move(member));
-			mySize = static_cast<int16>(WannabeSize());
 		}
 
 		MAKE_SERIALIZE_METHOD();

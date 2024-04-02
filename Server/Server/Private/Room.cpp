@@ -241,7 +241,7 @@ volatile
 		{
 			if (nullptr != member)
 			{
-				pk.AddMember(member->GetID(), member->GetName());
+				pk.AddMember(member->GetID(), member->GetName(), member->myTeamId == Team::Red);
 			}
 		}
 

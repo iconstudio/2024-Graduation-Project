@@ -28,6 +28,7 @@ export namespace iconer::app::packets::datagrams
 		static inline constexpr size_t nameLength = 16;
 
 		std::int32_t id;
+		char team_id; // 1: red, 2: blue
 		wchar_t nickname[nameLength];
 	};
 #pragma pack(pop)
@@ -354,9 +355,9 @@ export namespace iconer::app::packets::inline sc
 		{
 		}
 
-		constexpr void AddMember(std::int32_t id, std::wstring_view name)
+		constexpr void AddMember(std::int32_t id, std::wstring_view name, bool is_red_team)
 		{
-			datagrams::SerializedMember member{ id };
+			datagrams::SerializedMember member{ id, is_red_team ? 1 : 2 };
 
 			auto it = member.nickname;
 			for (auto ch : name)
@@ -389,6 +390,7 @@ export namespace iconer::app::packets::inline sc
 			for (auto& member : serializedMembers)
 			{
 				seek = iconer::util::Serialize(seek, member.id);
+				seek = iconer::util::Serialize(seek, member.team_id);
 				seek = iconer::util::Serialize(seek, std::wstring_view{ member.nickname, member.nameLength });
 			}
 
@@ -410,6 +412,7 @@ export namespace iconer::app::packets::inline sc
 				for (auto& member : serializedMembers)
 				{
 					seek = iconer::util::Deserialize(seek, member.id);
+					seek = iconer::util::Deserialize(seek, member.team_id);
 					seek = iconer::util::Deserialize(seek, member.nameLength, member.nickname);
 				}
 			}

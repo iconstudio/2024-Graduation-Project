@@ -191,10 +191,14 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 				{
 					AddUser(FSagaVirtualUser
 						{
-							user.id, user.nickname
+							user.id,
+							user.nickname,
+							nullptr,
+							static_cast<EUserTeam>(user.team_id)
 						});
 
-					UE_LOG(LogSagaNetwork, Log, TEXT("User (%d): %s"), user.id, user.nickname);
+
+					UE_LOG(LogSagaNetwork, Log, TEXT("User (%d): %s in team {}"), user.id, user.nickname, user.team_id);
 				}
 
 				BroadcastOnUpdateMembers(everyUsers);

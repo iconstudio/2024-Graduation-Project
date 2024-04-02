@@ -20,7 +20,7 @@ export namespace iconer::app
 {
 	enum class Team
 	{
-		Unknown, Red, Blue
+		Unknown = 0, Red = 1, Blue = 2
 	};
 
 	enum class [[nodiscard]] UserStates
@@ -59,7 +59,7 @@ export namespace iconer::app
 			, teamChangerContext(AsyncOperations::OpNotifyTeam)
 			, gameContext(AsyncOperations::OpCreateGame), loadingContext(AsyncOperations::OpReadyGame)
 			, myTransform()
-			, myRoomId(-1), myTeamId(Team::Unknown), myWeaponId(0)
+			, myRoomId(-1), myTeamId(Team::Red), myWeaponId(0)
 			, isRidingGuardian(false)
 			, preSignInPacket(), preRoomCreationPacket()
 		{

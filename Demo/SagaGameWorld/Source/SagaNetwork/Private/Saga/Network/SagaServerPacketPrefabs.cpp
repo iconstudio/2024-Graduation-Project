@@ -117,6 +117,7 @@ saga::sc::SC_RespondMembersPacket::Write(std::byte* buffer) const
 	for (auto& member : serializedMembers)
 	{
 		seek = saga::Serialize(seek, member.id);
+		seek = saga::Serialize(seek, member.team_id);
 		seek = saga::Serialize(seek, std::wstring_view{ member.nickname, member.nameLength });
 	}
 
@@ -139,6 +140,7 @@ saga::sc::SC_RespondMembersPacket::Read(const std::byte* buffer)
 		for (auto& member : serializedMembers)
 		{
 			seek = saga::Deserialize(seek, member.id);
+			seek = saga::Deserialize(seek, member.team_id);
 			seek = saga::Deserialize(seek, member.nameLength, member.nickname);
 		}
 	}
