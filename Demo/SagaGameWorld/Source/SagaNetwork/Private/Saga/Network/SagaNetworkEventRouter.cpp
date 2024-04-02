@@ -1,6 +1,7 @@
 #include "Saga/Network/SagaNetworkSubSystem.h"
 #include "Saga/Network/SagaPacketProcessor.h"
 #include "Saga/Network/SagaGameContract.h"
+#include "Player/UserTeam.h"
 
 void
 USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtocol protocol, int16 packet_size)
@@ -189,16 +190,18 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 				ClearUserList();
 				for (auto& user : tr_users)
 				{
+					const auto team_id = static_cast<EUserTeam>(user.team_id);
+
 					AddUser(FSagaVirtualUser
 						{
 							user.id,
 							user.nickname,
 							nullptr,
-							static_cast<EUserTeam>(user.team_id)
+							team_id
 						});
 
-
-					UE_LOG(LogSagaNetwork, Log, TEXT("User (%d): %s in team {}"), user.id, user.nickname, user.team_id);
+					auto str = UEnum::GetValueAsString(team_id);
+					UE_LOG(LogSagaNetwork, Log, TEXT("User (%d): %s in team '%s'"), user.id, user.nickname, *str);
 				}
 
 				BroadcastOnUpdateMembers(everyUsers);
@@ -311,6 +314,14 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 
 		CallFunctionOnGameThread([this, client_id, is_red_team]()
 			{
+				for (auto& member : everyUsers)
+				{
+					if (member.MyID == client_id)
+					{
+						member.myTeam = is_red_team ? EUserTeam::Red : EUserTeam::Blue;
+					}
+				}
+
 				BroadcastOnTeamChanged(client_id, is_red_team);
 			}
 		);
