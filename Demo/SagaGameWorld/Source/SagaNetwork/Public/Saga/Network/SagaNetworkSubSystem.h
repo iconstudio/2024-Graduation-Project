@@ -130,27 +130,31 @@ public:
 	/* Overall Clients Methods */
 #pragma region =========================
 	void AddUser(const FSagaVirtualUser& client);
-	bool FindUser(int32 id, FSagaVirtualUser& outpin) noexcept;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
+	bool FindUser(int32 id, FSagaVirtualUser& outpin) const noexcept;
 	bool RemoveUser(int32 id) noexcept;
 	void ClearUserList() noexcept;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
 	bool HasUser(int32 id) const noexcept;
 #pragma endregion
 
 	/* Overall Rooms Methods */
 #pragma region =========================
 	void AddRoom(const FSagaVirtualRoom& room);
-	bool FindRoom(int32 id, FSagaVirtualRoom& outpin) noexcept;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
+	bool FindRoom(int32 id, FSagaVirtualRoom& outpin) const noexcept;
 	bool RoomAt(int32 index, FSagaVirtualRoom& outpin) noexcept;
 	bool RemoveRoom(int32 id) noexcept;
 	void ClearRoomList() noexcept;
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
 	bool HasRoom(int32 id) const noexcept;
 #pragma endregion
 
 	/* Getters */
 #pragma region =========================
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
 	const TArray<FSagaVirtualUser>& GetUserList() const noexcept;
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "CandyLandSaga|Network|Session")
 	const TArray<FSagaVirtualRoom>& GetRoomList() const noexcept;
 #pragma endregion
 

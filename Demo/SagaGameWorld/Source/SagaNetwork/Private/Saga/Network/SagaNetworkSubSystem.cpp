@@ -71,7 +71,7 @@ USagaNetworkSubSystem::AddUser(const FSagaVirtualUser& client)
 
 bool
 USagaNetworkSubSystem::FindUser(int32 id, FSagaVirtualUser& outpin)
-noexcept
+const noexcept
 {
 	auto handle = everyUsers.FindByPredicate(FSagaSessionIdComparator{ id });
 	if (nullptr != handle)
@@ -115,7 +115,7 @@ USagaNetworkSubSystem::AddRoom(const FSagaVirtualRoom& room)
 
 bool
 USagaNetworkSubSystem::FindRoom(int32 id, FSagaVirtualRoom& outpin)
-noexcept
+const noexcept
 {
 	auto handle = everyRooms.FindByPredicate(FSagaSessionIdComparator{ id });
 	if (nullptr != handle)
