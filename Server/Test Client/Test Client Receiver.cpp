@@ -54,10 +54,10 @@ test::ReceiveRoomCreationFailedPacket(const std::byte* buffer, iconer::app::Room
 
 const std::byte* test::ReceiveRoomJoinedPacket(const std::byte* buffer, IdType& client_id, IdType& room_id)
 {
-	iconer::app::packets::SC_RoomJoinedPacket pk{};
+	iconer::app::packets::SC_RoomOtherJoinedPacket pk{};
 	auto offset = pk.Read(recv_space);
 
-	client_id = pk.clientId;
+	client_id = pk.memberInfo.id;
 	room_id = pk.roomId;
 
 	return offset;
