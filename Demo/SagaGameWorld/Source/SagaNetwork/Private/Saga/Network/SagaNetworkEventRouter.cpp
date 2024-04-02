@@ -90,12 +90,12 @@ USagaNetworkSubSystem::RouteEvents(const std::byte* packet_buffer, EPacketProtoc
 			UE_LOG(LogSagaNetwork, Log, TEXT("Client %d [%s] has joined to the room %d"), newbie.id, *nickname, room_id);
 
 			CallFunctionOnGameThread(
-				[this, newbie = MoveTemp(newbie), nickname = MoveTemp(nickname)]()
+				[this, newbie = MoveTemp(newbie), nickname = MoveTempIfPossible(nickname)]()
 				{
 					AddUser(FSagaVirtualUser
 						{
 							newbie.id,
-							MoveTemp(nickname),
+							MoveTempIfPossible(nickname),
 							nullptr,
 							static_cast<EUserTeam>(newbie.team_id)
 						}

@@ -202,7 +202,6 @@ const
 	return seek;
 }
 
-constexpr
 const std::byte*
 saga::sc::SC_RoomOtherJoinedPacket::Read(const std::byte* buffer)
 {
@@ -216,8 +215,7 @@ saga::sc::SC_RoomOtherJoinedPacket::Read(const std::byte* buffer)
 	return seek;
 }
 
-constexpr
-auto
+std::unique_ptr<std::byte[]>
 saga::sc::SC_RoomOtherJoinedPacket::Serialize()
 const
 {
