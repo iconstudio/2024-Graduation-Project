@@ -1,26 +1,11 @@
 module;
 #include <string_view>
 #include <print>
+
 module Demo.Framework;
+import Iconer.Application.NativeTimer;
 
-struct RoomProcedure : public iconer::app::TimerProcedure
-{
-	using Super = iconer::app::TimerProcedure;
-
-	RoomProcedure(iconer::app::Room* room, std::uint32_t milliseconds)
-		: Super(room->myTimer, milliseconds, true)
-		, myRoom(room)
-	{}
-
-	virtual bool operator()() override
-	{
-		std::println("Update room {}...", myRoom->GetID());
-
-		return true;
-	}
-
-	iconer::app::Room* myRoom;
-};
+struct RoomProcedure;
 
 bool
 demo::Framework::OnCreateGame(iconer::app::User& user)
@@ -126,9 +111,9 @@ demo::Framework::OnGameIsLoaded(iconer::app::User& user)
 		if (auto room = FindRoom(room_id); room != nullptr)
 		{
 			if (room->ReadyMember(user))
-				{
-					return true;
-				}
+			{
+				return true;
+			}
 		}
 		else
 		{
@@ -141,3 +126,22 @@ demo::Framework::OnGameIsLoaded(iconer::app::User& user)
 
 	return false;
 }
+
+struct RoomProcedure : public iconer::app::TimerProcedure
+{
+	using Super = iconer::app::TimerProcedure;
+
+	RoomProcedure(iconer::app::Room* room, std::uint32_t milliseconds)
+		: Super(room->myTimer, milliseconds, true)
+		, myRoom(room)
+	{}
+
+	virtual bool operator()() override
+	{
+		std::println("Update room {}...", myRoom->GetID());
+
+		return true;
+	}
+
+	iconer::app::Room* myRoom;
+};
